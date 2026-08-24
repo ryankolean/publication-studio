@@ -41,6 +41,17 @@ export interface PackageInput {
   attestations: Record<string, boolean>;
 }
 
+/**
+ * Limits the couple placed on the submission -- design doc section 9 requires
+ * consent notes to be honoured in packaging. The software cannot verify that a
+ * caption says "Sarah and James" rather than their surnames, so it makes a
+ * person confirm it, with the couple's own words in front of them.
+ */
+export interface ConsentConstraints {
+  nameDisplay: string | null;
+  consentNotes: string | null;
+}
+
 export interface PackageEvaluation {
   complete: boolean;
   items: ChecklistItem[];
@@ -50,6 +61,12 @@ export interface PackageEvaluation {
 
 const hasText = (value: string | null): boolean =>
   value !== null && value.trim().length > 0;
+
+const text = (value: string | null): string | null => {
+  if (value === null) return null;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+};
 
 /** Requirements the package data can answer on its own. */
 const DERIVED_REQUIREMENTS: Record<
@@ -114,7 +131,11 @@ function imageCountItem(spec: PublicationSpec, count: number): ChecklistItem | n
   };
 }
 
-export function buildChecklist(spec: PublicationSpec, pkg: PackageInput): ChecklistItem[] {
+export function buildChecklist(
+  spec: PublicationSpec,
+  pkg: PackageInput,
+  consent: ConsentConstraints | null = null,
+): ChecklistItem[] {
   const items: ChecklistItem[] = [];
 
   // Universal: a submission with no images is not a submission.
@@ -146,6 +167,21 @@ export function buildChecklist(spec: PublicationSpec, pkg: PackageInput): Checkl
       kind: "attested",
       label: "Confirm every image is a web-size derivative",
       satisfied: isAttested(pkg, "web_size"),
+    });
+  }
+
+  const limits = [
+    consent === null ? null : text(consent.nameDisplay),
+    consent === null ? null : text(consent.consentNotes),
+  ].filter((value): value is string => value !== null);
+
+  if (limits.length > 0) {
+    items.push({
+      id: "consent_limits",
+      kind: "attested",
+      label: "Confirm the package honours the couple's limits",
+      satisfied: isAttested(pkg, "consent_limits"),
+      detail: limits.join(" / "),
     });
   }
 
@@ -182,8 +218,9 @@ export function buildChecklist(spec: PublicationSpec, pkg: PackageInput): Checkl
 export function evaluatePackage(
   spec: PublicationSpec,
   pkg: PackageInput,
+  consent: ConsentConstraints | null = null,
 ): PackageEvaluation {
-  const items = buildChecklist(spec, pkg);
+  const items = buildChecklist(spec, pkg, consent);
   const missing = items.filter((item) => !item.satisfied).map((item) => item.id);
   return { complete: missing.length === 0, items, missing };
 }

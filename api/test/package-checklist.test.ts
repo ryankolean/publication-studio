@@ -248,3 +248,60 @@ describe("checklist shape", () => {
     expect(new Set(ids(items)).size).toBe(items.length);
   });
 });
+
+describe("the couple's limits become a checklist item", () => {
+  const withConsent = (
+    consent: { nameDisplay?: string | null; consentNotes?: string | null },
+    attestations: Record<string, boolean> = {},
+  ) =>
+    buildChecklist(spec(), pkg({ attestations }), {
+      nameDisplay: consent.nameDisplay ?? null,
+      consentNotes: consent.consentNotes ?? null,
+    });
+
+  it("adds no item when the couple set no limits", () => {
+    expect(ids(withConsent({}))).not.toContain("consent_limits");
+  });
+
+  it("adds an item when a name display preference exists", () => {
+    const item = byId(withConsent({ nameDisplay: "first names only" }), "consent_limits");
+    expect(item?.kind).toBe("attested");
+    expect(item?.satisfied).toBe(false);
+  });
+
+  it("adds an item when there are consent notes", () => {
+    expect(ids(withConsent({ consentNotes: "no family photos" }))).toContain("consent_limits");
+  });
+
+  it("quotes the couple's actual words, so the person ticking sees them", () => {
+    const item = byId(
+      withConsent({ nameDisplay: "first names only", consentNotes: "no family photos" }),
+      "consent_limits",
+    );
+    expect(item?.detail).toContain("first names only");
+    expect(item?.detail).toContain("no family photos");
+  });
+
+  it("is satisfied only once attested", () => {
+    const item = byId(
+      withConsent({ nameDisplay: "first names only" }, { consent_limits: true }),
+      "consent_limits",
+    );
+    expect(item?.satisfied).toBe(true);
+  });
+
+  it("blocks completion until it is ticked", () => {
+    const result = evaluatePackage(
+      spec(),
+      pkg({ imageKeys: ["a"] }),
+      { nameDisplay: "first names only", consentNotes: null },
+    );
+    expect(result.missing).toContain("consent_limits");
+  });
+
+  it("ignores whitespace-only limits", () => {
+    expect(ids(withConsent({ nameDisplay: "   ", consentNotes: "  " }))).not.toContain(
+      "consent_limits",
+    );
+  });
+});
