@@ -19,6 +19,7 @@ import {
   verifyPassword,
 } from "../src/domain/password.js";
 import { createTestD1 } from "./helpers/d1.js";
+import { createTestR2 } from "./helpers/r2.js";
 import type { TestD1 } from "./helpers/d1.js";
 import type { Env } from "../src/env.js";
 
@@ -42,7 +43,7 @@ beforeEach(async () => {
   db = createTestD1();
   env = {
     DB: db,
-    IMAGES: { head: async () => null },
+    IMAGES: createTestR2(),
     JWT_SECRET: "test-signing-secret",
     ALLOWED_ORIGIN: "https://studio.example.com",
   };

@@ -5,6 +5,7 @@ import type { AppContext } from "./middleware/auth.js";
 import { authRoutes } from "./routes/auth.js";
 import { publicationRoutes } from "./routes/publications.js";
 import { weddingRoutes } from "./routes/weddings.js";
+import { imageRoutes } from "./routes/images.js";
 import { fail } from "./errors.js";
 
 /**
@@ -35,6 +36,8 @@ export function createApp() {
   app.route("/auth", authRoutes);
   app.route("/publications", publicationRoutes);
   app.route("/weddings", weddingRoutes);
+  // Mounted at the root: image routes own both /weddings/:id/images and /images/*.
+  app.route("/", imageRoutes);
 
   app.notFound((c) => fail(c, 404, "NOT_FOUND", "No such route."));
 

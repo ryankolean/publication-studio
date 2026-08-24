@@ -4,6 +4,7 @@ import { createApp } from "../src/app.js";
 import type { Env } from "../src/env.js";
 import { createInviteToken, inviteExpiry } from "../src/domain/invite.js";
 import { createTestD1, type TestD1 } from "./helpers/d1.js";
+import { createTestR2 } from "./helpers/r2.js";
 
 const PASSWORD = "correct horse battery staple";
 const UNUSABLE = "unset";
@@ -64,7 +65,7 @@ beforeEach(() => {
   db = createTestD1();
   env = {
     DB: db,
-    IMAGES: { head: async () => null },
+    IMAGES: createTestR2(),
     JWT_SECRET: "test-signing-secret",
     ALLOWED_ORIGIN: "https://studio.example.com",
   };

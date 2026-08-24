@@ -28,8 +28,21 @@ export interface D1Database {
   ): Promise<D1Result<T>[]>;
 }
 
+export interface R2ObjectBody {
+  body: ReadableStream | null;
+  size: number;
+  httpMetadata?: { contentType?: string | undefined } | undefined;
+}
+
 export interface R2Bucket {
-  head(key: string): Promise<unknown | null>;
+  head(key: string): Promise<{ size: number } | null>;
+  get(key: string): Promise<R2ObjectBody | null>;
+  put(
+    key: string,
+    value: ArrayBuffer,
+    options?: { httpMetadata?: { contentType?: string | undefined } | undefined },
+  ): Promise<unknown>;
+  delete(key: string): Promise<void>;
 }
 
 export interface Env {

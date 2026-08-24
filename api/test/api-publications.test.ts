@@ -5,6 +5,7 @@ import type { Env } from "../src/env.js";
 import { signAccessToken } from "../src/domain/tokens.js";
 import { hashPassword } from "../src/domain/password.js";
 import { createTestD1, type TestD1 } from "./helpers/d1.js";
+import { createTestR2 } from "./helpers/r2.js";
 
 const JWT_SECRET = "test-signing-secret";
 let db: TestD1;
@@ -16,7 +17,7 @@ beforeEach(async () => {
   db = createTestD1();
   env = {
     DB: db,
-    IMAGES: { head: async () => null },
+    IMAGES: createTestR2(),
     JWT_SECRET,
     ALLOWED_ORIGIN: "https://studio.example.com",
   };
