@@ -55,14 +55,14 @@ describe("evaluateRightsGate", () => {
       });
     }
 
-    it("routes a fixable wedding to the submission flow", () => {
+    it("routes a fixable event to the submission flow", () => {
       const result = gate("unverified", "unverified");
       expect(result.allowed).toBe(false);
       if (result.allowed) return;
       expect(result.route).toBe("submission");
     });
 
-    it("routes a blocked-rights wedding to neither flow", () => {
+    it("routes a blocked-rights event to neither flow", () => {
       const result = gate("blocked", "granted");
       expect(result.allowed).toBe(false);
       if (result.allowed) return;

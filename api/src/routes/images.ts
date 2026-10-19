@@ -28,10 +28,10 @@ export const imageRoutes = new Hono<AppContext>();
 
 /**
  * Mint an upload capability. The key is generated here and never taken from
- * the client, which is what makes path traversal and cross-wedding writes
+ * the client, which is what makes path traversal and cross-event writes
  * impossible rather than merely filtered.
  */
-imageRoutes.post("/weddings/:id/images", requireAuth, async (c) => {
+imageRoutes.post("/events/:id/images", requireAuth, async (c) => {
   let body: unknown;
   try {
     body = await c.req.json();
@@ -53,29 +53,29 @@ imageRoutes.post("/weddings/:id/images", requireAuth, async (c) => {
     );
   }
 
-  const weddingId = c.req.param("id");
-  const wedding = await c.env.DB.prepare(
-    "SELECT id, rights_status, consent_status FROM weddings WHERE id = ?",
+  const eventId = c.req.param("id");
+  const event = await c.env.DB.prepare(
+    "SELECT id, rights_status, consent_status FROM events WHERE id = ?",
   )
-    .bind(weddingId)
+    .bind(eventId)
     .first<{ id: string; rights_status: RightsStatus; consent_status: ConsentStatus }>();
 
-  if (wedding === null) return fail(c, 404, "NOT_FOUND", "No such wedding.");
+  if (event === null) return fail(c, 404, "NOT_FOUND", "No such event.");
 
   // DECISION: the rights gate applies here, not only at packaging. Uploading
   // curated selections is the first step of building a package, and section
   // 6.1 makes the gate server-side law. Blocking at the last moment would mean
-  // curating a wedding that can never be sent.
+  // curating an event that can never be sent.
   const gate = evaluateRightsGate({
-    rightsStatus: wedding.rights_status,
-    consentStatus: wedding.consent_status,
+    rightsStatus: event.rights_status,
+    consentStatus: event.consent_status,
   });
   if (!gate.allowed) {
-    return fail(c, 403, "RIGHTS_BLOCKED", "This wedding cannot be packaged yet.", gate.reasons);
+    return fail(c, 403, "RIGHTS_BLOCKED", "This event cannot be packaged yet.", gate.reasons);
   }
 
   const extension = ALLOWED_CONTENT_TYPES[contentType] ?? "bin";
-  const key = `weddings/${wedding.id}/${crypto.randomUUID()}.${extension}`;
+  const key = `events/${event.id}/${crypto.randomUUID()}.${extension}`;
   const token = await mintImageToken(c.env.JWT_SECRET, { key, purpose: "write" });
 
   return c.json(

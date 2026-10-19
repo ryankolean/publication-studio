@@ -83,7 +83,7 @@ export function isTerminal(status: SubmissionStatus): boolean {
   return TRANSITIONS[status].length === 0;
 }
 
-export function releasesWedding(status: SubmissionStatus): boolean {
+export function releasesEvent(status: SubmissionStatus): boolean {
   return RELEASING_STATUSES.has(status);
 }
 

@@ -29,10 +29,10 @@ const insertUser = (id = "u1") =>
     )
     .run(id, `${id}@example.com`, id);
 
-const insertWedding = (id = "w1", rights = "own_contract", consent = "granted") =>
+const insertEvent = (id = "w1", rights = "own_contract", consent = "granted") =>
   db
     .prepare(
-      `INSERT INTO weddings (id, slug, couple_names, wedding_date, rights_status, consent_status)
+      `INSERT INTO events (id, slug, couple_names, event_date, rights_status, consent_status)
        VALUES (?, ?, 'A and B', '2026-06-01', ?, ?)`,
     )
     .run(id, id, rights, consent);
@@ -52,18 +52,54 @@ describe("migrations", () => {
     expect(tableNames(db)).toEqual([
       "audit_log",
       "credit_requests",
+      "events",
       "packages",
       "password_invites",
       "publications",
       "submissions",
       "users",
       "vendor_credits",
-      "weddings",
     ]);
   });
 
   it("applies cleanly twice in a row when guarded by IF NOT EXISTS", () => {
     expect(() => migratedDb().close()).not.toThrow();
+  });
+
+  it("renames the wedding record to event in migration 0004", () => {
+    expect(tableNames(db)).not.toContain("weddings");
+    expect(tableNames(db)).toContain("events");
+
+    const eventColumns = db
+      .prepare("SELECT name FROM pragma_table_info('events')")
+      .all()
+      .map((row) => String(row["name"]));
+    expect(eventColumns).toContain("event_date");
+    expect(eventColumns).not.toContain("wedding_date");
+
+    for (const table of ["vendor_credits", "packages", "submissions", "credit_requests"]) {
+      const columns = db
+        .prepare("SELECT name FROM pragma_table_info(?)")
+        .all(table)
+        .map((row) => String(row["name"]));
+      expect(columns, table).toContain("event_id");
+      expect(columns, table).not.toContain("wedding_id");
+
+      const foreignKeys = db
+        .prepare("SELECT \"from\", \"table\", \"to\" FROM pragma_foreign_key_list(?)")
+        .all(table)
+        .filter((row) => row["from"] === "event_id");
+      expect(foreignKeys, table).toEqual([{ from: "event_id", table: "events", to: "id" }]);
+    }
+
+    const indexes = db
+      .prepare("SELECT name FROM sqlite_master WHERE type = 'index' AND name LIKE 'idx_%' ORDER BY name")
+      .all()
+      .map((row) => String(row["name"]));
+    expect(indexes).toEqual(
+      expect.arrayContaining(["idx_events_rights", "idx_vendor_credits_event", "idx_packages_pair"]),
+    );
+    expect(indexes.filter((name) => name.includes("wedding"))).toEqual([]);
   });
 });
 
@@ -78,15 +114,15 @@ describe("enum drift between TypeScript unions and D1 CHECK constraints", () => 
     expect(() => write("not_a_real_value")).toThrow(/CHECK constraint failed/);
   };
 
-  it("weddings.rights_status matches RIGHTS_STATUSES", () => {
+  it("events.rights_status matches RIGHTS_STATUSES", () => {
     let n = 0;
-    acceptsOnly(RIGHTS_STATUSES, (value) => insertWedding(`w${n++}`, value, "granted"));
+    acceptsOnly(RIGHTS_STATUSES, (value) => insertEvent(`w${n++}`, value, "granted"));
   });
 
-  it("weddings.consent_status matches CONSENT_STATUSES", () => {
+  it("events.consent_status matches CONSENT_STATUSES", () => {
     let n = 0;
     acceptsOnly(CONSENT_STATUSES, (value) =>
-      insertWedding(`c${n++}`, "own_contract", value),
+      insertEvent(`c${n++}`, "own_contract", value),
     );
   });
 
@@ -150,14 +186,14 @@ describe("enum drift between TypeScript unions and D1 CHECK constraints", () => 
   });
 
   it("submissions.status matches SUBMISSION_STATUSES", () => {
-    insertWedding();
-    // One publication per status: the (wedding, publication) pair is unique.
+    insertEvent();
+    // One publication per status: the (event, publication) pair is unique.
     let n = 0;
     acceptsOnly(SUBMISSION_STATUSES, (value) => {
       const pub = `sp${n++}`;
       insertPublication(pub);
       db.prepare(
-        "INSERT INTO submissions (id, wedding_id, publication_id, status) VALUES (?, 'w1', ?, ?)",
+        "INSERT INTO submissions (id, event_id, publication_id, status) VALUES (?, 'w1', ?, ?)",
       ).run(`s-${pub}`, pub, value);
     });
   });
@@ -184,33 +220,33 @@ describe("enum drift between TypeScript unions and D1 CHECK constraints", () => 
 });
 
 describe("referential integrity", () => {
-  it("rejects a submission pointing at a missing wedding", () => {
+  it("rejects a submission pointing at a missing event", () => {
     insertPublication();
     expect(() =>
       db
         .prepare(
-          "INSERT INTO submissions (id, wedding_id, publication_id, status) VALUES ('s1', 'ghost', 'p1', 'draft')",
+          "INSERT INTO submissions (id, event_id, publication_id, status) VALUES ('s1', 'ghost', 'p1', 'draft')",
         )
         .run(),
     ).toThrow(/FOREIGN KEY constraint failed/);
   });
 
-  it("rejects a vendor credit pointing at a missing wedding", () => {
+  it("rejects a vendor credit pointing at a missing event", () => {
     expect(() =>
       db
         .prepare(
-          "INSERT INTO vendor_credits (id, wedding_id, role, business_name) VALUES ('v1', 'ghost', 'florist', 'X')",
+          "INSERT INTO vendor_credits (id, event_id, role, business_name) VALUES ('v1', 'ghost', 'florist', 'X')",
         )
         .run(),
     ).toThrow(/FOREIGN KEY constraint failed/);
   });
 
-  it("deletes vendor credits along with their wedding", () => {
-    insertWedding();
+  it("deletes vendor credits along with their event", () => {
+    insertEvent();
     db.prepare(
-      "INSERT INTO vendor_credits (id, wedding_id, role, business_name) VALUES ('v1', 'w1', 'florist', 'X')",
+      "INSERT INTO vendor_credits (id, event_id, role, business_name) VALUES ('v1', 'w1', 'florist', 'X')",
     ).run();
-    db.prepare("DELETE FROM weddings WHERE id = 'w1'").run();
+    db.prepare("DELETE FROM events WHERE id = 'w1'").run();
     const remaining = db.prepare("SELECT COUNT(*) AS n FROM vendor_credits").get();
     expect(remaining?.["n"]).toBe(0);
   });
@@ -218,7 +254,7 @@ describe("referential integrity", () => {
   it("keeps the audit log when its actor is deleted", () => {
     insertUser();
     db.prepare(
-      "INSERT INTO audit_log (id, user_id, entity, entity_id, action) VALUES ('a1', 'u1', 'wedding', 'w1', 'create')",
+      "INSERT INTO audit_log (id, user_id, entity, entity_id, action) VALUES ('a1', 'u1', 'event', 'w1', 'create')",
     ).run();
     db.prepare("DELETE FROM users WHERE id = 'u1'").run();
     const row = db.prepare("SELECT user_id FROM audit_log WHERE id = 'a1'").get();
@@ -238,28 +274,28 @@ describe("uniqueness", () => {
     ).toThrow(/UNIQUE constraint failed/);
   });
 
-  it("rejects a duplicate wedding slug", () => {
-    insertWedding("w1");
+  it("rejects a duplicate event slug", () => {
+    insertEvent("w1");
     expect(() =>
       db
         .prepare(
-          `INSERT INTO weddings (id, slug, couple_names, wedding_date, rights_status, consent_status)
+          `INSERT INTO events (id, slug, couple_names, event_date, rights_status, consent_status)
            VALUES ('w2', 'w1', 'C and D', '2026-07-01', 'unverified', 'unverified')`,
         )
         .run(),
     ).toThrow(/UNIQUE constraint failed/);
   });
 
-  it("allows only one submission per wedding and publication pair", () => {
-    insertWedding();
+  it("allows only one submission per event and publication pair", () => {
+    insertEvent();
     insertPublication();
     db.prepare(
-      "INSERT INTO submissions (id, wedding_id, publication_id, status) VALUES ('s1', 'w1', 'p1', 'draft')",
+      "INSERT INTO submissions (id, event_id, publication_id, status) VALUES ('s1', 'w1', 'p1', 'draft')",
     ).run();
     expect(() =>
       db
         .prepare(
-          "INSERT INTO submissions (id, wedding_id, publication_id, status) VALUES ('s2', 'w1', 'p1', 'draft')",
+          "INSERT INTO submissions (id, event_id, publication_id, status) VALUES ('s2', 'w1', 'p1', 'draft')",
         )
         .run(),
     ).toThrow(/UNIQUE constraint failed/);
@@ -267,19 +303,19 @@ describe("uniqueness", () => {
 });
 
 describe("defaults", () => {
-  it("stamps created_at and updated_at on a wedding", () => {
-    insertWedding();
-    const row = db.prepare("SELECT created_at, updated_at FROM weddings WHERE id = 'w1'").get();
+  it("stamps created_at and updated_at on an event", () => {
+    insertEvent();
+    const row = db.prepare("SELECT created_at, updated_at FROM events WHERE id = 'w1'").get();
     expect(row?.["created_at"]).toMatch(/^\d{4}-\d{2}-\d{2}T/);
     expect(row?.["updated_at"]).toMatch(/^\d{4}-\d{2}-\d{2}T/);
   });
 
-  it("defaults a new wedding to unverified rights and consent", () => {
+  it("defaults a new event to unverified rights and consent", () => {
     db.prepare(
-      "INSERT INTO weddings (id, slug, couple_names, wedding_date) VALUES ('w9', 'w9', 'E and F', '2026-09-01')",
+      "INSERT INTO events (id, slug, couple_names, event_date) VALUES ('w9', 'w9', 'E and F', '2026-09-01')",
     ).run();
     const row = db
-      .prepare("SELECT rights_status, consent_status FROM weddings WHERE id = 'w9'")
+      .prepare("SELECT rights_status, consent_status FROM events WHERE id = 'w9'")
       .get();
     expect(row?.["rights_status"]).toBe("unverified");
     expect(row?.["consent_status"]).toBe("unverified");
@@ -292,10 +328,10 @@ describe("defaults", () => {
   });
 
   it("defaults a submission to draft", () => {
-    insertWedding();
+    insertEvent();
     insertPublication();
     db.prepare(
-      "INSERT INTO submissions (id, wedding_id, publication_id) VALUES ('s1', 'w1', 'p1')",
+      "INSERT INTO submissions (id, event_id, publication_id) VALUES ('s1', 'w1', 'p1')",
     ).run();
     const row = db.prepare("SELECT status FROM submissions WHERE id = 's1'").get();
     expect(row?.["status"]).toBe("draft");
@@ -304,7 +340,7 @@ describe("defaults", () => {
 
 describe("intake coverage", () => {
   it("stores every field the section 7.1 intake form collects", () => {
-    const columns = columnNames(db, "weddings");
+    const columns = columnNames(db, "events");
     for (const column of [
       "gallery_url",
       "rights_status",
@@ -312,7 +348,7 @@ describe("intake coverage", () => {
       "consent_notes",
       "name_display",
       "couple_story",
-      "wedding_date",
+      "event_date",
       "venue_name",
       "city",
       "state",
@@ -325,7 +361,7 @@ describe("intake coverage", () => {
       "target_outlet_notes",
       "style_tags",
     ]) {
-      expect(columns, `weddings is missing ${column}`).toContain(column);
+      expect(columns, `events is missing ${column}`).toContain(column);
     }
   });
 

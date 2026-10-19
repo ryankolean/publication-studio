@@ -32,7 +32,7 @@ function Shell({ children }: { children: ReactNode }) {
             <span className="font-semibold tracking-tight">{PRODUCT_NAME}</span>
             <nav className="flex gap-4 text-sm">
               <Link to="/" className="text-slate-600 hover:text-slate-900">
-                Weddings
+                Events
               </Link>
               <Link to="/publications" className="text-slate-600 hover:text-slate-900">
                 Publications
@@ -69,7 +69,7 @@ function Routed() {
     <Shell>
       <Routes>
         <Route path="/" element={<RequireSession><DashboardPage /></RequireSession>} />
-        <Route path="/weddings/new" element={<RequireSession><IntakePage /></RequireSession>} />
+        <Route path="/events/new" element={<RequireSession><IntakePage /></RequireSession>} />
         <Route path="/publications" element={<RequireSession><PublicationsPage /></RequireSession>} />
         <Route path="/set-password" element={<SetPasswordPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />

@@ -9,17 +9,17 @@ Two-user web app helping a wedding photographer get published: tracks weddings w
 ## Tasks
 1. Monorepo scaffold: `/web` (Vite + React 18 + TS + Tailwind), `/api` (Worker + Hono + TS), Wrangler config with D1 + R2 bindings, GitHub Action deploying `/web` to Pages
 2. Auth: two seeded users in D1, bcrypt password hashes, short-lived JWT + refresh token, login endpoint, auth middleware on all routes. NO signup endpoint — user creation is seed-migration only
-3. D1 migrations for: users, weddings, vendor_credits, publications, submissions, packages, credit_requests, audit_log (field details below)
+3. D1 migrations for: users, events, vendor_credits, publications, submissions, packages, credit_requests, audit_log (field details below)
 4. Publication seed migration: 8 outlets with specs (below)
 5. Wedding intake form (10-section form matching the intake checklist below) + wedding inventory dashboard with rights/consent status badges
 6. CI: typecheck + unit tests on gate logic + Pages deploy on main
 
 ## Schema (key fields; full DDL guidance in design doc §5)
-- `weddings`: couple_names, wedding_date, venue_name, city, state, gallery_url, style_tags (json), unique_angle, rights_status ENUM(unverified|own_contract|second_shooter|blocked), consent_status ENUM(unverified|granted|granted_limited|declined), consent_notes, prior_exposure (json: own_blog, ig_posted, prior_pubs), created/updated timestamps
-- `vendor_credits`: wedding_id, role, business_name, website, instagram
+- `events`: couple_names, event_date, venue_name, city, state, gallery_url, style_tags (json), unique_angle, rights_status ENUM(unverified|own_contract|second_shooter|blocked), consent_status ENUM(unverified|granted|granted_limited|declined), consent_notes, prior_exposure (json: own_blog, ig_posted, prior_pubs), created/updated timestamps
+- `vendor_credits`: event_id, role, business_name, website, instagram
 - `publications`: name, tier(primary|secondary|dream), method(portal|web_form|email|aggregator), submission_url, contact_email, spec_json, exclusivity_policy ENUM(exclusive_required|exclusive_preferred|non_exclusive|unknown), counts_own_blog_as_published (bool|null), typical_response_days, earned_or_paid, taste_notes, last_verified, active
-- `submissions`: wedding_id, publication_id, status ENUM(draft|ready|queued|sent|accepted|published|declined|expired|withdraw_pending|withdrawn|cancelled), package_id, queued_at, sent_at, sent_by, response_due_at, outcome_at, outcome_notes, published_url
-- `packages`: wedding_id, publication_id, image_keys (json), description_md, credits_block_md, checklist_json, version
+- `submissions`: event_id, publication_id, status ENUM(draft|ready|queued|sent|accepted|published|declined|expired|withdraw_pending|withdrawn|cancelled), package_id, queued_at, sent_at, sent_by, response_due_at, outcome_at, outcome_notes, published_url
+- `packages`: event_id, publication_id, image_keys (json), description_md, credits_block_md, checklist_json, version
 - `credit_requests`: feature_url, publication_name, lead_photographer, lead_contact, status ENUM(draft|sent|granted|declined|no_response), message_md, sent_at, outcome_at
 - `audit_log`: user_id, entity, entity_id, action, detail_json, at
 

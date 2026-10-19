@@ -8,14 +8,14 @@ import { createTestD1, type TestD1 } from "./helpers/d1.js";
 import { createTestR2 } from "./helpers/r2.js";
 
 const JWT_SECRET = "test-signing-secret";
-const GALLERY = "https://gallery.example.com/wedding?it=SECRET-INVITE-TOKEN";
+const GALLERY = "https://gallery.example.com/event?it=SECRET-INVITE-TOKEN";
 
 let db: TestD1;
 let env: Env;
 let auth: Record<string, string>;
 const app = createApp();
 
-const minimal = { coupleNames: "Sarah and James", weddingDate: "2026-06-14" };
+const minimal = { coupleNames: "Sarah and James", eventDate: "2026-06-14" };
 
 beforeEach(async () => {
   db = createTestD1();
@@ -39,7 +39,7 @@ afterEach(() => {
 
 const post = (body: unknown, headers: Record<string, string> = auth) =>
   app.request(
-    "/weddings",
+    "/events",
     {
       method: "POST",
       headers: { "content-type": "application/json", ...headers },
@@ -63,16 +63,16 @@ describe("authentication", () => {
   });
 
   it("rejects an unauthenticated list", async () => {
-    expect((await get("/weddings", {})).status).toBe(401);
+    expect((await get("/events", {})).status).toBe(401);
   });
 });
 
-describe("POST /weddings", () => {
-  it("creates a wedding and returns it", async () => {
+describe("POST /events", () => {
+  it("creates an event and returns it", async () => {
     const body = await create();
     expect(body).toMatchObject({
       coupleNames: "Sarah and James",
-      weddingDate: "2026-06-14",
+      eventDate: "2026-06-14",
       rightsStatus: "unverified",
       consentStatus: "unverified",
     });
@@ -96,13 +96,13 @@ describe("POST /weddings", () => {
     const body = (await res.json()) as { code: string; details: Array<{ field: string }> };
     expect(body.code).toBe("VALIDATION");
     expect(body.details.map((d) => d.field)).toEqual(
-      expect.arrayContaining(["coupleNames", "weddingDate", "rightsStatus"]),
+      expect.arrayContaining(["coupleNames", "eventDate", "rightsStatus"]),
     );
   });
 
   it("rejects a body that is not json", async () => {
     const res = await app.request(
-      "/weddings",
+      "/events",
       { method: "POST", headers: { "content-type": "application/json", ...auth }, body: "{" },
       env,
     );
@@ -117,14 +117,14 @@ describe("POST /weddings", () => {
         { role: "Venue", businessName: "The Barn" },
       ],
     });
-    const detail = (await (await get(`/weddings/${body["id"]}`)).json()) as Record<string, any>;
+    const detail = (await (await get(`/events/${body["id"]}`)).json()) as Record<string, any>;
     expect(detail["vendorCredits"].map((v: any) => v.businessName)).toEqual([
       "Stems",
       "The Barn",
     ]);
   });
 
-  it("writes the wedding and its vendors together", async () => {
+  it("writes the event and its vendors together", async () => {
     const res = await post({
       ...minimal,
       vendorCredits: [{ role: "Florist", businessName: "Stems" }],
@@ -132,7 +132,7 @@ describe("POST /weddings", () => {
     expect(res.status).toBe(201);
 
     const counts = await db
-      .prepare("SELECT (SELECT COUNT(*) FROM weddings) AS w, (SELECT COUNT(*) FROM vendor_credits) AS v")
+      .prepare("SELECT (SELECT COUNT(*) FROM events) AS w, (SELECT COUNT(*) FROM vendor_credits) AS v")
       .first<{ w: number; v: number }>();
     expect(counts).toEqual({ w: 1, v: 1 });
   });
@@ -177,7 +177,7 @@ describe("POST /weddings", () => {
     };
 
     const res = await app.request(
-      "/weddings",
+      "/events",
       {
         method: "POST",
         headers: { "content-type": "application/json", ...auth },
@@ -194,7 +194,7 @@ describe("POST /weddings", () => {
 
     expect(res.status).toBe(201);
     expect(batchCalls).toBe(1);
-    // wedding + two vendors + audit entry
+    // event + two vendors + audit entry
     expect(batchedStatements).toBe(4);
     expect(executedDirectly.filter((q) => /INSERT/i.test(q))).toEqual([]);
   });
@@ -202,11 +202,11 @@ describe("POST /weddings", () => {
   it("audit-logs the creation", async () => {
     const body = await create();
     const row = await db
-      .prepare("SELECT user_id, entity, entity_id, action FROM audit_log WHERE entity = 'wedding'")
+      .prepare("SELECT user_id, entity, entity_id, action FROM audit_log WHERE entity = 'event'")
       .first<Record<string, unknown>>();
     expect(row).toMatchObject({
       user_id: "user-1",
-      entity: "wedding",
+      entity: "event",
       entity_id: body["id"],
       action: "create",
     });
@@ -236,7 +236,7 @@ describe("the gallery url is a credential", () => {
   it("stores it", async () => {
     const body = await create({ ...minimal, galleryUrl: GALLERY });
     const row = await db
-      .prepare("SELECT gallery_url FROM weddings WHERE id = ?")
+      .prepare("SELECT gallery_url FROM events WHERE id = ?")
       .bind(body["id"])
       .first<{ gallery_url: string }>();
     expect(row?.gallery_url).toBe(GALLERY);
@@ -249,37 +249,37 @@ describe("the gallery url is a credential", () => {
 
   it("never returns it from the list", async () => {
     await create({ ...minimal, galleryUrl: GALLERY });
-    const text = await (await get("/weddings")).text();
+    const text = await (await get("/events")).text();
     expect(text).not.toContain("SECRET-INVITE-TOKEN");
   });
 
   it("never returns it from the detail view", async () => {
     const body = await create({ ...minimal, galleryUrl: GALLERY });
-    const text = await (await get(`/weddings/${body["id"]}`)).text();
+    const text = await (await get(`/events/${body["id"]}`)).text();
     expect(text).not.toContain("SECRET-INVITE-TOKEN");
   });
 
   it("reports only whether one is on file", async () => {
     const withGallery = await create({ ...minimal, galleryUrl: GALLERY });
-    const without = await create({ coupleNames: "Ada and Bo", weddingDate: "2026-07-01" });
+    const without = await create({ coupleNames: "Ada and Bo", eventDate: "2026-07-01" });
     expect(withGallery["hasGalleryUrl"]).toBe(true);
     expect(without["hasGalleryUrl"]).toBe(false);
   });
 });
 
-describe("GET /weddings", () => {
+describe("GET /events", () => {
   it("returns an empty inventory before anything is entered", async () => {
-    const body = (await (await get("/weddings")).json()) as { weddings: unknown[] };
-    expect(body.weddings).toEqual([]);
+    const body = (await (await get("/events")).json()) as { events: unknown[] };
+    expect(body.events).toEqual([]);
   });
 
-  it("lists most recent wedding first", async () => {
-    await create({ coupleNames: "Older", weddingDate: "2025-05-01" });
-    await create({ coupleNames: "Newer", weddingDate: "2026-09-01" });
-    const body = (await (await get("/weddings")).json()) as {
-      weddings: Array<{ coupleNames: string }>;
+  it("lists most recent event first", async () => {
+    await create({ coupleNames: "Older", eventDate: "2025-05-01" });
+    await create({ coupleNames: "Newer", eventDate: "2026-09-01" });
+    const body = (await (await get("/events")).json()) as {
+      events: Array<{ coupleNames: string }>;
     };
-    expect(body.weddings.map((w) => w.coupleNames)).toEqual(["Newer", "Older"]);
+    expect(body.events.map((w) => w.coupleNames)).toEqual(["Newer", "Older"]);
   });
 
   it("carries the rights gate verdict for the badge", async () => {
@@ -288,18 +288,18 @@ describe("GET /weddings", () => {
       rightsStatus: "own_contract",
       consentStatus: "granted",
     });
-    const body = (await (await get("/weddings")).json()) as {
-      weddings: Array<{ gate: { allowed: boolean } }>;
+    const body = (await (await get("/events")).json()) as {
+      events: Array<{ gate: { allowed: boolean } }>;
     };
-    expect(body.weddings[0]?.gate).toEqual({ allowed: true });
+    expect(body.events[0]?.gate).toEqual({ allowed: true });
   });
 
-  it("explains exactly what is missing on a blocked wedding", async () => {
+  it("explains exactly what is missing on a blocked event", async () => {
     await create({ ...minimal, rightsStatus: "unverified", consentStatus: "declined" });
-    const body = (await (await get("/weddings")).json()) as {
-      weddings: Array<{ gate: any }>;
+    const body = (await (await get("/events")).json()) as {
+      events: Array<{ gate: any }>;
     };
-    const gate = body.weddings[0]?.gate;
+    const gate = body.events[0]?.gate;
     expect(gate.allowed).toBe(false);
     expect(gate.route).toBe("submission");
     expect(gate.reasons.map((r: any) => r.code)).toEqual([
@@ -309,20 +309,20 @@ describe("GET /weddings", () => {
     expect(gate.reasons[0].remedy).toMatch(/\S/);
   });
 
-  it("routes a second-shooter wedding to credit recovery", async () => {
+  it("routes a second-shooter event to credit recovery", async () => {
     await create({ ...minimal, rightsStatus: "second_shooter", consentStatus: "granted" });
-    const body = (await (await get("/weddings")).json()) as { weddings: Array<{ gate: any }> };
-    expect(body.weddings[0]?.gate.route).toBe("credit_recovery");
+    const body = (await (await get("/events")).json()) as { events: Array<{ gate: any }> };
+    expect(body.events[0]?.gate.route).toBe("credit_recovery");
   });
 });
 
-describe("GET /weddings/:id", () => {
-  it("returns the wedding with its vendor credits and gate", async () => {
+describe("GET /events/:id", () => {
+  it("returns the event with its vendor credits and gate", async () => {
     const created = await create({
       ...minimal,
       vendorCredits: [{ role: "Florist", businessName: "Stems", instagram: "@stems" }],
     });
-    const res = await get(`/weddings/${created["id"]}`);
+    const res = await get(`/events/${created["id"]}`);
     expect(res.status).toBe(200);
     const body = (await res.json()) as Record<string, any>;
     expect(body["vendorCredits"]).toEqual([
@@ -332,7 +332,7 @@ describe("GET /weddings/:id", () => {
   });
 
   it("returns a typed 404 for an unknown id", async () => {
-    const res = await get("/weddings/nope");
+    const res = await get("/events/nope");
     expect(res.status).toBe(404);
     await expect(res.json()).resolves.toMatchObject({ code: "NOT_FOUND" });
   });

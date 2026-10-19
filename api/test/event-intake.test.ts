@@ -1,17 +1,17 @@
 import { describe, expect, it } from "vitest";
 
-import { validateWeddingIntake } from "../src/domain/wedding-intake.js";
+import { validateEventIntake } from "../src/domain/event-intake.js";
 
-const minimal = { coupleNames: "Sarah and James", weddingDate: "2026-06-14" };
+const minimal = { coupleNames: "Sarah and James", eventDate: "2026-06-14" };
 
 const ok = (input: unknown) => {
-  const result = validateWeddingIntake(input);
+  const result = validateEventIntake(input);
   if (!result.ok) throw new Error(`expected valid: ${JSON.stringify(result.errors)}`);
   return result.value;
 };
 
 const errorFields = (input: unknown) => {
-  const result = validateWeddingIntake(input);
+  const result = validateEventIntake(input);
   if (result.ok) throw new Error("expected invalid");
   return result.errors.map((e) => e.field);
 };
@@ -20,16 +20,16 @@ describe("required fields", () => {
   it("accepts the minimum viable intake", () => {
     expect(ok(minimal)).toMatchObject({
       coupleNames: "Sarah and James",
-      weddingDate: "2026-06-14",
+      eventDate: "2026-06-14",
     });
   });
 
   it("requires couple names", () => {
-    expect(errorFields({ weddingDate: "2026-06-14" })).toContain("coupleNames");
+    expect(errorFields({ eventDate: "2026-06-14" })).toContain("coupleNames");
   });
 
-  it("requires a wedding date", () => {
-    expect(errorFields({ coupleNames: "Sarah and James" })).toContain("weddingDate");
+  it("requires an event date", () => {
+    expect(errorFields({ coupleNames: "Sarah and James" })).toContain("eventDate");
   });
 
   it("rejects blank couple names", () => {
@@ -38,7 +38,7 @@ describe("required fields", () => {
 
   it("rejects a body that is not an object", () => {
     for (const body of [null, "hello", 42, [1, 2]]) {
-      const result = validateWeddingIntake(body);
+      const result = validateEventIntake(body);
       expect(result.ok, JSON.stringify(body)).toBe(false);
     }
   });
@@ -46,25 +46,25 @@ describe("required fields", () => {
   it("reports every problem at once rather than the first", () => {
     const fields = errorFields({ rightsStatus: "bogus", consentStatus: "bogus" });
     expect(fields).toEqual(
-      expect.arrayContaining(["coupleNames", "weddingDate", "rightsStatus", "consentStatus"]),
+      expect.arrayContaining(["coupleNames", "eventDate", "rightsStatus", "consentStatus"]),
     );
   });
 });
 
-describe("wedding date", () => {
+describe("event date", () => {
   it("requires ISO yyyy-mm-dd", () => {
     for (const date of ["14/06/2026", "2026-6-14", "June 14 2026", "2026-06-14T00:00:00Z"]) {
-      expect(errorFields({ ...minimal, weddingDate: date }), date).toContain("weddingDate");
+      expect(errorFields({ ...minimal, eventDate: date }), date).toContain("eventDate");
     }
   });
 
   it("rejects an impossible calendar date", () => {
-    expect(errorFields({ ...minimal, weddingDate: "2026-02-30" })).toContain("weddingDate");
-    expect(errorFields({ ...minimal, weddingDate: "2026-13-01" })).toContain("weddingDate");
+    expect(errorFields({ ...minimal, eventDate: "2026-02-30" })).toContain("eventDate");
+    expect(errorFields({ ...minimal, eventDate: "2026-13-01" })).toContain("eventDate");
   });
 
   it("accepts a leap day in a leap year", () => {
-    expect(ok({ ...minimal, weddingDate: "2028-02-29" }).weddingDate).toBe("2028-02-29");
+    expect(ok({ ...minimal, eventDate: "2028-02-29" }).eventDate).toBe("2028-02-29");
   });
 });
 

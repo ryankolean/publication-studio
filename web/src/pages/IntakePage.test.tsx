@@ -32,7 +32,7 @@ const renderPage = () =>
     </MemoryRouter>,
   );
 
-const submit = () => userEvent.click(screen.getByRole("button", { name: "Save wedding" }));
+const submit = () => userEvent.click(screen.getByRole("button", { name: "Save event" }));
 
 const lastPayload = () => api.post.mock.calls[0]?.[1] as Record<string, any>;
 
@@ -41,7 +41,7 @@ describe("the ten intake sections are present", () => {
     renderPage();
     for (const label of [
       "Couple names",
-      "Wedding date",
+      "Event date",
       "Venue",
       "City",
       "Gallery link",
@@ -50,7 +50,7 @@ describe("the ten intake sections are present", () => {
       "Name display preference",
       "Consent notes",
       "Couple story",
-      "What made this wedding unique",
+      "What made this event unique",
       "Hero image picks",
       "Video link",
       "Dream outlet and alternates",
@@ -63,18 +63,18 @@ describe("the ten intake sections are present", () => {
 });
 
 describe("submitting", () => {
-  it("posts the entered wedding", async () => {
+  it("posts the entered event", async () => {
     api.post.mockResolvedValueOnce({ id: "w1" });
     renderPage();
 
     await userEvent.type(screen.getByLabelText("Couple names"), "Sarah and James");
-    await userEvent.type(screen.getByLabelText("Wedding date"), "2026-06-14");
+    await userEvent.type(screen.getByLabelText("Event date"), "2026-06-14");
     await submit();
 
-    await waitFor(() => expect(api.post).toHaveBeenCalledWith("/weddings", expect.anything()));
+    await waitFor(() => expect(api.post).toHaveBeenCalledWith("/events", expect.anything()));
     expect(lastPayload()).toMatchObject({
       coupleNames: "Sarah and James",
-      weddingDate: "2026-06-14",
+      eventDate: "2026-06-14",
     });
   });
 

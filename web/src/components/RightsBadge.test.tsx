@@ -11,17 +11,17 @@ const blocked = (route: string, reasons: Array<{ code: string; remedy: string }>
 });
 
 describe("RightsBadge", () => {
-  it("says a green wedding is ready", () => {
+  it("says a green event is ready", () => {
     render(<RightsBadge gate={{ allowed: true }} />);
     expect(screen.getByText("Ready to package")).toBeInTheDocument();
   });
 
-  it("says blocked when the wedding can still be fixed", () => {
+  it("says blocked when the event can still be fixed", () => {
     render(<RightsBadge gate={blocked("submission", [{ code: "X", remedy: "Do the thing." }])} />);
     expect(screen.getByText("Blocked")).toBeInTheDocument();
   });
 
-  it("distinguishes a second-shooter wedding from a merely blocked one", () => {
+  it("distinguishes a second-shooter event from a merely blocked one", () => {
     render(
       <RightsBadge gate={blocked("credit_recovery", [{ code: "X", remedy: "Log a credit request." }])} />,
     );
@@ -35,7 +35,7 @@ describe("RightsBadge", () => {
 });
 
 describe("GateReasons", () => {
-  it("renders nothing for a green wedding", () => {
+  it("renders nothing for a green event", () => {
     const { container } = render(<GateReasons gate={{ allowed: true }} />);
     expect(container).toBeEmptyDOMElement();
   });

@@ -63,7 +63,7 @@ export function IntakePage() {
 
   const [values, setValues] = useState({
     coupleNames: "",
-    weddingDate: "",
+    eventDate: "",
     venueName: "",
     city: "",
     state: "",
@@ -102,7 +102,7 @@ export function IntakePage() {
     const optional = (value: string) => (value.trim() === "" ? undefined : value.trim());
     return {
       coupleNames: values.coupleNames,
-      weddingDate: values.weddingDate,
+      eventDate: values.eventDate,
       venueName: optional(values.venueName),
       city: optional(values.city),
       state: optional(values.state),
@@ -139,7 +139,7 @@ export function IntakePage() {
     setFormError(null);
     setBusy(true);
     try {
-      await api.post("/weddings", payload());
+      await api.post("/events", payload());
       navigate("/");
     } catch (caught) {
       if (caught instanceof ApiError) {
@@ -160,10 +160,10 @@ export function IntakePage() {
 
   return (
     <form onSubmit={onSubmit} className="max-w-2xl space-y-8" noValidate>
-      <h2 className="text-lg font-semibold text-slate-900">Add a wedding</h2>
+      <h2 className="text-lg font-semibold text-slate-900">Add an event</h2>
 
       <fieldset className="space-y-4">
-        <legend className="text-sm font-semibold text-slate-900">The wedding</legend>
+        <legend className="text-sm font-semibold text-slate-900">The event</legend>
         <Field id="coupleNames" label="Couple names" error={fieldErrors["coupleNames"]}>
           <input
             id="coupleNames"
@@ -172,13 +172,13 @@ export function IntakePage() {
             onChange={(e) => set("coupleNames")(e.target.value)}
           />
         </Field>
-        <Field id="weddingDate" label="Wedding date" error={fieldErrors["weddingDate"]}>
+        <Field id="eventDate" label="Event date" error={fieldErrors["eventDate"]}>
           <input
-            id="weddingDate"
+            id="eventDate"
             type="date"
             className={inputClass}
-            value={values.weddingDate}
-            onChange={(e) => set("weddingDate")(e.target.value)}
+            value={values.eventDate}
+            onChange={(e) => set("eventDate")(e.target.value)}
           />
         </Field>
         <Field id="venueName" label="Venue" error={fieldErrors["venueName"]}>
@@ -243,7 +243,7 @@ export function IntakePage() {
         <Field id="coupleStory" label="Couple story" error={fieldErrors["coupleStory"]}>
           <textarea id="coupleStory" rows={4} className={inputClass} value={values.coupleStory} onChange={(e) => set("coupleStory")(e.target.value)} />
         </Field>
-        <Field id="uniqueAngle" label="What made this wedding unique" error={fieldErrors["uniqueAngle"]}>
+        <Field id="uniqueAngle" label="What made this event unique" error={fieldErrors["uniqueAngle"]}>
           <textarea id="uniqueAngle" rows={2} className={inputClass} value={values.uniqueAngle} onChange={(e) => set("uniqueAngle")(e.target.value)} />
         </Field>
         <Field id="styleTags" label="Style tags, comma separated" error={fieldErrors["styleTags"]}>
@@ -317,7 +317,7 @@ export function IntakePage() {
         disabled={busy}
         className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
       >
-        {busy ? "Saving" : "Save wedding"}
+        {busy ? "Saving" : "Save event"}
       </button>
     </form>
   );

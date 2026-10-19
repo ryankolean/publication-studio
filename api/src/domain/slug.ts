@@ -18,12 +18,12 @@ export function slugify(value: string): string {
  * to disambiguate a photographer's inventory in practice; the route still has
  * to handle the exact collision, since slug is UNIQUE.
  */
-export function weddingSlug(coupleNames: string, weddingDate: string): string {
+export function eventSlug(coupleNames: string, eventDate: string): string {
   const names = slugify(coupleNames).slice(0, MAX_NAME_LENGTH).replace(/-+$/, "");
-  const year = /^\d{4}-\d{2}-\d{2}$/.test(weddingDate)
-    ? weddingDate.slice(0, 4)
-    : slugify(weddingDate);
+  const year = /^\d{4}-\d{2}-\d{2}$/.test(eventDate)
+    ? eventDate.slice(0, 4)
+    : slugify(eventDate);
 
-  if (names.length === 0) return `wedding-${weddingDate}`;
+  if (names.length === 0) return `event-${eventDate}`;
   return year.length === 0 ? names : `${names}-${year}`;
 }

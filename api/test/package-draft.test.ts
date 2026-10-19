@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import { buildCreditsBlock, buildDescriptionDraft } from "../src/domain/package-draft.js";
 
-const wedding = {
+const event = {
   coupleNames: "Sarah and James",
-  weddingDate: "2026-06-14",
+  eventDate: "2026-06-14",
   venueName: "The Barn",
   city: "Detroit",
   state: "MI",
@@ -73,32 +73,32 @@ describe("buildCreditsBlock", () => {
 
 describe("buildDescriptionDraft", () => {
   it("opens with the couple, the date, and the place", () => {
-    expect(buildDescriptionDraft(wedding)).toBe(
+    expect(buildDescriptionDraft(event)).toBe(
       "Sarah and James were married on 2026-06-14 at The Barn in Detroit, MI.",
     );
   });
 
   it("omits the venue when there is none", () => {
-    expect(buildDescriptionDraft({ ...wedding, venueName: null })).toBe(
+    expect(buildDescriptionDraft({ ...event, venueName: null })).toBe(
       "Sarah and James were married on 2026-06-14 in Detroit, MI.",
     );
   });
 
   it("omits the place entirely when nothing is known", () => {
     expect(
-      buildDescriptionDraft({ ...wedding, venueName: null, city: null, state: null }),
+      buildDescriptionDraft({ ...event, venueName: null, city: null, state: null }),
     ).toBe("Sarah and James were married on 2026-06-14.");
   });
 
   it("includes the country when there is no state", () => {
     expect(
-      buildDescriptionDraft({ ...wedding, city: "Lisbon", state: null, country: "Portugal" }),
+      buildDescriptionDraft({ ...event, city: "Lisbon", state: null, country: "Portugal" }),
     ).toBe("Sarah and James were married on 2026-06-14 at The Barn in Lisbon, Portugal.");
   });
 
   it("adds the couple story as its own paragraph", () => {
     expect(
-      buildDescriptionDraft({ ...wedding, coupleStory: "They met at a bus stop." }),
+      buildDescriptionDraft({ ...event, coupleStory: "They met at a bus stop." }),
     ).toBe(
       "Sarah and James were married on 2026-06-14 at The Barn in Detroit, MI.\n\nThey met at a bus stop.",
     );
@@ -106,7 +106,7 @@ describe("buildDescriptionDraft", () => {
 
   it("adds the unique angle after the story", () => {
     const draft = buildDescriptionDraft({
-      ...wedding,
+      ...event,
       coupleStory: "They met at a bus stop.",
       uniqueAngle: "It rained the whole day.",
     });
@@ -118,13 +118,13 @@ describe("buildDescriptionDraft", () => {
   });
 
   it("ignores whitespace-only story text", () => {
-    expect(buildDescriptionDraft({ ...wedding, coupleStory: "   " })).toBe(
+    expect(buildDescriptionDraft({ ...event, coupleStory: "   " })).toBe(
       "Sarah and James were married on 2026-06-14 at The Barn in Detroit, MI.",
     );
   });
 
   it("is a draft, not a submission: it never invents detail it was not given", () => {
-    const draft = buildDescriptionDraft({ ...wedding, coupleStory: null, uniqueAngle: null });
+    const draft = buildDescriptionDraft({ ...event, coupleStory: null, uniqueAngle: null });
     expect(draft).not.toMatch(/beautiful|stunning|magical|perfect/i);
   });
 });

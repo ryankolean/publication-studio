@@ -7,7 +7,7 @@ import {
   canTransition,
   evaluateTransition,
   isTerminal,
-  releasesWedding,
+  releasesEvent,
 } from "../src/domain/submission-status.js";
 import type { SubmissionStatus } from "../src/domain/submission-status.js";
 
@@ -126,22 +126,22 @@ describe("isTerminal", () => {
   });
 });
 
-describe("releasesWedding", () => {
-  it("releases the wedding on declined, withdrawn, and cancelled", () => {
-    expect(releasesWedding("declined")).toBe(true);
-    expect(releasesWedding("withdrawn")).toBe(true);
-    expect(releasesWedding("cancelled")).toBe(true);
+describe("releasesEvent", () => {
+  it("releases the event on declined, withdrawn, and cancelled", () => {
+    expect(releasesEvent("declined")).toBe(true);
+    expect(releasesEvent("withdrawn")).toBe(true);
+    expect(releasesEvent("cancelled")).toBe(true);
   });
 
   it("does not release while the outlet still holds the submission", () => {
     for (const status of ["sent", "expired", "withdraw_pending"] as const) {
-      expect(releasesWedding(status)).toBe(false);
+      expect(releasesEvent(status)).toBe(false);
     }
   });
 
   it("does not release on a win", () => {
-    expect(releasesWedding("accepted")).toBe(false);
-    expect(releasesWedding("published")).toBe(false);
+    expect(releasesEvent("accepted")).toBe(false);
+    expect(releasesEvent("published")).toBe(false);
   });
 });
 

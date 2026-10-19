@@ -11,10 +11,10 @@ import type { PackageInput } from "../domain/package-checklist.js";
 import { buildCreditsBlock, buildDescriptionDraft } from "../domain/package-draft.js";
 import type { CreditRow } from "../domain/package-draft.js";
 
-interface WeddingRow {
+interface EventRow {
   id: string;
   couple_names: string;
-  wedding_date: string;
+  event_date: string;
   venue_name: string | null;
   city: string | null;
   state: string | null;
@@ -29,7 +29,7 @@ interface WeddingRow {
 
 interface PackageRow {
   id: string;
-  wedding_id: string;
+  event_id: string;
   publication_id: string;
   image_keys: string;
   description_md: string | null;
@@ -62,7 +62,7 @@ function readAttestations(raw: string): Record<string, boolean> {
 async function viewFor(
   c: { env: AppContext["Bindings"] },
   pkg: PackageRow,
-  wedding: WeddingRow,
+  event: EventRow,
 ) {
   const publication = await c.env.DB.prepare(
     "SELECT id, name, tier, method, submission_url, spec_json FROM publications WHERE id = ?",
@@ -87,13 +87,13 @@ async function viewFor(
   };
 
   const evaluation = evaluatePackage(spec, input, {
-    nameDisplay: wedding.name_display,
-    consentNotes: wedding.consent_notes,
+    nameDisplay: event.name_display,
+    consentNotes: event.consent_notes,
   });
 
   return {
     id: pkg.id,
-    weddingId: pkg.wedding_id,
+    eventId: pkg.event_id,
     publicationId: pkg.publication_id,
     publication:
       publication === null
@@ -112,10 +112,10 @@ async function viewFor(
     version: pkg.version,
     createdAt: pkg.created_at,
     // The couple's limits travel with the package so the editor can show them
-    // beside the copy being written, not buried on the wedding record.
+    // beside the copy being written, not buried on the event record.
     consent: {
-      nameDisplay: wedding.name_display,
-      consentNotes: wedding.consent_notes,
+      nameDisplay: event.name_display,
+      consentNotes: event.consent_notes,
     },
     checklist: evaluation.items,
     complete: evaluation.complete,
@@ -123,7 +123,7 @@ async function viewFor(
   };
 }
 
-const WEDDING_COLUMNS = `id, couple_names, wedding_date, venue_name, city, state, country,
+const EVENT_COLUMNS = `id, couple_names, event_date, venue_name, city, state, country,
   couple_story, unique_angle, name_display, consent_notes, rights_status, consent_status`;
 
 export const packageRoutes = new Hono<AppContext>();
@@ -139,17 +139,17 @@ packageRoutes.post("/", async (c) => {
   }
 
   const source = typeof body === "object" && body !== null ? (body as Record<string, unknown>) : {};
-  const weddingId = source["weddingId"];
+  const eventId = source["eventId"];
   const publicationId = source["publicationId"];
 
-  if (typeof weddingId !== "string" || typeof publicationId !== "string") {
-    return fail(c, 400, "VALIDATION", "Both weddingId and publicationId are required.");
+  if (typeof eventId !== "string" || typeof publicationId !== "string") {
+    return fail(c, 400, "VALIDATION", "Both eventId and publicationId are required.");
   }
 
-  const wedding = await c.env.DB.prepare(`SELECT ${WEDDING_COLUMNS} FROM weddings WHERE id = ?`)
-    .bind(weddingId)
-    .first<WeddingRow>();
-  if (wedding === null) return fail(c, 404, "NOT_FOUND", "No such wedding.");
+  const event = await c.env.DB.prepare(`SELECT ${EVENT_COLUMNS} FROM events WHERE id = ?`)
+    .bind(eventId)
+    .first<EventRow>();
+  if (event === null) return fail(c, 404, "NOT_FOUND", "No such event.");
 
   const publication = await c.env.DB.prepare(
     "SELECT id, active FROM publications WHERE id = ?",
@@ -162,11 +162,11 @@ packageRoutes.post("/", async (c) => {
   }
 
   const gate = evaluateRightsGate({
-    rightsStatus: wedding.rights_status,
-    consentStatus: wedding.consent_status,
+    rightsStatus: event.rights_status,
+    consentStatus: event.consent_status,
   });
   if (!gate.allowed) {
-    return fail(c, 403, "RIGHTS_BLOCKED", "This wedding cannot be packaged yet.", gate.reasons);
+    return fail(c, 403, "RIGHTS_BLOCKED", "This event cannot be packaged yet.", gate.reasons);
   }
 
   // DECISION: one package per pairing in Phase 1. Asking again returns what
@@ -174,17 +174,17 @@ packageRoutes.post("/", async (c) => {
   // pairing is a bug the UI would have to resolve, and the version column is
   // there for deliberate regeneration once Phase 1 has a reason to bump it.
   const existing = await c.env.DB.prepare(
-    "SELECT * FROM packages WHERE wedding_id = ? AND publication_id = ? ORDER BY version DESC",
+    "SELECT * FROM packages WHERE event_id = ? AND publication_id = ? ORDER BY version DESC",
   )
-    .bind(weddingId, publicationId)
+    .bind(eventId, publicationId)
     .first<PackageRow>();
 
-  if (existing !== null) return c.json(await viewFor(c, existing, wedding), 200);
+  if (existing !== null) return c.json(await viewFor(c, existing, event), 200);
 
   const { results: credits } = await c.env.DB.prepare(
-    "SELECT role, business_name, website, instagram FROM vendor_credits WHERE wedding_id = ? ORDER BY sort_order",
+    "SELECT role, business_name, website, instagram FROM vendor_credits WHERE event_id = ? ORDER BY sort_order",
   )
-    .bind(weddingId)
+    .bind(eventId)
     .all<{ role: string; business_name: string; website: string | null; instagram: string | null }>();
 
   const creditRows: CreditRow[] = credits.map((row) => ({
@@ -199,22 +199,22 @@ packageRoutes.post("/", async (c) => {
   await c.env.DB.batch([
     c.env.DB
       .prepare(
-        `INSERT INTO packages (id, wedding_id, publication_id, image_keys, description_md, credits_block_md, checklist_json, version)
+        `INSERT INTO packages (id, event_id, publication_id, image_keys, description_md, credits_block_md, checklist_json, version)
          VALUES (?, ?, ?, '[]', ?, ?, '{}', 1)`,
       )
       .bind(
         id,
-        weddingId,
+        eventId,
         publicationId,
         buildDescriptionDraft({
-          coupleNames: wedding.couple_names,
-          weddingDate: wedding.wedding_date,
-          venueName: wedding.venue_name,
-          city: wedding.city,
-          state: wedding.state,
-          country: wedding.country,
-          coupleStory: wedding.couple_story,
-          uniqueAngle: wedding.unique_angle,
+          coupleNames: event.couple_names,
+          eventDate: event.event_date,
+          venueName: event.venue_name,
+          city: event.city,
+          state: event.state,
+          country: event.country,
+          coupleStory: event.couple_story,
+          uniqueAngle: event.unique_angle,
         }),
         buildCreditsBlock(creditRows),
       ),
@@ -230,30 +230,30 @@ packageRoutes.post("/", async (c) => {
     .first<PackageRow>();
   if (created === null) return fail(c, 500, "INTERNAL", "The package could not be read back.");
 
-  return c.json(await viewFor(c, created, wedding), 201);
+  return c.json(await viewFor(c, created, event), 201);
 });
 
 async function loadPair(
   c: { env: AppContext["Bindings"] },
   packageId: string,
-): Promise<{ pkg: PackageRow; wedding: WeddingRow } | null> {
+): Promise<{ pkg: PackageRow; event: EventRow } | null> {
   const pkg = await c.env.DB.prepare("SELECT * FROM packages WHERE id = ?")
     .bind(packageId)
     .first<PackageRow>();
   if (pkg === null) return null;
 
-  const wedding = await c.env.DB.prepare(`SELECT ${WEDDING_COLUMNS} FROM weddings WHERE id = ?`)
-    .bind(pkg.wedding_id)
-    .first<WeddingRow>();
-  if (wedding === null) return null;
+  const event = await c.env.DB.prepare(`SELECT ${EVENT_COLUMNS} FROM events WHERE id = ?`)
+    .bind(pkg.event_id)
+    .first<EventRow>();
+  if (event === null) return null;
 
-  return { pkg, wedding };
+  return { pkg, event };
 }
 
 packageRoutes.get("/:id", async (c) => {
   const found = await loadPair(c, c.req.param("id"));
   if (found === null) return fail(c, 404, "NOT_FOUND", "No such package.");
-  return c.json(await viewFor(c, found.pkg, found.wedding));
+  return c.json(await viewFor(c, found.pkg, found.event));
 });
 
 packageRoutes.patch("/:id", async (c) => {
@@ -277,12 +277,12 @@ packageRoutes.patch("/:id", async (c) => {
       errors.push({ field: "imageKeys", message: "Expected a list of image keys." });
     } else {
       const keys = value as string[];
-      // Keys are minted by the image route against this wedding. Accepting a
-      // key from anywhere else would let one wedding's package reference
+      // Keys are minted by the image route against this event. Accepting a
+      // key from anywhere else would let one event's package reference
       // another's images.
-      const foreign = keys.filter((key) => !key.startsWith(`weddings/${found.pkg.wedding_id}/`));
+      const foreign = keys.filter((key) => !key.startsWith(`events/${found.pkg.event_id}/`));
       if (foreign.length > 0) {
-        errors.push({ field: "imageKeys", message: "Those images belong to another wedding." });
+        errors.push({ field: "imageKeys", message: "Those images belong to another event." });
       } else if (new Set(keys).size !== keys.length) {
         errors.push({ field: "imageKeys", message: "The same image is selected twice." });
       } else {
@@ -354,5 +354,5 @@ packageRoutes.patch("/:id", async (c) => {
     .first<PackageRow>();
   if (updated === null) return fail(c, 500, "INTERNAL", "The package could not be read back.");
 
-  return c.json(await viewFor(c, updated, found.wedding));
+  return c.json(await viewFor(c, updated, found.event));
 });

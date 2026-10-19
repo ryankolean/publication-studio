@@ -16,14 +16,14 @@ let env: Env;
 let auth: Record<string, string>;
 const app = createApp();
 
-async function seedWedding(
+async function seedEvent(
   id: string,
   rights = "own_contract",
   consent = "granted",
 ) {
   await db
     .prepare(
-      `INSERT INTO weddings (id, slug, couple_names, wedding_date, rights_status, consent_status)
+      `INSERT INTO events (id, slug, couple_names, event_date, rights_status, consent_status)
        VALUES (?, ?, 'A and B', '2026-06-01', ?, ?)`,
     )
     .bind(id, id, rights, consent)
@@ -50,9 +50,9 @@ afterEach(() => {
   db.close();
 });
 
-const requestUpload = (weddingId: string, contentType = "image/jpeg", headers = auth) =>
+const requestUpload = (eventId: string, contentType = "image/jpeg", headers = auth) =>
   app.request(
-    `/weddings/${weddingId}/images`,
+    `/events/${eventId}/images`,
     {
       method: "POST",
       headers: { "content-type": "application/json", ...headers },
@@ -61,8 +61,8 @@ const requestUpload = (weddingId: string, contentType = "image/jpeg", headers = 
     env,
   );
 
-const grantFor = async (weddingId: string) => {
-  const res = await requestUpload(weddingId);
+const grantFor = async (eventId: string) => {
+  const res = await requestUpload(eventId);
   expect(res.status).toBe(201);
   return (await res.json()) as { key: string; uploadUrl: string; expiresIn: number };
 };
@@ -72,22 +72,22 @@ const upload = (uploadUrl: string, body: Uint8Array, contentType = "image/jpeg")
 
 describe("requesting an upload", () => {
   it("requires authentication", async () => {
-    await seedWedding("w1");
+    await seedEvent("w1");
     expect((await requestUpload("w1", "image/jpeg", {})).status).toBe(401);
   });
 
-  it("404s for a wedding that does not exist", async () => {
+  it("404s for an event that does not exist", async () => {
     expect((await requestUpload("ghost")).status).toBe(404);
   });
 
   it("returns a key the server chose", async () => {
-    await seedWedding("w1");
+    await seedEvent("w1");
     const grant = await grantFor("w1");
-    expect(grant.key).toMatch(/^weddings\/w1\/[0-9a-f-]{36}\.jpg$/);
+    expect(grant.key).toMatch(/^events\/w1\/[0-9a-f-]{36}\.jpg$/);
   });
 
   it("rejects a content type outside the allowlist", async () => {
-    await seedWedding("w1");
+    await seedEvent("w1");
     for (const type of ["image/gif", "application/pdf", "text/html", "image/svg+xml"]) {
       const res = await requestUpload("w1", type);
       expect(res.status, type).toBe(400);
@@ -95,9 +95,9 @@ describe("requesting an upload", () => {
   });
 
   it("rejects a missing content type", async () => {
-    await seedWedding("w1");
+    await seedEvent("w1");
     const res = await app.request(
-      "/weddings/w1/images",
+      "/events/w1/images",
       { method: "POST", headers: { "content-type": "application/json", ...auth }, body: "{}" },
       env,
     );
@@ -106,8 +106,8 @@ describe("requesting an upload", () => {
 });
 
 describe("the rights gate governs curation, not just packaging", () => {
-  it("refuses an upload for a wedding with unverified rights", async () => {
-    await seedWedding("w1", "unverified", "granted");
+  it("refuses an upload for an event with unverified rights", async () => {
+    await seedEvent("w1", "unverified", "granted");
     const res = await requestUpload("w1");
     expect(res.status).toBe(403);
     const body = (await res.json()) as { code: string; details: Array<{ code: string }> };
@@ -115,25 +115,25 @@ describe("the rights gate governs curation, not just packaging", () => {
     expect(body.details.map((d) => d.code)).toContain("RIGHTS_UNVERIFIED");
   });
 
-  it("refuses an upload for a second-shooter wedding", async () => {
-    await seedWedding("w1", "second_shooter", "granted");
+  it("refuses an upload for a second-shooter event", async () => {
+    await seedEvent("w1", "second_shooter", "granted");
     expect((await requestUpload("w1")).status).toBe(403);
   });
 
   it("refuses an upload when consent was declined", async () => {
-    await seedWedding("w1", "own_contract", "declined");
+    await seedEvent("w1", "own_contract", "declined");
     expect((await requestUpload("w1")).status).toBe(403);
   });
 
   it("allows an upload once rights and consent are green", async () => {
-    await seedWedding("w1", "own_contract", "granted_limited");
+    await seedEvent("w1", "own_contract", "granted_limited");
     expect((await requestUpload("w1")).status).toBe(201);
   });
 });
 
 describe("uploading bytes", () => {
   it("stores the object", async () => {
-    await seedWedding("w1");
+    await seedEvent("w1");
     const grant = await grantFor("w1");
     const res = await upload(grant.uploadUrl, JPEG);
     expect(res.status).toBe(201);
@@ -142,13 +142,13 @@ describe("uploading bytes", () => {
   });
 
   it("needs no bearer token, because the capability is the credential", async () => {
-    await seedWedding("w1");
+    await seedEvent("w1");
     const grant = await grantFor("w1");
     expect((await upload(grant.uploadUrl, JPEG)).status).toBe(201);
   });
 
   it("refuses an upload with no token", async () => {
-    await seedWedding("w1");
+    await seedEvent("w1");
     const grant = await grantFor("w1");
     const res = await upload(grant.uploadUrl.split("?")[0] as string, JPEG);
     expect(res.status).toBe(401);
@@ -156,7 +156,7 @@ describe("uploading bytes", () => {
   });
 
   it("refuses a token minted for a different object", async () => {
-    await seedWedding("w1");
+    await seedEvent("w1");
     const first = await grantFor("w1");
     const second = await grantFor("w1");
     const swapped = `/images/${second.key}?${first.uploadUrl.split("?")[1]}`;
@@ -166,13 +166,13 @@ describe("uploading bytes", () => {
   });
 
   it("refuses an empty body", async () => {
-    await seedWedding("w1");
+    await seedEvent("w1");
     const grant = await grantFor("w1");
     expect((await upload(grant.uploadUrl, new Uint8Array())).status).toBe(400);
   });
 
   it("refuses a body over the size limit", async () => {
-    await seedWedding("w1");
+    await seedEvent("w1");
     const grant = await grantFor("w1");
     const huge = new Uint8Array(13 * 1024 * 1024);
     expect((await upload(grant.uploadUrl, huge)).status).toBe(400);
@@ -180,7 +180,7 @@ describe("uploading bytes", () => {
   });
 
   it("refuses a content type the grant did not cover", async () => {
-    await seedWedding("w1");
+    await seedEvent("w1");
     const grant = await grantFor("w1");
     expect((await upload(grant.uploadUrl, JPEG, "text/html")).status).toBe(400);
   });
@@ -198,7 +198,7 @@ describe("reading bytes back", () => {
   };
 
   it("serves the bytes with the stored content type", async () => {
-    await seedWedding("w1");
+    await seedEvent("w1");
     const grant = await grantFor("w1");
     await upload(grant.uploadUrl, JPEG);
 
@@ -211,14 +211,14 @@ describe("reading bytes back", () => {
   });
 
   it("refuses a read with no token", async () => {
-    await seedWedding("w1");
+    await seedEvent("w1");
     const grant = await grantFor("w1");
     await upload(grant.uploadUrl, JPEG);
     expect((await app.request(`/images/${grant.key}`, {}, env)).status).toBe(401);
   });
 
   it("refuses an upload token used to read", async () => {
-    await seedWedding("w1");
+    await seedEvent("w1");
     const grant = await grantFor("w1");
     await upload(grant.uploadUrl, JPEG);
     const res = await app.request(grant.uploadUrl, {}, env);
@@ -226,7 +226,7 @@ describe("reading bytes back", () => {
   });
 
   it("requires authentication to mint a read url", async () => {
-    await seedWedding("w1");
+    await seedEvent("w1");
     const grant = await grantFor("w1");
     await upload(grant.uploadUrl, JPEG);
     const res = await app.request(`/images/${grant.key}/read-url`, { method: "POST" }, env);
@@ -235,7 +235,7 @@ describe("reading bytes back", () => {
 
   it("404s a read url for an object that does not exist", async () => {
     const res = await app.request(
-      "/images/weddings/w1/nope.jpg/read-url",
+      "/images/events/w1/nope.jpg/read-url",
       { method: "POST", headers: auth },
       env,
     );
@@ -243,7 +243,7 @@ describe("reading bytes back", () => {
   });
 
   it("does not cache beyond the life of the token", async () => {
-    await seedWedding("w1");
+    await seedEvent("w1");
     const grant = await grantFor("w1");
     await upload(grant.uploadUrl, JPEG);
     const { url, expiresIn } = await readUrlFor(grant.key);

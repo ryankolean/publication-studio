@@ -75,7 +75,7 @@ const RIGHTS_REASONS: Partial<Record<RightsStatus, RightsGateReason>> = {
     code: "RIGHTS_BLOCKED_FLAG",
     field: "rights_status",
     remedy:
-      "This wedding is marked blocked. Resolve the underlying rights conflict before changing the status.",
+      "This event is marked blocked. Resolve the underlying rights conflict before changing the status.",
   },
 };
 
@@ -90,7 +90,7 @@ const CONSENT_REASONS: Partial<Record<ConsentStatus, RightsGateReason>> = {
     code: "CONSENT_DECLINED",
     field: "consent_status",
     remedy:
-      "The couple declined. This wedding cannot be submitted unless they change their answer in writing.",
+      "The couple declined. This event cannot be submitted unless they change their answer in writing.",
   },
 };
 

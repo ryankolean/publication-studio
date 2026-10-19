@@ -5,16 +5,16 @@ import { requireAuth } from "../middleware/auth.js";
 import { fail } from "../errors.js";
 import { evaluateRightsGate } from "../domain/rights-gate.js";
 import type { ConsentStatus, RightsGateResult, RightsStatus } from "../domain/rights-gate.js";
-import { validateWeddingIntake } from "../domain/wedding-intake.js";
-import type { PriorExposure, VendorCreditInput, WeddingIntake } from "../domain/wedding-intake.js";
-import { weddingSlug } from "../domain/slug.js";
+import { validateEventIntake } from "../domain/event-intake.js";
+import type { PriorExposure, VendorCreditInput, EventIntake } from "../domain/event-intake.js";
+import { eventSlug } from "../domain/slug.js";
 import type { D1Database } from "../env.js";
 
-interface WeddingRow {
+interface EventRow {
   id: string;
   slug: string;
   couple_names: string;
-  wedding_date: string;
+  event_date: string;
   venue_name: string | null;
   city: string | null;
   state: string | null;
@@ -36,11 +36,11 @@ interface WeddingRow {
   updated_at: string;
 }
 
-interface WeddingView {
+interface EventView {
   id: string;
   slug: string;
   coupleNames: string;
-  weddingDate: string;
+  eventDate: string;
   venueName: string | null;
   city: string | null;
   state: string | null;
@@ -80,12 +80,12 @@ function readJson<T>(raw: string, fallback: T): T {
   }
 }
 
-function toView(row: WeddingRow): WeddingView {
+function toView(row: EventRow): EventView {
   return {
     id: row.id,
     slug: row.slug,
     coupleNames: row.couple_names,
-    weddingDate: row.wedding_date,
+    eventDate: row.event_date,
     venueName: row.venue_name,
     city: row.city,
     state: row.state,
@@ -112,10 +112,10 @@ function toView(row: WeddingRow): WeddingView {
   };
 }
 
-/** slug is UNIQUE, so a second wedding for the same couple and year gets a suffix. */
+/** slug is UNIQUE, so a second event for the same couple and year gets a suffix. */
 async function uniqueSlug(db: D1Database, base: string): Promise<string> {
   const { results } = await db
-    .prepare("SELECT slug FROM weddings WHERE slug = ? OR slug LIKE ?")
+    .prepare("SELECT slug FROM events WHERE slug = ? OR slug LIKE ?")
     .bind(base, `${base}-%`)
     .all<{ slug: string }>();
 
@@ -128,16 +128,16 @@ async function uniqueSlug(db: D1Database, base: string): Promise<string> {
   }
 }
 
-function vendorStatements(db: D1Database, weddingId: string, credits: VendorCreditInput[]) {
+function vendorStatements(db: D1Database, eventId: string, credits: VendorCreditInput[]) {
   return credits.map((credit, index) =>
     db
       .prepare(
-        `INSERT INTO vendor_credits (id, wedding_id, role, business_name, website, instagram, sort_order)
+        `INSERT INTO vendor_credits (id, event_id, role, business_name, website, instagram, sort_order)
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
       )
       .bind(
         crypto.randomUUID(),
-        weddingId,
+        eventId,
         credit.role,
         credit.businessName,
         credit.website,
@@ -147,11 +147,11 @@ function vendorStatements(db: D1Database, weddingId: string, credits: VendorCred
   );
 }
 
-function weddingStatement(db: D1Database, id: string, slug: string, intake: WeddingIntake) {
+function eventStatement(db: D1Database, id: string, slug: string, intake: EventIntake) {
   return db
     .prepare(
-      `INSERT INTO weddings (
-         id, slug, couple_names, wedding_date, venue_name, city, state, country,
+      `INSERT INTO events (
+         id, slug, couple_names, event_date, venue_name, city, state, country,
          gallery_url, style_tags, unique_angle, rights_status, consent_status,
          consent_notes, name_display, couple_story, is_destination, hero_picks,
          video_url, target_outlet_notes, prior_exposure
@@ -161,7 +161,7 @@ function weddingStatement(db: D1Database, id: string, slug: string, intake: Wedd
       id,
       slug,
       intake.coupleNames,
-      intake.weddingDate,
+      intake.eventDate,
       intake.venueName,
       intake.city,
       intake.state,
@@ -182,11 +182,11 @@ function weddingStatement(db: D1Database, id: string, slug: string, intake: Wedd
     );
 }
 
-export const weddingRoutes = new Hono<AppContext>();
+export const eventRoutes = new Hono<AppContext>();
 
-weddingRoutes.use("*", requireAuth);
+eventRoutes.use("*", requireAuth);
 
-weddingRoutes.post("/", async (c) => {
+eventRoutes.post("/", async (c) => {
   let payload: unknown;
   try {
     payload = await c.req.json();
@@ -194,53 +194,53 @@ weddingRoutes.post("/", async (c) => {
     return fail(c, 400, "VALIDATION", "Expected a JSON body.");
   }
 
-  const parsed = validateWeddingIntake(payload);
+  const parsed = validateEventIntake(payload);
   if (!parsed.ok) {
     return fail(c, 400, "VALIDATION", "Some fields need attention.", parsed.errors);
   }
 
   const intake = parsed.value;
   const id = crypto.randomUUID();
-  const slug = await uniqueSlug(c.env.DB, weddingSlug(intake.coupleNames, intake.weddingDate));
+  const slug = await uniqueSlug(c.env.DB, eventSlug(intake.coupleNames, intake.eventDate));
 
-  // One transaction: a wedding without its vendor credits is a half-entered
+  // One transaction: an event without its vendor credits is a half-entered
   // form, and the design doc requires no partial writes.
   await c.env.DB.batch([
-    weddingStatement(c.env.DB, id, slug, intake),
+    eventStatement(c.env.DB, id, slug, intake),
     ...vendorStatements(c.env.DB, id, intake.vendorCredits),
     c.env.DB
       .prepare(
-        "INSERT INTO audit_log (id, user_id, entity, entity_id, action) VALUES (?, ?, 'wedding', ?, 'create')",
+        "INSERT INTO audit_log (id, user_id, entity, entity_id, action) VALUES (?, ?, 'event', ?, 'create')",
       )
       .bind(crypto.randomUUID(), c.get("user").id, id),
   ]);
 
-  const row = await c.env.DB.prepare("SELECT * FROM weddings WHERE id = ?")
+  const row = await c.env.DB.prepare("SELECT * FROM events WHERE id = ?")
     .bind(id)
-    .first<WeddingRow>();
+    .first<EventRow>();
 
-  if (row === null) return fail(c, 500, "INTERNAL", "The wedding could not be read back.");
+  if (row === null) return fail(c, 500, "INTERNAL", "The event could not be read back.");
 
   return c.json(toView(row), 201);
 });
 
-weddingRoutes.get("/", async (c) => {
+eventRoutes.get("/", async (c) => {
   const { results } = await c.env.DB.prepare(
-    "SELECT * FROM weddings ORDER BY wedding_date DESC, created_at DESC",
-  ).all<WeddingRow>();
+    "SELECT * FROM events ORDER BY event_date DESC, created_at DESC",
+  ).all<EventRow>();
 
-  return c.json({ weddings: results.map(toView) });
+  return c.json({ events: results.map(toView) });
 });
 
-weddingRoutes.get("/:id", async (c) => {
-  const row = await c.env.DB.prepare("SELECT * FROM weddings WHERE id = ?")
+eventRoutes.get("/:id", async (c) => {
+  const row = await c.env.DB.prepare("SELECT * FROM events WHERE id = ?")
     .bind(c.req.param("id"))
-    .first<WeddingRow>();
+    .first<EventRow>();
 
-  if (row === null) return fail(c, 404, "NOT_FOUND", "No such wedding.");
+  if (row === null) return fail(c, 404, "NOT_FOUND", "No such event.");
 
   const { results } = await c.env.DB.prepare(
-    "SELECT role, business_name, website, instagram FROM vendor_credits WHERE wedding_id = ? ORDER BY sort_order",
+    "SELECT role, business_name, website, instagram FROM vendor_credits WHERE event_id = ? ORDER BY sort_order",
   )
     .bind(row.id)
     .all<{

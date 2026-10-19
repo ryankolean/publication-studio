@@ -45,14 +45,14 @@ describe("requests", () => {
   it("attaches the access token when signed in", async () => {
     session.signIn({ accessToken: "access-1", refreshToken: "refresh-1", user: USER });
     fetchMock.mockResolvedValueOnce(json({ ok: true }));
-    await client().get("/weddings");
+    await client().get("/events");
     const init = fetchMock.mock.calls[0]?.[1] as RequestInit;
     expect((init.headers as Record<string, string>)["authorization"]).toBe("Bearer access-1");
   });
 
   it("posts json with the right content type", async () => {
     fetchMock.mockResolvedValueOnce(json({ id: "w1" }, 201));
-    await client().post("/weddings", { coupleNames: "A and B" });
+    await client().post("/events", { coupleNames: "A and B" });
     const init = fetchMock.mock.calls[0]?.[1] as RequestInit;
     expect(init.method).toBe("POST");
     expect((init.headers as Record<string, string>)["content-type"]).toBe("application/json");
@@ -66,7 +66,7 @@ describe("errors", () => {
       json({ code: "VALIDATION", message: "Some fields need attention.", details: [{ field: "coupleNames", message: "Required." }] }, 400),
     );
 
-    await expect(client().post("/weddings", {})).rejects.toMatchObject({
+    await expect(client().post("/events", {})).rejects.toMatchObject({
       code: "VALIDATION",
       status: 400,
       details: [{ field: "coupleNames", message: "Required." }],
@@ -75,14 +75,14 @@ describe("errors", () => {
 
   it("still throws an ApiError when the body is not json", async () => {
     fetchMock.mockResolvedValueOnce(new Response("gateway blew up", { status: 502 }));
-    const error = await client().get("/weddings").catch((e: unknown) => e);
+    const error = await client().get("/events").catch((e: unknown) => e);
     expect(error).toBeInstanceOf(ApiError);
     expect((error as ApiError).status).toBe(502);
   });
 
   it("reports a network failure as an ApiError rather than leaking the raw error", async () => {
     fetchMock.mockRejectedValueOnce(new TypeError("Failed to fetch"));
-    const error = await client().get("/weddings").catch((e: unknown) => e);
+    const error = await client().get("/events").catch((e: unknown) => e);
     expect(error).toBeInstanceOf(ApiError);
     expect((error as ApiError).code).toBe("NETWORK");
   });
@@ -95,14 +95,14 @@ describe("token refresh", () => {
     fetchMock
       .mockResolvedValueOnce(json({ code: "UNAUTHORIZED", message: "no" }, 401))
       .mockResolvedValueOnce(json({ access_token: "fresh", expires_in: 900 }))
-      .mockResolvedValueOnce(json({ weddings: [] }));
+      .mockResolvedValueOnce(json({ events: [] }));
 
-    await expect(client().get("/weddings")).resolves.toEqual({ weddings: [] });
+    await expect(client().get("/events")).resolves.toEqual({ events: [] });
 
     expect(fetchMock.mock.calls.map((call) => call[0])).toEqual([
-      "https://api.example.com/weddings",
+      "https://api.example.com/events",
       "https://api.example.com/auth/refresh",
-      "https://api.example.com/weddings",
+      "https://api.example.com/events",
     ]);
     expect(session.getAccessToken()).toBe("fresh");
   });
@@ -112,9 +112,9 @@ describe("token refresh", () => {
     fetchMock
       .mockResolvedValueOnce(json({ code: "UNAUTHORIZED" }, 401))
       .mockResolvedValueOnce(json({ access_token: "fresh" }))
-      .mockResolvedValueOnce(json({ weddings: [] }));
+      .mockResolvedValueOnce(json({ events: [] }));
 
-    await client().get("/weddings");
+    await client().get("/events");
     const replay = fetchMock.mock.calls[2]?.[1] as RequestInit;
     expect((replay.headers as Record<string, string>)["authorization"]).toBe("Bearer fresh");
   });
@@ -125,7 +125,7 @@ describe("token refresh", () => {
       .mockResolvedValueOnce(json({ code: "UNAUTHORIZED" }, 401))
       .mockResolvedValueOnce(json({ code: "UNAUTHORIZED" }, 401));
 
-    await expect(client().get("/weddings")).rejects.toBeInstanceOf(ApiError);
+    await expect(client().get("/events")).rejects.toBeInstanceOf(ApiError);
     expect(session.getUser()).toBeNull();
     expect(session.getRefreshToken()).toBeNull();
   });
@@ -137,13 +137,13 @@ describe("token refresh", () => {
       .mockResolvedValueOnce(json({ access_token: "fresh" }))
       .mockResolvedValueOnce(json({ code: "UNAUTHORIZED" }, 401));
 
-    await expect(client().get("/weddings")).rejects.toBeInstanceOf(ApiError);
+    await expect(client().get("/events")).rejects.toBeInstanceOf(ApiError);
     expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 
   it("does not attempt a refresh when there is no refresh token", async () => {
     fetchMock.mockResolvedValueOnce(json({ code: "UNAUTHORIZED" }, 401));
-    await expect(client().get("/weddings")).rejects.toBeInstanceOf(ApiError);
+    await expect(client().get("/events")).rejects.toBeInstanceOf(ApiError);
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 

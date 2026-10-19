@@ -1,7 +1,7 @@
 /**
- * Wedding intake validation -- design doc section 7.1, the ten-section form.
+ * Event intake validation -- design doc section 7.1, the ten-section form.
  *
- * The SPA is untrusted, so this is where an intake payload becomes a wedding.
+ * The SPA is untrusted, so this is where an intake payload becomes an event.
  * Two rules shape the whole module:
  *
  *  1. Every problem is reported at once. Intake is a long form; returning one
@@ -27,9 +27,9 @@ export interface PriorExposure {
   priorPubs: string[];
 }
 
-export interface WeddingIntake {
+export interface EventIntake {
   coupleNames: string;
-  weddingDate: string;
+  eventDate: string;
   venueName: string | null;
   city: string | null;
   state: string | null;
@@ -56,7 +56,7 @@ export interface FieldError {
 }
 
 export type IntakeResult =
-  | { ok: true; value: WeddingIntake }
+  | { ok: true; value: EventIntake }
   | { ok: false; errors: FieldError[] };
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -247,23 +247,23 @@ function readVendorCredits(
   return credits;
 }
 
-export function validateWeddingIntake(input: unknown): IntakeResult {
+export function validateEventIntake(input: unknown): IntakeResult {
   if (!isObject(input)) {
-    return { ok: false, errors: [{ field: "", message: "Expected a wedding object." }] };
+    return { ok: false, errors: [{ field: "", message: "Expected an event object." }] };
   }
 
   const errors = new Collector();
 
   const coupleNames = errors.requiredText(input, "coupleNames");
 
-  const weddingDate = errors.requiredText(input, "weddingDate");
-  if (weddingDate.length > 0 && !isRealDate(weddingDate)) {
-    errors.add("weddingDate", "Enter a real date as yyyy-mm-dd.");
+  const eventDate = errors.requiredText(input, "eventDate");
+  if (eventDate.length > 0 && !isRealDate(eventDate)) {
+    errors.add("eventDate", "Enter a real date as yyyy-mm-dd.");
   }
 
-  const value: WeddingIntake = {
+  const value: EventIntake = {
     coupleNames,
-    weddingDate,
+    eventDate,
     venueName: errors.optionalText(input, "venueName"),
     city: errors.optionalText(input, "city"),
     state: errors.optionalText(input, "state"),

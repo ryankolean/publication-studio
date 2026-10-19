@@ -184,8 +184,8 @@ const preflight = (origin) =>
   check("health responds 200", health.status === 200);
   check("health reports ok", (await health.json()).status === "ok");
 
-  const weddings = await fetch(`${BASE}/weddings`);
-  check("weddings rejects anonymous", weddings.status === 401, `got ${weddings.status}`);
+  const events = await fetch(`${BASE}/events`);
+  check("events rejects anonymous", events.status === 401, `got ${events.status}`);
 
   const publications = await fetch(`${BASE}/publications`);
   check("publications rejects anonymous", publications.status === 401);

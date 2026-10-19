@@ -79,8 +79,8 @@ Every spec row carries `last_verified` and gets re-verified before first use and
 ```sql
 users(id, email, name, role, pw_hash, created_at)
 
-weddings(
-  id, slug, couple_names, wedding_date, venue_name, city, state, country,
+events(
+  id, slug, couple_names, event_date, venue_name, city, state, country,
   gallery_url,                -- source of truth for originals (Pixieset/Pic-Time/etc.)
   style_tags,                 -- json: ["editorial","destination","documentary",...]
   unique_angle,               -- text: the story hook (attacks the "lack of unique" rejection)
@@ -92,7 +92,7 @@ weddings(
   created_at, updated_at
 )
 
-vendor_credits(id, wedding_id, role, business_name, website, instagram)
+vendor_credits(id, event_id, role, business_name, website, instagram)
 
 publications(
   id, name, tier,             -- primary | secondary | dream
@@ -108,7 +108,7 @@ publications(
 )
 
 submissions(
-  id, wedding_id, publication_id,
+  id, event_id, publication_id,
   status,                     -- see lifecycle state machine
   package_id, queued_at, sent_at, sent_by,
   response_due_at,            -- sent_at + typical_response_days
@@ -117,7 +117,7 @@ submissions(
 )
 
 packages(
-  id, wedding_id, publication_id,
+  id, event_id, publication_id,
   image_keys,                 -- ordered R2 keys of curated selection
   description_md,             -- couple story / event description draft
   credits_block_md,           -- formatted vendor credit list
@@ -186,10 +186,10 @@ Items 1–7 are required for the rights/exclusivity gates; 8–10 feed matching 
 
 ```
 POST /auth/login | /auth/refresh
-GET/POST/PATCH /weddings, /weddings/:id
-POST /weddings/:id/images          → signed R2 upload URLs
+GET/POST/PATCH /events, /events/:id
+POST /events/:id/images            → signed R2 upload URLs
 GET/POST/PATCH /publications
-POST /packages (wedding_id, publication_id) → validates gates, builds checklist
+POST /packages (event_id, publication_id) → validates gates, builds checklist
 PATCH /packages/:id                → curation edits, checklist state
 POST /submissions                  → only from ready packages; runs exclusivity check server-side
 PATCH /submissions/:id             → mark sent / outcome / withdraw
@@ -273,6 +273,7 @@ All mutations audit-logged. All gate logic server-side; the SPA is untrusted.
 **Phase 4 resolutions (continuity):** "prep + queue" enforced consistently — removed draft's Phase-3 email automation implication; second-shooter weddings routed exclusively to credit-recovery, never submission flow.
 **Phase 5 autoheals:** rights gate designed as server-side state machine (was a metadata field); exclusivity ledger with hard/soft locks + own-blog-counts nuance; expiry → withdrawal workflow (TBL failure mode); spec versioning with `last_verified` + quarterly re-verification; sequencing guidance for thin inventory.
 **Phase 6 adversarial (survived):** "Why not just Two Bright Lights?" — answered in §11 with TBL kept as optional channel; "ChatGPT commoditizes strategy" — moat placed in operational layer (§7), strategy is the front-end; "5 weddings can't sustain a product" — credit recovery + styled shoots + Phase 4 gate on proof.
+**2026-10-19:** table and routes renamed from wedding to event per SUMMIT-312.
 **Flagged for authors:** §13 items 1–5.
 
 **Confidence: HIGH** for Phase 0–2 build; **MEDIUM** for Phase 3–4 (depends on partner outcomes and business terms).

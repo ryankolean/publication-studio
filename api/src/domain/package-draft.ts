@@ -17,7 +17,7 @@ export interface CreditRow {
 
 export interface DescriptionSource {
   coupleNames: string;
-  weddingDate: string;
+  eventDate: string;
   venueName: string | null;
   city: string | null;
   state: string | null;
@@ -68,8 +68,8 @@ export function buildDescriptionDraft(source: DescriptionSource): string {
   const place = placePhrase(source);
   const opening =
     place.length > 0
-      ? `${source.coupleNames} were married on ${source.weddingDate} ${place}.`
-      : `${source.coupleNames} were married on ${source.weddingDate}.`;
+      ? `${source.coupleNames} were married on ${source.eventDate} ${place}.`
+      : `${source.coupleNames} were married on ${source.eventDate}.`;
 
   const paragraphs = [opening, text(source.coupleStory), text(source.uniqueAngle)];
 

@@ -8,7 +8,7 @@ import {
 } from "../src/domain/image-token.js";
 
 const SECRET = "image-token-secret";
-const KEY = "weddings/w1/abc.jpg";
+const KEY = "events/w1/abc.jpg";
 const START = new Date("2026-08-22T12:00:00Z");
 
 beforeEach(() => {
@@ -58,14 +58,14 @@ describe("a token is bound to one object", () => {
   it("refuses a different key", async () => {
     const token = await mintImageToken(SECRET, { key: KEY, purpose: "read" });
     await expect(
-      verifyImageToken(SECRET, token, { key: "weddings/w1/other.jpg", purpose: "read" }),
+      verifyImageToken(SECRET, token, { key: "events/w1/other.jpg", purpose: "read" }),
     ).resolves.toEqual({ ok: false, code: "TOKEN_INVALID" });
   });
 
-  it("refuses another wedding's object", async () => {
+  it("refuses another event's object", async () => {
     const token = await mintImageToken(SECRET, { key: KEY, purpose: "read" });
     await expect(
-      verifyImageToken(SECRET, token, { key: "weddings/w2/abc.jpg", purpose: "read" }),
+      verifyImageToken(SECRET, token, { key: "events/w2/abc.jpg", purpose: "read" }),
     ).resolves.toEqual({ ok: false, code: "TOKEN_INVALID" });
   });
 });
@@ -140,8 +140,8 @@ describe("forgery", () => {
 
 describe("tokens differ", () => {
   it("gives different keys different tokens", async () => {
-    const a = await mintImageToken(SECRET, { key: "weddings/w1/a.jpg", purpose: "read" });
-    const b = await mintImageToken(SECRET, { key: "weddings/w1/b.jpg", purpose: "read" });
+    const a = await mintImageToken(SECRET, { key: "events/w1/a.jpg", purpose: "read" });
+    const b = await mintImageToken(SECRET, { key: "events/w1/b.jpg", purpose: "read" });
     expect(a).not.toBe(b);
   });
 });
