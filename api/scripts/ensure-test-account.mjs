@@ -4,6 +4,7 @@
  *   node scripts/ensure-test-account.mjs --remote
  *   node scripts/ensure-test-account.mjs --local --api http://127.0.0.1:8787
  *   node scripts/ensure-test-account.mjs --remote --reset
+ *   node scripts/ensure-test-account.mjs --local --item <1password item id>
  *
  * Creates the 1Password login item if it does not exist, generating the
  * password there, then makes the account in D1 match it: seeds the user if
@@ -37,6 +38,7 @@ function parseArgs(argv) {
     else if (arg === "--email") args.email = argv[++i];
     else if (arg === "--name") args.name = argv[++i];
     else if (arg === "--role") args.role = argv[++i];
+    else if (arg === "--item") args.item = argv[++i];
     else {
       console.error(`Unknown argument: ${arg}`);
       process.exit(1);
@@ -69,31 +71,49 @@ const sql = (statement) => {
 const quote = (value) => `'${String(value).replace(/'/g, "''")}'`;
 
 // 1. The password lives in 1Password. Create the item on first run.
-let itemExists = true;
-try {
-  op(["item", "get", ITEM, "--vault", VAULT, "--format", "json"]);
-} catch {
-  itemExists = false;
-}
-
-if (!itemExists) {
-  op([
-    "item", "create",
-    "--category", "login",
-    "--title", ITEM,
-    "--vault", VAULT,
-    "--generate-password=letters,digits,symbols,32",
-    `username=${args.email}`,
-    `website=${APP_URL}`,
-  ]);
-  console.log(`Created the 1Password item "${ITEM}" in ${VAULT} with a generated password.`);
-} else {
-  console.log(`Using the existing 1Password item "${ITEM}" in ${VAULT}.`);
+//
+// The item is resolved by listing the vault, not by a get that is caught.
+// A transient op failure (locked app, slow prompt) must abort, not read as
+// "no item" and create a second one with a password nobody has. Two items
+// with this title is itself an error: op cannot pick between them, so stop
+// and say which ids exist. --item <id> bypasses the title lookup.
+let itemId = args.item ?? null;
+if (itemId === null) {
+  const matches = JSON.parse(op(["item", "list", "--vault", VAULT, "--format", "json"])).filter(
+    (item) => item.title === ITEM,
+  );
+  if (matches.length > 1) {
+    console.error(
+      `${matches.length} items titled "${ITEM}" exist in ${VAULT}: ${matches
+        .map((item) => item.id)
+        .join(", ")}. Archive the extras, or pass --item <id>.`,
+    );
+    process.exit(1);
+  }
+  if (matches.length === 1) {
+    itemId = matches[0].id;
+    console.log(`Using the existing 1Password item "${ITEM}" in ${VAULT}.`);
+  } else {
+    const created = JSON.parse(
+      op([
+        "item", "create",
+        "--category", "login",
+        "--title", ITEM,
+        "--vault", VAULT,
+        "--generate-password=letters,digits,symbols,32",
+        "--format", "json",
+        `username=${args.email}`,
+        `website=${APP_URL}`,
+      ]),
+    );
+    itemId = created.id;
+    console.log(`Created the 1Password item "${ITEM}" in ${VAULT} with a generated password.`);
+  }
 }
 
 // op read secret references reject characters that are legal in item titles,
-// so the field is fetched through op item get instead.
-const password = op(["item", "get", ITEM, "--vault", VAULT, "--fields", "password", "--reveal"]);
+// so the field is fetched through op item get by id instead.
+const password = op(["item", "get", itemId, "--vault", VAULT, "--fields", "password", "--reveal"]);
 if (password.length < 12) {
   console.error("The stored password is shorter than the server will accept.");
   process.exit(1);
