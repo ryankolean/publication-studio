@@ -233,6 +233,20 @@ export function EventDetailPage() {
           </div>
           <RightsBadge gate={event.gate} />
         </div>
+        <div className="mt-3 flex flex-wrap gap-3">
+          <Link
+            to={`/events/${event.id}/submit`}
+            className="rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white"
+          >
+            Submit this event
+          </Link>
+          <Link
+            to={`/events/${event.id}/edit`}
+            className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-700 hover:border-slate-900"
+          >
+            Edit event
+          </Link>
+        </div>
         {!event.gate.allowed && <ReasonList reasons={event.gate.reasons} />}
         <div className="mt-3 space-y-1 text-sm break-words text-slate-600">
           <p>{`Consent: ${CONSENT_LABEL[event.consentStatus] ?? event.consentStatus}`}</p>

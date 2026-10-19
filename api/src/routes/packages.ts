@@ -406,10 +406,21 @@ export async function packageVerdict(
   };
 }
 
+export type PackageView = Awaited<ReturnType<typeof viewFor>>;
+
+/** The editor's view of one package, checklist verdict included; null when it is gone. */
+export async function loadPackageView(
+  c: { env: AppContext["Bindings"] },
+  packageId: string,
+): Promise<PackageView | null> {
+  const found = await loadPair(c, packageId);
+  return found === null ? null : viewFor(c, found.pkg, found.event);
+}
+
 packageRoutes.get("/:id", async (c) => {
-  const found = await loadPair(c, c.req.param("id"));
-  if (found === null) return fail(c, 404, "NOT_FOUND", "No such package.");
-  return c.json(await viewFor(c, found.pkg, found.event));
+  const view = await loadPackageView(c, c.req.param("id"));
+  if (view === null) return fail(c, 404, "NOT_FOUND", "No such package.");
+  return c.json(view);
 });
 
 packageRoutes.patch("/:id", async (c) => {

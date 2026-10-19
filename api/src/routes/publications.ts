@@ -6,6 +6,7 @@ import { fail } from "../errors.js";
 import { parsePublicationSpec } from "../domain/publication-spec.js";
 import type { PublicationSpec } from "../domain/publication-spec.js";
 import { TAG_CATEGORY_ORDER } from "../domain/tags.js";
+import type { D1Database } from "../env.js";
 import type {
   EarnedOrPaid,
   ExclusivityPolicy,
@@ -31,7 +32,7 @@ interface PublicationRow {
   active: number;
 }
 
-interface PublicationView {
+export interface PublicationView {
   id: string;
   name: string;
   tier: PublicationTier;
@@ -79,23 +80,24 @@ function toView(row: PublicationRow, tags: string[]): PublicationView {
 // primary outlet (design doc section 7.3), so primary sorts first.
 const TIER_ORDER = `CASE tier WHEN 'primary' THEN 0 WHEN 'secondary' THEN 1 ELSE 2 END`;
 
-export const publicationRoutes = new Hono<AppContext>();
-
-publicationRoutes.use("*", requireAuth);
-
-publicationRoutes.get("/", async (c) => {
-  const includeInactive = c.req.query("include_inactive") !== undefined;
+/** Every publication in priority order, active ones only unless asked. */
+export async function listPublications(
+  db: D1Database,
+  includeInactive: boolean,
+): Promise<PublicationView[]> {
   const where = includeInactive ? "" : "WHERE active = 1";
 
-  const { results } = await c.env.DB.prepare(
-    `SELECT * FROM publications ${where} ORDER BY ${TIER_ORDER}, name`,
-  ).all<PublicationRow>();
+  const { results } = await db
+    .prepare(`SELECT * FROM publications ${where} ORDER BY ${TIER_ORDER}, name`)
+    .all<PublicationRow>();
 
-  const tagRows = await c.env.DB.prepare(
-    `SELECT publication_id, tag_id FROM publication_tags
-     JOIN tags ON tags.id = publication_tags.tag_id
-     ORDER BY ${TAG_CATEGORY_ORDER}, tags.sort_order`,
-  ).all<{ publication_id: string; tag_id: string }>();
+  const tagRows = await db
+    .prepare(
+      `SELECT publication_id, tag_id FROM publication_tags
+       JOIN tags ON tags.id = publication_tags.tag_id
+       ORDER BY ${TAG_CATEGORY_ORDER}, tags.sort_order`,
+    )
+    .all<{ publication_id: string; tag_id: string }>();
   const tagsByPublication = new Map<string, string[]>();
   for (const row of tagRows.results) {
     const list = tagsByPublication.get(row.publication_id) ?? [];
@@ -103,28 +105,45 @@ publicationRoutes.get("/", async (c) => {
     tagsByPublication.set(row.publication_id, list);
   }
 
-  return c.json({
-    publications: results.map((row) => toView(row, tagsByPublication.get(row.id) ?? [])),
-  });
-});
+  return results.map((row) => toView(row, tagsByPublication.get(row.id) ?? []));
+}
 
-publicationRoutes.get("/:id", async (c) => {
-  // Addressed directly, a deactivated outlet is still readable; deactivation
-  // removes it from the list, it does not delete the record.
-  const row = await c.env.DB.prepare("SELECT * FROM publications WHERE id = ?")
-    .bind(c.req.param("id"))
+/**
+ * One publication, active or not: addressed directly, a deactivated outlet is
+ * still readable; deactivation removes it from the list, it does not delete
+ * the record.
+ */
+export async function loadPublication(db: D1Database, id: string): Promise<PublicationView | null> {
+  const row = await db
+    .prepare("SELECT * FROM publications WHERE id = ?")
+    .bind(id)
     .first<PublicationRow>();
+  if (row === null) return null;
 
-  if (row === null) return fail(c, 404, "NOT_FOUND", "No such publication.");
-
-  const tagRows = await c.env.DB.prepare(
-    `SELECT tag_id FROM publication_tags
-     JOIN tags ON tags.id = publication_tags.tag_id
-     WHERE publication_id = ?
-     ORDER BY ${TAG_CATEGORY_ORDER}, tags.sort_order`,
-  )
+  const tagRows = await db
+    .prepare(
+      `SELECT tag_id FROM publication_tags
+       JOIN tags ON tags.id = publication_tags.tag_id
+       WHERE publication_id = ?
+       ORDER BY ${TAG_CATEGORY_ORDER}, tags.sort_order`,
+    )
     .bind(row.id)
     .all<{ tag_id: string }>();
 
-  return c.json(toView(row, tagRows.results.map((tag) => tag.tag_id)));
+  return toView(row, tagRows.results.map((tag) => tag.tag_id));
+}
+
+export const publicationRoutes = new Hono<AppContext>();
+
+publicationRoutes.use("*", requireAuth);
+
+publicationRoutes.get("/", async (c) => {
+  const includeInactive = c.req.query("include_inactive") !== undefined;
+  return c.json({ publications: await listPublications(c.env.DB, includeInactive) });
+});
+
+publicationRoutes.get("/:id", async (c) => {
+  const publication = await loadPublication(c.env.DB, c.req.param("id"));
+  if (publication === null) return fail(c, 404, "NOT_FOUND", "No such publication.");
+  return c.json(publication);
 });

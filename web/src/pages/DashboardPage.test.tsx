@@ -95,6 +95,19 @@ describe("DashboardPage", () => {
     );
   });
 
+  it("links each event to its submission walkthrough", async () => {
+    serve({ events: [event(), event({ id: "w2", coupleNames: "Ada and Bo" })] });
+    renderPage();
+    expect(await screen.findByRole("link", { name: "Submit Sarah and James" })).toHaveAttribute(
+      "href",
+      "/events/w1/submit",
+    );
+    expect(screen.getByRole("link", { name: "Submit Ada and Bo" })).toHaveAttribute(
+      "href",
+      "/events/w2/submit",
+    );
+  });
+
   it("shows a ready badge for an event that clears the gate", async () => {
     serve({ events: [event()] });
     renderPage();

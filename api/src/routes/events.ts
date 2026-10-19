@@ -8,8 +8,12 @@ import type { ConsentStatus, RightsGateResult, RightsStatus } from "../domain/ri
 import { validateEventIntake } from "../domain/event-intake.js";
 import type { PriorExposure, VendorCreditInput, EventIntake } from "../domain/event-intake.js";
 import { eventSlug } from "../domain/slug.js";
+import { buildWalkthrough, outletFit } from "../domain/walkthrough.js";
+import type { WalkthroughPackage } from "../domain/walkthrough.js";
 import type { D1Database } from "../env.js";
-import { listEventPackages } from "./packages.js";
+import { listEventPackages, loadPackageView } from "./packages.js";
+import { listPublications, loadPublication } from "./publications.js";
+import { loadView as loadSubmissionView } from "./submissions.js";
 
 interface EventRow {
   id: string;
@@ -233,16 +237,12 @@ eventRoutes.get("/", async (c) => {
   return c.json({ events: results.map(toView) });
 });
 
-eventRoutes.get("/:id", async (c) => {
-  const row = await c.env.DB.prepare("SELECT * FROM events WHERE id = ?")
-    .bind(c.req.param("id"))
-    .first<EventRow>();
-
-  if (row === null) return fail(c, 404, "NOT_FOUND", "No such event.");
-
-  const { results } = await c.env.DB.prepare(
-    "SELECT role, business_name, website, instagram FROM vendor_credits WHERE event_id = ? ORDER BY sort_order",
-  )
+/** The single-event view: the event plus its vendor credits, in their order. */
+async function detailView(db: D1Database, row: EventRow) {
+  const { results } = await db
+    .prepare(
+      "SELECT role, business_name, website, instagram FROM vendor_credits WHERE event_id = ? ORDER BY sort_order",
+    )
     .bind(row.id)
     .all<{
       role: string;
@@ -251,7 +251,7 @@ eventRoutes.get("/:id", async (c) => {
       instagram: string | null;
     }>();
 
-  return c.json({
+  return {
     ...toView(row),
     vendorCredits: results.map((credit) => ({
       role: credit.role,
@@ -259,6 +259,230 @@ eventRoutes.get("/:id", async (c) => {
       website: credit.website,
       instagram: credit.instagram,
     })),
+  };
+}
+
+eventRoutes.get("/:id", async (c) => {
+  const row = await c.env.DB.prepare("SELECT * FROM events WHERE id = ?")
+    .bind(c.req.param("id"))
+    .first<EventRow>();
+
+  if (row === null) return fail(c, 404, "NOT_FOUND", "No such event.");
+
+  return c.json(await detailView(c.env.DB, row));
+});
+
+/** ISO-8601 UTC to the second: the same shape the schema's defaults write. */
+function isoSeconds(ms: number): string {
+  return new Date(ms).toISOString().replace(/\.\d{3}Z$/, "Z");
+}
+
+/**
+ * The edit is the intake form again, so it is validated by the same rules and
+ * replaces every field. Two things it does not touch:
+ *
+ * DECISION: the gallery link is replaced only by a new one. The SPA is never
+ * given the stored link, so it cannot send it back; a null or absent link
+ * therefore means "unchanged", never "remove". COALESCE keeps the decision in
+ * SQL, so the stored credential is never read into the Worker for an edit.
+ *
+ * DECISION: the slug stays as minted. It is an identifier, and renaming the
+ * couple should not move one.
+ */
+function updateStatement(db: D1Database, id: string, intake: EventIntake, now: string) {
+  return db
+    .prepare(
+      `UPDATE events SET
+         couple_names = ?, event_date = ?, venue_name = ?, city = ?, state = ?, country = ?,
+         gallery_url = COALESCE(?, gallery_url), style_tags = ?, unique_angle = ?,
+         rights_status = ?, consent_status = ?, consent_notes = ?, name_display = ?,
+         couple_story = ?, is_destination = ?, hero_picks = ?, video_url = ?,
+         target_outlet_notes = ?, prior_exposure = ?, updated_at = ?
+       WHERE id = ?`,
+    )
+    .bind(
+      intake.coupleNames,
+      intake.eventDate,
+      intake.venueName,
+      intake.city,
+      intake.state,
+      intake.country,
+      intake.galleryUrl,
+      JSON.stringify(intake.styleTags),
+      intake.uniqueAngle,
+      intake.rightsStatus,
+      intake.consentStatus,
+      intake.consentNotes,
+      intake.nameDisplay,
+      intake.coupleStory,
+      intake.isDestination ? 1 : 0,
+      intake.heroPicks,
+      intake.videoUrl,
+      intake.targetOutletNotes,
+      JSON.stringify(intake.priorExposure),
+      now,
+      id,
+    );
+}
+
+eventRoutes.patch("/:id", async (c) => {
+  let payload: unknown;
+  try {
+    payload = await c.req.json();
+  } catch {
+    return fail(c, 400, "VALIDATION", "Expected a JSON body.");
+  }
+
+  const existing = await c.env.DB.prepare("SELECT id FROM events WHERE id = ?")
+    .bind(c.req.param("id"))
+    .first<{ id: string }>();
+  if (existing === null) return fail(c, 404, "NOT_FOUND", "No such event.");
+
+  const parsed = validateEventIntake(payload);
+  if (!parsed.ok) {
+    return fail(c, 400, "VALIDATION", "Some fields need attention.", parsed.errors);
+  }
+
+  const intake = parsed.value;
+  const db = c.env.DB;
+
+  // One transaction, as on create: the vendor list is replaced whole, and an
+  // event left with half its old credits is a partial write.
+  await db.batch([
+    updateStatement(db, existing.id, intake, isoSeconds(Date.now())),
+    db.prepare("DELETE FROM vendor_credits WHERE event_id = ?").bind(existing.id),
+    ...vendorStatements(db, existing.id, intake.vendorCredits),
+    db
+      .prepare(
+        "INSERT INTO audit_log (id, user_id, entity, entity_id, action) VALUES (?, ?, 'event', ?, 'update')",
+      )
+      .bind(crypto.randomUUID(), c.get("user").id, existing.id),
+  ]);
+
+  const row = await db.prepare("SELECT * FROM events WHERE id = ?")
+    .bind(existing.id)
+    .first<EventRow>();
+  if (row === null) return fail(c, 500, "INTERNAL", "The event could not be read back.");
+
+  return c.json(await detailView(db, row));
+});
+
+/**
+ * The submission walkthrough for one event, optionally for one of its
+ * packages. Everything it reports is loaded through the same loaders the
+ * event, package and queue pages use, then handed to the pure walkthrough
+ * module, so a step can never call done what the page behind it would not.
+ */
+eventRoutes.get("/:id/walkthrough", async (c) => {
+  const db = c.env.DB;
+  const row = await db.prepare("SELECT * FROM events WHERE id = ?")
+    .bind(c.req.param("id"))
+    .first<EventRow>();
+  if (row === null) return fail(c, 404, "NOT_FOUND", "No such event.");
+  const event = toView(row);
+
+  const [credits, pool, outlets, packages] = await Promise.all([
+    db.prepare("SELECT COUNT(*) AS n FROM vendor_credits WHERE event_id = ?")
+      .bind(event.id)
+      .first<{ n: number }>(),
+    db.prepare("SELECT COUNT(*) AS n FROM event_images WHERE event_id = ?")
+      .bind(event.id)
+      .first<{ n: number }>(),
+    listPublications(db, false),
+    listEventPackages(db, event.id),
+  ]);
+
+  let selected: WalkthroughPackage | null = null;
+  let packageBody: Record<string, unknown> | null = null;
+
+  const packageId = c.req.query("package");
+  if (packageId !== undefined) {
+    // A package from another event is reported exactly like a missing one.
+    const view = await loadPackageView(c, packageId);
+    const outlet = view === null ? null : await loadPublication(db, view.publicationId);
+    if (view === null || view.eventId !== event.id || outlet === null) {
+      return fail(c, 404, "NOT_FOUND", "No such package.");
+    }
+
+    const submission =
+      view.submission === null ? null : await loadSubmissionView(db, view.submission.id, Date.now());
+
+    selected = {
+      id: view.id,
+      outlet,
+      imageCount: view.imageKeys.length,
+      complete: view.complete,
+      missingLabels: view.missing.map(
+        (missing) => view.checklist.find((item) => item.id === missing)?.label ?? missing,
+      ),
+      submission:
+        submission === null
+          ? null
+          : {
+              id: submission.id,
+              status: submission.status,
+              due:
+                submission.responseDueAt === null || submission.daysRemaining === null
+                  ? null
+                  : { at: submission.responseDueAt, daysRemaining: submission.daysRemaining },
+              publishedUrl: submission.publishedUrl,
+            },
+    };
+
+    packageBody = {
+      id: view.id,
+      publicationId: view.publicationId,
+      publicationName: outlet.name,
+      submissionUrl: outlet.submissionUrl,
+      descriptionMd: view.descriptionMd,
+      creditsBlockMd: view.creditsBlockMd,
+      imageCount: view.imageKeys.length,
+      complete: view.complete,
+      submission:
+        submission === null
+          ? null
+          : {
+              id: submission.id,
+              status: submission.status,
+              responseDueAt: submission.responseDueAt,
+              daysRemaining: submission.daysRemaining,
+              publishedUrl: submission.publishedUrl,
+            },
+    };
+  }
+
+  const eventPackages = packages ?? [];
+  // Mirrors the send route's rule: one live submission per event at a time.
+  const liveElsewhere = eventPackages
+    .filter((pkg) => pkg.id !== selected?.id && pkg.submission?.status === "sent")
+    .map((pkg) => pkg.publicationName ?? pkg.publicationId);
+
+  const steps = buildWalkthrough({
+    event,
+    vendorCreditCount: credits?.n ?? 0,
+    poolCount: pool?.n ?? 0,
+    outlets,
+    selected,
+    liveElsewhere,
+  });
+
+  return c.json({
+    event: { id: event.id, coupleNames: event.coupleNames },
+    packages: eventPackages,
+    package: packageBody,
+    // DECISION: the outlet chooser needs each outlet's warnings as data, not
+    // only as the outlet step's prose, so they travel alongside the steps.
+    outlets: outlets.map((outlet) => ({
+      id: outlet.id,
+      name: outlet.name,
+      tier: outlet.tier,
+      method: outlet.method,
+      imgMin: outlet.spec.imgMin,
+      imgMax: outlet.spec.imgMax,
+      typicalResponseDays: outlet.typicalResponseDays,
+      warnings: outletFit(outlet, event).warnings,
+    })),
+    steps,
   });
 });
 

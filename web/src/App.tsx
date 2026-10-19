@@ -11,6 +11,7 @@ import { PublicationsPage } from "./pages/PublicationsPage.js";
 import { EventDetailPage } from "./pages/EventDetailPage.js";
 import { PackageEditorPage } from "./pages/PackageEditorPage.js";
 import { QueuePage } from "./pages/QueuePage.js";
+import { SubmitWalkthroughPage } from "./pages/SubmitWalkthroughPage.js";
 
 /**
  * DECISION: HashRouter, not BrowserRouter. GitHub Pages serves static files
@@ -77,6 +78,8 @@ function Routed() {
         <Route path="/" element={<RequireSession><DashboardPage /></RequireSession>} />
         <Route path="/events/new" element={<RequireSession><IntakePage /></RequireSession>} />
         <Route path="/events/:id" element={<RequireSession><EventDetailPage /></RequireSession>} />
+        <Route path="/events/:id/edit" element={<RequireSession><IntakePage /></RequireSession>} />
+        <Route path="/events/:id/submit" element={<RequireSession><SubmitWalkthroughPage /></RequireSession>} />
         <Route path="/packages/:id" element={<RequireSession><PackageEditorPage /></RequireSession>} />
         <Route path="/queue" element={<RequireSession><QueuePage /></RequireSession>} />
         <Route path="/publications" element={<RequireSession><PublicationsPage /></RequireSession>} />

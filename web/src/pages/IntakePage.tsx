@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { ApiError } from "../api/client.js";
 import { useSession } from "../session-context.js";
@@ -13,6 +13,42 @@ interface VendorRow {
 }
 
 const EMPTY_VENDOR: VendorRow = { role: "", businessName: "", website: "", instagram: "" };
+
+/** GET /events/:id. The gallery link itself is never part of it. */
+interface StoredEvent {
+  coupleNames: string;
+  eventDate: string;
+  venueName: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  styleTags: string[];
+  uniqueAngle: string | null;
+  rightsStatus: string;
+  consentStatus: string;
+  consentNotes: string | null;
+  nameDisplay: string | null;
+  coupleStory: string | null;
+  isDestination: boolean;
+  heroPicks: string | null;
+  videoUrl: string | null;
+  targetOutletNotes: string | null;
+  priorExposure: { ownBlog: boolean; igPosted: boolean; priorPubs: string[] };
+  hasGalleryUrl: boolean;
+  vendorCredits: Array<{
+    role: string;
+    businessName: string;
+    website: string | null;
+    instagram: string | null;
+  }>;
+}
+
+/** Where to go after an edit: an in-app path handed over in router state, if any. */
+function returnPathOf(state: unknown): string | null {
+  if (typeof state !== "object" || state === null) return null;
+  const value = (state as Record<string, unknown>)["returnTo"];
+  return typeof value === "string" && value.startsWith("/") ? value : null;
+}
 
 const RIGHTS_OPTIONS = [
   { value: "unverified", label: "Not yet verified" },
@@ -57,9 +93,21 @@ function Field({
 const inputClass =
   "mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-900";
 
+/**
+ * The intake form, for a new event at /events/new and for an existing one at
+ * /events/:id/edit. Editing sends the whole form again with PATCH; the server
+ * validates it with the same rules as a new event.
+ */
 export function IntakePage() {
   const { api } = useSession();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { id } = useParams();
+  const editing = id !== undefined;
+
+  const [loaded, setLoaded] = useState(!editing);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [galleryOnFile, setGalleryOnFile] = useState(false);
 
   const [values, setValues] = useState({
     coupleNames: "",
@@ -89,6 +137,61 @@ export function IntakePage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
+  useEffect(() => {
+    if (!editing) return;
+    let cancelled = false;
+    api
+      .get<StoredEvent>(`/events/${id}`)
+      .then((stored) => {
+        if (cancelled) return;
+        const text = (value: string | null) => value ?? "";
+        setValues({
+          coupleNames: stored.coupleNames,
+          eventDate: stored.eventDate,
+          venueName: text(stored.venueName),
+          city: text(stored.city),
+          state: text(stored.state),
+          country: text(stored.country),
+          // Never prefilled: the server does not hand the link back.
+          galleryUrl: "",
+          rightsStatus: stored.rightsStatus,
+          consentStatus: stored.consentStatus,
+          consentNotes: text(stored.consentNotes),
+          nameDisplay: text(stored.nameDisplay),
+          coupleStory: text(stored.coupleStory),
+          uniqueAngle: text(stored.uniqueAngle),
+          heroPicks: text(stored.heroPicks),
+          videoUrl: text(stored.videoUrl),
+          targetOutletNotes: text(stored.targetOutletNotes),
+          styleTags: stored.styleTags.join(", "),
+        });
+        setIsDestination(stored.isDestination);
+        setOwnBlog(stored.priorExposure.ownBlog);
+        setIgPosted(stored.priorExposure.igPosted);
+        setPriorPubs(stored.priorExposure.priorPubs.join(", "));
+        setVendors(
+          stored.vendorCredits.length === 0
+            ? [{ ...EMPTY_VENDOR }]
+            : stored.vendorCredits.map((credit) => ({
+                role: credit.role,
+                businessName: credit.businessName,
+                website: text(credit.website),
+                instagram: text(credit.instagram),
+              })),
+        );
+        setGalleryOnFile(stored.hasGalleryUrl);
+        setLoaded(true);
+      })
+      .catch((caught: unknown) => {
+        if (!cancelled) {
+          setLoadError(caught instanceof ApiError ? caught.message : "Could not load this event.");
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [api, editing, id]);
+
   const set = (key: keyof typeof values) => (value: string) =>
     setValues((current) => ({ ...current, [key]: value }));
 
@@ -100,6 +203,7 @@ export function IntakePage() {
 
   function payload() {
     const optional = (value: string) => (value.trim() === "" ? undefined : value.trim());
+    const gallery = optional(values.galleryUrl);
     return {
       coupleNames: values.coupleNames,
       eventDate: values.eventDate,
@@ -107,7 +211,8 @@ export function IntakePage() {
       city: optional(values.city),
       state: optional(values.state),
       country: optional(values.country),
-      galleryUrl: optional(values.galleryUrl),
+      // Only when typed. On an edit, an absent link keeps the stored one.
+      ...(gallery === undefined ? {} : { galleryUrl: gallery }),
       rightsStatus: values.rightsStatus,
       consentStatus: values.consentStatus,
       consentNotes: optional(values.consentNotes),
@@ -139,8 +244,13 @@ export function IntakePage() {
     setFormError(null);
     setBusy(true);
     try {
-      await api.post("/events", payload());
-      navigate("/");
+      if (editing) {
+        await api.patch(`/events/${id}`, payload());
+        navigate(returnPathOf(location.state) ?? `/events/${id}`);
+      } else {
+        await api.post("/events", payload());
+        navigate("/");
+      }
     } catch (caught) {
       if (caught instanceof ApiError) {
         // The server validates; the form renders what it says rather than
@@ -158,9 +268,19 @@ export function IntakePage() {
   const updateVendor = (index: number, key: keyof VendorRow, value: string) =>
     setVendors((rows) => rows.map((row, i) => (i === index ? { ...row, [key]: value } : row)));
 
+  if (loadError !== null) {
+    return (
+      <p role="alert" className="text-sm text-rose-700">
+        {loadError}
+      </p>
+    );
+  }
+
+  if (!loaded) return <p className="text-sm text-slate-500">Loading event.</p>;
+
   return (
     <form onSubmit={onSubmit} className="max-w-2xl space-y-8" noValidate>
-      <h2 className="text-lg font-semibold text-slate-900">Add an event</h2>
+      <h2 className="text-lg font-semibold text-slate-900">{editing ? "Edit event" : "Add an event"}</h2>
 
       <fieldset className="space-y-4">
         <legend className="text-sm font-semibold text-slate-900">The event</legend>
@@ -203,6 +323,11 @@ export function IntakePage() {
         <legend className="text-sm font-semibold text-slate-900">Gallery</legend>
         <Field id="galleryUrl" label="Gallery link" error={fieldErrors["galleryUrl"]}>
           <input id="galleryUrl" className={inputClass} value={values.galleryUrl} onChange={(e) => set("galleryUrl")(e.target.value)} />
+          {editing && galleryOnFile && (
+            <p className="mt-1 text-sm text-slate-700">
+              A gallery link is on file; paste a new one only to replace it.
+            </p>
+          )}
           <p className="mt-1 text-xs text-slate-500">
             Stored on the server only. It is treated as a credential and is never sent back to
             this page.
@@ -317,7 +442,7 @@ export function IntakePage() {
         disabled={busy}
         className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
       >
-        {busy ? "Saving" : "Save event"}
+        {busy ? "Saving" : editing ? "Save changes" : "Save event"}
       </button>
     </form>
   );

@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { IntakePage } from "./IntakePage.js";
@@ -17,10 +17,10 @@ function fakeStorage(): StorageLike {
   };
 }
 
-let api: { get: ReturnType<typeof vi.fn>; post: ReturnType<typeof vi.fn> };
+let api: { get: ReturnType<typeof vi.fn>; post: ReturnType<typeof vi.fn>; patch: ReturnType<typeof vi.fn> };
 
 beforeEach(() => {
-  api = { get: vi.fn(), post: vi.fn() };
+  api = { get: vi.fn(), post: vi.fn(), patch: vi.fn() };
 });
 
 const renderPage = () =>
@@ -220,5 +220,175 @@ describe("the gallery link is presented as a credential", () => {
   it("tells the user it is never sent back to the page", () => {
     renderPage();
     expect(screen.getByText(/treated as a credential/i)).toBeInTheDocument();
+  });
+
+  it("leaves the gallery field out of a new event when it is blank", async () => {
+    api.post.mockResolvedValueOnce({ id: "w1" });
+    renderPage();
+    await userEvent.type(screen.getByLabelText("Couple names"), "A and B");
+    await submit();
+    await waitFor(() => expect(api.post).toHaveBeenCalled());
+    expect("galleryUrl" in lastPayload()).toBe(false);
+  });
+});
+
+describe("editing an event", () => {
+  const stored = (overrides: Record<string, unknown> = {}) => ({
+    id: "w1",
+    slug: "sarah-and-james-2026",
+    coupleNames: "Sarah and James",
+    eventDate: "2026-06-14",
+    venueName: "The Barn",
+    city: "Detroit",
+    state: "MI",
+    country: null,
+    styleTags: ["editorial", "garden"],
+    uniqueAngle: "A ferry ceremony.",
+    rightsStatus: "own_contract",
+    consentStatus: "granted_limited",
+    consentNotes: "No guest faces",
+    nameDisplay: "First names only",
+    coupleStory: "They met at a bookshop.",
+    isDestination: true,
+    heroPicks: "12, 40",
+    videoUrl: null,
+    targetOutletNotes: null,
+    priorExposure: { ownBlog: true, igPosted: false, priorPubs: ["Somewhere"] },
+    hasGalleryUrl: true,
+    gate: { allowed: true },
+    vendorCredits: [{ role: "Florist", businessName: "Stems", website: null, instagram: "stems" }],
+    ...overrides,
+  });
+
+  const renderEdit = (state: unknown = null) =>
+    render(
+      <MemoryRouter initialEntries={[{ pathname: "/events/w1/edit", state }]}>
+        <SessionProvider session={createSession(fakeStorage())} api={api as unknown as ApiClient}>
+          <Routes>
+            <Route path="/events/:id/edit" element={<IntakePage />} />
+            <Route path="/events/:id" element={<p>Event page stub</p>} />
+            <Route path="/events/:id/submit" element={<p>Walkthrough stub</p>} />
+          </Routes>
+        </SessionProvider>
+      </MemoryRouter>,
+    );
+
+  const save = () => userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+  const patched = () => api.patch.mock.calls[0]?.[1] as Record<string, any>;
+
+  it("loads the stored event into the form", async () => {
+    api.get.mockResolvedValueOnce(stored());
+    renderEdit();
+
+    expect(await screen.findByRole("heading", { name: "Edit event" })).toBeInTheDocument();
+    expect(api.get).toHaveBeenCalledWith("/events/w1");
+    expect(screen.getByLabelText("Couple names")).toHaveValue("Sarah and James");
+    expect(screen.getByLabelText("Event date")).toHaveValue("2026-06-14");
+    expect(screen.getByLabelText("Venue")).toHaveValue("The Barn");
+    expect(screen.getByLabelText("Country")).toHaveValue("");
+    expect(screen.getByLabelText("Rights")).toHaveValue("own_contract");
+    expect(screen.getByLabelText("Couple consent")).toHaveValue("granted_limited");
+    expect(screen.getByLabelText("Consent notes")).toHaveValue("No guest faces");
+    expect(screen.getByLabelText("Style tags, comma separated")).toHaveValue("editorial, garden");
+    expect(screen.getByLabelText("This reads as a destination wedding")).toBeChecked();
+    expect(screen.getByLabelText("Posted on my own blog")).toBeChecked();
+    expect(screen.getByLabelText("Posted to Instagram")).not.toBeChecked();
+    expect(screen.getByLabelText("Previously submitted or published, comma separated")).toHaveValue("Somewhere");
+    expect(screen.getByLabelText("Business name")).toHaveValue("Stems");
+    expect(screen.getByLabelText("Instagram")).toHaveValue("stems");
+  });
+
+  it("never prefills the gallery link, and says one is on file", async () => {
+    api.get.mockResolvedValueOnce(stored());
+    renderEdit();
+    expect(await screen.findByLabelText("Gallery link")).toHaveValue("");
+    expect(
+      screen.getByText("A gallery link is on file; paste a new one only to replace it."),
+    ).toBeInTheDocument();
+  });
+
+  it("does not claim a gallery link that is not on file", async () => {
+    api.get.mockResolvedValueOnce(stored({ hasGalleryUrl: false }));
+    renderEdit();
+    await screen.findByLabelText("Gallery link");
+    expect(screen.queryByText(/A gallery link is on file/)).not.toBeInTheDocument();
+  });
+
+  it("saves the rest with PATCH and never sends the gallery field unless typed", async () => {
+    api.get.mockResolvedValueOnce(stored());
+    api.patch.mockResolvedValueOnce(stored());
+    renderEdit();
+    await screen.findByLabelText("Couple names");
+
+    await save();
+
+    await waitFor(() => expect(api.patch).toHaveBeenCalledWith("/events/w1", expect.anything()));
+    expect(api.post).not.toHaveBeenCalled();
+    expect("galleryUrl" in patched()).toBe(false);
+    expect(patched()).toMatchObject({
+      coupleNames: "Sarah and James",
+      eventDate: "2026-06-14",
+      venueName: "The Barn",
+      rightsStatus: "own_contract",
+      consentStatus: "granted_limited",
+      styleTags: ["editorial", "garden"],
+      isDestination: true,
+      priorExposure: { ownBlog: true, igPosted: false, priorPubs: ["Somewhere"] },
+      vendorCredits: [{ role: "Florist", businessName: "Stems", website: undefined, instagram: "stems" }],
+    });
+    expect(await screen.findByText("Event page stub")).toBeInTheDocument();
+  });
+
+  it("sends the edits that were made", async () => {
+    api.get.mockResolvedValueOnce(stored());
+    api.patch.mockResolvedValueOnce(stored());
+    renderEdit();
+    const names = await screen.findByLabelText("Couple names");
+
+    await userEvent.clear(names);
+    await userEvent.type(names, "Ada and Bo");
+    await userEvent.selectOptions(screen.getByLabelText("Couple consent"), "granted");
+    await save();
+
+    await waitFor(() => expect(api.patch).toHaveBeenCalled());
+    expect(patched()).toMatchObject({ coupleNames: "Ada and Bo", consentStatus: "granted" });
+  });
+
+  it("sends a gallery link only once one is typed", async () => {
+    api.get.mockResolvedValueOnce(stored());
+    api.patch.mockResolvedValueOnce(stored());
+    renderEdit();
+    await userEvent.type(await screen.findByLabelText("Gallery link"), "https://new.example.com/g");
+    await save();
+    await waitFor(() => expect(api.patch).toHaveBeenCalled());
+    expect(patched()["galleryUrl"]).toBe("https://new.example.com/g");
+  });
+
+  it("returns to the page that sent it here", async () => {
+    api.get.mockResolvedValueOnce(stored());
+    api.patch.mockResolvedValueOnce(stored());
+    renderEdit({ returnTo: "/events/w1/submit" });
+    await screen.findByLabelText("Couple names");
+    await save();
+    expect(await screen.findByText("Walkthrough stub")).toBeInTheDocument();
+  });
+
+  it("renders the server's field errors from the edit", async () => {
+    api.get.mockResolvedValueOnce(stored());
+    api.patch.mockRejectedValueOnce(
+      new ApiError(400, "VALIDATION", "Some fields need attention.", [
+        { field: "eventDate", message: "Enter a real date as yyyy-mm-dd." },
+      ]),
+    );
+    renderEdit();
+    await screen.findByLabelText("Couple names");
+    await save();
+    expect(await screen.findByTestId("error-eventDate")).toHaveTextContent("Enter a real date");
+  });
+
+  it("surfaces a load failure", async () => {
+    api.get.mockRejectedValueOnce(new ApiError(404, "NOT_FOUND", "No such event."));
+    renderEdit();
+    expect(await screen.findByRole("alert")).toHaveTextContent("No such event.");
   });
 });

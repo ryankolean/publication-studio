@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createApp } from "../src/app.js";
 import type { Env } from "../src/env.js";
@@ -335,5 +335,244 @@ describe("GET /events/:id", () => {
     const res = await get("/events/nope");
     expect(res.status).toBe(404);
     await expect(res.json()).resolves.toMatchObject({ code: "NOT_FOUND" });
+  });
+});
+
+describe("PATCH /events/:id", () => {
+  const patch = (id: string, body: unknown, headers: Record<string, string> = auth) =>
+    app.request(
+      `/events/${id}`,
+      {
+        method: "PATCH",
+        headers: { "content-type": "application/json", ...headers },
+        body: JSON.stringify(body),
+      },
+      env,
+    );
+
+  const galleryOf = async (id: string) =>
+    (
+      await db
+        .prepare("SELECT gallery_url FROM events WHERE id = ?")
+        .bind(id)
+        .first<{ gallery_url: string | null }>()
+    )?.gallery_url;
+
+  /** Every intake field set to something other than its default. */
+  const full = {
+    coupleNames: "Ada and Bo",
+    eventDate: "2026-09-20",
+    venueName: "The Mill",
+    city: "Ann Arbor",
+    state: "MI",
+    country: "USA",
+    styleTags: ["editorial", "garden"],
+    uniqueAngle: "A ferry ceremony.",
+    rightsStatus: "own_contract",
+    consentStatus: "granted_limited",
+    consentNotes: "No family photos",
+    nameDisplay: "First names only",
+    coupleStory: "They met sailing.",
+    isDestination: true,
+    heroPicks: "12, 40, 88",
+    videoUrl: "https://video.example.com/v/1",
+    targetOutletNotes: "Dream outlet first.",
+    priorExposure: { ownBlog: true, igPosted: true, priorPubs: ["Somewhere"] },
+    vendorCredits: [
+      { role: "Florist", businessName: "Stems", website: "https://stems.example.com", instagram: "@stems" },
+      { role: "Venue", businessName: "The Mill", website: null, instagram: null },
+    ],
+  };
+
+  it("rejects an unauthenticated edit", async () => {
+    const created = await create();
+    expect((await patch(created["id"], full, {})).status).toBe(401);
+  });
+
+  it("round-trips every intake field and answers with the detail view", async () => {
+    const created = await create();
+    const res = await patch(created["id"], full);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as Record<string, any>;
+
+    const detail = (await (await get(`/events/${created["id"]}`)).json()) as Record<string, any>;
+    expect(body).toEqual(detail);
+
+    const { vendorCredits: _credits, ...fields } = full;
+    expect(detail).toMatchObject(fields);
+    expect(detail["vendorCredits"]).toEqual([
+      { role: "Florist", businessName: "Stems", website: "https://stems.example.com", instagram: "stems" },
+      { role: "Venue", businessName: "The Mill", website: null, instagram: null },
+    ]);
+    expect(detail["gate"]).toEqual({ allowed: true });
+  });
+
+  it("replaces the vendor credits rather than adding to them", async () => {
+    const created = await create({
+      ...minimal,
+      vendorCredits: [
+        { role: "Florist", businessName: "Stems" },
+        { role: "Venue", businessName: "The Barn" },
+      ],
+    });
+    await patch(created["id"], { ...minimal, vendorCredits: [{ role: "Planner", businessName: "Plans" }] });
+
+    const detail = (await (await get(`/events/${created["id"]}`)).json()) as Record<string, any>;
+    expect(detail["vendorCredits"].map((v: any) => v.businessName)).toEqual(["Plans"]);
+    const count = await db.prepare("SELECT COUNT(*) AS n FROM vendor_credits").first<{ n: number }>();
+    expect(count?.n).toBe(1);
+  });
+
+  it("clears an optional field the body leaves out, as the intake form does", async () => {
+    const created = await create({ ...minimal, venueName: "The Barn" });
+    const body = (await (await patch(created["id"], minimal)).json()) as Record<string, any>;
+    expect(body["venueName"]).toBeNull();
+  });
+
+  it("keeps the stored gallery link when the body sends null", async () => {
+    const created = await create({ ...minimal, galleryUrl: GALLERY });
+    const body = (await (await patch(created["id"], { ...minimal, galleryUrl: null })).json()) as Record<
+      string,
+      any
+    >;
+    expect(await galleryOf(created["id"])).toBe(GALLERY);
+    expect(body["hasGalleryUrl"]).toBe(true);
+  });
+
+  it("keeps the stored gallery link when the body leaves it out or sends it blank", async () => {
+    const created = await create({ ...minimal, galleryUrl: GALLERY });
+    expect((await patch(created["id"], minimal)).status).toBe(200);
+    expect(await galleryOf(created["id"])).toBe(GALLERY);
+    expect((await patch(created["id"], { ...minimal, galleryUrl: "  " })).status).toBe(200);
+    expect(await galleryOf(created["id"])).toBe(GALLERY);
+  });
+
+  it("replaces the gallery link when the body sends a new one", async () => {
+    const created = await create({ ...minimal, galleryUrl: GALLERY });
+    const next = "https://gallery.example.com/event?it=REPLACEMENT-TOKEN";
+    await patch(created["id"], { ...minimal, galleryUrl: next });
+    expect(await galleryOf(created["id"])).toBe(next);
+  });
+
+  it("adds a gallery link to an event that had none", async () => {
+    const created = await create();
+    const body = (await (await patch(created["id"], { ...minimal, galleryUrl: GALLERY })).json()) as Record<
+      string,
+      any
+    >;
+    expect(await galleryOf(created["id"])).toBe(GALLERY);
+    expect(body["hasGalleryUrl"]).toBe(true);
+  });
+
+  it("never returns the gallery link from the edit response", async () => {
+    const created = await create();
+    const res = await patch(created["id"], { ...minimal, galleryUrl: GALLERY });
+    expect(res.status).toBe(200);
+    expect(await res.text()).not.toContain("SECRET-INVITE-TOKEN");
+  });
+
+  it("keeps the slug when the couple's names change", async () => {
+    const created = await create();
+    const body = (await (await patch(created["id"], full)).json()) as Record<string, any>;
+    expect(body["slug"]).toBe(created["slug"]);
+  });
+
+  it("stamps the update time", async () => {
+    const created = await create();
+    // Two minutes on: far enough to differ from creation, inside the token's life.
+    const later = new Date(Math.floor(Date.now() / 1000) * 1000 + 120_000);
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(later);
+    try {
+      const res = await patch(created["id"], minimal);
+      expect(res.status).toBe(200);
+      const body = (await res.json()) as Record<string, any>;
+      expect(body["updatedAt"]).toBe(later.toISOString().replace(".000Z", "Z"));
+      expect(body["createdAt"]).toBe(created["createdAt"]);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("audit-logs the edit", async () => {
+    const created = await create();
+    await patch(created["id"], full);
+    const row = await db
+      .prepare("SELECT user_id, entity_id FROM audit_log WHERE entity = 'event' AND action = 'update'")
+      .first<Record<string, unknown>>();
+    expect(row).toEqual({ user_id: "user-1", entity_id: created["id"] });
+  });
+
+  it("issues the event, credit and audit writes as one batch", async () => {
+    const created = await create();
+    const executedDirectly: string[] = [];
+    let batches = 0;
+    let batched = 0;
+
+    const spied: Env["DB"] = {
+      prepare: (query: string) => {
+        const statement = db.prepare(query);
+        const wrap = (bound: ReturnType<typeof statement.bind>) => ({
+          first: bound.first.bind(bound),
+          all: bound.all.bind(bound),
+          bind: (...values: unknown[]) => wrap(bound.bind(...values)),
+          run: async () => {
+            executedDirectly.push(query);
+            return bound.run();
+          },
+        });
+        return wrap(statement);
+      },
+      batch: async (statements) => {
+        batches++;
+        batched += statements.length;
+        return db.batch(statements);
+      },
+    };
+
+    const res = await app.request(
+      `/events/${created["id"]}`,
+      {
+        method: "PATCH",
+        headers: { "content-type": "application/json", ...auth },
+        body: JSON.stringify(full),
+      },
+      { ...env, DB: spied },
+    );
+
+    expect(res.status).toBe(200);
+    expect(batches).toBe(1);
+    // update + delete credits + two credits + audit entry
+    expect(batched).toBe(5);
+    expect(executedDirectly.filter((q) => /INSERT|UPDATE|DELETE/i.test(q))).toEqual([]);
+  });
+
+  it("returns a typed 404 for an unknown id", async () => {
+    const res = await patch("nope", minimal);
+    expect(res.status).toBe(404);
+    await expect(res.json()).resolves.toMatchObject({ code: "NOT_FOUND", message: "No such event." });
+  });
+
+  it("returns typed validation errors and changes nothing", async () => {
+    const created = await create();
+    const res = await patch(created["id"], { rightsStatus: "bogus" });
+    expect(res.status).toBe(400);
+    const body = (await res.json()) as { code: string; details: Array<{ field: string }> };
+    expect(body.code).toBe("VALIDATION");
+    expect(body.details.map((d) => d.field)).toEqual(
+      expect.arrayContaining(["coupleNames", "eventDate", "rightsStatus"]),
+    );
+    const detail = (await (await get(`/events/${created["id"]}`)).json()) as Record<string, any>;
+    expect(detail["coupleNames"]).toBe("Sarah and James");
+  });
+
+  it("rejects a body that is not json", async () => {
+    const created = await create();
+    const res = await app.request(
+      `/events/${created["id"]}`,
+      { method: "PATCH", headers: { "content-type": "application/json", ...auth }, body: "{" },
+      env,
+    );
+    expect(res.status).toBe(400);
   });
 });

@@ -144,6 +144,13 @@ function Inventory() {
                     {event.eventDate}
                     {place(event) !== "" ? ` - ${place(event)}` : ""}
                   </p>
+                  <Link
+                    to={`/events/${event.id}/submit`}
+                    aria-label={`Submit ${event.coupleNames}`}
+                    className="mt-1 inline-block text-sm text-slate-600 underline hover:text-slate-900"
+                  >
+                    Submit
+                  </Link>
                 </div>
                 <RightsBadge gate={event.gate} />
               </div>

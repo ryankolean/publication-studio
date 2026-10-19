@@ -94,7 +94,8 @@ const QUEUE_ORDER = `ORDER BY
   CASE WHEN submissions.status NOT IN ('sent', 'ready', 'queued') THEN submissions.updated_at END DESC,
   submissions.rowid`;
 
-async function loadView(db: D1Database, id: string, nowMs: number) {
+/** One submission as the queue shows it, days remaining included; null when unknown. */
+export async function loadView(db: D1Database, id: string, nowMs: number) {
   const row = await db
     .prepare(`${SELECT_VIEW} WHERE submissions.id = ?`)
     .bind(id)

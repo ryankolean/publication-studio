@@ -125,6 +125,24 @@ describe("EventDetailPage header", () => {
     expect(screen.getByText(/No guest faces/)).toBeInTheDocument();
   });
 
+  it("opens the submission walkthrough", async () => {
+    serveGets();
+    renderPage();
+    expect(await screen.findByRole("link", { name: "Submit this event" })).toHaveAttribute(
+      "href",
+      "/events/w1/submit",
+    );
+  });
+
+  it("opens the event for editing", async () => {
+    serveGets();
+    renderPage();
+    expect(await screen.findByRole("link", { name: "Edit event" })).toHaveAttribute(
+      "href",
+      "/events/w1/edit",
+    );
+  });
+
   it("only says whether a gallery link is on file", async () => {
     serveGets();
     renderPage();
