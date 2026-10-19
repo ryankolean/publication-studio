@@ -6,16 +6,23 @@ Two-user web app that helps a wedding photographer get published: tracks wedding
 
 ## Status
 
-**Phase:** 0 (Foundation) — complete and deployed.
+**Phase:** 1 (Package engine) - built, deployed, awaiting the first real send.
 
 - SPA: https://ryankolean.github.io/publication-studio/
 - API: a Cloudflare Worker, auth-gated on every route except `/health`
 
-Verified in production: sign-in, the eight seeded publications with their
-specs, and wedding intake showing all three rights-gate outcomes (ready,
-blocked with remedies, credit-recovery only).
+Built and verified in a browser: sign-in, event intake with all three
+rights-gate outcomes, the ten seeded publications with live-verified specs,
+response windows and tags, the curation board (upload pool, ordered
+selection), the package editor with the server-evaluated checklist, and the
+queue: create a submission from a complete package, mark it sent by hand,
+record the outlet's answer, see the response-window countdown.
 
-Next: Phase 1, the curation board and package generator.
+Phase 1 is done by definition when one real submission goes out using only
+the tool. That needs the photographer's first event and gallery.
+
+Next: Phase 2, exclusivity ledger, response tracking, withdrawal workflow,
+credit recovery.
 
 ## Documents
 

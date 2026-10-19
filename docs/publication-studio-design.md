@@ -274,6 +274,7 @@ All mutations audit-logged. All gate logic server-side; the SPA is untrusted.
 **Phase 5 autoheals:** rights gate designed as server-side state machine (was a metadata field); exclusivity ledger with hard/soft locks + own-blog-counts nuance; expiry → withdrawal workflow (TBL failure mode); spec versioning with `last_verified` + quarterly re-verification; sequencing guidance for thin inventory.
 **Phase 6 adversarial (survived):** "Why not just Two Bright Lights?" — answered in §11 with TBL kept as optional channel; "ChatGPT commoditizes strategy" — moat placed in operational layer (§7), strategy is the front-end; "5 weddings can't sustain a product" — credit recovery + styled shoots + Phase 4 gate on proof.
 **2026-10-19:** table and routes renamed from wedding to event per SUMMIT-312.
+**2026-10-19 (Phase 1):** curation board, package editor and queue shipped; submissions are born `ready` (draft folded into package completeness); a Phase 1 floor of the exclusivity ledger refuses a second live submission per event, the policy-aware locks stay Phase 2; publication seed re-verified against live guidelines with a shared tag vocabulary (SUMMIT-300).
 **Flagged for authors:** §13 items 1–5.
 
 **Confidence: HIGH** for Phase 0–2 build; **MEDIUM** for Phase 3–4 (depends on partner outcomes and business terms).

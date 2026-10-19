@@ -45,12 +45,14 @@ function isoSeconds(ms: number): string {
 }
 
 /**
- * Whole days from now to the due moment, rounded down. It never overstates
- * the time left, and it goes negative exactly when the due moment has passed.
+ * Calendar days (UTC) from today to the due date. A 15-day window reads 15 on
+ * the day it was sent and 14 the next day, which is how a person counts it;
+ * elapsed hours on the sending day do not shave a day off. It is 0 on the due
+ * day and negative once that day has passed.
  */
 function daysRemaining(dueAt: string | null, nowMs: number): number | null {
   if (dueAt === null) return null;
-  return Math.floor((Date.parse(dueAt) - nowMs) / DAY_MS);
+  return Math.floor(Date.parse(dueAt) / DAY_MS) - Math.floor(nowMs / DAY_MS);
 }
 
 function toView(row: ViewRow, nowMs: number) {
