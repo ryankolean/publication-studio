@@ -6,6 +6,7 @@ import { ApiError } from "../api/client.js";
 import { API_BASE_URL } from "../config.js";
 import { useSession } from "../session-context.js";
 import type { PoolImage } from "./EventDetailPage.js";
+import { SubmissionBadge, type SubmissionSummary } from "../components/SubmissionBadge.js";
 
 interface ChecklistItem {
   id: string;
@@ -31,6 +32,7 @@ interface PackageView {
   checklist: ChecklistItem[];
   complete: boolean;
   missing: string[];
+  submission: SubmissionSummary | null;
 }
 
 /** "6 selected, outlet wants 40 to 80", or "no stated bounds" when there are none. */
@@ -78,6 +80,8 @@ export function PackageEditorPage() {
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
 
   /** Everything on screen is re-derived from what the server returned. */
   function apply(view: PackageView) {
@@ -158,6 +162,27 @@ export function PackageEditorPage() {
     }
   }
 
+  /** The server re-checks the gates and the stored checklist; this button is only a convenience. */
+  async function createSubmission() {
+    if (pkg === null) return;
+    setCreating(true);
+    setSubmissionError(null);
+    try {
+      const created = await api.post<SubmissionSummary>("/submissions", { packageId: pkg.id });
+      const submission: SubmissionSummary = {
+        id: created.id,
+        status: created.status,
+        sentAt: created.sentAt,
+        responseDueAt: created.responseDueAt,
+      };
+      setPkg((current) => (current === null ? current : { ...current, submission }));
+    } catch (caught) {
+      setSubmissionError(errorText(caught, "Could not create the submission."));
+    } finally {
+      setCreating(false);
+    }
+  }
+
   if (loadError !== null) {
     return (
       <p role="alert" className="text-sm text-rose-700">
@@ -213,6 +238,34 @@ export function PackageEditorPage() {
         >
           {pkg.complete ? "Package complete" : `Missing: ${missingLabels.join(", ")}`}
         </p>
+        {pkg.submission !== null ? (
+          <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
+            <span className="text-slate-700">Submission</span>
+            <SubmissionBadge status={pkg.submission.status} />
+            <Link to="/queue" className="text-slate-600 underline hover:text-slate-900">
+              Open the queue
+            </Link>
+          </div>
+        ) : pkg.complete ? (
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              disabled={creating || dirty}
+              onClick={() => void createSubmission()}
+              className="rounded-md border border-slate-900 px-3 py-2 text-sm font-medium text-slate-900 disabled:opacity-50"
+            >
+              Create submission
+            </button>
+            <span className="text-xs text-slate-500">
+              {dirty ? "Save your changes first." : "Adds it to the queue. Nothing is sent from here."}
+            </span>
+          </div>
+        ) : null}
+        {submissionError !== null && (
+          <p role="alert" className="mt-2 text-sm break-words text-rose-700">
+            {submissionError}
+          </p>
+        )}
         {saveError !== null && (
           <p role="alert" className="mt-2 text-sm text-rose-700">
             {saveError}

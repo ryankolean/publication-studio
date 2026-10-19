@@ -59,6 +59,7 @@ const PACKAGES = [
     complete: false,
     imageCount: 3,
     createdAt: "2026-10-02T00:00:00Z",
+    submission: null,
   },
   {
     id: "pk2",
@@ -68,6 +69,7 @@ const PACKAGES = [
     complete: true,
     imageCount: 30,
     createdAt: "2026-10-01T00:00:00Z",
+    submission: { id: "s1", status: "sent", sentAt: "2026-10-03T00:00:00Z", responseDueAt: null },
   },
 ];
 
@@ -293,6 +295,16 @@ describe("packages", () => {
     expect(rows[0]).toHaveTextContent("3 images");
     expect(rows[1]).toHaveTextContent("Complete");
     expect(rows[1]).toHaveTextContent("30 images");
+  });
+
+  it("shows the submission status beside a package that has one", async () => {
+    serveGets();
+    renderPage();
+
+    const rows = within(await screen.findByRole("list", { name: "Packages" })).getAllByRole("listitem");
+    expect(rows[1]).toHaveTextContent("Sent");
+    expect(rows[0]).not.toHaveTextContent("Sent");
+    expect(rows[0]).not.toHaveTextContent("Ready to send");
   });
 
   it("starts a package for the chosen publication and opens the editor", async () => {

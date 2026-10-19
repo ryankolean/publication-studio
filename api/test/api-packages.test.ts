@@ -443,6 +443,7 @@ describe("GET /events/:id/packages", () => {
         complete: false,
         imageCount: 2,
         createdAt: pkg["createdAt"],
+        submission: null,
       },
     ]);
   });

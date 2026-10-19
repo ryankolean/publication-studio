@@ -79,8 +79,15 @@ const view = (overrides: Record<string, unknown> = {}) => ({
   checklist: CHECKLIST,
   complete: false,
   missing: ["images_present", "image_count", "no_watermarks"],
+  submission: null as null | { id: string; status: string; sentAt: string | null; responseDueAt: string | null },
   ...overrides,
 });
+
+const COMPLETE = {
+  checklist: CHECKLIST.map((item) => ({ ...item, satisfied: true })),
+  complete: true,
+  missing: [] as string[],
+};
 
 type Mock = ReturnType<typeof vi.fn>;
 let api: { get: Mock; post: Mock; patch: Mock; delete: Mock; putBytes: Mock };
@@ -300,5 +307,83 @@ describe("saving", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("Those images belong to another event.");
     expect(screen.getByText("Unsaved changes")).toBeInTheDocument();
     expect(selectedOrder()).toEqual([key(1)]);
+  });
+});
+
+describe("the submission", () => {
+  const createButton = () => screen.queryByRole("button", { name: "Create submission" });
+
+  it("offers no submission while the package is incomplete", async () => {
+    serve();
+    renderPage();
+    await screen.findByRole("heading", { name: /Loverly/ });
+    expect(createButton()).toBeNull();
+  });
+
+  it("offers a submission once the package is complete", async () => {
+    serve(view(COMPLETE));
+    renderPage();
+    await screen.findByRole("heading", { name: /Loverly/ });
+    expect(createButton()).toBeInTheDocument();
+  });
+
+  it("holds the button until unsaved edits are saved", async () => {
+    serve(view(COMPLETE));
+    renderPage();
+    await userEvent.click(await screen.findByRole("button", { name: "Pool image 1" }));
+    expect(createButton()).toBeDisabled();
+  });
+
+  it("creates the submission and shows where it stands", async () => {
+    serve(view(COMPLETE));
+    api.post.mockResolvedValue({ id: "s1", status: "ready", sentAt: null, responseDueAt: null });
+    renderPage();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Create submission" }));
+
+    expect(api.post).toHaveBeenCalledWith("/submissions", { packageId: "pk1" });
+    expect(await screen.findByText("Ready to send")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Open the queue" })).toHaveAttribute("href", "/queue");
+    expect(createButton()).toBeNull();
+  });
+
+  it("renders the server's refusal as-is", async () => {
+    serve(view(COMPLETE));
+    api.post.mockRejectedValue(
+      new ApiError(422, "PACKAGE_INCOMPLETE", "The package is not complete. Finish its checklist first."),
+    );
+    renderPage();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Create submission" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "The package is not complete. Finish its checklist first.",
+    );
+  });
+
+  it("renders a conflict as-is", async () => {
+    serve(view(COMPLETE));
+    api.post.mockRejectedValue(
+      new ApiError(409, "SUBMISSION_EXISTS", "A submission already exists for this event and publication."),
+    );
+    renderPage();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Create submission" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "A submission already exists for this event and publication.",
+    );
+  });
+
+  it("shows an existing submission's status and the way to the queue instead", async () => {
+    serve(
+      view({
+        ...COMPLETE,
+        submission: { id: "s1", status: "sent", sentAt: "2026-10-19T12:00:00Z", responseDueAt: null },
+      }),
+    );
+    renderPage();
+
+    expect(await screen.findByText("Sent")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Open the queue" })).toHaveAttribute("href", "/queue");
+    expect(createButton()).toBeNull();
   });
 });

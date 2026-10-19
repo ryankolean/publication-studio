@@ -6,6 +6,7 @@ import { ApiError } from "../api/client.js";
 import { API_BASE_URL } from "../config.js";
 import { useSession } from "../session-context.js";
 import { RightsBadge, type Gate, type GateReason } from "../components/RightsBadge.js";
+import { SubmissionBadge, type SubmissionSummary } from "../components/SubmissionBadge.js";
 
 interface EventDetail {
   id: string;
@@ -40,6 +41,7 @@ interface PackageSummary {
   complete: boolean;
   imageCount: number;
   createdAt: string;
+  submission: SubmissionSummary | null;
 }
 
 interface PublicationOption {
@@ -353,8 +355,9 @@ export function EventDetailPage() {
                 <Link to={`/packages/${pkg.id}`} className="font-medium text-slate-900 hover:underline">
                   {pkg.publicationName ?? pkg.publicationId}
                 </Link>
-                <div className="flex items-center gap-3 text-sm text-slate-500">
+                <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500">
                   <span>{`${pkg.imageCount} ${pkg.imageCount === 1 ? "image" : "images"}`}</span>
+                  {pkg.submission && <SubmissionBadge status={pkg.submission.status} />}
                   <span
                     className={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${
                       pkg.complete

@@ -14,6 +14,10 @@ export type ErrorCode =
   | "EXCLUSIVITY_LOCKED"
   | "SPEC_UNVERIFIED"
   | "IMAGE_IN_USE"
+  | "PACKAGE_INCOMPLETE"
+  | "SUBMISSION_EXISTS"
+  | "ILLEGAL_TRANSITION"
+  | "EVENT_HAS_LIVE_SUBMISSION"
   | "INTERNAL";
 
 export interface ErrorBody {
@@ -22,7 +26,7 @@ export interface ErrorBody {
   details?: unknown;
 }
 
-type StatusFor = 400 | 401 | 403 | 404 | 409 | 500;
+type StatusFor = 400 | 401 | 403 | 404 | 409 | 422 | 500;
 
 export function fail(
   c: Context,

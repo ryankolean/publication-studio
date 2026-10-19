@@ -210,6 +210,16 @@ for (const method of ["PUT", "DELETE"]) {
   const eventPackages = await fetch(`${BASE}/events/smoke/packages`);
   check("event packages rejects anonymous", eventPackages.status === 401, `got ${eventPackages.status}`);
 
+  const submissions = await fetch(`${BASE}/submissions`);
+  check("submissions rejects anonymous", submissions.status === 401, `got ${submissions.status}`);
+
+  const markSent = await fetch(`${BASE}/submissions/smoke`, {
+    method: "PATCH",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ status: "sent" }),
+  });
+  check("mark sent rejects anonymous", markSent.status === 401, `got ${markSent.status}`);
+
   const signup = await fetch(`${BASE}/auth/signup`, { method: "POST" });
   check("no signup route exists", signup.status === 404, `got ${signup.status}`);
 }

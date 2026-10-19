@@ -4,13 +4,14 @@ import type { AppContext } from "../middleware/auth.js";
 import { requireAuth } from "../middleware/auth.js";
 import { fail } from "../errors.js";
 import { evaluateRightsGate } from "../domain/rights-gate.js";
-import type { ConsentStatus, RightsStatus } from "../domain/rights-gate.js";
+import type { ConsentStatus, RightsGateResult, RightsStatus } from "../domain/rights-gate.js";
 import { parsePublicationSpec } from "../domain/publication-spec.js";
 import { evaluatePackage } from "../domain/package-checklist.js";
 import type { PackageInput } from "../domain/package-checklist.js";
 import { buildCreditsBlock, buildDescriptionDraft } from "../domain/package-draft.js";
 import type { CreditRow } from "../domain/package-draft.js";
 import type { D1Database } from "../env.js";
+import type { SubmissionStatus } from "../domain/submission-status.js";
 
 interface EventRow {
   id: string;
@@ -87,6 +88,19 @@ function evaluationFor(
   return { spec, input, evaluation };
 }
 
+/**
+ * Where the pairing stands in the submission lifecycle, so the editor and the
+ * event page can show it without a second call. Looked up by the event and
+ * publication pair, which is the submissions table's UNIQUE key, rather than
+ * by package_id, which goes null if a package is ever removed.
+ */
+export interface PackageSubmission {
+  id: string;
+  status: SubmissionStatus;
+  sentAt: string | null;
+  responseDueAt: string | null;
+}
+
 export interface PackageSummary {
   id: string;
   publicationId: string;
@@ -95,6 +109,27 @@ export interface PackageSummary {
   complete: boolean;
   imageCount: number;
   createdAt: string;
+  submission: PackageSubmission | null;
+}
+
+interface SubmissionColumns {
+  submission_id: string | null;
+  submission_status: SubmissionStatus | null;
+  submission_sent_at: string | null;
+  submission_response_due_at: string | null;
+}
+
+const SUBMISSION_COLUMNS = `submissions.id AS submission_id, submissions.status AS submission_status,
+  submissions.sent_at AS submission_sent_at, submissions.response_due_at AS submission_response_due_at`;
+
+function submissionOf(row: SubmissionColumns): PackageSubmission | null {
+  if (row.submission_id === null || row.submission_status === null) return null;
+  return {
+    id: row.submission_id,
+    status: row.submission_status,
+    sentAt: row.submission_sent_at,
+    responseDueAt: row.submission_response_due_at,
+  };
 }
 
 /** Every package for an event, newest first; null when the event does not exist. */
@@ -110,13 +145,19 @@ export async function listEventPackages(
 
   const { results } = await db
     .prepare(
-      `SELECT packages.*, publications.name AS publication_name, publications.spec_json AS spec_json
-       FROM packages LEFT JOIN publications ON publications.id = packages.publication_id
+      `SELECT packages.*, publications.name AS publication_name, publications.spec_json AS spec_json,
+         ${SUBMISSION_COLUMNS}
+       FROM packages
+       LEFT JOIN publications ON publications.id = packages.publication_id
+       LEFT JOIN submissions ON submissions.event_id = packages.event_id
+         AND submissions.publication_id = packages.publication_id
        WHERE packages.event_id = ?
        ORDER BY packages.created_at DESC, packages.rowid DESC`,
     )
     .bind(eventId)
-    .all<PackageRow & { publication_name: string | null; spec_json: string | null }>();
+    .all<
+      PackageRow & SubmissionColumns & { publication_name: string | null; spec_json: string | null }
+    >();
 
   return results.map((row) => {
     const { input, evaluation } = evaluationFor(row, event, row.spec_json ?? "{}");
@@ -129,6 +170,7 @@ export async function listEventPackages(
       imageCount: input.imageKeys.length,
       // packages has no updated_at column; creation time is what exists.
       createdAt: row.created_at,
+      submission: submissionOf(row),
     };
   });
 }
@@ -152,6 +194,12 @@ async function viewFor(
     }>();
 
   const { spec, input, evaluation } = evaluationFor(pkg, event, publication?.spec_json ?? "{}");
+
+  const submission = await c.env.DB.prepare(
+    `SELECT ${SUBMISSION_COLUMNS} FROM submissions WHERE event_id = ? AND publication_id = ?`,
+  )
+    .bind(pkg.event_id, pkg.publication_id)
+    .first<SubmissionColumns>();
 
   return {
     id: pkg.id,
@@ -182,6 +230,7 @@ async function viewFor(
     checklist: evaluation.items,
     complete: evaluation.complete,
     missing: evaluation.missing,
+    submission: submission === null ? null : submissionOf(submission),
   };
 }
 
@@ -310,6 +359,51 @@ async function loadPair(
   if (event === null) return null;
 
   return { pkg, event };
+}
+
+/**
+ * Everything a submission is gated on, read fresh from the stored package, its
+ * event and its publication. The client's opinion of completeness never enters
+ * into it. Null when any of the three is gone.
+ */
+export interface PackageVerdict {
+  packageId: string;
+  eventId: string;
+  publicationId: string;
+  gate: RightsGateResult;
+  publicationActive: boolean;
+  complete: boolean;
+  missing: string[];
+}
+
+export async function packageVerdict(
+  c: { env: AppContext["Bindings"] },
+  packageId: string,
+): Promise<PackageVerdict | null> {
+  const found = await loadPair(c, packageId);
+  if (found === null) return null;
+
+  const publication = await c.env.DB.prepare(
+    "SELECT active, spec_json FROM publications WHERE id = ?",
+  )
+    .bind(found.pkg.publication_id)
+    .first<{ active: number; spec_json: string }>();
+  if (publication === null) return null;
+
+  const { evaluation } = evaluationFor(found.pkg, found.event, publication.spec_json);
+
+  return {
+    packageId: found.pkg.id,
+    eventId: found.pkg.event_id,
+    publicationId: found.pkg.publication_id,
+    gate: evaluateRightsGate({
+      rightsStatus: found.event.rights_status,
+      consentStatus: found.event.consent_status,
+    }),
+    publicationActive: publication.active === 1,
+    complete: evaluation.complete,
+    missing: evaluation.missing,
+  };
 }
 
 packageRoutes.get("/:id", async (c) => {

@@ -10,6 +10,7 @@ import { IntakePage } from "./pages/IntakePage.js";
 import { PublicationsPage } from "./pages/PublicationsPage.js";
 import { EventDetailPage } from "./pages/EventDetailPage.js";
 import { PackageEditorPage } from "./pages/PackageEditorPage.js";
+import { QueuePage } from "./pages/QueuePage.js";
 
 /**
  * DECISION: HashRouter, not BrowserRouter. GitHub Pages serves static files
@@ -35,6 +36,9 @@ function Shell({ children }: { children: ReactNode }) {
             <nav className="flex gap-4 text-sm">
               <Link to="/" className="text-slate-600 hover:text-slate-900">
                 Events
+              </Link>
+              <Link to="/queue" className="text-slate-600 hover:text-slate-900">
+                Queue
               </Link>
               <Link to="/publications" className="text-slate-600 hover:text-slate-900">
                 Publications
@@ -74,6 +78,7 @@ function Routed() {
         <Route path="/events/new" element={<RequireSession><IntakePage /></RequireSession>} />
         <Route path="/events/:id" element={<RequireSession><EventDetailPage /></RequireSession>} />
         <Route path="/packages/:id" element={<RequireSession><PackageEditorPage /></RequireSession>} />
+        <Route path="/queue" element={<RequireSession><QueuePage /></RequireSession>} />
         <Route path="/publications" element={<RequireSession><PublicationsPage /></RequireSession>} />
         <Route path="/set-password" element={<SetPasswordPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
