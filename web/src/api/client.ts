@@ -30,6 +30,14 @@ export class ApiError extends Error {
 export interface ApiClient {
   get<T>(path: string): Promise<T>;
   post<T>(path: string, body: unknown): Promise<T>;
+  patch<T>(path: string, body: unknown): Promise<T>;
+  delete<T>(path: string): Promise<T>;
+  /**
+   * Raw bytes to a capability url the API minted (an image upload). The url
+   * carries its own token, so no bearer token is sent and a 401 is final:
+   * refreshing the session cannot revive an expired upload grant.
+   */
+  putBytes<T>(url: string, body: Blob, contentType: string): Promise<T>;
 }
 
 interface ApiClientOptions {
@@ -127,8 +135,26 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
     return (await response.json()) as T;
   }
 
+  async function putBytes<T>(url: string, body: Blob, contentType: string): Promise<T> {
+    let response: Response;
+    try {
+      response = await doFetch(`${options.baseUrl}${url}`, {
+        method: "PUT",
+        headers: { "content-type": contentType },
+        body,
+      });
+    } catch {
+      throw new ApiError(0, "NETWORK", "Could not reach the server.");
+    }
+    if (!response.ok) throw await toApiError(response);
+    return (await response.json()) as T;
+  }
+
   return {
     get: <T,>(path: string) => request<T>(path, "GET"),
     post: <T,>(path: string, body: unknown) => request<T>(path, "POST", body),
+    patch: <T,>(path: string, body: unknown) => request<T>(path, "PATCH", body),
+    delete: <T,>(path: string) => request<T>(path, "DELETE"),
+    putBytes,
   };
 }

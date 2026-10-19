@@ -10,6 +10,7 @@ import { evaluatePackage } from "../domain/package-checklist.js";
 import type { PackageInput } from "../domain/package-checklist.js";
 import { buildCreditsBlock, buildDescriptionDraft } from "../domain/package-draft.js";
 import type { CreditRow } from "../domain/package-draft.js";
+import type { D1Database } from "../env.js";
 
 interface EventRow {
   id: string;
@@ -59,6 +60,79 @@ function readAttestations(raw: string): Record<string, boolean> {
   return result;
 }
 
+/**
+ * The one place a stored package becomes a checklist verdict. The single view
+ * and the event's package list both go through here, so the list can never
+ * call a package complete that the editor would not.
+ */
+function evaluationFor(
+  pkg: PackageRow,
+  event: Pick<EventRow, "name_display" | "consent_notes">,
+  specJson: string,
+) {
+  const spec = parsePublicationSpec(specJson);
+
+  const input: PackageInput = {
+    imageKeys: readJson<string[]>(pkg.image_keys, []),
+    descriptionMd: pkg.description_md,
+    creditsBlockMd: pkg.credits_block_md,
+    attestations: readAttestations(pkg.checklist_json),
+  };
+
+  const evaluation = evaluatePackage(spec, input, {
+    nameDisplay: event.name_display,
+    consentNotes: event.consent_notes,
+  });
+
+  return { spec, input, evaluation };
+}
+
+export interface PackageSummary {
+  id: string;
+  publicationId: string;
+  publicationName: string | null;
+  version: number;
+  complete: boolean;
+  imageCount: number;
+  createdAt: string;
+}
+
+/** Every package for an event, newest first; null when the event does not exist. */
+export async function listEventPackages(
+  db: D1Database,
+  eventId: string,
+): Promise<PackageSummary[] | null> {
+  const event = await db
+    .prepare("SELECT name_display, consent_notes FROM events WHERE id = ?")
+    .bind(eventId)
+    .first<Pick<EventRow, "name_display" | "consent_notes">>();
+  if (event === null) return null;
+
+  const { results } = await db
+    .prepare(
+      `SELECT packages.*, publications.name AS publication_name, publications.spec_json AS spec_json
+       FROM packages LEFT JOIN publications ON publications.id = packages.publication_id
+       WHERE packages.event_id = ?
+       ORDER BY packages.created_at DESC, packages.rowid DESC`,
+    )
+    .bind(eventId)
+    .all<PackageRow & { publication_name: string | null; spec_json: string | null }>();
+
+  return results.map((row) => {
+    const { input, evaluation } = evaluationFor(row, event, row.spec_json ?? "{}");
+    return {
+      id: row.id,
+      publicationId: row.publication_id,
+      publicationName: row.publication_name,
+      version: row.version,
+      complete: evaluation.complete,
+      imageCount: input.imageKeys.length,
+      // packages has no updated_at column; creation time is what exists.
+      createdAt: row.created_at,
+    };
+  });
+}
+
 async function viewFor(
   c: { env: AppContext["Bindings"] },
   pkg: PackageRow,
@@ -77,19 +151,7 @@ async function viewFor(
       spec_json: string;
     }>();
 
-  const spec = parsePublicationSpec(publication?.spec_json ?? "{}");
-
-  const input: PackageInput = {
-    imageKeys: readJson<string[]>(pkg.image_keys, []),
-    descriptionMd: pkg.description_md,
-    creditsBlockMd: pkg.credits_block_md,
-    attestations: readAttestations(pkg.checklist_json),
-  };
-
-  const evaluation = evaluatePackage(spec, input, {
-    nameDisplay: event.name_display,
-    consentNotes: event.consent_notes,
-  });
+  const { spec, input, evaluation } = evaluationFor(pkg, event, publication?.spec_json ?? "{}");
 
   return {
     id: pkg.id,

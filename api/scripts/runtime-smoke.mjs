@@ -159,6 +159,17 @@ const preflight = (origin) =>
   );
 }
 
+// The curation board uploads with PUT and removes images with DELETE; both
+// preflight, so each has to be in the allowed methods on workerd too.
+for (const method of ["PUT", "DELETE"]) {
+  const response = await fetch(`${BASE}/health`, {
+    method: "OPTIONS",
+    headers: { origin: ORIGIN, "access-control-request-method": method },
+  });
+  const allowMethods = response.headers.get("access-control-allow-methods") ?? "";
+  check(`preflight allows ${method}`, allowMethods.includes(method), `got ${allowMethods}`);
+}
+
 // CORS preflight from anywhere else.
 {
   const response = await preflight("https://evil.example");
@@ -189,6 +200,15 @@ const preflight = (origin) =>
 
   const publications = await fetch(`${BASE}/publications`);
   check("publications rejects anonymous", publications.status === 401);
+
+  const pool = await fetch(`${BASE}/events/smoke/images`);
+  check("image pool rejects anonymous", pool.status === 401, `got ${pool.status}`);
+
+  const removal = await fetch(`${BASE}/events/smoke/images/events/smoke/a.jpg`, { method: "DELETE" });
+  check("image delete rejects anonymous", removal.status === 401, `got ${removal.status}`);
+
+  const eventPackages = await fetch(`${BASE}/events/smoke/packages`);
+  check("event packages rejects anonymous", eventPackages.status === 401, `got ${eventPackages.status}`);
 
   const signup = await fetch(`${BASE}/auth/signup`, { method: "POST" });
   check("no signup route exists", signup.status === 404, `got ${signup.status}`);

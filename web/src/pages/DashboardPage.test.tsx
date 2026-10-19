@@ -58,6 +58,15 @@ describe("DashboardPage", () => {
     expect(screen.getByText(/2026-06-14/)).toHaveTextContent("The Barn");
   });
 
+  it("links each event to its curation board", async () => {
+    api.get.mockResolvedValueOnce({ events: [event()] });
+    renderPage();
+    expect(await screen.findByRole("link", { name: "Sarah and James" })).toHaveAttribute(
+      "href",
+      "/events/w1",
+    );
+  });
+
   it("shows a ready badge for an event that clears the gate", async () => {
     api.get.mockResolvedValueOnce({ events: [event()] });
     renderPage();

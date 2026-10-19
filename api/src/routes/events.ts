@@ -9,6 +9,7 @@ import { validateEventIntake } from "../domain/event-intake.js";
 import type { PriorExposure, VendorCreditInput, EventIntake } from "../domain/event-intake.js";
 import { eventSlug } from "../domain/slug.js";
 import type { D1Database } from "../env.js";
+import { listEventPackages } from "./packages.js";
 
 interface EventRow {
   id: string;
@@ -259,4 +260,10 @@ eventRoutes.get("/:id", async (c) => {
       instagram: credit.instagram,
     })),
   });
+});
+
+eventRoutes.get("/:id/packages", async (c) => {
+  const packages = await listEventPackages(c.env.DB, c.req.param("id"));
+  if (packages === null) return fail(c, 404, "NOT_FOUND", "No such event.");
+  return c.json({ packages });
 });

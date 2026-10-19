@@ -48,10 +48,13 @@ const insertPublication = (id = "p1") =>
 describe("migrations", () => {
   it("creates exactly the expected tables, and nothing else", () => {
     // The eight from design doc section 5, plus password_invites, which
-    // migration 0003 adds to support the invite-link password flow.
+    // migration 0003 adds to support the invite-link password flow, and
+    // event_images, which migration 0005 adds so the curation board can list
+    // an event's whole image pool rather than only what a package selected.
     expect(tableNames(db)).toEqual([
       "audit_log",
       "credit_requests",
+      "event_images",
       "events",
       "packages",
       "password_invites",
@@ -100,6 +103,21 @@ describe("migrations", () => {
       expect.arrayContaining(["idx_events_rights", "idx_vendor_credits_event", "idx_packages_pair"]),
     );
     expect(indexes.filter((name) => name.includes("wedding"))).toEqual([]);
+  });
+
+  it("indexes the image pool by event and recency in migration 0005", () => {
+    expect(columnNames(db, "event_images")).toEqual([
+      "key",
+      "event_id",
+      "content_type",
+      "bytes",
+      "created_at",
+    ]);
+    const columns = db
+      .prepare("SELECT name FROM pragma_index_info('idx_event_images_event')")
+      .all()
+      .map((row) => String(row["name"]));
+    expect(columns).toEqual(["event_id", "created_at"]);
   });
 });
 
@@ -249,6 +267,26 @@ describe("referential integrity", () => {
     db.prepare("DELETE FROM events WHERE id = 'w1'").run();
     const remaining = db.prepare("SELECT COUNT(*) AS n FROM vendor_credits").get();
     expect(remaining?.["n"]).toBe(0);
+  });
+
+  it("deletes an event's image pool along with the event", () => {
+    insertEvent();
+    db.prepare(
+      "INSERT INTO event_images (key, event_id, content_type, bytes) VALUES ('events/w1/a.jpg', 'w1', 'image/jpeg', 10)",
+    ).run();
+    db.prepare("DELETE FROM events WHERE id = 'w1'").run();
+    const remaining = db.prepare("SELECT COUNT(*) AS n FROM event_images").get();
+    expect(remaining?.["n"]).toBe(0);
+  });
+
+  it("refuses an image row for an event that does not exist", () => {
+    expect(() =>
+      db
+        .prepare(
+          "INSERT INTO event_images (key, event_id, content_type, bytes) VALUES ('events/ghost/a.jpg', 'ghost', 'image/jpeg', 10)",
+        )
+        .run(),
+    ).toThrow(/FOREIGN KEY constraint failed/);
   });
 
   it("keeps the audit log when its actor is deleted", () => {

@@ -404,3 +404,79 @@ describe("GET /packages/:id", () => {
     expect((await app.request(`/packages/${pkg["id"]}`, {}, env)).status).toBe(401);
   });
 });
+
+describe("GET /events/:id/packages", () => {
+  const listFor = (eventId: string, headers = auth) =>
+    app.request(`/events/${eventId}/packages`, { headers }, env);
+
+  const listed = async (eventId = "w1") => {
+    const res = await listFor(eventId);
+    expect(res.status).toBe(200);
+    return ((await res.json()) as { packages: Array<Record<string, any>> }).packages;
+  };
+
+  it("requires authentication", async () => {
+    await seedEvent();
+    expect((await listFor("w1", {})).status).toBe(401);
+  });
+
+  it("404s an unknown event", async () => {
+    expect((await listFor("ghost")).status).toBe(404);
+  });
+
+  it("is empty for an event with no packages", async () => {
+    await seedEvent();
+    expect(await listed()).toEqual([]);
+  });
+
+  it("summarises each package with its publication name and image count", async () => {
+    await seedEvent();
+    const pkg = await created();
+    await patchPackage(pkg["id"], { imageKeys: ["events/w1/a.jpg", "events/w1/b.jpg"] });
+
+    expect(await listed()).toEqual([
+      {
+        id: pkg["id"],
+        publicationId: PUB,
+        publicationName: "Loverly",
+        version: 1,
+        complete: false,
+        imageCount: 2,
+        createdAt: pkg["createdAt"],
+      },
+    ]);
+  });
+
+  it("lists only this event's packages", async () => {
+    await seedEvent("w1");
+    await seedEvent("w2");
+    await created("w1");
+    await created("w2");
+    await created("w2", "pub-the-lane");
+
+    expect((await listed("w1")).map((row) => row["publicationId"])).toEqual([PUB]);
+    expect(await listed("w2")).toHaveLength(2);
+  });
+
+  it("reports the same completeness the package view does, couple limits included", async () => {
+    // A limit adds an attested item; a list that skipped the consent
+    // constraints would call this package complete while the editor would not.
+    await seedEvent("w1", { nameDisplay: "First names only" });
+    await db
+      .prepare(
+        "INSERT INTO publications (id, name, tier, method, exclusivity_policy, earned_or_paid, last_verified, spec_json) VALUES ('pub-open', 'Open Outlet', 'secondary', 'email', 'unknown', 'earned', '2026-08-21', '{}')",
+      )
+      .run();
+    const pkg = await created("w1", "pub-open");
+
+    const partial = await bodyOf(await patchPackage(pkg["id"], { imageKeys: ["events/w1/a.jpg"] }));
+    expect(partial["complete"]).toBe(false);
+    expect((await listed())[0]?.["complete"]).toBe(false);
+
+    const done = await bodyOf(
+      await patchPackage(pkg["id"], { attestations: { consent_limits: true } }),
+    );
+    expect(done["complete"]).toBe(true);
+    expect((await listed())[0]?.["complete"]).toBe(true);
+  });
+});

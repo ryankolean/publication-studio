@@ -77,7 +77,11 @@ export function DashboardPage() {
             <li key={event.id} className="rounded-lg border border-slate-200 p-4">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="font-medium text-slate-900">{event.coupleNames}</h3>
+                  <h3 className="font-medium text-slate-900">
+                    <Link to={`/events/${event.id}`} className="hover:underline">
+                      {event.coupleNames}
+                    </Link>
+                  </h3>
                   <p className="text-sm text-slate-500">
                     {event.eventDate}
                     {place(event) !== "" ? ` - ${place(event)}` : ""}

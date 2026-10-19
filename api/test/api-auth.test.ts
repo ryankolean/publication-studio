@@ -261,6 +261,20 @@ describe("CORS", () => {
     expect(res.headers.get("access-control-allow-origin")).toBe(ALLOWED_ORIGIN);
   });
 
+  it("allows the methods the curation board sends", async () => {
+    // Uploading bytes is a PUT with an image content type and removing an
+    // image is a DELETE; both preflight, and a method missing here fails in
+    // the browser while every in-process test passes.
+    for (const method of ["GET", "POST", "PATCH", "PUT", "DELETE"]) {
+      const res = await app.request(
+        "/health",
+        { method: "OPTIONS", headers: { origin: ALLOWED_ORIGIN, "access-control-request-method": method } },
+        env,
+      );
+      expect(res.headers.get("access-control-allow-methods") ?? "", method).toContain(method);
+    }
+  });
+
   it("does not echo an unapproved origin", async () => {
     const res = await app.request(
       "/health",

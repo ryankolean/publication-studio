@@ -155,3 +155,64 @@ describe("token refresh", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("patch and delete", () => {
+  it("patches json", async () => {
+    session.signIn({ accessToken: "access-1", refreshToken: "refresh-1", user: USER });
+    fetchMock.mockResolvedValueOnce(json({ id: "pk1" }));
+    await client().patch("/packages/pk1", { descriptionMd: "x" });
+    const init = fetchMock.mock.calls[0]?.[1] as RequestInit;
+    expect(init.method).toBe("PATCH");
+    expect(init.body).toBe(JSON.stringify({ descriptionMd: "x" }));
+    expect((init.headers as Record<string, string>)["authorization"]).toBe("Bearer access-1");
+  });
+
+  it("deletes with the bearer token and no body", async () => {
+    session.signIn({ accessToken: "access-1", refreshToken: "refresh-1", user: USER });
+    fetchMock.mockResolvedValueOnce(json({ deleted: true }));
+    await client().delete("/events/w1/images/events/w1/a.jpg");
+    const init = fetchMock.mock.calls[0]?.[1] as RequestInit;
+    expect(fetchMock.mock.calls[0]?.[0]).toBe("https://api.example.com/events/w1/images/events/w1/a.jpg");
+    expect(init.method).toBe("DELETE");
+    expect(init.body).toBeUndefined();
+  });
+});
+
+describe("putBytes", () => {
+  const blob = new Blob([new Uint8Array([1, 2, 3])], { type: "image/jpeg" });
+
+  it("puts raw bytes to the capability url under the base url", async () => {
+    fetchMock.mockResolvedValueOnce(json({ key: "events/w1/a.jpg", bytes: 3 }, 201));
+    await client().putBytes("/images/events/w1/a.jpg?token=abc", blob, "image/jpeg");
+
+    expect(fetchMock.mock.calls[0]?.[0]).toBe("https://api.example.com/images/events/w1/a.jpg?token=abc");
+    const init = fetchMock.mock.calls[0]?.[1] as RequestInit;
+    expect(init.method).toBe("PUT");
+    expect(init.body).toBe(blob);
+    expect((init.headers as Record<string, string>)["content-type"]).toBe("image/jpeg");
+  });
+
+  it("does not send the bearer token, because the url carries the capability", async () => {
+    session.signIn({ accessToken: "access-1", refreshToken: "refresh-1", user: USER });
+    fetchMock.mockResolvedValueOnce(json({}, 201));
+    await client().putBytes("/images/k?token=abc", blob, "image/jpeg");
+    const init = fetchMock.mock.calls[0]?.[1] as RequestInit;
+    expect((init.headers as Record<string, string>)["authorization"]).toBeUndefined();
+  });
+
+  it("surfaces the server's message on a refusal", async () => {
+    fetchMock.mockResolvedValueOnce(
+      json({ code: "VALIDATION", message: "That image is larger than the limit." }, 400),
+    );
+    await expect(client().putBytes("/images/k?token=abc", blob, "image/jpeg")).rejects.toMatchObject({
+      code: "VALIDATION",
+      message: "That image is larger than the limit.",
+    });
+  });
+
+  it("reports a network failure as an ApiError", async () => {
+    fetchMock.mockRejectedValueOnce(new TypeError("Failed to fetch"));
+    const error = await client().putBytes("/images/k?token=abc", blob, "image/jpeg").catch((e: unknown) => e);
+    expect((error as ApiError).code).toBe("NETWORK");
+  });
+});

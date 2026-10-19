@@ -13,6 +13,7 @@ export type ErrorCode =
   | "RIGHTS_BLOCKED"
   | "EXCLUSIVITY_LOCKED"
   | "SPEC_UNVERIFIED"
+  | "IMAGE_IN_USE"
   | "INTERNAL";
 
 export interface ErrorBody {

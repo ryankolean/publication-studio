@@ -8,6 +8,8 @@ import { SetPasswordPage } from "./pages/SetPasswordPage.js";
 import { DashboardPage } from "./pages/DashboardPage.js";
 import { IntakePage } from "./pages/IntakePage.js";
 import { PublicationsPage } from "./pages/PublicationsPage.js";
+import { EventDetailPage } from "./pages/EventDetailPage.js";
+import { PackageEditorPage } from "./pages/PackageEditorPage.js";
 
 /**
  * DECISION: HashRouter, not BrowserRouter. GitHub Pages serves static files
@@ -27,7 +29,7 @@ function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-white text-slate-900">
       <header className="border-b border-slate-200">
-        <div className="mx-auto flex max-w-4xl flex-col gap-2 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto flex max-w-4xl flex-col gap-2 px-4 py-4 sm:px-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
             <span className="font-semibold tracking-tight">{PRODUCT_NAME}</span>
             <nav className="flex gap-4 text-sm">
@@ -47,7 +49,7 @@ function Shell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-4xl px-6 py-8">{children}</main>
+      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">{children}</main>
     </div>
   );
 }
@@ -70,6 +72,8 @@ function Routed() {
       <Routes>
         <Route path="/" element={<RequireSession><DashboardPage /></RequireSession>} />
         <Route path="/events/new" element={<RequireSession><IntakePage /></RequireSession>} />
+        <Route path="/events/:id" element={<RequireSession><EventDetailPage /></RequireSession>} />
+        <Route path="/packages/:id" element={<RequireSession><PackageEditorPage /></RequireSession>} />
         <Route path="/publications" element={<RequireSession><PublicationsPage /></RequireSession>} />
         <Route path="/set-password" element={<SetPasswordPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />

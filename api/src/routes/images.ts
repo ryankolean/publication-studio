@@ -24,7 +24,94 @@ const ALLOWED_CONTENT_TYPES: Record<string, string> = {
 
 const MAX_IMAGE_BYTES = 12 * 1024 * 1024;
 
+/** "events/<id>/<file>" -> "<id>"; null for any key this server did not mint. */
+function eventIdOf(key: string): string | null {
+  const match = /^events\/([^/]+)\/[^/]+$/.exec(key);
+  return match?.[1] ?? null;
+}
+
+async function readUrlFor(secret: string, key: string): Promise<string> {
+  const token = await mintImageToken(secret, { key, purpose: "read" });
+  return `/images/${key}?token=${encodeURIComponent(token)}`;
+}
+
 export const imageRoutes = new Hono<AppContext>();
+
+/** The event's whole pool, newest first, each with a short-lived read url. */
+imageRoutes.get("/events/:id/images", requireAuth, async (c) => {
+  const event = await c.env.DB.prepare("SELECT id FROM events WHERE id = ?")
+    .bind(c.req.param("id"))
+    .first<{ id: string }>();
+  if (event === null) return fail(c, 404, "NOT_FOUND", "No such event.");
+
+  // rowid breaks ties inside one second, so two uploads in a row still list
+  // in the order they landed.
+  const { results } = await c.env.DB.prepare(
+    `SELECT key, content_type, bytes, created_at FROM event_images
+     WHERE event_id = ? ORDER BY created_at DESC, rowid DESC`,
+  )
+    .bind(event.id)
+    .all<{ key: string; content_type: string; bytes: number; created_at: string }>();
+
+  const images = await Promise.all(
+    results.map(async (row) => ({
+      key: row.key,
+      contentType: row.content_type,
+      bytes: row.bytes,
+      createdAt: row.created_at,
+      readUrl: await readUrlFor(c.env.JWT_SECRET, row.key),
+      expiresIn: READ_TOKEN_TTL_SECONDS,
+    })),
+  );
+
+  return c.json({ images });
+});
+
+// DECISION: no rights gate on removal. Deleting curated images is never a
+// packaging step, and an event whose consent was later withdrawn is exactly
+// the one whose images should be removable.
+imageRoutes.delete("/events/:id/images/:key{.+}", requireAuth, async (c) => {
+  const eventId = c.req.param("id");
+  const key = c.req.param("key");
+
+  // Scoped to the event in the path: a key from another event is a 404 here,
+  // not a delete, whatever the caller knows about it.
+  const image = await c.env.DB.prepare(
+    "SELECT key FROM event_images WHERE key = ? AND event_id = ?",
+  )
+    .bind(key, eventId)
+    .first<{ key: string }>();
+  if (image === null) return fail(c, 404, "NOT_FOUND", "No such image.");
+
+  // Exact element match across every package, not a substring of the JSON.
+  const user = await c.env.DB.prepare(
+    "SELECT packages.id AS id FROM packages, json_each(packages.image_keys) WHERE json_each.value = ? LIMIT 1",
+  )
+    .bind(image.key)
+    .first<{ id: string }>();
+  if (user !== null) {
+    return fail(
+      c,
+      409,
+      "IMAGE_IN_USE",
+      "A package still uses this image. Remove it from the package first.",
+    );
+  }
+
+  await c.env.DB.batch([
+    c.env.DB.prepare("DELETE FROM event_images WHERE key = ?").bind(image.key),
+    c.env.DB
+      .prepare(
+        "INSERT INTO audit_log (id, user_id, entity, entity_id, action, detail_json) VALUES (?, ?, 'image', ?, 'delete', ?)",
+      )
+      .bind(crypto.randomUUID(), c.get("user").id, image.key, JSON.stringify({ eventId })),
+  ]);
+  // After the row: a failed object delete leaves an unlisted orphan, which is
+  // harmless, rather than a listed image whose bytes are gone.
+  await c.env.IMAGES.delete(image.key);
+
+  return c.json({ key: image.key, deleted: true });
+});
 
 /**
  * Mint an upload capability. The key is generated here and never taken from
@@ -97,10 +184,9 @@ imageRoutes.post("/images/:key{.+}/read-url", requireAuth, async (c) => {
     return fail(c, 404, "NOT_FOUND", "No such image.");
   }
 
-  const token = await mintImageToken(c.env.JWT_SECRET, { key, purpose: "read" });
   return c.json({
     key,
-    url: `/images/${key}?token=${encodeURIComponent(token)}`,
+    url: await readUrlFor(c.env.JWT_SECRET, key),
     expiresIn: READ_TOKEN_TTL_SECONDS,
   });
 });
@@ -131,7 +217,29 @@ imageRoutes.put("/images/:key{.+}", async (c) => {
     return fail(c, 400, "VALIDATION", "That image is larger than the limit.");
   }
 
+  // DECISION: the event check runs before the R2 put, not after it. The
+  // prefix was minted by this server and the token is bound to the whole key,
+  // so the event id in it is trusted; whether that event still exists is not.
+  // Checking first means a deleted event gets a 404 and no orphan object,
+  // where checking after would store bytes that nothing lists.
+  const eventId = eventIdOf(key);
+  const event =
+    eventId === null
+      ? null
+      : await c.env.DB.prepare("SELECT id FROM events WHERE id = ?").bind(eventId).first<{ id: string }>();
+  if (event === null) return fail(c, 404, "NOT_FOUND", "No such event.");
+
   await c.env.IMAGES.put(key, bytes, { httpMetadata: { contentType } });
+
+  // A grant stays valid for its whole TTL, so a second PUT with it replaces the
+  // object; the pool row follows rather than duplicating.
+  await c.env.DB.prepare(
+    `INSERT INTO event_images (key, event_id, content_type, bytes) VALUES (?, ?, ?, ?)
+     ON CONFLICT (key) DO UPDATE SET content_type = excluded.content_type, bytes = excluded.bytes`,
+  )
+    .bind(key, event.id, contentType, bytes.byteLength)
+    .run();
+
   return c.json({ key, bytes: bytes.byteLength }, 201);
 });
 
