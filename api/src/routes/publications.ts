@@ -5,6 +5,7 @@ import { requireAuth } from "../middleware/auth.js";
 import { fail } from "../errors.js";
 import { parsePublicationSpec } from "../domain/publication-spec.js";
 import type { PublicationSpec } from "../domain/publication-spec.js";
+import { TAG_CATEGORY_ORDER } from "../domain/tags.js";
 import type {
   EarnedOrPaid,
   ExclusivityPolicy,
@@ -23,6 +24,7 @@ interface PublicationRow {
   exclusivity_policy: ExclusivityPolicy;
   counts_own_blog_as_published: number | null;
   typical_response_days: number | null;
+  response_window_note: string | null;
   earned_or_paid: EarnedOrPaid;
   taste_notes: string | null;
   last_verified: string;
@@ -41,13 +43,17 @@ interface PublicationView {
   /** null means unknown, which is not the same as a known false. */
   countsOwnBlogAsPublished: boolean | null;
   typicalResponseDays: number | null;
+  /** The outlet's own wording for its window, e.g. replies only on success. */
+  responseWindowNote: string | null;
   earnedOrPaid: EarnedOrPaid;
   tasteNotes: string | null;
   lastVerified: string;
   active: boolean;
+  /** Shared vocabulary ids (see the tags table), in category order. */
+  tags: string[];
 }
 
-function toView(row: PublicationRow): PublicationView {
+function toView(row: PublicationRow, tags: string[]): PublicationView {
   return {
     id: row.id,
     name: row.name,
@@ -60,10 +66,12 @@ function toView(row: PublicationRow): PublicationView {
     countsOwnBlogAsPublished:
       row.counts_own_blog_as_published === null ? null : row.counts_own_blog_as_published === 1,
     typicalResponseDays: row.typical_response_days,
+    responseWindowNote: row.response_window_note,
     earnedOrPaid: row.earned_or_paid,
     tasteNotes: row.taste_notes,
     lastVerified: row.last_verified,
     active: row.active === 1,
+    tags,
   };
 }
 
@@ -83,7 +91,21 @@ publicationRoutes.get("/", async (c) => {
     `SELECT * FROM publications ${where} ORDER BY ${TIER_ORDER}, name`,
   ).all<PublicationRow>();
 
-  return c.json({ publications: results.map(toView) });
+  const tagRows = await c.env.DB.prepare(
+    `SELECT publication_id, tag_id FROM publication_tags
+     JOIN tags ON tags.id = publication_tags.tag_id
+     ORDER BY ${TAG_CATEGORY_ORDER}, tags.sort_order`,
+  ).all<{ publication_id: string; tag_id: string }>();
+  const tagsByPublication = new Map<string, string[]>();
+  for (const row of tagRows.results) {
+    const list = tagsByPublication.get(row.publication_id) ?? [];
+    list.push(row.tag_id);
+    tagsByPublication.set(row.publication_id, list);
+  }
+
+  return c.json({
+    publications: results.map((row) => toView(row, tagsByPublication.get(row.id) ?? [])),
+  });
 });
 
 publicationRoutes.get("/:id", async (c) => {
@@ -95,5 +117,14 @@ publicationRoutes.get("/:id", async (c) => {
 
   if (row === null) return fail(c, 404, "NOT_FOUND", "No such publication.");
 
-  return c.json(toView(row));
+  const tagRows = await c.env.DB.prepare(
+    `SELECT tag_id FROM publication_tags
+     JOIN tags ON tags.id = publication_tags.tag_id
+     WHERE publication_id = ?
+     ORDER BY ${TAG_CATEGORY_ORDER}, tags.sort_order`,
+  )
+    .bind(row.id)
+    .all<{ tag_id: string }>();
+
+  return c.json(toView(row, tagRows.results.map((tag) => tag.tag_id)));
 });

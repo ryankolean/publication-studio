@@ -23,10 +23,18 @@ interface Publication {
   spec: Spec;
   exclusivityPolicy: string;
   typicalResponseDays: number | null;
+  responseWindowNote: string | null;
   earnedOrPaid: string;
   tasteNotes: string | null;
   lastVerified: string;
+  tags: string[];
 }
+
+const TIER_LABEL: Record<string, string> = {
+  primary: "Primary",
+  secondary: "Secondary",
+  dream: "Dream",
+};
 
 const METHOD_LABEL: Record<string, string> = {
   portal: "Portal",
@@ -93,10 +101,10 @@ export function PublicationsPage() {
               <div>
                 <h3 className="font-medium text-slate-900">{publication.name}</h3>
                 <p className="text-sm text-slate-500">
-                  {publication.tier === "primary" ? "Primary" : "Secondary"}
+                  {TIER_LABEL[publication.tier] ?? publication.tier}
                   {" - "}
                   {publication.method === null
-                    ? "Submission route unknown"
+                    ? "No public submission route"
                     : (METHOD_LABEL[publication.method] ?? publication.method)}
                   {publication.earnedOrPaid !== "earned" ? " - paid placement possible" : ""}
                 </p>
@@ -106,6 +114,19 @@ export function PublicationsPage() {
 
             {publication.tasteNotes !== null && (
               <p className="mt-2 text-sm text-slate-600">{publication.tasteNotes}</p>
+            )}
+
+            {publication.tags.length > 0 && (
+              <ul aria-label={`${publication.name} tags`} className="mt-2 flex flex-wrap gap-1.5">
+                {publication.tags.map((tag) => (
+                  <li
+                    key={tag}
+                    className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs text-slate-600"
+                  >
+                    {requirementLabel(tag)}
+                  </li>
+                ))}
+              </ul>
             )}
 
             <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-slate-600">
@@ -119,6 +140,13 @@ export function PublicationsPage() {
                   {publication.typicalResponseDays === null
                     ? "Unknown"
                     : `About ${publication.typicalResponseDays} days`}
+                  {publication.responseWindowNote !== null && (
+                    <span className="block text-xs text-slate-500">
+                      {"\u201c"}
+                      {publication.responseWindowNote}
+                      {"\u201d"}
+                    </span>
+                  )}
                 </dd>
               </div>
               <div className="flex gap-2">

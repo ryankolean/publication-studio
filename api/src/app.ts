@@ -7,6 +7,7 @@ import { publicationRoutes } from "./routes/publications.js";
 import { eventRoutes } from "./routes/events.js";
 import { imageRoutes } from "./routes/images.js";
 import { packageRoutes } from "./routes/packages.js";
+import { tagRoutes } from "./routes/tags.js";
 import { fail } from "./errors.js";
 
 /**
@@ -38,6 +39,7 @@ export function createApp() {
   app.route("/publications", publicationRoutes);
   app.route("/events", eventRoutes);
   app.route("/packages", packageRoutes);
+  app.route("/tags", tagRoutes);
   // Mounted at the root: image routes own both /events/:id/images and /images/*.
   app.route("/", imageRoutes);
 

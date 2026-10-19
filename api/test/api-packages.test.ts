@@ -134,7 +134,7 @@ describe("creating a package", () => {
     await seedEvent();
     const pkg = await created();
     expect(pkg["publication"]).toMatchObject({ id: PUB, name: "Loverly" });
-    expect(pkg["publication"].spec).toMatchObject({ imgMin: 25, imgMax: 40 });
+    expect(pkg["publication"].spec).toMatchObject({ imgMin: 30, imgMax: 40 });
   });
 
   it("audit-logs the creation", async () => {
@@ -238,7 +238,7 @@ describe("the checklist travels with the package", () => {
     await seedEvent();
     const pkg = await created();
     const item = pkg["checklist"].find((i: any) => i.id === "image_count");
-    expect(item.label).toContain("25 to 40");
+    expect(item.label).toContain("30 to 40");
   });
 
   it("adds the couple's limits when they set any", async () => {

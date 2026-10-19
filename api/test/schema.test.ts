@@ -50,7 +50,9 @@ describe("migrations", () => {
     // The eight from design doc section 5, plus password_invites, which
     // migration 0003 adds to support the invite-link password flow, and
     // event_images, which migration 0005 adds so the curation board can list
-    // an event's whole image pool rather than only what a package selected.
+    // an event's whole image pool rather than only what a package selected,
+    // and tags plus publication_tags, which migration 0006 adds as the shared
+    // vocabulary that events and outlets are matched on.
     expect(tableNames(db)).toEqual([
       "audit_log",
       "credit_requests",
@@ -58,8 +60,10 @@ describe("migrations", () => {
       "events",
       "packages",
       "password_invites",
+      "publication_tags",
       "publications",
       "submissions",
+      "tags",
       "users",
       "vendor_credits",
     ]);

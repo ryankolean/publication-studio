@@ -64,13 +64,14 @@ describe("every seeded outlet produces a usable checklist", () => {
 });
 
 describe("Carats & Cake", () => {
-  it("asks for the portal mechanics the design doc records", () => {
+  it("asks for the portal mechanics the live guidelines record", () => {
     const items = buildChecklist(specFor("pub-carats-and-cake"), emptyPackage);
     const ids = items.map((item) => item.id);
     expect(ids).toContain("no_watermarks");
-    expect(ids).toContain("req:tag_all_vendors");
-    expect(ids).toContain("req:upload_3_to_5_images_at_a_time");
-    expect(ids).toContain("req:complete_the_form_in_one_session");
+    expect(ids).toContain("web_size");
+    expect(ids).toContain("req:account_required");
+    expect(ids).toContain("req:photographer_full_gallery_link");
+    expect(items.find((item) => item.id === "req:full_vendor_credits")?.kind).toBe("derived");
   });
 
   it("sets no image count, because the outlet publishes none", () => {
@@ -97,7 +98,7 @@ describe("Carats & Cake", () => {
 });
 
 describe("Loverly", () => {
-  it("enforces the published 25 to 40 image range", () => {
+  it("enforces the published 30 to 40 image range", () => {
     const spec = specFor("pub-loverly");
     const under = evaluatePackage(spec, { ...emptyPackage, imageKeys: ["a"] });
     expect(under.missing).toContain("image_count");
@@ -123,8 +124,18 @@ describe("Loverly", () => {
 });
 
 describe("Brides", () => {
-  it("still yields a checklist despite an unknown submission route and empty spec", () => {
+  it("enforces the 100 to 200 image range and makes exclusivity an attestation", () => {
     const items = buildChecklist(specFor("pub-brides"), emptyPackage);
-    expect(items.map((i) => i.id)).toContain("images_present");
+    const ids = items.map((i) => i.id);
+    expect(ids).toContain("images_present");
+    expect(ids).toContain("image_count");
+    expect(items.find((i) => i.id === "req:exclusive_30_days_after_publication")?.kind).toBe("attested");
+  });
+});
+
+describe("dream outlets", () => {
+  it("still produce the one universal item when the spec is empty", () => {
+    const ids = buildChecklist(specFor("pub-vogue-weddings"), emptyPackage).map((i) => i.id);
+    expect(ids).toEqual(["images_present"]);
   });
 });

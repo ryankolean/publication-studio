@@ -13,3 +13,5 @@ dist/
 *.webp
 *.zip
 /data/
+# Agent worktrees created by the Claude desktop app
+.claude/worktrees/
