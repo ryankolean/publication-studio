@@ -351,6 +351,27 @@ describe("weddingChip", () => {
     expect(weddingChip(event(), 0)).toEqual({ kind: "needs_details", label: "Needs details" });
   });
 
+  it("says where the wedding stands with an outlet once a submission exists", () => {
+    const pkg = (status: string, publicationName = "Loverly") => ({
+      publicationName,
+      submission: { status: status as never },
+    });
+    expect(weddingChip(event(), 1, [pkg("ready")])).toEqual({ kind: "queued", label: "In the queue for Loverly" });
+    expect(weddingChip(event(), 1, [pkg("queued")]).label).toBe("In the queue for Loverly");
+    expect(weddingChip(event(), 1, [pkg("sent")])).toEqual({ kind: "live", label: "Sent to Loverly" });
+    expect(weddingChip(event(), 1, [pkg("accepted")])).toEqual({ kind: "accepted", label: "Accepted by Loverly" });
+    expect(weddingChip(event(), 1, [pkg("expired")]).label).toBe("Reply overdue from Loverly");
+    expect(weddingChip(event(), 1, [pkg("published")])).toEqual({ kind: "published", label: "Published at Loverly" });
+    // Newest package first: a fresh queue entry outranks an older published one.
+    expect(weddingChip(event(), 1, [pkg("queued", "Brides"), pkg("published")]).label).toBe("In the queue for Brides");
+    // A declined or cancelled submission releases the wedding.
+    expect(weddingChip(event(), 1, [pkg("declined")]).label).toBe("Ready to send");
+    expect(weddingChip(event({ hasGalleryUrl: false }), 0, [pkg("cancelled")]).label).toBe("Needs details");
+    // The outlet's state outranks a tidy record, but never the gate.
+    expect(weddingChip(event({ hasGalleryUrl: false }), 0, [pkg("sent")]).label).toBe("Sent to Loverly");
+    expect(weddingChip(event({ consentStatus: "declined" }), 1, [pkg("sent")]).kind).toBe("blocked");
+  });
+
   it("says blocked, and why, before anything else", () => {
     expect(weddingChip(event({ rightsStatus: "unverified", consentStatus: "unverified", hasGalleryUrl: false }), 0)).toEqual({
       kind: "blocked",

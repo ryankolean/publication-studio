@@ -209,8 +209,24 @@ describe("[photos]", () => {
     expect(api.post).toHaveBeenNthCalledWith(1, "/events/w1/images", { contentType: "image/jpeg", fileName: "IMG_1.jpg" });
     expect(api.putBytes).toHaveBeenNthCalledWith(1, "/images/events/w1/n1.jpg?token=x", first, "image/jpeg", "IMG_1.jpg");
     expect(api.putBytes).toHaveBeenNthCalledWith(2, "/images/events/w1/n2.png?token=y", second, "image/png", "rings.png");
-    const progress = await screen.findByRole("list", { name: "Upload progress" });
-    await waitFor(() => expect(progress).toHaveTextContent("rings.png: uploaded"));
+    // Once every file has landed the per-file lines collapse to one summary.
+    await waitFor(() => expect(screen.getByText("2 photos added.")).toBeInTheDocument());
+    expect(screen.queryByRole("list", { name: "Upload progress" })).not.toBeInTheDocument();
+  });
+
+  it("chooses every pool photo at once, oldest first, and clears them again", async () => {
+    await open(packageView({ imageKeys: [] }));
+    await userEvent.click(screen.getByRole("button", { name: "Choose all" }));
+    const chosen = within(screen.getByRole("list", { name: "Selected photos" })).getAllByRole("listitem");
+    expect(chosen).toHaveLength(4);
+    // The pool lists newest first; the selection runs the other way.
+    expect(chosen[0]).toHaveTextContent("dance.jpg");
+    expect(chosen[3]).toHaveTextContent("arrival.jpg");
+    expect(screen.getByRole("button", { name: "Choose all" })).toBeDisabled();
+
+    await userEvent.click(screen.getByRole("button", { name: "Clear" }));
+    expect(screen.queryByRole("list", { name: "Selected photos" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Clear" })).toBeDisabled();
   });
 
   it("stops uploading when the server refuses on rights grounds", async () => {
@@ -220,9 +236,10 @@ describe("[photos]", () => {
       new File([new Uint8Array([1])], "a.jpg", { type: "image/jpeg" }),
       new File([new Uint8Array([2])], "b.jpg", { type: "image/jpeg" }),
     ]);
-    const progress = await screen.findByRole("list", { name: "Upload progress" });
-    await waitFor(() => expect(progress).toHaveTextContent("a.jpg: This event cannot be packaged yet."));
-    expect(progress).toHaveTextContent("b.jpg: waiting");
+    // The run stopped, so the summary shows and the failure stays listed.
+    const status = await screen.findByText("0 added, 2 failed.");
+    expect(status.parentElement).toHaveTextContent("a.jpg: This event cannot be packaged yet.");
+    expect(status.parentElement).toHaveTextContent("b.jpg: waiting");
     expect(api.post).toHaveBeenCalledTimes(1);
   });
 

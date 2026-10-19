@@ -18,7 +18,11 @@ export interface EventSummary {
   gate: Gate;
   /** The server follows a package for it in the wizard: something is under way. */
   inProgress: boolean;
+  /** The server's one-line verdict; shown here only when it names an outlet. */
+  chip?: { kind: string; label: string };
 }
+
+const OUTLET_CHIP_KINDS = new Set(["queued", "live", "accepted", "published"]);
 
 function place(event: EventSummary): string {
   return [event.venueName, [event.city, event.state].filter(Boolean).join(", ")]
@@ -162,7 +166,14 @@ function Inventory() {
                     </Link>
                   )}
                 </div>
-                <RightsBadge gate={event.gate} />
+                <div className="flex flex-col items-end gap-1">
+                  <RightsBadge gate={event.gate} />
+                  {event.chip !== undefined && OUTLET_CHIP_KINDS.has(event.chip.kind) && (
+                    <span className="rounded-full border border-sky-300 bg-sky-50 px-2.5 py-0.5 text-xs font-medium text-sky-900">
+                      {event.chip.label}
+                    </span>
+                  )}
+                </div>
               </div>
               <GateReasons gate={event.gate} />
               {!event.hasGalleryUrl && (

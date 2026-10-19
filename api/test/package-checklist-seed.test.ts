@@ -54,6 +54,21 @@ describe("every seeded outlet produces a usable checklist", () => {
     }
   });
 
+  it("gives every outlet requirement a written instruction, not a humanised id", () => {
+    // "Vendor account dashboard" is a note to a developer; "Submit from your
+    // vendor account dashboard on the outlet's site" is a check she can tick.
+    const humanised = (id: string) => {
+      const words = id.replace(/^req:/, "").replace(/_/g, " ").trim();
+      return words.charAt(0).toUpperCase() + words.slice(1);
+    };
+    for (const { id, spec } of allSpecs()) {
+      for (const item of buildChecklist(spec, emptyPackage)) {
+        if (!item.id.startsWith("req:")) continue;
+        expect(item.label, `${id} ${item.id}`).not.toBe(humanised(item.id));
+      }
+    }
+  });
+
   it("labels every item readably, with no leftover snake_case", () => {
     for (const { id, spec } of allSpecs()) {
       for (const item of buildChecklist(spec, emptyPackage)) {

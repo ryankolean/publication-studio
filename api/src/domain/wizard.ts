@@ -133,7 +133,13 @@ export function gateWords(input: RightsGateInput): string[] {
   return gateCodes(input).map((code) => GATE_WORDS[code].long);
 }
 
-export type ChipKind = "ready" | "needs_details" | "blocked";
+export type ChipKind = "ready" | "needs_details" | "blocked" | "queued" | "live" | "accepted" | "published";
+
+/** What the chip needs to know about each package: its outlet and where its submission stands. */
+export interface ChipPackage {
+  publicationName: string | null;
+  submission: { status: SubmissionStatus } | null;
+}
 
 /**
  * The chip on a wedding card: blocked first (nothing else matters until the
@@ -153,10 +159,37 @@ export function weddingChip(
     | "consentStatus"
   >,
   vendorCreditCount: number,
+  packages: readonly ChipPackage[] = [],
 ): { kind: ChipKind; label: string } {
   const codes = gateCodes(event);
   if (codes.length > 0) {
     return { kind: "blocked", label: `Blocked: ${codes.map((code) => GATE_WORDS[code].short).join(" and ")}` };
+  }
+  // Where the wedding stands with an outlet outranks whether its record is
+  // tidy: "Sent to Loverly" is the fact she is waiting on. Packages arrive
+  // newest first, so the first match is the current one.
+  const named = (entry: ChipPackage) => entry.publicationName ?? "an outlet";
+  const open = packages.find((entry) => entry.submission !== null && OPEN.has(entry.submission.status));
+  if (open !== undefined && open.submission !== null) {
+    switch (open.submission.status) {
+      case "ready":
+      case "queued":
+        return { kind: "queued", label: `In the queue for ${named(open)}` };
+      case "sent":
+        return { kind: "live", label: `Sent to ${named(open)}` };
+      case "accepted":
+        return { kind: "accepted", label: `Accepted by ${named(open)}` };
+      case "expired":
+        return { kind: "live", label: `Reply overdue from ${named(open)}` };
+      case "withdraw_pending":
+        return { kind: "live", label: `Withdrawing from ${named(open)}` };
+      default:
+        break;
+    }
+  }
+  const published = packages.find((entry) => entry.submission?.status === "published");
+  if (published !== undefined) {
+    return { kind: "published", label: `Published at ${named(published)}` };
   }
   if (evaluateIntake(event, vendorCreditCount).some((item) => !item.done)) {
     return { kind: "needs_details", label: "Needs details" };

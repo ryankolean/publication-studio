@@ -31,6 +31,13 @@ export function chosenLine(count: number, outlet: string, min: number | null, ma
  * minimum. The server will not call the photos done outside the range, so
  * letting her past with too many would only send her back here on resume.
  */
+function uploadSummary(lines: Array<{ name: string; text: string }>): string {
+  const done = lines.filter((line) => line.text === "uploaded").length;
+  const failed = lines.length - done;
+  if (failed === 0) return done === 1 ? "1 photo added." : `${done} photos added.`;
+  return `${done} added, ${failed} failed.`;
+}
+
 function countReason(count: number, min: number | null, max: number | null): string | null {
   const floor = Math.max(min ?? 1, 1);
   if (count < floor) return floor === 1 ? "Choose at least one photo to continue." : `Choose at least ${floor} to continue.`;
@@ -114,6 +121,18 @@ function Photos({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
     await reloadPool();
   }
 
+  // Adds every pool photo not yet chosen, oldest upload first, so the order
+  // of the day survives when the files were named or sorted that way.
+  function chooseAll() {
+    setSelection((current) => {
+      const missing = [...pool]
+        .reverse()
+        .map((image) => image.key)
+        .filter((key) => !current.includes(key));
+      return [...current, ...missing];
+    });
+  }
+
   function toggle(key: string) {
     setSelection((current) => (current.includes(key) ? current.filter((entry) => entry !== key) : [...current, key]));
   }
@@ -188,19 +207,51 @@ function Photos({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
               className="mt-1 block w-full max-w-full text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-slate-900 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white"
             />
             <p className="mt-1 text-xs text-slate-500">JPEG, PNG or WebP, up to 12 MB each.</p>
-            {uploads.length > 0 && (
+            {uploads.length > 0 && uploading && (
               <ul aria-label="Upload progress" className="mt-2 space-y-1 text-sm text-slate-600">
                 {uploads.map((line, index) => (
                   <li key={`${line.name}-${index}`} className="break-all">{`${line.name}: ${line.text}`}</li>
                 ))}
               </ul>
             )}
+            {uploads.length > 0 && !uploading && (
+              <div role="status" className="mt-2 text-sm text-slate-600">
+                <p>{uploadSummary(uploads)}</p>
+                {uploads
+                  .filter((line) => line.text !== "uploaded")
+                  .map((line, index) => (
+                    <p key={`${line.name}-${index}`} className="break-all text-rose-700">{`${line.name}: ${line.text}`}</p>
+                  ))}
+              </div>
+            )}
             {poolError !== null && <Alert>{poolError}</Alert>}
           </div>
 
-          <p role="status" className="text-sm font-medium text-slate-900">
-            {chosenLine(selection.length, outletNameOf(pkg), min, max)}
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p role="status" className="text-sm font-medium text-slate-900">
+              {chosenLine(selection.length, outletNameOf(pkg), min, max)}
+            </p>
+            {pool.length > 0 && (
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={chooseAll}
+                  disabled={pool.every((image) => selection.includes(image.key))}
+                  className="rounded-md border border-slate-300 px-2.5 py-1 text-xs font-medium text-slate-700 disabled:opacity-40"
+                >
+                  Choose all
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelection([])}
+                  disabled={selection.length === 0}
+                  className="rounded-md border border-slate-300 px-2.5 py-1 text-xs font-medium text-slate-700 disabled:opacity-40"
+                >
+                  Clear
+                </button>
+              </div>
+            )}
+          </div>
 
           {pool.length === 0 ? (
             <p className="text-sm text-slate-500">No photos yet. Add them above.</p>

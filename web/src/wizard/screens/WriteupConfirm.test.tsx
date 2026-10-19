@@ -139,6 +139,35 @@ describe("[confirm]", () => {
     await waitFor(() => expect(continueButton()).toBeEnabled());
   });
 
+  it("keeps a quick second tick when the first save replies late", async () => {
+    await open(viewWith(false));
+    let answerFirst: (view: unknown) => void = () => {};
+    api.patch
+      .mockImplementationOnce(() => new Promise((resolve) => { answerFirst = resolve; }))
+      .mockResolvedValueOnce(viewWith(true));
+
+    await userEvent.click(screen.getByRole("checkbox", { name: "Confirm no photo carries a watermark" }));
+    await userEvent.click(screen.getByRole("checkbox", { name: /couple's limits/ }));
+
+    // The first save answers only now, and knows nothing of the second tick.
+    answerFirst(
+      packageView({
+        checklist: checklist(false).map((item) => (item.id === "no_watermarks" ? { ...item, satisfied: true } : item)),
+        complete: false,
+        missing: ["consent_limits"],
+      }),
+    );
+
+    await waitFor(() =>
+      expect(api.patch).toHaveBeenLastCalledWith("/packages/pk1", {
+        attestations: { no_watermarks: true, consent_limits: true },
+      }),
+    );
+    expect(screen.getByRole("checkbox", { name: "Confirm no photo carries a watermark" })).toBeChecked();
+    expect(screen.getByRole("checkbox", { name: /couple's limits/ })).toBeChecked();
+    await waitFor(() => expect(continueButton()).toBeEnabled());
+  });
+
   it("re-reads the package on Continue and moves on only when it is complete", async () => {
     let reads = 0;
     await open(viewWith(true), () => {

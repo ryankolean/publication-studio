@@ -28,13 +28,14 @@ export interface RailProps {
 
 /**
  * Step names with the server's done ticks. Done steps are links back; the
- * current one is highlighted. It scrolls inside itself on a narrow screen
- * rather than widening the page.
+ * current one is highlighted. On a narrow screen the chips wrap onto more
+ * rows: a scrolling rail counted towards the document width in Chrome and
+ * gave the page a horizontal scrollbar on a phone.
  */
 function Rail({ eventId, packageId, current, steps }: RailProps) {
   return (
-    <nav aria-label="Progress" className="-mx-1 overflow-x-auto pb-1">
-      <ol className="flex min-w-max gap-1 px-1 text-xs">
+    <nav aria-label="Progress" className="pb-1">
+      <ol className="flex flex-wrap gap-1 text-xs">
         {steps.map((entry, index) => {
           const isCurrent = entry.id === current;
           const tone = isCurrent

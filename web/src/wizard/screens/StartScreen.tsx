@@ -5,7 +5,7 @@ import { useSession } from "../../session-context.js";
 import { Alert, BUTTON, Frame, Loading } from "../Frame.js";
 import { errorText, friendlyDate } from "../model.js";
 
-type ChipKind = "ready" | "needs_details" | "blocked";
+type ChipKind = "ready" | "needs_details" | "blocked" | "queued" | "live" | "accepted" | "published";
 
 /** GET /events, reduced to what a wedding card shows. */
 interface WeddingCard {
@@ -19,6 +19,10 @@ const CHIP_TONE: Record<ChipKind, string> = {
   ready: "border-emerald-300 bg-emerald-50 text-emerald-900",
   needs_details: "border-amber-300 bg-amber-50 text-amber-900",
   blocked: "border-rose-300 bg-rose-50 text-rose-900",
+  queued: "border-sky-300 bg-sky-50 text-sky-900",
+  live: "border-sky-300 bg-sky-50 text-sky-900",
+  accepted: "border-emerald-300 bg-emerald-50 text-emerald-900",
+  published: "border-slate-300 bg-slate-100 text-slate-800",
 };
 
 /** [start] Choose a wedding. The chip on each card is the server's verdict. */

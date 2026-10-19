@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { useSession } from "../../session-context.js";
@@ -64,10 +64,18 @@ function Confirm({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [stillOpen, setStillOpen] = useState<string[]>([]);
 
+  // The latest ticks live in a ref as well as state: a tap must build on the
+  // previous tap, not on whatever render the handler closed over. The sequence
+  // number lets a reply from an older save be ignored, so a quick second tap
+  // is never undone by the first tap's response landing after it.
+  const latest = useRef<Record<string, boolean>>({});
+  const sequence = useRef(0);
+
   const apply = (view: PackageView) => {
     setPkg(view);
     const next: Record<string, boolean> = {};
     for (const item of view.checklist) if (item.kind === "attested") next[item.id] = item.satisfied;
+    latest.current = next;
     setTicks(next);
   };
 
@@ -88,16 +96,23 @@ function Confirm({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
 
   async function tick(id: string, checked: boolean) {
     if (pkg === null) return;
-    const next = { ...ticks, [id]: checked };
+    const next = { ...latest.current, [id]: checked };
+    latest.current = next;
     setTicks(next);
+    const mine = ++sequence.current;
     setSaving(true);
     setError(null);
     try {
-      apply(await api.patch<PackageView>(`/packages/${packageId}`, { attestations: attestations(pkg.checklist, next) }));
+      const view = await api.patch<PackageView>(`/packages/${packageId}`, {
+        attestations: attestations(pkg.checklist, next),
+      });
+      // Only the newest save may speak, and even then only about the server's
+      // verdict (complete, missing); the ticks on screen stay the user's.
+      if (mine === sequence.current) setPkg(view);
     } catch (caught) {
-      setError(errorText(caught, "Could not save that check."));
+      if (mine === sequence.current) setError(errorText(caught, "Could not save that check."));
     } finally {
-      setSaving(false);
+      if (mine === sequence.current) setSaving(false);
     }
   }
 
@@ -107,7 +122,7 @@ function Confirm({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
     setError(null);
     setStillOpen([]);
     try {
-      await api.patch(`/packages/${packageId}`, { attestations: attestations(pkg.checklist, ticks) });
+      await api.patch(`/packages/${packageId}`, { attestations: attestations(pkg.checklist, latest.current) });
       // Read back: the server's verdict decides, not this screen's ticks.
       const fresh = await api.get<PackageView>(`/packages/${packageId}`);
       apply(fresh);
@@ -163,7 +178,6 @@ function Confirm({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
                   <input
                     type="checkbox"
                     checked={ticks[item.id] ?? false}
-                    disabled={saving}
                     onChange={(change) => void tick(item.id, change.target.checked)}
                     className="mt-0.5"
                   />

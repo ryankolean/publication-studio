@@ -253,20 +253,29 @@ eventRoutes.get("/", async (c) => {
     }>(),
     db
       .prepare(
-        `SELECT packages.id AS id, packages.event_id AS event_id, submissions.status AS status
+        `SELECT packages.id AS id, packages.event_id AS event_id, submissions.status AS status,
+                publications.name AS publication_name
          FROM packages
          LEFT JOIN submissions ON submissions.event_id = packages.event_id
            AND submissions.publication_id = packages.publication_id
+         LEFT JOIN publications ON publications.id = packages.publication_id
          ORDER BY packages.created_at DESC, packages.rowid DESC`,
       )
-      .all<{ id: string; event_id: string; status: SubmissionStatus | null }>(),
+      .all<{ id: string; event_id: string; status: SubmissionStatus | null; publication_name: string | null }>(),
   ]);
 
   const creditCount = new Map(credits.results.map((row) => [row.event_id, row.n]));
-  const packagesOf = new Map<string, Array<{ id: string; submission: { status: SubmissionStatus } | null }>>();
+  const packagesOf = new Map<
+    string,
+    Array<{ id: string; publicationName: string | null; submission: { status: SubmissionStatus } | null }>
+  >();
   for (const row of packages.results) {
     const list = packagesOf.get(row.event_id) ?? [];
-    list.push({ id: row.id, submission: row.status === null ? null : { status: row.status } });
+    list.push({
+      id: row.id,
+      publicationName: row.publication_name,
+      submission: row.status === null ? null : { status: row.status },
+    });
     packagesOf.set(row.event_id, list);
   }
 
@@ -275,7 +284,7 @@ eventRoutes.get("/", async (c) => {
       const view = toView(row);
       return {
         ...view,
-        chip: weddingChip(view, creditCount.get(row.id) ?? 0),
+        chip: weddingChip(view, creditCount.get(row.id) ?? 0, packagesOf.get(row.id) ?? []),
         inProgress: followedPackageId(packagesOf.get(row.id) ?? []) !== null,
       };
     }),
