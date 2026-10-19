@@ -125,12 +125,12 @@ describe("EventDetailPage header", () => {
     expect(screen.getByText(/No guest faces/)).toBeInTheDocument();
   });
 
-  it("opens the submission walkthrough", async () => {
+  it("opens the submission wizard where it left off", async () => {
     serveGets();
     renderPage();
     expect(await screen.findByRole("link", { name: "Submit this event" })).toHaveAttribute(
       "href",
-      "/events/w1/submit",
+      "/wizard/w1",
     );
   });
 

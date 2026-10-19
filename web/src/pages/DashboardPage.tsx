@@ -16,6 +16,8 @@ export interface EventSummary {
   state: string | null;
   hasGalleryUrl: boolean;
   gate: Gate;
+  /** The server follows a package for it in the wizard: something is under way. */
+  inProgress: boolean;
 }
 
 function place(event: EventSummary): string {
@@ -75,6 +77,12 @@ function ActionStrip() {
 export function DashboardPage() {
   return (
     <div className="space-y-8">
+      <section aria-label="Start" className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-sm text-slate-600">Get a wedding ready for an outlet, one step at a time.</p>
+        <Link to="/wizard" className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white">
+          Start a submission
+        </Link>
+      </section>
       <ActionStrip />
       <Inventory />
     </div>
@@ -119,7 +127,7 @@ function Inventory() {
         <h2 className="text-lg font-semibold text-slate-900">Inventory</h2>
         <Link
           to="/events/new"
-          className="rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white"
+          className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-700 hover:border-slate-900"
         >
           Add an event
         </Link>
@@ -144,13 +152,15 @@ function Inventory() {
                     {event.eventDate}
                     {place(event) !== "" ? ` - ${place(event)}` : ""}
                   </p>
-                  <Link
-                    to={`/events/${event.id}/submit`}
-                    aria-label={`Submit ${event.coupleNames}`}
-                    className="mt-1 inline-block text-sm text-slate-600 underline hover:text-slate-900"
-                  >
-                    Submit
-                  </Link>
+                  {event.inProgress && (
+                    <Link
+                      to={`/wizard/${event.id}`}
+                      aria-label={`Continue ${event.coupleNames}`}
+                      className="mt-2 inline-block rounded-md border border-slate-900 px-3 py-1 text-sm font-medium text-slate-900"
+                    >
+                      Continue
+                    </Link>
+                  )}
                 </div>
                 <RightsBadge gate={event.gate} />
               </div>

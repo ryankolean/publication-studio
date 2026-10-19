@@ -301,6 +301,21 @@ const NOTHING_SENT =
  */
 const SILENCE_IS_A_PASS = /success|selected|not heard back/i;
 
+/** True when the outlet's own words make no reply by the due date a pass. */
+export function silenceMeansPass(note: string): boolean {
+  return SILENCE_IS_A_PASS.test(note);
+}
+
+/** The send step's verdict: the photographer has sent it herself. */
+export function isSentOrLater(status: SubmissionStatus): boolean {
+  return SENT_OR_LATER.has(status);
+}
+
+/** The reply step's verdict: the outlet answered, or the window closed. */
+export function isAnswered(status: SubmissionStatus): boolean {
+  return ANSWERED.has(status);
+}
+
 /** "30 to 40 images", or null when the outlet states no count. */
 function boundsText(spec: WalkthroughOutlet["spec"]): string | null {
   if (spec.imgMin !== null && spec.imgMax !== null) return `${spec.imgMin} to ${spec.imgMax} images`;
@@ -549,7 +564,7 @@ function responseStep(input: WalkthroughInput): Draft {
         ? ["The outlet publishes no wording about its replies."]
         : [
             `The outlet's own words: "${note}".`,
-            SILENCE_IS_A_PASS.test(note)
+            silenceMeansPass(note)
               ? "By that wording, no reply by the due date means it passed."
               : "That wording does not say what silence means.",
           ];

@@ -192,6 +192,20 @@ describe("putBytes", () => {
     expect((init.headers as Record<string, string>)["content-type"]).toBe("image/jpeg");
   });
 
+  it("sends the file name the grant echoed, percent-encoded, in x-file-name", async () => {
+    fetchMock.mockResolvedValueOnce(json({}, 201));
+    await client().putBytes("/images/k?token=abc", blob, "image/jpeg", "Première danse.jpg");
+    const init = fetchMock.mock.calls[0]?.[1] as RequestInit;
+    expect((init.headers as Record<string, string>)["x-file-name"]).toBe("Premi%C3%A8re%20danse.jpg");
+  });
+
+  it("sends no x-file-name without a name", async () => {
+    fetchMock.mockResolvedValueOnce(json({}, 201));
+    await client().putBytes("/images/k?token=abc", blob, "image/jpeg", null);
+    const init = fetchMock.mock.calls[0]?.[1] as RequestInit;
+    expect(init.headers as Record<string, string>).not.toHaveProperty("x-file-name");
+  });
+
   it("does not send the bearer token, because the url carries the capability", async () => {
     session.signIn({ accessToken: "access-1", refreshToken: "refresh-1", user: USER });
     fetchMock.mockResolvedValueOnce(json({}, 201));

@@ -12,6 +12,8 @@ import { buildCreditsBlock, buildDescriptionDraft } from "../domain/package-draf
 import type { CreditRow } from "../domain/package-draft.js";
 import type { D1Database } from "../env.js";
 import type { SubmissionStatus } from "../domain/submission-status.js";
+import { READ_TOKEN_TTL_SECONDS } from "../domain/image-token.js";
+import { readUrlFor } from "./images.js";
 
 interface EventRow {
   id: string;
@@ -421,6 +423,46 @@ packageRoutes.get("/:id", async (c) => {
   const view = await loadPackageView(c, c.req.param("id"));
   if (view === null) return fail(c, 404, "NOT_FOUND", "No such package.");
   return c.json(view);
+});
+
+/**
+ * The selection in the package's own order, each image with a short-lived
+ * read url, so the send step can download exactly what the outlet receives.
+ *
+ * DECISION: a selected key with no pool row (packages predate the pool table)
+ * is listed with null details rather than dropped. Dropping it would hand the
+ * outlet fewer images than were chosen without saying so. Pool rows are
+ * matched within the package's own event only.
+ */
+packageRoutes.get("/:id/images", async (c) => {
+  const pkg = await c.env.DB.prepare("SELECT event_id, image_keys FROM packages WHERE id = ?")
+    .bind(c.req.param("id"))
+    .first<{ event_id: string; image_keys: string }>();
+  if (pkg === null) return fail(c, 404, "NOT_FOUND", "No such package.");
+
+  const keys = readJson<string[]>(pkg.image_keys, []);
+  const { results } = await c.env.DB.prepare(
+    "SELECT key, content_type, bytes, original_name FROM event_images WHERE event_id = ?",
+  )
+    .bind(pkg.event_id)
+    .all<{ key: string; content_type: string; bytes: number; original_name: string | null }>();
+  const rows = new Map(results.map((row) => [row.key, row]));
+
+  const images = await Promise.all(
+    keys.map(async (key) => {
+      const row = rows.get(key);
+      return {
+        key,
+        originalName: row?.original_name ?? null,
+        contentType: row?.content_type ?? null,
+        bytes: row?.bytes ?? null,
+        readUrl: await readUrlFor(c.env.JWT_SECRET, key),
+        expiresIn: READ_TOKEN_TTL_SECONDS,
+      };
+    }),
+  );
+
+  return c.json({ images });
 });
 
 packageRoutes.patch("/:id", async (c) => {

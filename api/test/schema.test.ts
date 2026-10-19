@@ -116,12 +116,26 @@ describe("migrations", () => {
       "content_type",
       "bytes",
       "created_at",
+      "original_name",
     ]);
     const columns = db
       .prepare("SELECT name FROM pragma_index_info('idx_event_images_event')")
       .all()
       .map((row) => String(row["name"]));
     expect(columns).toEqual(["event_id", "created_at"]);
+  });
+
+  it("keeps the photographer's file name as optional text in migration 0007", () => {
+    const column = db
+      .prepare("SELECT type, \"notnull\" AS required, dflt_value AS fallback FROM pragma_table_info('event_images') WHERE name = 'original_name'")
+      .get();
+    expect(column).toEqual({ type: "TEXT", required: 0, fallback: null });
+
+    db.exec("INSERT INTO events (id, slug, couple_names, event_date) VALUES ('w1', 'w1', 'A and B', '2026-06-01')");
+    db.exec(
+      "INSERT INTO event_images (key, event_id, content_type, bytes) VALUES ('events/w1/a.jpg', 'w1', 'image/jpeg', 10)",
+    );
+    expect(db.prepare("SELECT original_name FROM event_images").get()).toEqual({ original_name: null });
   });
 });
 

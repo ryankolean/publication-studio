@@ -11,6 +11,7 @@ import {
   mintImageToken,
   verifyImageToken,
 } from "../domain/image-token.js";
+import { fileNameFromHeader, sanitizeFileName } from "../domain/file-name.js";
 
 /**
  * Only curated, web-size derivatives live in R2 (design doc section 4). These
@@ -30,7 +31,8 @@ function eventIdOf(key: string): string | null {
   return match?.[1] ?? null;
 }
 
-async function readUrlFor(secret: string, key: string): Promise<string> {
+/** A short-lived read capability for one object, as a path on this API. */
+export async function readUrlFor(secret: string, key: string): Promise<string> {
   const token = await mintImageToken(secret, { key, purpose: "read" });
   return `/images/${key}?token=${encodeURIComponent(token)}`;
 }
@@ -47,15 +49,22 @@ imageRoutes.get("/events/:id/images", requireAuth, async (c) => {
   // rowid breaks ties inside one second, so two uploads in a row still list
   // in the order they landed.
   const { results } = await c.env.DB.prepare(
-    `SELECT key, content_type, bytes, created_at FROM event_images
+    `SELECT key, content_type, bytes, created_at, original_name FROM event_images
      WHERE event_id = ? ORDER BY created_at DESC, rowid DESC`,
   )
     .bind(event.id)
-    .all<{ key: string; content_type: string; bytes: number; created_at: string }>();
+    .all<{
+      key: string;
+      content_type: string;
+      bytes: number;
+      created_at: string;
+      original_name: string | null;
+    }>();
 
   const images = await Promise.all(
     results.map(async (row) => ({
       key: row.key,
+      originalName: row.original_name,
       contentType: row.content_type,
       bytes: row.bytes,
       createdAt: row.created_at,
@@ -126,10 +135,8 @@ imageRoutes.post("/events/:id/images", requireAuth, async (c) => {
     return fail(c, 400, "VALIDATION", "Expected a JSON body.");
   }
 
-  const contentType =
-    typeof body === "object" && body !== null
-      ? (body as Record<string, unknown>)["contentType"]
-      : undefined;
+  const source = typeof body === "object" && body !== null ? (body as Record<string, unknown>) : {};
+  const contentType = source["contentType"];
 
   if (typeof contentType !== "string" || ALLOWED_CONTENT_TYPES[contentType] === undefined) {
     return fail(
@@ -139,6 +146,19 @@ imageRoutes.post("/events/:id/images", requireAuth, async (c) => {
       `Images must be one of: ${Object.keys(ALLOWED_CONTENT_TYPES).join(", ")}.`,
     );
   }
+
+  const rawName = source["fileName"];
+  if (rawName !== undefined && rawName !== null && typeof rawName !== "string") {
+    return fail(c, 400, "VALIDATION", "Some fields need attention.", [
+      { field: "fileName", message: "Expected text." },
+    ]);
+  }
+  // DECISION: the file name is not stored at grant time and is not put in the
+  // capability token, whose format must not change. The grant echoes the
+  // sanitized name, the client sends it back as the x-file-name header on the
+  // PUT, and the PUT sanitizes it again before writing the pool row. The grant
+  // stays stateless and the row is still written only once the bytes land.
+  const fileName = sanitizeFileName(rawName);
 
   const eventId = c.req.param("id");
   const event = await c.env.DB.prepare(
@@ -171,6 +191,7 @@ imageRoutes.post("/events/:id/images", requireAuth, async (c) => {
       uploadUrl: `/images/${key}?token=${encodeURIComponent(token)}`,
       expiresIn: UPLOAD_TOKEN_TTL_SECONDS,
       maxBytes: MAX_IMAGE_BYTES,
+      fileName,
     },
     201,
   );
@@ -231,13 +252,20 @@ imageRoutes.put("/images/:key{.+}", async (c) => {
 
   await c.env.IMAGES.put(key, bytes, { httpMetadata: { contentType } });
 
+  // The name the grant echoed, percent-encoded by the client because header
+  // values must be ISO-8859-1. Sanitized again here: the header is client
+  // input whatever the grant said.
+  const originalName = fileNameFromHeader(c.req.header("x-file-name"));
+
   // A grant stays valid for its whole TTL, so a second PUT with it replaces the
-  // object; the pool row follows rather than duplicating.
+  // object; the pool row follows rather than duplicating. A repeat without a
+  // name keeps the one already recorded.
   await c.env.DB.prepare(
-    `INSERT INTO event_images (key, event_id, content_type, bytes) VALUES (?, ?, ?, ?)
-     ON CONFLICT (key) DO UPDATE SET content_type = excluded.content_type, bytes = excluded.bytes`,
+    `INSERT INTO event_images (key, event_id, content_type, bytes, original_name) VALUES (?, ?, ?, ?, ?)
+     ON CONFLICT (key) DO UPDATE SET content_type = excluded.content_type, bytes = excluded.bytes,
+       original_name = COALESCE(excluded.original_name, event_images.original_name)`,
   )
-    .bind(key, event.id, contentType, bytes.byteLength)
+    .bind(key, event.id, contentType, bytes.byteLength, originalName)
     .run();
 
   return c.json({ key, bytes: bytes.byteLength }, 201);

@@ -316,6 +316,74 @@ describe("GET /events", () => {
   });
 });
 
+describe("GET /events: the wizard's chip and progress", () => {
+  const complete = {
+    ...minimal,
+    venueName: "The Barn",
+    galleryUrl: GALLERY,
+    uniqueAngle: "A ceremony on a frozen lake.",
+    rightsStatus: "own_contract",
+    consentStatus: "granted",
+    vendorCredits: [{ role: "Florist", businessName: "Stems" }],
+  };
+
+  const list = async () =>
+    ((await (await get("/events")).json()) as { events: Array<Record<string, any>> }).events;
+
+  const packageFor = (eventId: string, id: string, publicationId: string) =>
+    db
+      .prepare("INSERT INTO packages (id, event_id, publication_id, image_keys) VALUES (?, ?, ?, '[]')")
+      .bind(id, eventId, publicationId)
+      .run();
+
+  const submissionFor = (eventId: string, publicationId: string, status: string) =>
+    db
+      .prepare(
+        "INSERT INTO submissions (id, event_id, publication_id, status) VALUES (?, ?, ?, ?)",
+      )
+      .bind(crypto.randomUUID(), eventId, publicationId, status)
+      .run();
+
+  it("says ready for a complete record with the gate open", async () => {
+    await create(complete);
+    expect((await list())[0]).toMatchObject({ chip: { kind: "ready", label: "Ready to send" }, inProgress: false });
+  });
+
+  it("says details are needed, counting vendors per event", async () => {
+    await create({ ...complete, vendorCredits: [] });
+    expect((await list())[0]?.["chip"]).toEqual({ kind: "needs_details", label: "Needs details" });
+  });
+
+  it("says blocked, and why, in plain words", async () => {
+    await create({ ...complete, consentStatus: "declined" });
+    expect((await list())[0]?.["chip"]).toEqual({ kind: "blocked", label: "Blocked: the couple said no" });
+  });
+
+  it("is in progress while a package is unqueued or its submission is open, and not after", async () => {
+    const id = (await create(complete))["id"] as string;
+    await packageFor(id, "pk1", "pub-loverly");
+    expect((await list())[0]?.["inProgress"]).toBe(true);
+
+    await submissionFor(id, "pub-loverly", "sent");
+    expect((await list())[0]?.["inProgress"]).toBe(true);
+
+    await db.prepare("UPDATE submissions SET status = 'declined'").run();
+    expect((await list())[0]?.["inProgress"]).toBe(false);
+  });
+
+  it("reads each event's progress from its own packages", async () => {
+    const busy = (await create({ ...complete, coupleNames: "Busy" }))["id"] as string;
+    await create({ ...complete, coupleNames: "Idle", eventDate: "2026-06-13" });
+    await packageFor(busy, "pk1", "pub-loverly");
+
+    const events = await list();
+    expect(events.map((event) => [event["coupleNames"], event["inProgress"]])).toEqual([
+      ["Busy", true],
+      ["Idle", false],
+    ]);
+  });
+});
+
 describe("GET /events/:id", () => {
   it("returns the event with its vendor credits and gate", async () => {
     const created = await create({

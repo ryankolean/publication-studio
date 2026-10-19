@@ -26,6 +26,7 @@ const event = (overrides: Partial<EventSummary> = {}): EventSummary => ({
   state: "MI",
   hasGalleryUrl: true,
   gate: { allowed: true },
+  inProgress: false,
   ...overrides,
 });
 
@@ -95,17 +96,20 @@ describe("DashboardPage", () => {
     );
   });
 
-  it("links each event to its submission walkthrough", async () => {
-    serve({ events: [event(), event({ id: "w2", coupleNames: "Ada and Bo" })] });
+  it("offers the wizard as the primary way in", async () => {
+    serve({ events: [] });
     renderPage();
-    expect(await screen.findByRole("link", { name: "Submit Sarah and James" })).toHaveAttribute(
+    expect(await screen.findByRole("link", { name: "Start a submission" })).toHaveAttribute("href", "/wizard");
+  });
+
+  it("offers Continue only on events with a submission under way", async () => {
+    serve({ events: [event({ inProgress: true }), event({ id: "w2", coupleNames: "Ada and Bo" })] });
+    renderPage();
+    expect(await screen.findByRole("link", { name: "Continue Sarah and James" })).toHaveAttribute(
       "href",
-      "/events/w1/submit",
+      "/wizard/w1",
     );
-    expect(screen.getByRole("link", { name: "Submit Ada and Bo" })).toHaveAttribute(
-      "href",
-      "/events/w2/submit",
-    );
+    expect(screen.queryByRole("link", { name: "Continue Ada and Bo" })).not.toBeInTheDocument();
   });
 
   it("shows a ready badge for an event that clears the gate", async () => {

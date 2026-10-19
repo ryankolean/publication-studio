@@ -36,8 +36,12 @@ export interface ApiClient {
    * Raw bytes to a capability url the API minted (an image upload). The url
    * carries its own token, so no bearer token is sent and a 401 is final:
    * refreshing the session cannot revive an expired upload grant.
+   *
+   * fileName is the name the upload grant echoed back. It travels in the
+   * x-file-name header, percent-encoded because header values must be
+   * ISO-8859-1; the server decodes and sanitizes it again.
    */
-  putBytes<T>(url: string, body: Blob, contentType: string): Promise<T>;
+  putBytes<T>(url: string, body: Blob, contentType: string, fileName?: string | null): Promise<T>;
 }
 
 interface ApiClientOptions {
@@ -135,14 +139,17 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
     return (await response.json()) as T;
   }
 
-  async function putBytes<T>(url: string, body: Blob, contentType: string): Promise<T> {
+  async function putBytes<T>(
+    url: string,
+    body: Blob,
+    contentType: string,
+    fileName: string | null = null,
+  ): Promise<T> {
+    const headers: Record<string, string> = { "content-type": contentType };
+    if (fileName !== null && fileName !== "") headers["x-file-name"] = encodeURIComponent(fileName);
     let response: Response;
     try {
-      response = await doFetch(`${options.baseUrl}${url}`, {
-        method: "PUT",
-        headers: { "content-type": contentType },
-        body,
-      });
+      response = await doFetch(`${options.baseUrl}${url}`, { method: "PUT", headers, body });
     } catch {
       throw new ApiError(0, "NETWORK", "Could not reach the server.");
     }

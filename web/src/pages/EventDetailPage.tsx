@@ -235,7 +235,7 @@ export function EventDetailPage() {
         </div>
         <div className="mt-3 flex flex-wrap gap-3">
           <Link
-            to={`/events/${event.id}/submit`}
+            to={`/wizard/${event.id}`}
             className="rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white"
           >
             Submit this event

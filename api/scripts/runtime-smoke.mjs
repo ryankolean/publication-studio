@@ -170,6 +170,20 @@ for (const method of ["PUT", "DELETE"]) {
   check(`preflight allows ${method}`, allowMethods.includes(method), `got ${allowMethods}`);
 }
 
+// The upload PUT carries the photographer's file name in x-file-name.
+{
+  const response = await fetch(`${BASE}/health`, {
+    method: "OPTIONS",
+    headers: {
+      origin: ORIGIN,
+      "access-control-request-method": "PUT",
+      "access-control-request-headers": "content-type,x-file-name",
+    },
+  });
+  const allowHeaders = (response.headers.get("access-control-allow-headers") ?? "").toLowerCase();
+  check("preflight allows the x-file-name header", allowHeaders.includes("x-file-name"), `got ${allowHeaders}`);
+}
+
 // CORS preflight from anywhere else.
 {
   const response = await preflight("https://evil.example");
@@ -206,6 +220,9 @@ for (const method of ["PUT", "DELETE"]) {
 
   const removal = await fetch(`${BASE}/events/smoke/images/events/smoke/a.jpg`, { method: "DELETE" });
   check("image delete rejects anonymous", removal.status === 401, `got ${removal.status}`);
+
+  const packageImages = await fetch(`${BASE}/packages/smoke/images`);
+  check("package images rejects anonymous", packageImages.status === 401, `got ${packageImages.status}`);
 
   const eventPackages = await fetch(`${BASE}/events/smoke/packages`);
   check("event packages rejects anonymous", eventPackages.status === 401, `got ${eventPackages.status}`);

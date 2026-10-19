@@ -316,4 +316,164 @@ describe("GET /events/:id/walkthrough", () => {
     expect(res.status).toBe(200);
     expect(await res.text()).not.toContain("SECRET-INVITE-TOKEN");
   });
+
+  it("carries each outlet's taste notes for the wizard's outlet cards", async () => {
+    await db.prepare("UPDATE publications SET taste_notes = 'Loves winter light.' WHERE id = 'pub-open'").run();
+    const id = await createEvent();
+    const body = await walk(id);
+    const open = (body["outlets"] as Array<Record<string, any>>).find((outlet) => outlet["id"] === "pub-open");
+    expect(open?.["tasteNotes"]).toBe("Loves winter light.");
+  });
+});
+
+describe("GET /events/:id/walkthrough: the wizard", () => {
+  /** An outlet that wants two or three images and no watermarks: one attested check. */
+  const seedCountedOutlet = () =>
+    db
+      .prepare(
+        `INSERT INTO publications (id, name, tier, method, submission_url, exclusivity_policy, earned_or_paid,
+           last_verified, spec_json, typical_response_days, response_window_note)
+         VALUES ('pub-count', 'Counted Outlet', 'primary', 'web_form', 'https://counted.example.com/submit',
+           'unknown', 'earned', '2026-08-21', '{"img_min":2,"img_max":3,"watermarks_allowed":false}', 14,
+           'We reply only to successful submissions.')`,
+      )
+      .run();
+
+  const wizardOf = async (eventId: string, packageId?: string) =>
+    (await walk(eventId, packageId))["wizard"] as Record<string, any>;
+
+  const edit = async (eventId: string, body: Record<string, unknown>) => {
+    const res = await send("PATCH", `/events/${eventId}`, body);
+    expect(res.status).toBe(200);
+  };
+
+  const patchPackage = async (packageId: string, body: Record<string, unknown>) => {
+    const res = await send("PATCH", `/packages/${packageId}`, body);
+    expect(res.status).toBe(200);
+    return bodyOf(res);
+  };
+
+  it("resumes one wedding at every screen in turn, from its details to the reply", async () => {
+    await seedCountedOutlet();
+    const base = { coupleNames: "Ada and Bo", eventDate: "2026-07-01" };
+
+    const id = await createEvent(base);
+    expect((await wizardOf(id))["step"]).toBe("wedding");
+
+    await edit(id, { ...base, venueName: "The Barn" });
+    expect((await wizardOf(id))["step"]).toBe("permissions");
+
+    const permitted = {
+      ...base,
+      venueName: "The Barn",
+      galleryUrl: GALLERY,
+      rightsStatus: "own_contract",
+      consentStatus: "granted",
+    };
+    await edit(id, permitted);
+    expect((await wizardOf(id))["step"]).toBe("story");
+
+    await edit(id, {
+      ...permitted,
+      uniqueAngle: "A ceremony on a frozen lake.",
+      vendorCredits: [{ role: "Florist", businessName: "Stems" }],
+    });
+    const choosing = await wizardOf(id);
+    expect(choosing).toMatchObject({ step: "outlet", packageId: null, blocked: null, outlet: null, finished: false });
+
+    await addPoolImages(id, 3);
+    const packageId = await startPackage(id, "pub-count");
+    const photos = await wizardOf(id);
+    expect(photos).toMatchObject({ step: "photos", packageId });
+    expect(photos["outlet"]).toMatchObject({ id: "pub-count", name: "Counted Outlet", method: "web_form" });
+
+    await patchPackage(packageId, { imageKeys: [`events/${id}/img-0.jpg`] });
+    expect((await wizardOf(id))["step"]).toBe("photos");
+
+    await patchPackage(packageId, {
+      imageKeys: [`events/${id}/img-0.jpg`, `events/${id}/img-1.jpg`],
+      descriptionMd: "",
+    });
+    expect((await wizardOf(id))["step"]).toBe("writeup");
+
+    await patchPackage(packageId, { descriptionMd: "Ada and Bo married on the ice." });
+    expect((await wizardOf(id))["step"]).toBe("confirm");
+
+    await patchPackage(packageId, { attestations: { no_watermarks: true } });
+    expect((await wizardOf(id))["step"]).toBe("review");
+
+    const submissionId = await submissionAt(packageId);
+    expect((await wizardOf(id))["step"]).toBe("send");
+
+    await send("PATCH", `/submissions/${submissionId}`, { status: "queued" });
+    expect((await wizardOf(id))["step"]).toBe("send");
+
+    await send("PATCH", `/submissions/${submissionId}`, { status: "sent" });
+    const tracking = await wizardOf(id);
+    expect(tracking).toMatchObject({ step: "track", finished: false });
+    expect(tracking["reply"]).toEqual({
+      dueAt: "2026-11-02T12:00:00Z",
+      daysRemaining: 14,
+      outletWords: "We reply only to successful submissions.",
+      silenceMeansPass: true,
+    });
+
+    await send("PATCH", `/submissions/${submissionId}`, { status: "accepted" });
+    const finished = await wizardOf(id);
+    expect(finished).toMatchObject({ step: "track", finished: true });
+    expect((finished["steps"] as Array<Record<string, any>>).every((entry) => entry["done"])).toBe(true);
+  });
+
+  it("stops a blocked wedding at the outlet, with the reasons in plain words", async () => {
+    const id = await createEvent({ ...COMPLETE, rightsStatus: "second_shooter" });
+    const wizard = await wizardOf(id);
+    expect(wizard["step"]).toBe("outlet");
+    expect(wizard["blocked"]).toEqual({
+      step: "outlet",
+      reasons: ["Second-shooter weddings cannot be submitted under your name."],
+    });
+  });
+
+  it("follows the open package when none is named", async () => {
+    const id = await createEvent();
+    await addPoolImages(id, 1);
+    const sentPackage = await completePackage(id, "pub-open");
+    await submissionAt(sentPackage, "queued", "sent");
+    await startPackage(id, "pub-third");
+
+    const wizard = await wizardOf(id);
+    expect(wizard).toMatchObject({ packageId: sentPackage, step: "track" });
+  });
+
+  it("follows the package named in the address over the one it would pick", async () => {
+    const id = await createEvent();
+    await addPoolImages(id, 1);
+    await submissionAt(await completePackage(id, "pub-open"), "queued", "sent");
+    const named = await completePackage(id, "pub-third");
+    await submissionAt(named);
+
+    const wizard = await wizardOf(id, named);
+    expect(wizard["packageId"]).toBe(named);
+    expect(wizard["step"]).toBe("send");
+    expect(wizard["blocked"]).toEqual({
+      step: "send",
+      reasons: ["This wedding is waiting on Open Outlet. Record Open Outlet's answer before sending it here."],
+    });
+  });
+
+  it("leaves the step list's own package alone when none is named", async () => {
+    const id = await createEvent();
+    await startPackage(id, "pub-open");
+    const body = await walk(id);
+    expect(body["package"]).toBeNull();
+    expect(step(body, "outlet")["status"]).toBe("current");
+    expect(body["wizard"]["step"]).toBe("photos");
+  });
+
+  it("starts over at the outlet once every package's answer is in", async () => {
+    const id = await createEvent();
+    await addPoolImages(id, 1);
+    await submissionAt(await completePackage(id, "pub-open"), "queued", "sent", "declined");
+    expect(await wizardOf(id)).toMatchObject({ step: "outlet", packageId: null });
+  });
 });

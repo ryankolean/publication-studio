@@ -29,7 +29,8 @@ export function createApp() {
     cors({
       origin: (origin, c) => (origin === c.env.ALLOWED_ORIGIN ? origin : null),
       allowMethods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
-      allowHeaders: ["authorization", "content-type"],
+      // x-file-name carries the photographer's file name on an image upload.
+      allowHeaders: ["authorization", "content-type", "x-file-name"],
       maxAge: 86400,
     }),
   );

@@ -11,7 +11,9 @@ import { PublicationsPage } from "./pages/PublicationsPage.js";
 import { EventDetailPage } from "./pages/EventDetailPage.js";
 import { PackageEditorPage } from "./pages/PackageEditorPage.js";
 import { QueuePage } from "./pages/QueuePage.js";
-import { SubmitWalkthroughPage } from "./pages/SubmitWalkthroughPage.js";
+import { HelpPage } from "./pages/HelpPage.js";
+import { StartScreen } from "./wizard/screens/StartScreen.js";
+import { SubmitRedirect, WizardNewWedding, WizardResume, WizardStep } from "./wizard/WizardRoutes.js";
 
 /**
  * DECISION: HashRouter, not BrowserRouter. GitHub Pages serves static files
@@ -34,7 +36,7 @@ function Shell({ children }: { children: ReactNode }) {
         <div className="mx-auto flex max-w-4xl flex-col gap-2 px-4 py-4 sm:px-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
             <span className="font-semibold tracking-tight">{PRODUCT_NAME}</span>
-            <nav className="flex gap-4 text-sm">
+            <nav className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
               <Link to="/" className="text-slate-600 hover:text-slate-900">
                 Events
               </Link>
@@ -43,6 +45,9 @@ function Shell({ children }: { children: ReactNode }) {
               </Link>
               <Link to="/publications" className="text-slate-600 hover:text-slate-900">
                 Publications
+              </Link>
+              <Link to="/help" className="text-slate-600 hover:text-slate-900">
+                How it works
               </Link>
             </nav>
           </div>
@@ -79,7 +84,12 @@ function Routed() {
         <Route path="/events/new" element={<RequireSession><IntakePage /></RequireSession>} />
         <Route path="/events/:id" element={<RequireSession><EventDetailPage /></RequireSession>} />
         <Route path="/events/:id/edit" element={<RequireSession><IntakePage /></RequireSession>} />
-        <Route path="/events/:id/submit" element={<RequireSession><SubmitWalkthroughPage /></RequireSession>} />
+        <Route path="/events/:id/submit" element={<RequireSession><SubmitRedirect /></RequireSession>} />
+        <Route path="/wizard" element={<RequireSession><StartScreen /></RequireSession>} />
+        <Route path="/wizard/new/wedding" element={<RequireSession><WizardNewWedding /></RequireSession>} />
+        <Route path="/wizard/:eventId" element={<RequireSession><WizardResume /></RequireSession>} />
+        <Route path="/wizard/:eventId/:step" element={<RequireSession><WizardStep /></RequireSession>} />
+        <Route path="/help" element={<RequireSession><HelpPage /></RequireSession>} />
         <Route path="/packages/:id" element={<RequireSession><PackageEditorPage /></RequireSession>} />
         <Route path="/queue" element={<RequireSession><QueuePage /></RequireSession>} />
         <Route path="/publications" element={<RequireSession><PublicationsPage /></RequireSession>} />

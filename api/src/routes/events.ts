@@ -10,6 +10,9 @@ import type { PriorExposure, VendorCreditInput, EventIntake } from "../domain/ev
 import { eventSlug } from "../domain/slug.js";
 import { buildWalkthrough, outletFit } from "../domain/walkthrough.js";
 import type { WalkthroughPackage } from "../domain/walkthrough.js";
+import { buildWizard, followedPackageId, weddingChip } from "../domain/wizard.js";
+import type { WizardPackage } from "../domain/wizard.js";
+import type { SubmissionStatus } from "../domain/submission-status.js";
 import type { D1Database } from "../env.js";
 import { listEventPackages, loadPackageView } from "./packages.js";
 import { listPublications, loadPublication } from "./publications.js";
@@ -229,12 +232,54 @@ eventRoutes.post("/", async (c) => {
   return c.json(toView(row), 201);
 });
 
+/**
+ * The inventory, each event with the wizard's chip and whether the wizard has
+ * a package to follow for it (the dashboard's "in progress"). Three queries in
+ * all, not three per event: the vendor counts and package states are read for
+ * every event at once and matched up here.
+ *
+ * DECISION: the chip and the progress flag ride on the existing list rather
+ * than a new endpoint or a walkthrough call per card. The start screen and
+ * the dashboard both already read this list, and the client must not derive
+ * either verdict itself.
+ */
 eventRoutes.get("/", async (c) => {
-  const { results } = await c.env.DB.prepare(
-    "SELECT * FROM events ORDER BY event_date DESC, created_at DESC",
-  ).all<EventRow>();
+  const db = c.env.DB;
+  const [events, credits, packages] = await Promise.all([
+    db.prepare("SELECT * FROM events ORDER BY event_date DESC, created_at DESC").all<EventRow>(),
+    db.prepare("SELECT event_id, COUNT(*) AS n FROM vendor_credits GROUP BY event_id").all<{
+      event_id: string;
+      n: number;
+    }>(),
+    db
+      .prepare(
+        `SELECT packages.id AS id, packages.event_id AS event_id, submissions.status AS status
+         FROM packages
+         LEFT JOIN submissions ON submissions.event_id = packages.event_id
+           AND submissions.publication_id = packages.publication_id
+         ORDER BY packages.created_at DESC, packages.rowid DESC`,
+      )
+      .all<{ id: string; event_id: string; status: SubmissionStatus | null }>(),
+  ]);
 
-  return c.json({ events: results.map(toView) });
+  const creditCount = new Map(credits.results.map((row) => [row.event_id, row.n]));
+  const packagesOf = new Map<string, Array<{ id: string; submission: { status: SubmissionStatus } | null }>>();
+  for (const row of packages.results) {
+    const list = packagesOf.get(row.event_id) ?? [];
+    list.push({ id: row.id, submission: row.status === null ? null : { status: row.status } });
+    packagesOf.set(row.event_id, list);
+  }
+
+  return c.json({
+    events: events.results.map((row) => {
+      const view = toView(row);
+      return {
+        ...view,
+        chip: weddingChip(view, creditCount.get(row.id) ?? 0),
+        inProgress: followedPackageId(packagesOf.get(row.id) ?? []) !== null,
+      };
+    }),
+  });
 });
 
 /** The single-event view: the event plus its vendor credits, in their order. */
@@ -372,6 +417,8 @@ eventRoutes.patch("/:id", async (c) => {
  * packages. Everything it reports is loaded through the same loaders the
  * event, package and queue pages use, then handed to the pure walkthrough
  * module, so a step can never call done what the page behind it would not.
+ * The `wizard` field is the guided wizard's resume position and verdicts,
+ * built by domain/wizard.ts from the same loads.
  */
 eventRoutes.get("/:id/walkthrough", async (c) => {
   const db = c.env.DB;
@@ -392,22 +439,100 @@ eventRoutes.get("/:id/walkthrough", async (c) => {
     listEventPackages(db, event.id),
   ]);
 
-  let selected: WalkthroughPackage | null = null;
-  let packageBody: Record<string, unknown> | null = null;
+  const eventPackages = packages ?? [];
 
-  const packageId = c.req.query("package");
-  if (packageId !== undefined) {
+  // The step list follows only a package named in the address, as before.
+  // The wizard follows that one too, or, with none named, the one
+  // followedPackageId picks, so /wizard/:eventId can resume without an id.
+  const named = c.req.query("package");
+  const followedId = named ?? followedPackageId(eventPackages);
+  const loaded = followedId === null ? null : await loadFollowed(c, followedId, event.id);
+  if (named !== undefined && loaded === null) {
     // A package from another event is reported exactly like a missing one.
-    const view = await loadPackageView(c, packageId);
-    const outlet = view === null ? null : await loadPublication(db, view.publicationId);
-    if (view === null || view.eventId !== event.id || outlet === null) {
-      return fail(c, 404, "NOT_FOUND", "No such package.");
-    }
+    return fail(c, 404, "NOT_FOUND", "No such package.");
+  }
+  const selected = named === undefined ? null : (loaded?.walkthrough ?? null);
+  const vendorCreditCount = credits?.n ?? 0;
 
-    const submission =
-      view.submission === null ? null : await loadSubmissionView(db, view.submission.id, Date.now());
+  // Mirrors the send route's rule: one live submission per event at a time.
+  const liveAt = (except: string | null) =>
+    eventPackages
+      .filter((pkg) => pkg.id !== except && pkg.submission?.status === "sent")
+      .map((pkg) => pkg.publicationName ?? pkg.publicationId);
 
-    selected = {
+  const steps = buildWalkthrough({
+    event,
+    vendorCreditCount,
+    poolCount: pool?.n ?? 0,
+    outlets,
+    selected,
+    liveElsewhere: liveAt(selected?.id ?? null),
+  });
+
+  const wizard = buildWizard({
+    event,
+    vendorCreditCount,
+    followed: loaded?.wizard ?? null,
+    liveElsewhere: liveAt(loaded?.wizard.id ?? null),
+  });
+
+  return c.json({
+    event: { id: event.id, coupleNames: event.coupleNames },
+    packages: eventPackages,
+    package: named === undefined ? null : (loaded?.body ?? null),
+    // DECISION: the outlet chooser needs each outlet's warnings as data, not
+    // only as the outlet step's prose, so they travel alongside the steps.
+    outlets: outlets.map((outlet) => ({
+      id: outlet.id,
+      name: outlet.name,
+      tier: outlet.tier,
+      method: outlet.method,
+      imgMin: outlet.spec.imgMin,
+      imgMax: outlet.spec.imgMax,
+      typicalResponseDays: outlet.typicalResponseDays,
+      tasteNotes: outlet.tasteNotes,
+      warnings: outletFit(outlet, event).warnings,
+    })),
+    steps,
+    wizard,
+  });
+});
+
+const hasText = (value: string | null): boolean => value !== null && value.trim().length > 0;
+
+/**
+ * One package as the walkthrough and the wizard read it, through the package
+ * editor's and the queue's own loaders. Null when it is gone, belongs to
+ * another event, or its outlet record is missing.
+ */
+async function loadFollowed(
+  c: { env: AppContext["Bindings"] },
+  packageId: string,
+  eventId: string,
+): Promise<{ walkthrough: WalkthroughPackage; wizard: WizardPackage; body: Record<string, unknown> } | null> {
+  const db = c.env.DB;
+  const view = await loadPackageView(c, packageId);
+  const outlet = view === null ? null : await loadPublication(db, view.publicationId);
+  if (view === null || view.eventId !== eventId || outlet === null) return null;
+
+  const submission =
+    view.submission === null ? null : await loadSubmissionView(db, view.submission.id, Date.now());
+  const followedSubmission =
+    submission === null
+      ? null
+      : {
+          id: submission.id,
+          status: submission.status,
+          due:
+            submission.responseDueAt === null || submission.daysRemaining === null
+              ? null
+              : { at: submission.responseDueAt, daysRemaining: submission.daysRemaining },
+          publishedUrl: submission.publishedUrl,
+        };
+  const satisfied = (id: string) => view.checklist.find((item) => item.id === id)?.satisfied !== false;
+
+  return {
+    walkthrough: {
       id: view.id,
       outlet,
       imageCount: view.imageKeys.length,
@@ -415,21 +540,19 @@ eventRoutes.get("/:id/walkthrough", async (c) => {
       missingLabels: view.missing.map(
         (missing) => view.checklist.find((item) => item.id === missing)?.label ?? missing,
       ),
-      submission:
-        submission === null
-          ? null
-          : {
-              id: submission.id,
-              status: submission.status,
-              due:
-                submission.responseDueAt === null || submission.daysRemaining === null
-                  ? null
-                  : { at: submission.responseDueAt, daysRemaining: submission.daysRemaining },
-              publishedUrl: submission.publishedUrl,
-            },
-    };
-
-    packageBody = {
+      submission: followedSubmission,
+    },
+    wizard: {
+      id: view.id,
+      outlet,
+      // The checklist's own image items: at least one, and the outlet's count
+      // when it states one (an item that is absent has nothing to object to).
+      imagesReady: satisfied("images_present") && satisfied("image_count"),
+      writeupReady: hasText(view.descriptionMd) && hasText(view.creditsBlockMd),
+      complete: view.complete,
+      submission: followedSubmission,
+    },
+    body: {
       id: view.id,
       publicationId: view.publicationId,
       publicationName: outlet.name,
@@ -448,43 +571,9 @@ eventRoutes.get("/:id/walkthrough", async (c) => {
               daysRemaining: submission.daysRemaining,
               publishedUrl: submission.publishedUrl,
             },
-    };
-  }
-
-  const eventPackages = packages ?? [];
-  // Mirrors the send route's rule: one live submission per event at a time.
-  const liveElsewhere = eventPackages
-    .filter((pkg) => pkg.id !== selected?.id && pkg.submission?.status === "sent")
-    .map((pkg) => pkg.publicationName ?? pkg.publicationId);
-
-  const steps = buildWalkthrough({
-    event,
-    vendorCreditCount: credits?.n ?? 0,
-    poolCount: pool?.n ?? 0,
-    outlets,
-    selected,
-    liveElsewhere,
-  });
-
-  return c.json({
-    event: { id: event.id, coupleNames: event.coupleNames },
-    packages: eventPackages,
-    package: packageBody,
-    // DECISION: the outlet chooser needs each outlet's warnings as data, not
-    // only as the outlet step's prose, so they travel alongside the steps.
-    outlets: outlets.map((outlet) => ({
-      id: outlet.id,
-      name: outlet.name,
-      tier: outlet.tier,
-      method: outlet.method,
-      imgMin: outlet.spec.imgMin,
-      imgMax: outlet.spec.imgMax,
-      typicalResponseDays: outlet.typicalResponseDays,
-      warnings: outletFit(outlet, event).warnings,
-    })),
-    steps,
-  });
-});
+    },
+  };
+}
 
 eventRoutes.get("/:id/packages", async (c) => {
   const packages = await listEventPackages(c.env.DB, c.req.param("id"));

@@ -275,6 +275,25 @@ describe("CORS", () => {
     }
   });
 
+  it("allows the x-file-name header an upload carries", async () => {
+    // The upload PUT sends the photographer's file name in this header; a
+    // header missing from the allow list fails the preflight in the browser.
+    const res = await app.request(
+      "/health",
+      {
+        method: "OPTIONS",
+        headers: {
+          origin: ALLOWED_ORIGIN,
+          "access-control-request-method": "PUT",
+          "access-control-request-headers": "content-type,x-file-name",
+        },
+      },
+      env,
+    );
+    const allowed = (res.headers.get("access-control-allow-headers") ?? "").toLowerCase().split(",");
+    expect(allowed).toEqual(expect.arrayContaining(["authorization", "content-type", "x-file-name"]));
+  });
+
   it("does not echo an unapproved origin", async () => {
     const res = await app.request(
       "/health",

@@ -136,6 +136,107 @@ describe("an upload records the image in the event's pool", () => {
   });
 });
 
+describe("the photographer's file name", () => {
+  // The name travels grant -> client -> PUT header, because the capability
+  // token's format must not change and the row is only written once the
+  // bytes land (see the grant route).
+  const grantNamed = async (eventId: string, fileName: unknown) =>
+    app.request(
+      `/events/${eventId}/images`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json", ...auth },
+        body: JSON.stringify({ contentType: "image/jpeg", fileName }),
+      },
+      env,
+    );
+
+  const putNamed = (uploadUrl: string, header: string | undefined, body = JPEG) =>
+    app.request(
+      uploadUrl,
+      {
+        method: "PUT",
+        headers: {
+          "content-type": "image/jpeg",
+          ...(header === undefined ? {} : { "x-file-name": header }),
+        },
+        body,
+      },
+      env,
+    );
+
+  const names = async () =>
+    (await db.prepare("SELECT original_name FROM event_images ORDER BY key").all<{ original_name: string | null }>())
+      .results.map((row) => row.original_name);
+
+  it("echoes the sanitized name on the grant", async () => {
+    await seedEvent("w1");
+    const res = await grantNamed("w1", "  C:\\fakepath\\..\\.IMG_2041.jpg ");
+    expect(res.status).toBe(201);
+    expect(await res.json()).toMatchObject({ fileName: "IMG_2041.jpg" });
+  });
+
+  it("echoes null when no name was sent, or nothing usable was", async () => {
+    await seedEvent("w1");
+    expect(await (await grantNamed("w1", undefined)).json()).toMatchObject({ fileName: null });
+    expect(await (await grantNamed("w1", "../")).json()).toMatchObject({ fileName: null });
+    expect(await (await grantNamed("w1", null)).json()).toMatchObject({ fileName: null });
+  });
+
+  it("refuses a name that is not text", async () => {
+    await seedEvent("w1");
+    const res = await grantNamed("w1", 42);
+    expect(res.status).toBe(400);
+    expect(await res.json()).toMatchObject({
+      code: "VALIDATION",
+      details: [{ field: "fileName", message: "Expected text." }],
+    });
+  });
+
+  it("stores the name sent with the upload, sanitized the same way", async () => {
+    await seedEvent("w1");
+    const grant = await grantFor("w1");
+    const res = await putNamed(grant.uploadUrl, encodeURIComponent("galleries/june/Première danse.jpg"));
+    expect(res.status).toBe(201);
+    expect(await names()).toEqual(["Première danse.jpg"]);
+  });
+
+  it("caps a long name at 200 characters", async () => {
+    await seedEvent("w1");
+    const grant = await grantFor("w1");
+    await putNamed(grant.uploadUrl, encodeURIComponent(`${"b".repeat(300)}.jpg`));
+    expect(await names()).toEqual(["b".repeat(200)]);
+  });
+
+  it("stores no name without the header, or with one that does not decode", async () => {
+    await seedEvent("w1");
+    const first = await grantFor("w1");
+    expect((await putNamed(first.uploadUrl, undefined)).status).toBe(201);
+    const second = await grantFor("w1");
+    expect((await putNamed(second.uploadUrl, "%E0%A4%A")).status).toBe(201);
+    expect(await names()).toEqual([null, null]);
+  });
+
+  it("keeps the name when the same grant uploads again without one", async () => {
+    await seedEvent("w1");
+    const grant = await grantFor("w1");
+    await putNamed(grant.uploadUrl, "first.jpg");
+    await putNamed(grant.uploadUrl, undefined);
+    expect(await names()).toEqual(["first.jpg"]);
+    await putNamed(grant.uploadUrl, "second.jpg");
+    expect(await names()).toEqual(["second.jpg"]);
+  });
+
+  it("lists the name with the pool", async () => {
+    await seedEvent("w1");
+    const grant = await grantFor("w1");
+    await putNamed(grant.uploadUrl, "IMG_7.jpg");
+    await uploaded("w1");
+    const body = (await (await listPool("w1")).json()) as { images: Array<PoolItem & { originalName: string | null }> };
+    expect(body.images.map((image) => image.originalName)).toEqual([null, "IMG_7.jpg"]);
+  });
+});
+
 describe("listing the pool", () => {
   it("requires authentication", async () => {
     await seedEvent("w1");
