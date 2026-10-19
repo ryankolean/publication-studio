@@ -1,5 +1,5 @@
 /**
- * Submission lifecycle — design doc section 6.2.
+ * Submission lifecycle - design doc section 6.2.
  *
  *   draft -> ready -> queued -> sent -> accepted -> published
  *                                |       -> declined  (wedding released)
@@ -29,7 +29,7 @@ export type SubmissionStatus = (typeof SUBMISSION_STATUSES)[number];
 
 /**
  * DECISION: the design doc's ASCII diagram leaves three things ambiguous.
- * Resolved deliberately restrictive here — an absent transition surfaces as a
+ * Resolved deliberately restrictive here - an absent transition surfaces as a
  * caught error, whereas an invented one is an unenforced rule.
  *
  * 1. `cancelled` is reachable only pre-send (draft, ready, queued). After a

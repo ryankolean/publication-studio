@@ -29,7 +29,7 @@ describe("buildCreditsBlock", () => {
       buildCreditsBlock([
         { role: "Venue", businessName: "The Barn", website: "https://barn.example", instagram: null },
       ]),
-    ).toBe("- Venue: The Barn — https://barn.example");
+    ).toBe("- Venue: The Barn, https://barn.example");
   });
 
   it("appends an instagram handle with an at sign", () => {
@@ -37,7 +37,7 @@ describe("buildCreditsBlock", () => {
       buildCreditsBlock([
         { role: "Florist", businessName: "Stems", website: null, instagram: "stems" },
       ]),
-    ).toBe("- Florist: Stems — @stems");
+    ).toBe("- Florist: Stems, @stems");
   });
 
   it("includes both when both exist", () => {
@@ -50,7 +50,7 @@ describe("buildCreditsBlock", () => {
           instagram: "stems",
         },
       ]),
-    ).toBe("- Florist: Stems — https://stems.example — @stems");
+    ).toBe("- Florist: Stems, https://stems.example, @stems");
   });
 
   it("keeps the given order, because vendor order is curated", () => {

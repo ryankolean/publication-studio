@@ -1,4 +1,4 @@
-/** Publication vocabularies — design doc section 5. Mirrored by D1 CHECK constraints. */
+/** Publication vocabularies - design doc section 5. Mirrored by D1 CHECK constraints. */
 
 export const PUBLICATION_TIERS = ["primary", "secondary", "dream"] as const;
 

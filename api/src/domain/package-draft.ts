@@ -45,7 +45,7 @@ export function buildCreditsBlock(credits: CreditRow[]): string {
       const instagram = text(credit.instagram);
       if (website !== null) parts.push(website);
       if (instagram !== null) parts.push(`@${instagram.replace(/^@/, "")}`);
-      return parts.join(" — ");
+      return parts.join(", ");
     })
     .join("\n");
 }

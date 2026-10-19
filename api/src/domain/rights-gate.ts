@@ -1,5 +1,5 @@
 /**
- * Rights gate — design doc section 6.1.
+ * Rights gate - design doc section 6.1.
  *
  * Packaging is blocked unless the photographer held the contract AND the couple
  * consented. Second-shooter weddings never enter the submission flow at all;
