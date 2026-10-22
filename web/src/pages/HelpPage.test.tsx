@@ -2,23 +2,33 @@ import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
+import { GUIDE, RULES, WELCOME } from "../wizard/guide.js";
+import { STEPS } from "../wizard/model.js";
 import { HelpPage } from "./HelpPage.js";
 
+const open = () =>
+  render(
+    <MemoryRouter>
+      <HelpPage />
+    </MemoryRouter>,
+  );
+
 describe("HelpPage", () => {
-  it("explains the tool in five short points", () => {
-    render(
-      <MemoryRouter>
-        <HelpPage />
-      </MemoryRouter>,
-    );
+  it("opens with what the tool is and the five rules", () => {
+    open();
     expect(screen.getByRole("heading", { name: "How it works" })).toBeInTheDocument();
-    const points = within(screen.getByRole("list")).getAllByRole("listitem");
-    expect(points).toHaveLength(5);
-    expect(points[0]).toHaveTextContent("You do the sending yourself.");
-    expect(points[1]).toHaveTextContent("one outlet at a time");
-    expect(points[2]).toHaveTextContent("the outlet's own rules");
-    expect(points[3]).toHaveTextContent("Your gallery links stay private.");
-    expect(points[4]).toHaveTextContent("Mark things done as you go");
-    expect(screen.getByRole("link", { name: "Start a submission" })).toHaveAttribute("href", "/");
+    expect(screen.getByText(WELCOME.lead)).toBeInTheDocument();
+    const rules = within(screen.getByRole("list", { name: "The rules" })).getAllByRole("listitem");
+    expect(rules.map((item) => item.textContent)).toEqual(RULES);
+  });
+
+  it("prints every step with its instructions, in order", () => {
+    open();
+    const headings = screen.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent);
+    expect(headings).toEqual(STEPS.map((step, index) => `${index + 1}. ${GUIDE[step].title}`));
+    expect(screen.getByText(GUIDE.send.todo[4] as string)).toBeInTheDocument();
+    expect(screen.getByText(GUIDE.permissions.note as string)).toBeInTheDocument();
+    expect(screen.getByText(GUIDE.track.next)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Choose a wedding" })).toHaveAttribute("href", "/");
   });
 });
