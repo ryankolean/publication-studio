@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { ApiError } from "../../api/client.js";
+import { GUIDE } from "../guide.js";
 import {
   fakeApi,
   location,
@@ -26,7 +27,7 @@ describe("[wedding] a new wedding", () => {
   it("says what is missing, one thing at a time, until it can continue", async () => {
     renderWizard(api, "/wizard/new/wedding");
     expect(await screen.findByRole("heading", { name: "The wedding" })).toBeInTheDocument();
-    expect(screen.getByText("Outlets print exactly what you enter here.")).toBeInTheDocument();
+    expect(screen.getByText(GUIDE.wedding.lead)).toBeInTheDocument();
 
     expect(continueButton()).toBeDisabled();
     expect(screen.getByText("Add the couple's names to continue.")).toBeInTheDocument();
@@ -125,7 +126,7 @@ describe("[permissions]", () => {
 
   it("needs a gallery link when none is on file", async () => {
     await open(storedEvent({ hasGalleryUrl: false }));
-    expect(screen.getByText("Every outlet asks about both. Without them the wedding stays in planning.")).toBeInTheDocument();
+    expect(screen.getByText(GUIDE.permissions.lead)).toBeInTheDocument();
     expect(continueButton()).toBeDisabled();
     expect(screen.getByText("Add the gallery link to continue.")).toBeInTheDocument();
     await userEvent.type(screen.getByLabelText("Gallery link"), "https://gallery.example.com/x");
@@ -206,12 +207,12 @@ describe("[story]", () => {
       "/events/w1": event,
     });
     renderWizard(api, "/wizard/w1/story");
-    await screen.findByRole("heading", { name: "Story and vendors" });
+    await screen.findByRole("heading", { name: GUIDE.story.title });
   };
 
   it("needs a standout detail or a story", async () => {
     await open(storedEvent({ uniqueAngle: null, coupleStory: null }));
-    expect(screen.getByText("Outlets reject the generic. One specific detail beats five adjectives.")).toBeInTheDocument();
+    expect(screen.getByText(GUIDE.story.lead)).toBeInTheDocument();
     expect(continueButton()).toBeDisabled();
     expect(screen.getByText("Add what made this wedding stand out to continue.")).toBeInTheDocument();
     await userEvent.type(screen.getByLabelText("What made this wedding stand out?"), "Vows read by the grandmother.");

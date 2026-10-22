@@ -81,7 +81,7 @@ interface FrameProps {
   /** What this screen says about itself: heading, why, what to do, what is next. */
   guide: StepGuide;
   /** Replaces the guide's heading when the outlet's name belongs in it. */
-  title?: string;
+  title?: string | undefined;
   rail?: RailProps | null;
   back?: string | null;
   primary?: PrimaryAction | null;

@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { ApiError } from "../../api/client.js";
+import { GUIDE } from "../guide.js";
 import {
   fakeApi,
   location,
@@ -38,7 +39,7 @@ describe("[outlet]", () => {
 
   it("shows a card per outlet: name, tier, one line of taste, facts and warnings", async () => {
     await openWith();
-    expect(screen.getByText("One outlet at a time per wedding. Start with the one you want most.")).toBeInTheDocument();
+    expect(screen.getByText(GUIDE.outlet.lead)).toBeInTheDocument();
 
     const a = screen.getByRole("radio", { name: /Outlet A/ }).closest("label") as HTMLElement;
     expect(a).toHaveTextContent("Top tier");
@@ -139,13 +140,10 @@ describe("[photos]", () => {
     await screen.findByRole("status");
   };
 
-  it("asks for web-size files and covering the day", async () => {
+  it("says why the photos matter and how to get web-size files", async () => {
     await open();
-    expect(
-      screen.getByText(
-        "Download web-size files from your gallery, not full size. Cover the day: getting ready, details, ceremony, portraits, reception, party.",
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByText(GUIDE.photos.lead)).toBeInTheDocument();
+    expect(screen.getByText(GUIDE.photos.todo[0] as string)).toBeInTheDocument();
   });
 
   it("keeps a live count against the outlet's range and holds Continue below its minimum", async () => {

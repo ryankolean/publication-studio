@@ -6,13 +6,11 @@ import { API_BASE_URL } from "../../config.js";
 import { useSession } from "../../session-context.js";
 import type { StepContext } from "../context.js";
 import { Alert, Frame, LABEL, Loading } from "../Frame.js";
+import { GUIDE } from "../guide.js";
 import { countRange, errorText } from "../model.js";
 import { outletNameOf, type PackageView, type PoolImage } from "../package.js";
 import { NO_OUTLET, NeedsEarlier } from "./shared.js";
 
-const TITLE = "Pick the photos";
-const LEAD =
-  "Download web-size files from your gallery, not full size. Cover the day: getting ready, details, ceremony, portraits, reception, party.";
 const ACCEPT = "image/jpeg,image/png,image/webp";
 
 interface UploadLine {
@@ -47,7 +45,7 @@ function countReason(count: number, min: number | null, max: number | null): str
 
 /** [photos] Upload into the wedding's pool, then pick and order the selection. */
 export function PhotosScreen({ ctx }: { ctx: StepContext }) {
-  if (ctx.packageId === null) return <NeedsEarlier ctx={ctx} title={TITLE} lead={LEAD} {...NO_OUTLET} />;
+  if (ctx.packageId === null) return <NeedsEarlier ctx={ctx} guide={GUIDE.photos} {...NO_OUTLET} />;
   return <Photos ctx={ctx} packageId={ctx.packageId} />;
 }
 
@@ -170,8 +168,7 @@ function Photos({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
 
   return (
     <Frame
-      title={TITLE}
-      lead={LEAD}
+      guide={GUIDE.photos}
       rail={ctx.rail}
       back={ctx.back}
       primary={

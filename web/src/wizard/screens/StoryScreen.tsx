@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "../../session-context.js";
 import type { StepContext } from "../context.js";
 import { Alert, BUTTON, Frame, INPUT, LABEL, Loading } from "../Frame.js";
+import { GUIDE } from "../guide.js";
 import { errorText, eventPayload, textOrNull, type StoredEvent } from "../model.js";
 
 interface VendorRow {
@@ -94,8 +95,7 @@ export function StoryScreen({ ctx }: { ctx: StepContext }) {
 
   return (
     <Frame
-      title="Story and vendors"
-      lead="Outlets reject the generic. One specific detail beats five adjectives."
+      guide={GUIDE.story}
       rail={ctx.rail}
       back={ctx.back}
       primary={

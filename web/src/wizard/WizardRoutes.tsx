@@ -158,8 +158,12 @@ export function WizardStep() {
   if (gate?.step === "outlet" && HELD_BY_GATE.has(step)) {
     return (
       <Frame
-        title="Sort out the permissions first"
-        lead="This wedding cannot go to an outlet until they are clear."
+        guide={{
+          title: "Sort out the permissions first",
+          lead: "This wedding cannot go to an outlet until its permissions are clear. Here is what is holding it.",
+          todo: ['Press "Edit permissions" and answer both questions.', "Come back here. The wizard carries on from where you left off."],
+          next: "Next up: choosing an outlet.",
+        }}
         rail={ctx.rail}
         back={wizardPath(eventId, "outlet", packageId)}
       >

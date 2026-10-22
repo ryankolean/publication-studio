@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "../../session-context.js";
 import type { StepContext } from "../context.js";
 import { Alert, Frame, INPUT, LABEL, Loading } from "../Frame.js";
+import { GUIDE } from "../guide.js";
 import { errorText, eventPayload, textOrNull, type StoredEvent } from "../model.js";
 
 const RIGHTS = [
@@ -124,8 +125,7 @@ export function PermissionsScreen({ ctx }: { ctx: StepContext }) {
 
   return (
     <Frame
-      title="Your gallery and permissions"
-      lead="Every outlet asks about both. Without them the wedding stays in planning."
+      guide={GUIDE.permissions}
       rail={ctx.rail}
       back={ctx.back}
       primary={

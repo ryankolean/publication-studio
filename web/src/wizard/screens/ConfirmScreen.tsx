@@ -4,11 +4,10 @@ import { Link } from "react-router-dom";
 import { useSession } from "../../session-context.js";
 import type { StepContext } from "../context.js";
 import { Alert, Frame, Loading, Tick } from "../Frame.js";
+import { GUIDE } from "../guide.js";
 import { errorText, wizardPath, type StepId } from "../model.js";
 import { outletNameOf, type ChecklistItem, type PackageView } from "../package.js";
 import { NO_OUTLET, NeedsEarlier } from "./shared.js";
-
-const TITLE = "Final checks";
 
 /** Which screen fixes an item the package data answers. */
 const FIXED_ON: Record<string, StepId> = {
@@ -33,6 +32,7 @@ const PLAIN_LABEL: Record<string, string> = {
   "req:event_description": "The write-up is written",
   "req:couple_love_story": "The write-up tells the couple's story",
   "req:full_vendor_credits": "The credits are written",
+  grants_publication_rights: "Confirm you are giving the outlet the right to publish these photos",
 };
 
 const labelOf = (item: ChecklistItem): string => PLAIN_LABEL[item.id] ?? item.label;
@@ -50,7 +50,7 @@ function attestations(checklist: ChecklistItem[], ticks: Record<string, boolean>
  */
 export function ConfirmScreen({ ctx }: { ctx: StepContext }) {
   if (ctx.packageId === null) {
-    return <NeedsEarlier ctx={ctx} title={TITLE} lead="The outlet's own rules." {...NO_OUTLET} />;
+    return <NeedsEarlier ctx={ctx} guide={GUIDE.confirm} {...NO_OUTLET} />;
   }
   return <Confirm ctx={ctx} packageId={ctx.packageId} />;
 }
@@ -153,8 +153,8 @@ function Confirm({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
 
   return (
     <Frame
-      title={TITLE}
-      lead={`${outlet} asks for these. Tick what you can confirm.`}
+      guide={GUIDE.confirm}
+      title={pkg === null ? undefined : `Final checks for ${outlet}`}
       rail={ctx.rail}
       back={ctx.back}
       primary={pkg === null ? null : { label: "Continue", onClick: () => void next(), disabledReason: reason, busy: saving }}

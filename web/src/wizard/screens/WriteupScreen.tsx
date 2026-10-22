@@ -3,16 +3,15 @@ import { useEffect, useState } from "react";
 import { useSession } from "../../session-context.js";
 import type { StepContext } from "../context.js";
 import { Alert, Frame, INPUT, LABEL, Loading } from "../Frame.js";
+import { GUIDE } from "../guide.js";
 import { errorText } from "../model.js";
 import { limitsOf, type PackageView } from "../package.js";
 import { NO_OUTLET, NeedsEarlier } from "./shared.js";
 
-const TITLE = "Write-up and credits";
-const LEAD = "Say what happened, not how beautiful it was. The outlet's editor rewrites anyway.";
 
 /** [writeup] The write-up and credits, drafted from the wedding when the package started. */
 export function WriteupScreen({ ctx }: { ctx: StepContext }) {
-  if (ctx.packageId === null) return <NeedsEarlier ctx={ctx} title={TITLE} lead={LEAD} {...NO_OUTLET} />;
+  if (ctx.packageId === null) return <NeedsEarlier ctx={ctx} guide={GUIDE.writeup} {...NO_OUTLET} />;
   return <Writeup ctx={ctx} packageId={ctx.packageId} />;
 }
 
@@ -66,8 +65,7 @@ function Writeup({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
 
   return (
     <Frame
-      title={TITLE}
-      lead={LEAD}
+      guide={GUIDE.writeup}
       rail={ctx.rail}
       back={ctx.back}
       primary={

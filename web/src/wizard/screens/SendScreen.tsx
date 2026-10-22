@@ -7,12 +7,12 @@ import { API_BASE_URL } from "../../config.js";
 import { useSession } from "../../session-context.js";
 import type { StepContext } from "../context.js";
 import { Alert, BUTTON, Frame, Loading, PRIMARY } from "../Frame.js";
+import { GUIDE } from "../guide.js";
 import { errorText, friendlyDate, isWebUrl, wizardPath } from "../model.js";
 import { outletNameOf, type PackageView } from "../package.js";
 import { buildPackageZip, saveFile, zipFileName, type PackageImage } from "../zip.js";
 import { NO_OUTLET, NeedsEarlier } from "./shared.js";
 
-const LEAD = "You send it; the tool gets everything ready.";
 const COPY_FALLBACK = "Copying is not available here. Select the text on the write-up screen and copy it from there.";
 
 /** How the outlet takes submissions, in a sentence. */
@@ -51,7 +51,7 @@ function Item({ n, title, children }: { n: number; title: string; children: Reac
  */
 export function SendScreen({ ctx }: { ctx: StepContext }) {
   if (ctx.packageId === null) {
-    return <NeedsEarlier ctx={ctx} title="Send it" lead={LEAD} {...NO_OUTLET} />;
+    return <NeedsEarlier ctx={ctx} guide={GUIDE.send} {...NO_OUTLET} />;
   }
   return <Send ctx={ctx} packageId={ctx.packageId} />;
 }
@@ -91,7 +91,7 @@ function Send({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
 
   if (loadError !== null || pkg === null) {
     return (
-      <Frame title={title} lead={LEAD} rail={ctx.rail} back={ctx.back}>
+      <Frame guide={GUIDE.send} title={title} rail={ctx.rail} back={ctx.back}>
         {loadError !== null ? <Alert>{loadError}</Alert> : <Loading what="the submission" />}
       </Frame>
     );
@@ -101,8 +101,8 @@ function Send({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
     return (
       <NeedsEarlier
         ctx={ctx}
+        guide={GUIDE.send}
         title={title}
-        lead={LEAD}
         message="Add it to your queue first."
         step="review"
         linkLabel="Go to the review"
@@ -188,8 +188,8 @@ function Send({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
 
   return (
     <Frame
+      guide={GUIDE.send}
       title={title}
-      lead={LEAD}
       rail={ctx.rail}
       back={ctx.back}
       primary={{

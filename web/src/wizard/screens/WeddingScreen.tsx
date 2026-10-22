@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useSession } from "../../session-context.js";
 import type { StepContext } from "../context.js";
 import { Alert, Frame, INPUT, LABEL, Loading } from "../Frame.js";
+import { GUIDE } from "../guide.js";
 import type { RailProps } from "../Frame.js";
 import { STEPS, errorText, eventPayload, textOrNull, wizardPath, type StoredEvent } from "../model.js";
 
@@ -116,8 +117,7 @@ export function WeddingScreen({ ctx }: { ctx: StepContext | null }) {
 
   return (
     <Frame
-      title="The wedding"
-      lead="Outlets print exactly what you enter here."
+      guide={GUIDE.wedding}
       rail={ctx?.rail ?? NEW_RAIL}
       back={ctx?.back ?? "/wizard"}
       primary={

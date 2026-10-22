@@ -2,6 +2,7 @@ import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 
+import { GUIDE } from "../guide.js";
 import { fakeApi, location, packageView, renderWizard, serve, walkthrough, wizardAt, type FakeApi } from "../test-utils.js";
 
 let api: FakeApi;
@@ -25,7 +26,7 @@ describe("[writeup]", () => {
   it("prefills the write-up and credits from the package", async () => {
     await open();
     expect(screen.getByRole("heading", { name: "Write-up and credits" })).toBeInTheDocument();
-    expect(screen.getByText("Say what happened, not how beautiful it was. The outlet's editor rewrites anyway.")).toBeInTheDocument();
+    expect(screen.getByText(GUIDE.writeup.lead)).toBeInTheDocument();
     expect(screen.getByLabelText("The write-up")).toHaveValue("Sarah and James married on the ice.");
     expect(screen.getByLabelText("The credits")).toHaveValue("Florist: Stems");
   });
@@ -98,8 +99,8 @@ describe("[confirm]", () => {
 
   it("names the outlet and lists its checks: boxes for what she confirms, ticks for what the package shows", async () => {
     await open(viewWith(false));
-    expect(screen.getByRole("heading", { name: "Final checks" })).toBeInTheDocument();
-    expect(screen.getByText("Outlet A asks for these. Tick what you can confirm.")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Final checks for Outlet A" })).toBeInTheDocument();
+    expect(screen.getByText(GUIDE.confirm.lead)).toBeInTheDocument();
 
     const checks = screen.getByRole("list", { name: "Checks" });
     expect(within(checks).getAllByRole("checkbox")).toHaveLength(2);

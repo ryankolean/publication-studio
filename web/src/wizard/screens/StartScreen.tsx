@@ -50,8 +50,12 @@ export function StartScreen() {
 
   return (
     <Frame
-      title="Choose a wedding"
-      lead="Pick the wedding you want to submit, or add a new one."
+      guide={{
+        title: "Choose a wedding",
+        lead: "Pick the wedding you want to submit, or add a new one.",
+        todo: ["Tap a wedding, or add one.", 'Press "Continue".'],
+        next: "Next up: the wedding.",
+      }}
       back="/"
       primary={{
         label: "Continue",

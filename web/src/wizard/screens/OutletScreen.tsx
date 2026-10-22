@@ -5,6 +5,7 @@ import { useSession } from "../../session-context.js";
 import { SubmissionBadge } from "../../components/SubmissionBadge.js";
 import type { StepContext } from "../context.js";
 import { Alert, Frame } from "../Frame.js";
+import { GUIDE } from "../guide.js";
 import {
   TIER_LABEL,
   countRange,
@@ -71,8 +72,7 @@ export function OutletScreen({ ctx }: { ctx: StepContext }) {
 
   return (
     <Frame
-      title="Choose an outlet"
-      lead="One outlet at a time per wedding. Start with the one you want most."
+      guide={GUIDE.outlet}
       rail={ctx.rail}
       back={ctx.back}
       primary={{

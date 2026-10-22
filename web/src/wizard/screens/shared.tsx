@@ -20,7 +20,7 @@ export function NeedsEarlier({
 }: {
   ctx: StepContext;
   guide: StepGuide;
-  title?: string;
+  title?: string | undefined;
   message: string;
   step: StepId;
   linkLabel: string;

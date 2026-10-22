@@ -5,13 +5,12 @@ import { API_BASE_URL } from "../../config.js";
 import { useSession } from "../../session-context.js";
 import type { StepContext } from "../context.js";
 import { Alert, Frame, Loading } from "../Frame.js";
+import { GUIDE } from "../guide.js";
 import { errorText, friendlyDate, type StoredEvent } from "../model.js";
 import { limitsOf, outletNameOf, type PackageView } from "../package.js";
 import type { PackageImage } from "../zip.js";
 import { NO_OUTLET, NeedsEarlier } from "./shared.js";
 
-const TITLE = "Review";
-const LEAD = "Check it over once before it goes in your queue.";
 
 /** "June 14, 2026 at The Barn, Detroit, MI" */
 function weddingLine(event: StoredEvent): string {
@@ -40,7 +39,7 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
 
 /** [review] A compact summary, then "Add to the queue". Nothing is sent. */
 export function ReviewScreen({ ctx }: { ctx: StepContext }) {
-  if (ctx.packageId === null) return <NeedsEarlier ctx={ctx} title={TITLE} lead={LEAD} {...NO_OUTLET} />;
+  if (ctx.packageId === null) return <NeedsEarlier ctx={ctx} guide={GUIDE.review} {...NO_OUTLET} />;
   return <Review ctx={ctx} packageId={ctx.packageId} />;
 }
 
@@ -94,8 +93,7 @@ function Review({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
 
   return (
     <Frame
-      title={TITLE}
-      lead={LEAD}
+      guide={GUIDE.review}
       rail={ctx.rail}
       back={ctx.back}
       primary={

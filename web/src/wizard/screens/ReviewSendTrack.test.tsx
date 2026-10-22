@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ApiError } from "../../api/client.js";
+import { GUIDE } from "../guide.js";
 import {
   fakeApi,
   location,
@@ -147,7 +148,7 @@ describe("[send]", () => {
 
   it("lays out the four things to do, and repeats the outlet's warnings", async () => {
     await open();
-    expect(screen.getByText("You send it; the tool gets everything ready.")).toBeInTheDocument();
+    expect(screen.getByText(GUIDE.send.lead)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Download the photos" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Copy the write-up" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Copy the credits" })).toBeInTheDocument();

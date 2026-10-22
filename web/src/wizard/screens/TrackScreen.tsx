@@ -5,11 +5,10 @@ import { Link } from "react-router-dom";
 import { useSession } from "../../session-context.js";
 import type { StepContext } from "../context.js";
 import { Alert, BUTTON, Frame, INPUT, LABEL, PRIMARY } from "../Frame.js";
+import { GUIDE } from "../guide.js";
 import { errorText, friendlyDate, type WizardState } from "../model.js";
 import { NeedsEarlier } from "./shared.js";
 
-const TITLE = "Track the reply";
-const LEAD = "Record the outlet's answer here when it comes.";
 
 type Outcome = "accepted" | "declined";
 
@@ -62,8 +61,7 @@ export function TrackScreen({ ctx }: { ctx: StepContext }) {
     return (
       <NeedsEarlier
         ctx={ctx}
-        title={TITLE}
-        lead={LEAD}
+        guide={GUIDE.track}
         message="Mark it as sent first. The reply window starts then."
         step="send"
         linkLabel="Go to the send step"
@@ -95,7 +93,7 @@ export function TrackScreen({ ctx }: { ctx: StepContext }) {
   const status = submission.status;
 
   return (
-    <Frame title={TITLE} lead={LEAD} rail={ctx.rail} back={ctx.back} after={error !== null && <Alert>{error}</Alert>}>
+    <Frame guide={GUIDE.track} rail={ctx.rail} back={ctx.back} after={error !== null && <Alert>{error}</Alert>}>
       {status === "sent" ? (
         <>
           <section aria-label="When to expect an answer" className="space-y-2 text-sm text-slate-800">
