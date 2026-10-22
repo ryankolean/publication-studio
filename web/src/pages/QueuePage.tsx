@@ -30,8 +30,8 @@ const messageOf = (caught: unknown, fallback: string): string =>
   caught instanceof ApiError ? caught.message : fallback;
 
 function windowText(days: number | null): string {
-  if (days === null) return "Window unknown";
-  if (days < 0) return "Window passed";
+  if (days === null) return "No reply window given";
+  if (days < 0) return "The reply window has passed";
   if (days === 0) return "Less than a day remaining";
   return days === 1 ? "1 day remaining" : `${days} days remaining`;
 }
@@ -118,7 +118,7 @@ function ReadyRow({ submission, onChanged }: { submission: SubmissionView; onCha
         )}
       </div>
       <p className="mt-2 text-xs text-slate-500">
-        This tool does not send anything. Send the package yourself through the outlet's form, portal or email, then
+        This tool does not send anything. Send the submission yourself through the outlet's form, portal or email, then
         mark it sent here.
       </p>
       {error !== null && (
@@ -308,7 +308,7 @@ export function QueuePage() {
         {refreshError !== null && <p className="mt-2 text-sm text-rose-700">{refreshError}</p>}
       </header>
 
-      <Group title="Ready to send" empty="Nothing is waiting to be sent. Create a submission from a complete package.">
+      <Group title="Ready to send" empty="Nothing is waiting to be sent. Add a wedding to the queue from its review step.">
         {ready.map((s) => (
           <ReadyRow key={s.id} submission={s} onChanged={refresh} />
         ))}

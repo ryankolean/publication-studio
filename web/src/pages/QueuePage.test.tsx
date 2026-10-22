@@ -130,8 +130,8 @@ describe("the live window", () => {
     expect(rows[0]).toHaveTextContent("12 days remaining");
     expect(rows[0]).toHaveTextContent("Due 2026-10-31");
     expect(rows[1]).toHaveTextContent("1 day remaining");
-    expect(rows[2]).toHaveTextContent("Window passed");
-    expect(rows[3]).toHaveTextContent("Window unknown");
+    expect(rows[2]).toHaveTextContent("The reply window has passed");
+    expect(rows[3]).toHaveTextContent("No reply window given");
     expect(within(rows[3] as HTMLElement).getByRole("link", { name: "Open this wedding" })).toHaveAttribute(
       "href",
       "/wizard/e1?package=pk1",
