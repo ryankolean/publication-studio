@@ -364,7 +364,10 @@ describe("deleting from the pool", () => {
 
     const res = await removeImage("w1", key);
     expect(res.status).toBe(409);
-    expect(((await res.json()) as { code: string }).code).toBe("IMAGE_IN_USE");
+    expect((await res.json()) as { code: string; message: string }).toMatchObject({
+      code: "IMAGE_IN_USE",
+      message: "This photo is still part of a submission. Take it out of that submission first.",
+    });
     expect(r2.contents()).toContain(key);
     expect((await poolRows()).map((row) => row.key)).toContain(key);
   });

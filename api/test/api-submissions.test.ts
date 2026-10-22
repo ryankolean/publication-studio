@@ -162,6 +162,7 @@ describe("POST /submissions", () => {
     expect(res.status).toBe(422);
     const body = await bodyOf(res);
     expect(body["code"]).toBe("PACKAGE_INCOMPLETE");
+    expect(body["message"]).toBe("This submission is not ready yet. Finish the final checks first.");
     expect(body["details"]).toEqual({ missing: ["images_present"] });
     expect(await count("submissions")).toBe(0);
   });

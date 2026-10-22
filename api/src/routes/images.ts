@@ -103,7 +103,7 @@ imageRoutes.delete("/events/:id/images/:key{.+}", requireAuth, async (c) => {
       c,
       409,
       "IMAGE_IN_USE",
-      "A package still uses this image. Remove it from the package first.",
+      "This photo is still part of a submission. Take it out of that submission first.",
     );
   }
 
@@ -178,7 +178,7 @@ imageRoutes.post("/events/:id/images", requireAuth, async (c) => {
     consentStatus: event.consent_status,
   });
   if (!gate.allowed) {
-    return fail(c, 403, "RIGHTS_BLOCKED", "This event cannot be packaged yet.", gate.reasons);
+    return fail(c, 403, "RIGHTS_BLOCKED", "This wedding cannot go to an outlet yet.", gate.reasons);
   }
 
   const extension = ALLOWED_CONTENT_TYPES[contentType] ?? "bin";

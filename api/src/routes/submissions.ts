@@ -128,7 +128,7 @@ function refusalFor(verdict: PackageVerdict): Refusal | null {
     return {
       status: 422,
       code: "PACKAGE_INCOMPLETE",
-      message: "The package is not complete. Finish its checklist first.",
+      message: "This submission is not ready yet. Finish the final checks first.",
       details: { missing: verdict.missing },
     };
   }

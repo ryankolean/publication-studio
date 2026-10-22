@@ -153,7 +153,10 @@ describe("the rights gate governs packaging", () => {
     await seedEvent("w1", { rights: "unverified" });
     const res = await createPackage();
     expect(res.status).toBe(403);
-    await expect(res.json()).resolves.toMatchObject({ code: "RIGHTS_BLOCKED" });
+    await expect(res.json()).resolves.toMatchObject({
+      code: "RIGHTS_BLOCKED",
+      message: "This wedding cannot go to an outlet yet.",
+    });
   });
 
   it("refuses a second-shooter event", async () => {

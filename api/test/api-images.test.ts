@@ -110,8 +110,9 @@ describe("the rights gate governs curation, not just packaging", () => {
     await seedEvent("w1", "unverified", "granted");
     const res = await requestUpload("w1");
     expect(res.status).toBe(403);
-    const body = (await res.json()) as { code: string; details: Array<{ code: string }> };
+    const body = (await res.json()) as { code: string; message: string; details: Array<{ code: string }> };
     expect(body.code).toBe("RIGHTS_BLOCKED");
+    expect(body.message).toBe("This wedding cannot go to an outlet yet.");
     expect(body.details.map((d) => d.code)).toContain("RIGHTS_UNVERIFIED");
   });
 

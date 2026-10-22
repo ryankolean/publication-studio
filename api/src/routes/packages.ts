@@ -279,7 +279,7 @@ packageRoutes.post("/", async (c) => {
     consentStatus: event.consent_status,
   });
   if (!gate.allowed) {
-    return fail(c, 403, "RIGHTS_BLOCKED", "This event cannot be packaged yet.", gate.reasons);
+    return fail(c, 403, "RIGHTS_BLOCKED", "This wedding cannot go to an outlet yet.", gate.reasons);
   }
 
   // DECISION: one package per pairing in Phase 1. Asking again returns what
