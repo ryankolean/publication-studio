@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 
 import type { StepContext } from "../context.js";
 import { Frame } from "../Frame.js";
+import type { StepGuide } from "../guide.js";
 import { wizardPath, type StepId } from "../model.js";
 
 /**
@@ -11,21 +12,21 @@ import { wizardPath, type StepId } from "../model.js";
  */
 export function NeedsEarlier({
   ctx,
+  guide,
   title,
-  lead,
   message,
   step,
   linkLabel,
 }: {
   ctx: StepContext;
-  title: string;
-  lead: string;
+  guide: StepGuide;
+  title?: string;
   message: string;
   step: StepId;
   linkLabel: string;
 }) {
   return (
-    <Frame title={title} lead={lead} rail={ctx.rail} back={ctx.back}>
+    <Frame guide={guide} title={title} rail={ctx.rail} back={ctx.back}>
       <p className="text-sm text-slate-700">{message}</p>
       <Link to={wizardPath(ctx.eventId, step, ctx.packageId)} className="text-sm font-medium text-slate-900 underline">
         {linkLabel}

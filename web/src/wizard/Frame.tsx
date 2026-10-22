@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
+import type { StepGuide } from "./guide.js";
 import { RAIL_LABEL, wizardPath, type StepId, type WizardState } from "./model.js";
 
 export const BUTTON =
@@ -77,8 +78,10 @@ export interface PrimaryAction {
 }
 
 interface FrameProps {
-  title: string;
-  lead: string;
+  /** What this screen says about itself: heading, why, what to do, what is next. */
+  guide: StepGuide;
+  /** Replaces the guide's heading when the outlet's name belongs in it. */
+  title?: string;
   rail?: RailProps | null;
   back?: string | null;
   primary?: PrimaryAction | null;
@@ -87,20 +90,42 @@ interface FrameProps {
   children?: ReactNode;
 }
 
+/** "Step 5 of 10: Photos", read from the rail the server sent. */
+function stepLine({ current, steps }: RailProps): string {
+  const index = steps.findIndex((entry) => entry.id === current);
+  return `Step ${index + 1} of ${steps.length}: ${RAIL_LABEL[current]}`;
+}
+
 /**
- * Every wizard screen: the rail, a verb-phrase heading, one line of context,
- * the task, and Back / Continue at the bottom. Continue is disabled with its
- * reason beside it whenever the screen is not complete.
+ * Every wizard screen: which step this is, the rail, the heading, why the
+ * step matters, what to do here, the task, Back / Continue, and what comes
+ * next. Continue is disabled with its reason beside it whenever the screen is
+ * not complete, and the next-up line shows only until then.
  */
-export function Frame({ title, lead, rail = null, back = null, primary = null, after, children }: FrameProps) {
+export function Frame({ guide, title, rail = null, back = null, primary = null, after, children }: FrameProps) {
   const reasonId = "continue-reason";
+  const unfinished = primary === null || primary.disabledReason !== null;
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      {rail !== null && <Rail {...rail} />}
+      {rail !== null && (
+        <div className="space-y-2">
+          <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">{stepLine(rail)}</p>
+          <Rail {...rail} />
+        </div>
+      )}
       <header>
-        <h2 className="text-xl font-semibold break-words text-slate-900">{title}</h2>
-        <p className="mt-1 text-sm break-words text-slate-600">{lead}</p>
+        <h2 className="text-xl font-semibold break-words text-slate-900">{title ?? guide.title}</h2>
+        <p className="mt-1 text-sm break-words text-slate-600">{guide.lead}</p>
       </header>
+      <section aria-label="What to do here" className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <h3 className="text-sm font-semibold text-slate-900">What to do here</h3>
+        <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm break-words text-slate-800">
+          {guide.todo.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ol>
+        {guide.note !== undefined && <p className="mt-3 text-xs break-words text-slate-600">{guide.note}</p>}
+      </section>
       <div className="space-y-6">{children}</div>
       <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4">
         {back === null ? (
@@ -129,6 +154,7 @@ export function Frame({ title, lead, rail = null, back = null, primary = null, a
           </div>
         )}
       </footer>
+      {unfinished && <p className="text-sm break-words text-slate-500">{guide.next}</p>}
       {after}
     </div>
   );
