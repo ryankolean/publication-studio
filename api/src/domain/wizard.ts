@@ -137,13 +137,16 @@ export type ChipKind = "ready" | "needs_details" | "blocked" | "queued" | "live"
 
 /** What the chip needs to know about each package: its outlet and where its submission stands. */
 export interface ChipPackage {
+  id: string;
   publicationName: string | null;
   submission: { status: SubmissionStatus } | null;
 }
 
 /**
  * The chip on a wedding card: blocked first (nothing else matters until the
- * gate opens), then any detail an outlet asks for, else ready.
+ * gate opens), then any detail an outlet asks for, else ready. packageId
+ * names the package the label describes, so a card can open the wizard on
+ * that package; it is null when the label is about the record alone.
  */
 export function weddingChip(
   event: Pick<
@@ -160,10 +163,14 @@ export function weddingChip(
   >,
   vendorCreditCount: number,
   packages: readonly ChipPackage[] = [],
-): { kind: ChipKind; label: string } {
+): { kind: ChipKind; label: string; packageId: string | null } {
   const codes = gateCodes(event);
   if (codes.length > 0) {
-    return { kind: "blocked", label: `Blocked: ${codes.map((code) => GATE_WORDS[code].short).join(" and ")}` };
+    return {
+      kind: "blocked",
+      label: `Blocked: ${codes.map((code) => GATE_WORDS[code].short).join(" and ")}`,
+      packageId: null,
+    };
   }
   // Where the wedding stands with an outlet outranks whether its record is
   // tidy: "Sent to Loverly" is the fact she is waiting on. Packages arrive
@@ -174,27 +181,27 @@ export function weddingChip(
     switch (open.submission.status) {
       case "ready":
       case "queued":
-        return { kind: "queued", label: `In the queue for ${named(open)}` };
+        return { kind: "queued", label: `In the queue for ${named(open)}`, packageId: open.id };
       case "sent":
-        return { kind: "live", label: `Sent to ${named(open)}` };
+        return { kind: "live", label: `Sent to ${named(open)}`, packageId: open.id };
       case "accepted":
-        return { kind: "accepted", label: `Accepted by ${named(open)}` };
+        return { kind: "accepted", label: `Accepted by ${named(open)}`, packageId: open.id };
       case "expired":
-        return { kind: "live", label: `Reply overdue from ${named(open)}` };
+        return { kind: "live", label: `Reply overdue from ${named(open)}`, packageId: open.id };
       case "withdraw_pending":
-        return { kind: "live", label: `Withdrawing from ${named(open)}` };
+        return { kind: "live", label: `Withdrawing from ${named(open)}`, packageId: open.id };
       default:
         break;
     }
   }
   const published = packages.find((entry) => entry.submission?.status === "published");
   if (published !== undefined) {
-    return { kind: "published", label: `Published at ${named(published)}` };
+    return { kind: "published", label: `Published at ${named(published)}`, packageId: published.id };
   }
   if (evaluateIntake(event, vendorCreditCount).some((item) => !item.done)) {
-    return { kind: "needs_details", label: "Needs details" };
+    return { kind: "needs_details", label: "Needs details", packageId: null };
   }
-  return { kind: "ready", label: "Ready to send" };
+  return { kind: "ready", label: "Ready to send", packageId: null };
 }
 
 /**

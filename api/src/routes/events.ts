@@ -233,8 +233,9 @@ eventRoutes.post("/", async (c) => {
 });
 
 /**
- * The inventory, each event with the wizard's chip and whether the wizard has
- * a package to follow for it (the dashboard's "in progress"). Three queries in
+ * The inventory, each event with the wizard's chip, whether the wizard has
+ * a package to follow for it (the dashboard's "in progress"), and whether it
+ * has ever had a package (the home page's welcome collapses once any has). Three queries in
  * all, not three per event: the vendor counts and package states are read for
  * every event at once and matched up here.
  *
@@ -286,6 +287,7 @@ eventRoutes.get("/", async (c) => {
         ...view,
         chip: weddingChip(view, creditCount.get(row.id) ?? 0, packagesOf.get(row.id) ?? []),
         inProgress: followedPackageId(packagesOf.get(row.id) ?? []) !== null,
+        hasPackage: (packagesOf.get(row.id) ?? []).length > 0,
       };
     }),
   });

@@ -351,12 +351,12 @@ describe("GET /events: the wizard's chip and progress", () => {
 
   it("says details are needed, counting vendors per event", async () => {
     await create({ ...complete, vendorCredits: [] });
-    expect((await list())[0]?.["chip"]).toEqual({ kind: "needs_details", label: "Needs details" });
+    expect((await list())[0]?.["chip"]).toMatchObject({ kind: "needs_details", label: "Needs details" });
   });
 
   it("says blocked, and why, in plain words", async () => {
     await create({ ...complete, consentStatus: "declined" });
-    expect((await list())[0]?.["chip"]).toEqual({ kind: "blocked", label: "Blocked: the couple said no" });
+    expect((await list())[0]?.["chip"]).toMatchObject({ kind: "blocked", label: "Blocked: the couple said no" });
   });
 
   it("is in progress while a package is unqueued or its submission is open, and not after", async () => {
@@ -369,6 +369,22 @@ describe("GET /events: the wizard's chip and progress", () => {
 
     await db.prepare("UPDATE submissions SET status = 'declined'").run();
     expect((await list())[0]?.["inProgress"]).toBe(false);
+  });
+
+  it("says whether a wedding has ever had a package, and which one the chip names", async () => {
+    const id = (await create(complete))["id"] as string;
+    expect((await list())[0]).toMatchObject({ hasPackage: false, chip: { packageId: null } });
+
+    await packageFor(id, "pk1", "pub-loverly");
+    await submissionFor(id, "pub-loverly", "published");
+    expect((await list())[0]).toMatchObject({ hasPackage: true, chip: { kind: "published", packageId: "pk1" } });
+
+    await db.prepare("UPDATE submissions SET status = 'declined'").run();
+    expect((await list())[0]).toMatchObject({
+      hasPackage: true,
+      inProgress: false,
+      chip: { kind: "ready", packageId: null },
+    });
   });
 
   it("reads each event's progress from its own packages", async () => {
