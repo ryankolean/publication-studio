@@ -275,6 +275,7 @@ All mutations audit-logged. All gate logic server-side; the SPA is untrusted.
 **Phase 6 adversarial (survived):** "Why not just Two Bright Lights?" — answered in §11 with TBL kept as optional channel; "ChatGPT commoditizes strategy" — moat placed in operational layer (§7), strategy is the front-end; "5 weddings can't sustain a product" — credit recovery + styled shoots + Phase 4 gate on proof.
 **2026-10-19:** table and routes renamed from wedding to event per SUMMIT-312.
 **2026-10-19 (Phase 1):** curation board, package editor and queue shipped; submissions are born `ready` (draft folded into package completeness); a Phase 1 floor of the exclusivity ledger refuses a second live submission per event, the policy-aware locks stay Phase 2; publication seed re-verified against live guidelines with a shared tag vocabulary (SUMMIT-300).
+**2026-10-22 (guided wizard):** the wizard became the only path after the design partner's first run found the older pages instead of it. Home is the wedding chooser with one button per card; every screen carries a "What to do here" box and a next-up line from one copy module that also prints the help page; the older event, package and intake pages were deleted; the list gained `hasPackage` and the chip its package id; four server messages lost the words package and event. Design: `docs/superpowers/specs/2026-10-22-guided-wizard-design.md`.
 **Flagged for authors:** §13 items 1–5.
 
 **Confidence: HIGH** for Phase 0–2 build; **MEDIUM** for Phase 3–4 (depends on partner outcomes and business terms).

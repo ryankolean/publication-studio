@@ -11,12 +11,14 @@ Two-user web app that helps a wedding photographer get published: tracks wedding
 - SPA: https://ryankolean.github.io/publication-studio/
 - API: a Cloudflare Worker, auth-gated on every route except `/health`
 
-Built and verified in a browser: sign-in, event intake with all three
-rights-gate outcomes, the ten seeded publications with live-verified specs,
-response windows and tags, the curation board (upload pool, ordered
-selection), the package editor with the server-evaluated checklist, and the
-queue: create a submission from a complete package, mark it sent by hand,
-record the outlet's answer, see the response-window countdown.
+Built and verified in a browser: sign-in, the guided wizard from choosing a
+wedding to recording the outlet's reply (ten steps, each with a "What to do
+here" box naming the exact controls, and a first-visit welcome on the home
+page), the ten seeded publications with live-verified specs, response
+windows and tags, and the queue. The wizard is the only path: the older
+event, package and intake pages were removed on 2026-10-22, and "How it
+works" prints the full step-by-step guide from the same copy the screens
+use.
 
 Phase 1 is done by definition when one real submission goes out using only
 the tool. That needs the photographer's first event and gallery.
