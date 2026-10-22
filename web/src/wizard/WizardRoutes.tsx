@@ -84,12 +84,6 @@ export function WizardResume() {
 }
 
 /** The old step-list address now opens the wizard where it left off. */
-export function SubmitRedirect() {
-  const { id = "" } = useParams();
-  const { search } = useLocation();
-  return <Navigate to={`/wizard/${id}${search}`} replace />;
-}
-
 /**
  * /wizard/:eventId/:step. Reads the walkthrough on every screen change, so a
  * refresh or a step taken elsewhere never leaves the rail stale, then hands

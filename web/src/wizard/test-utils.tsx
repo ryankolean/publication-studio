@@ -6,7 +6,7 @@ import { ApiError, type ApiClient } from "../api/client.js";
 import { createSession, type StorageLike } from "../auth/session.js";
 import { SessionProvider } from "../session-context.js";
 import { STEPS, type StepId, type Walkthrough, type WizardState } from "./model.js";
-import { SubmitRedirect, WizardNewWedding, WizardResume, WizardStep } from "./WizardRoutes.js";
+import { WizardNewWedding, WizardResume, WizardStep } from "./WizardRoutes.js";
 
 function fakeStorage(): StorageLike {
   const entries = new Map<string, string>();
@@ -60,7 +60,6 @@ export function renderWizard(api: FakeApi, entry: string) {
       <SessionProvider session={createSession(fakeStorage())} api={api as unknown as ApiClient}>
         <Routes>
           <Route path="/" element={<p>Home stub</p>} />
-          <Route path="/events/:id/submit" element={<SubmitRedirect />} />
           <Route path="/wizard/new/wedding" element={<WizardNewWedding />} />
           <Route path="/wizard/:eventId" element={<WizardResume />} />
           <Route path="/wizard/:eventId/:step" element={<WizardStep />} />

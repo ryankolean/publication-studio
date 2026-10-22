@@ -97,15 +97,15 @@ describe("grouping", () => {
     expect(screen.getByText(/No finished submissions yet/)).toBeInTheDocument();
   });
 
-  it("names the couple and the outlet, and links to the package", async () => {
+  it("names the couple and the outlet, and opens the wedding on this submission", async () => {
     serve([submission()]);
     renderPage();
     const [row] = await rowsOf("Ready to send");
     expect(row).toHaveTextContent("Sarah and James");
     expect(row).toHaveTextContent("Loverly");
-    expect(within(row as HTMLElement).getByRole("link", { name: /Open package/ })).toHaveAttribute(
+    expect(within(row as HTMLElement).getByRole("link", { name: "Open this wedding" })).toHaveAttribute(
       "href",
-      "/packages/pk1",
+      "/wizard/e1?package=pk1",
     );
   });
 
@@ -132,9 +132,9 @@ describe("the live window", () => {
     expect(rows[1]).toHaveTextContent("1 day remaining");
     expect(rows[2]).toHaveTextContent("Window passed");
     expect(rows[3]).toHaveTextContent("Window unknown");
-    expect(within(rows[3] as HTMLElement).getByRole("link", { name: /Open package/ })).toHaveAttribute(
+    expect(within(rows[3] as HTMLElement).getByRole("link", { name: "Open this wedding" })).toHaveAttribute(
       "href",
-      "/packages/pk1",
+      "/wizard/e1?package=pk1",
     );
   });
 });

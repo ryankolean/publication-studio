@@ -6,13 +6,10 @@ import { SessionProvider, useSession } from "./session-context.js";
 import { LoginPage } from "./pages/LoginPage.js";
 import { SetPasswordPage } from "./pages/SetPasswordPage.js";
 import { HomePage } from "./pages/HomePage.js";
-import { IntakePage } from "./pages/IntakePage.js";
 import { PublicationsPage } from "./pages/PublicationsPage.js";
-import { EventDetailPage } from "./pages/EventDetailPage.js";
-import { PackageEditorPage } from "./pages/PackageEditorPage.js";
 import { QueuePage } from "./pages/QueuePage.js";
 import { HelpPage } from "./pages/HelpPage.js";
-import { SubmitRedirect, WizardNewWedding, WizardResume, WizardStep } from "./wizard/WizardRoutes.js";
+import { WizardNewWedding, WizardResume, WizardStep } from "./wizard/WizardRoutes.js";
 
 /**
  * DECISION: HashRouter, not BrowserRouter. GitHub Pages serves static files
@@ -80,16 +77,11 @@ function Routed() {
     <Shell>
       <Routes>
         <Route path="/" element={<RequireSession><HomePage /></RequireSession>} />
-        <Route path="/events/new" element={<RequireSession><IntakePage /></RequireSession>} />
-        <Route path="/events/:id" element={<RequireSession><EventDetailPage /></RequireSession>} />
-        <Route path="/events/:id/edit" element={<RequireSession><IntakePage /></RequireSession>} />
-        <Route path="/events/:id/submit" element={<RequireSession><SubmitRedirect /></RequireSession>} />
         <Route path="/wizard" element={<Navigate to="/" replace />} />
         <Route path="/wizard/new/wedding" element={<RequireSession><WizardNewWedding /></RequireSession>} />
         <Route path="/wizard/:eventId" element={<RequireSession><WizardResume /></RequireSession>} />
         <Route path="/wizard/:eventId/:step" element={<RequireSession><WizardStep /></RequireSession>} />
         <Route path="/help" element={<RequireSession><HelpPage /></RequireSession>} />
-        <Route path="/packages/:id" element={<RequireSession><PackageEditorPage /></RequireSession>} />
         <Route path="/queue" element={<RequireSession><QueuePage /></RequireSession>} />
         <Route path="/publications" element={<RequireSession><PublicationsPage /></RequireSession>} />
         <Route path="/set-password" element={<SetPasswordPage />} />

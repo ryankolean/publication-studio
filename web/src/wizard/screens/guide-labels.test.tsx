@@ -121,7 +121,8 @@ const OPEN: Record<StepId, () => Promise<unknown>> = {
       "/packages/pk1/images": { images: pool },
     });
     renderWizard(api, "/wizard/w1/send?package=pk1");
-    return screen.findByRole("heading", { name: "Send it to Outlet A" });
+    // The heading renders before the submission loads; the button proves it did.
+    return screen.findByRole("button", { name: "I sent it" });
   },
   track: async () => {
     serve(api, {
@@ -181,7 +182,8 @@ describe("every quoted control in a step's guide is on that screen", () => {
       "/packages/pk1/images": { images: pool },
     });
     renderWizard(api, "/wizard/w1/send?package=pk1");
-    await screen.findByRole("heading", { name: "Send it to Outlet B" });
+    await screen.findByRole("button", { name: "I sent it" });
+    expect(screen.getByRole("heading", { name: "Send it to Outlet B" })).toBeInTheDocument();
     expect(screen.getAllByText(GUIDE.send.todo[2] as string)).toHaveLength(1);
     expect(screen.queryByRole("link", { name: /submission page/ })).toBeNull();
     expect(screen.getByText("Outlet B has no public form. Reaching it is a pitch to an editor.")).toBeInTheDocument();

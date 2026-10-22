@@ -33,15 +33,6 @@ describe("resuming", () => {
     expect(await screen.findByRole("heading", { name: "Your gallery and permissions" })).toBeInTheDocument();
   });
 
-  it("sends the old step-list address to the wizard, package and all", async () => {
-    serve(api, {
-      "/events/w1/walkthrough?package=pk2": walkthrough(wizardAt("track", { packageId: "pk2", submission: null })),
-    });
-    renderWizard(api, "/events/w1/submit?package=pk2");
-    await waitFor(() => expect(api.get).toHaveBeenCalledWith("/events/w1/walkthrough?package=pk2"));
-    await waitFor(() => expect(location(screen)).toBe("/wizard/w1/track?package=pk2"));
-  });
-
   it("says so when the wedding cannot be opened", async () => {
     serve(api, { "/events/w9/walkthrough": new ApiError(404, "NOT_FOUND", "No such event.") });
     renderWizard(api, "/wizard/w9");

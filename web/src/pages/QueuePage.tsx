@@ -51,11 +51,15 @@ function RowHeader({ submission, badge }: { submission: SubmissionView; badge: b
   );
 }
 
-function PackageLink({ submission }: { submission: SubmissionView }) {
-  if (submission.packageId === null) return null;
+/** Opens the wizard on this submission, where the server picks the step. */
+function OpenWedding({ submission }: { submission: SubmissionView }) {
+  const target =
+    submission.packageId === null
+      ? `/wizard/${submission.eventId}`
+      : `/wizard/${submission.eventId}?package=${encodeURIComponent(submission.packageId)}`;
   return (
-    <Link to={`/packages/${submission.packageId}`} className="text-sm text-slate-600 underline hover:text-slate-900">
-      Open package
+    <Link to={target} className="text-sm text-slate-600 underline hover:text-slate-900">
+      Open this wedding
     </Link>
   );
 }
@@ -90,7 +94,7 @@ function ReadyRow({ submission, onChanged }: { submission: SubmissionView; onCha
     <li className="rounded-lg border border-slate-200 p-4">
       <RowHeader submission={submission} badge />
       <div className="mt-3 flex flex-wrap items-center gap-3">
-        <PackageLink submission={submission} />
+        <OpenWedding submission={submission} />
         {confirming ? (
           <>
             <button type="button" disabled={busy} onClick={() => void markSent()} className={PRIMARY}>
@@ -160,7 +164,7 @@ function LiveRow({ submission, onChanged }: { submission: SubmissionView; onChan
         ) : null}
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-3">
-        <PackageLink submission={submission} />
+        <OpenWedding submission={submission} />
         {choice === null && (
           <>
             <button type="button" onClick={() => setChoice("accepted")} className={BUTTON}>
