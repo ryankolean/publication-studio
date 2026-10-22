@@ -19,6 +19,6 @@ describe("HelpPage", () => {
     expect(points[2]).toHaveTextContent("the outlet's own rules");
     expect(points[3]).toHaveTextContent("Your gallery links stay private.");
     expect(points[4]).toHaveTextContent("Mark things done as you go");
-    expect(screen.getByRole("link", { name: "Start a submission" })).toHaveAttribute("href", "/wizard");
+    expect(screen.getByRole("link", { name: "Start a submission" })).toHaveAttribute("href", "/");
   });
 });

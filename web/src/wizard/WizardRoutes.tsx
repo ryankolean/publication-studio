@@ -74,7 +74,7 @@ export function WizardResume() {
     return (
       <div className="mx-auto max-w-2xl space-y-3">
         <Alert>{error}</Alert>
-        <Link to="/wizard" className="text-sm underline">
+        <Link to="/" className="text-sm underline">
           Choose a wedding
         </Link>
       </div>
@@ -131,7 +131,7 @@ export function WizardStep() {
     return (
       <div className="mx-auto max-w-2xl space-y-3">
         <Alert>{error}</Alert>
-        <Link to="/wizard" className="text-sm underline">
+        <Link to="/" className="text-sm underline">
           Choose a wedding
         </Link>
       </div>
@@ -149,7 +149,7 @@ export function WizardStep() {
     walkthrough,
     packageId,
     rail: { eventId, packageId, current: step, steps: walkthrough.wizard.steps },
-    back: previous === null ? "/wizard" : wizardPath(eventId, previous, packageId),
+    back: previous === null ? "/" : wizardPath(eventId, previous, packageId),
     go: (next, nextPackage = packageId) => navigate(wizardPath(eventId, next, nextPackage)),
     reload,
   };

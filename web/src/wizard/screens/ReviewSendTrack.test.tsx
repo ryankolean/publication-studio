@@ -317,7 +317,7 @@ describe("[track]", () => {
       expect(api.patch).toHaveBeenCalledWith("/submissions/s1", { status: "accepted", outcomeNotes: "Running in spring." }),
     );
     expect(await screen.findByLabelText("Live link")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Done. Start another submission" })).toHaveAttribute("href", "/wizard");
+    expect(screen.getByRole("link", { name: "Done. Start another submission" })).toHaveAttribute("href", "/");
   });
 
   it("records a decline without a note", async () => {

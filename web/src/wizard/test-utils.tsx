@@ -6,7 +6,6 @@ import { ApiError, type ApiClient } from "../api/client.js";
 import { createSession, type StorageLike } from "../auth/session.js";
 import { SessionProvider } from "../session-context.js";
 import { STEPS, type StepId, type Walkthrough, type WizardState } from "./model.js";
-import { StartScreen } from "./screens/StartScreen.js";
 import { SubmitRedirect, WizardNewWedding, WizardResume, WizardStep } from "./WizardRoutes.js";
 
 function fakeStorage(): StorageLike {
@@ -60,9 +59,8 @@ export function renderWizard(api: FakeApi, entry: string) {
     <MemoryRouter initialEntries={[entry]}>
       <SessionProvider session={createSession(fakeStorage())} api={api as unknown as ApiClient}>
         <Routes>
-          <Route path="/" element={<p>Dashboard stub</p>} />
+          <Route path="/" element={<p>Home stub</p>} />
           <Route path="/events/:id/submit" element={<SubmitRedirect />} />
-          <Route path="/wizard" element={<StartScreen />} />
           <Route path="/wizard/new/wedding" element={<WizardNewWedding />} />
           <Route path="/wizard/:eventId" element={<WizardResume />} />
           <Route path="/wizard/:eventId/:step" element={<WizardStep />} />

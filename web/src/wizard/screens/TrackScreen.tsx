@@ -166,7 +166,7 @@ export function TrackScreen({ ctx }: { ctx: StepContext }) {
       )}
 
       {wizard.finished && (
-        <Link to="/wizard" className={`${PRIMARY} w-fit`}>
+        <Link to="/" className={`${PRIMARY} w-fit`}>
           Done. Start another submission
         </Link>
       )}

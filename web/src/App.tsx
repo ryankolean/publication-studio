@@ -5,14 +5,13 @@ import { PRODUCT_NAME } from "./config.js";
 import { SessionProvider, useSession } from "./session-context.js";
 import { LoginPage } from "./pages/LoginPage.js";
 import { SetPasswordPage } from "./pages/SetPasswordPage.js";
-import { DashboardPage } from "./pages/DashboardPage.js";
+import { HomePage } from "./pages/HomePage.js";
 import { IntakePage } from "./pages/IntakePage.js";
 import { PublicationsPage } from "./pages/PublicationsPage.js";
 import { EventDetailPage } from "./pages/EventDetailPage.js";
 import { PackageEditorPage } from "./pages/PackageEditorPage.js";
 import { QueuePage } from "./pages/QueuePage.js";
 import { HelpPage } from "./pages/HelpPage.js";
-import { StartScreen } from "./wizard/screens/StartScreen.js";
 import { SubmitRedirect, WizardNewWedding, WizardResume, WizardStep } from "./wizard/WizardRoutes.js";
 
 /**
@@ -38,7 +37,7 @@ function Shell({ children }: { children: ReactNode }) {
             <span className="font-semibold tracking-tight">{PRODUCT_NAME}</span>
             <nav className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
               <Link to="/" className="text-slate-600 hover:text-slate-900">
-                Events
+                Weddings
               </Link>
               <Link to="/queue" className="text-slate-600 hover:text-slate-900">
                 Queue
@@ -80,12 +79,12 @@ function Routed() {
   return (
     <Shell>
       <Routes>
-        <Route path="/" element={<RequireSession><DashboardPage /></RequireSession>} />
+        <Route path="/" element={<RequireSession><HomePage /></RequireSession>} />
         <Route path="/events/new" element={<RequireSession><IntakePage /></RequireSession>} />
         <Route path="/events/:id" element={<RequireSession><EventDetailPage /></RequireSession>} />
         <Route path="/events/:id/edit" element={<RequireSession><IntakePage /></RequireSession>} />
         <Route path="/events/:id/submit" element={<RequireSession><SubmitRedirect /></RequireSession>} />
-        <Route path="/wizard" element={<RequireSession><StartScreen /></RequireSession>} />
+        <Route path="/wizard" element={<Navigate to="/" replace />} />
         <Route path="/wizard/new/wedding" element={<RequireSession><WizardNewWedding /></RequireSession>} />
         <Route path="/wizard/:eventId" element={<RequireSession><WizardResume /></RequireSession>} />
         <Route path="/wizard/:eventId/:step" element={<RequireSession><WizardStep /></RequireSession>} />

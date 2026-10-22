@@ -119,7 +119,7 @@ export function WeddingScreen({ ctx }: { ctx: StepContext | null }) {
     <Frame
       guide={GUIDE.wedding}
       rail={ctx?.rail ?? NEW_RAIL}
-      back={ctx?.back ?? "/wizard"}
+      back={ctx?.back ?? "/"}
       primary={
         loading
           ? null
