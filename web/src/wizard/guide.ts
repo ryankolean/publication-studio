@@ -131,7 +131,7 @@ export const GUIDE: Record<StepId, StepGuide> = {
       'Once the feature is live, paste the link into "Live link" and press "Record it".',
     ],
     note: "Some outlets never reply. This screen says what silence means for this one.",
-    next: "Next up: nothing. This wedding is done, or free for another outlet.",
+    next: "Next up: the outlet's answer. After that, this wedding is done, or free for another outlet.",
   },
 };
 

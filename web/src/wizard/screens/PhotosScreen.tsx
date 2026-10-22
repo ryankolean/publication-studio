@@ -5,7 +5,7 @@ import { ApiError } from "../../api/client.js";
 import { API_BASE_URL } from "../../config.js";
 import { useSession } from "../../session-context.js";
 import type { StepContext } from "../context.js";
-import { Alert, Frame, LABEL, Loading } from "../Frame.js";
+import { Alert, Frame, Loading, PRIMARY } from "../Frame.js";
 import { GUIDE } from "../guide.js";
 import { countRange, errorText } from "../model.js";
 import { outletNameOf, type PackageView, type PoolImage } from "../package.js";
@@ -190,19 +190,21 @@ function Photos({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
       ) : (
         <>
           <div>
-            <label htmlFor="add-photos" className={LABEL}>
-              Add photos
-            </label>
+            {/* The native picker is hidden; the button carries the name the guide uses. */}
             <input
               ref={fileInput}
               id="add-photos"
+              aria-label="Add photos"
               type="file"
               multiple
               accept={ACCEPT}
               disabled={uploading}
               onChange={(change: ChangeEvent<HTMLInputElement>) => void upload(Array.from(change.target.files ?? []))}
-              className="mt-1 block w-full max-w-full text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-slate-900 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white"
+              className="sr-only"
             />
+            <button type="button" disabled={uploading} onClick={() => fileInput.current?.click()} className={PRIMARY}>
+              {uploading ? "Adding photos" : "Add photos"}
+            </button>
             <p className="mt-1 text-xs text-slate-500">JPEG, PNG or WebP, up to 12 MB each.</p>
             {uploads.length > 0 && uploading && (
               <ul aria-label="Upload progress" className="mt-2 space-y-1 text-sm text-slate-600">

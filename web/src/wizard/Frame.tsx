@@ -104,7 +104,10 @@ function stepLine({ current, steps }: RailProps): string {
  */
 export function Frame({ guide, title, rail = null, back = null, primary = null, after, children }: FrameProps) {
   const reasonId = "continue-reason";
-  const unfinished = primary === null || primary.disabledReason !== null;
+  // The next-up line goes once Continue is live, or once the server's rail
+  // counts this step done (a screen with no Continue, like the reply).
+  const stepDone = rail !== null && rail.steps.some((entry) => entry.id === rail.current && entry.done);
+  const unfinished = (primary === null || primary.disabledReason !== null) && !stepDone;
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       {rail !== null && (

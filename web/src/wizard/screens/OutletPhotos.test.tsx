@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ApiError } from "../../api/client.js";
 import { GUIDE } from "../guide.js";
@@ -210,6 +210,15 @@ describe("[photos]", () => {
     // Once every file has landed the per-file lines collapse to one summary.
     await waitFor(() => expect(screen.getByText("2 photos added.")).toBeInTheDocument());
     expect(screen.queryByRole("list", { name: "Upload progress" })).not.toBeInTheDocument();
+  });
+
+  it('offers a real "Add photos" button that opens the file picker, with the native control hidden', async () => {
+    await open();
+    const picker = screen.getByLabelText("Add photos");
+    expect(picker).toHaveClass("sr-only");
+    const opened = vi.spyOn(picker as HTMLInputElement, "click").mockImplementation(() => {});
+    await userEvent.click(screen.getByRole("button", { name: "Add photos" }));
+    expect(opened).toHaveBeenCalledTimes(1);
   });
 
   it("chooses every pool photo at once, oldest first, and clears them again", async () => {

@@ -53,6 +53,17 @@ describe("Frame", () => {
     expect(screen.queryByRole("heading", { name: "Pick the photos" })).toBeNull();
   });
 
+  it("drops the next-up line once the rail says this step is done, even with no Continue", () => {
+    const done = { ...rail, current: "track" as const, steps: STEPS.map((id) => ({ id, done: true })) };
+    render(
+      <MemoryRouter>
+        <Frame guide={guide} rail={done} />
+      </MemoryRouter>,
+    );
+    expect(screen.getByText("Step 10 of 10: Reply")).toBeInTheDocument();
+    expect(screen.queryByText("Next up: the write-up.")).toBeNull();
+  });
+
   it("drops the next-up line once Continue is enabled", () => {
     render(
       <MemoryRouter>
