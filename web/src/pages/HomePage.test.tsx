@@ -86,9 +86,17 @@ describe("HomePage", () => {
   it("collapses the welcome once any wedding has had a submission, even a declined one", async () => {
     serve({ events: [card({ hasPackage: true, inProgress: false })] });
     renderHome();
-    expect(await screen.findByRole("link", { name: "Start this one: Sarah and James" })).toBeInTheDocument();
+    expect(await screen.findByRole("link", { name: "Start this one: Sarah and James" })).toHaveAttribute("href", "/wizard/w1");
     expect(screen.queryByRole("region", { name: "Welcome" })).toBeNull();
     expect(screen.getByRole("link", { name: "How it works" })).toHaveAttribute("href", "/help");
+  });
+
+  it("tells her to carry on with a wedding she is partway through", async () => {
+    serve({ events: [card({ hasPackage: true, inProgress: true })] });
+    renderHome();
+    expect(await screen.findByRole("link", { name: "Carry on: Sarah and James" })).toHaveAttribute("href", "/wizard/w1");
+    expect(screen.getByText("You are partway through. It opens where you left off.")).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Start this one: Sarah and James" })).toBeNull();
   });
 
   it("opens a published wedding on its own submission", async () => {

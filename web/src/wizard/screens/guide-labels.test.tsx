@@ -29,13 +29,19 @@ const quoted = (lines: string[]): string[] =>
 const outsideGuide = (elements: HTMLElement[]) =>
   elements.filter((element) => element.closest('[aria-label="What to do here"]') === null);
 
-/** The label is on screen, outside the guide box, as a button, a link, a form control's label, or text. */
+const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/**
+ * The label is on screen, outside the guide box, as a button, a link, a form
+ * control's label, or text that starts with it ("Not done: ..."), never as a
+ * fragment of a longer word.
+ */
 function onScreen(label: string): boolean {
   const found = [
     ...screen.queryAllByRole("button", { name: label }),
     ...screen.queryAllByRole("link", { name: label }),
     ...screen.queryAllByLabelText(label),
-    ...screen.queryAllByText(label, { exact: false }),
+    ...screen.queryAllByText(new RegExp(`^${escape(label)}(?![\\w])`)),
   ];
   return outsideGuide(found).length > 0;
 }

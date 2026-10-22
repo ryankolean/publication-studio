@@ -31,6 +31,15 @@ export const CARD_ACTION: Record<ChipKind, { button: string; next: string }> = {
   published: { button: "See how it went", next: "Published. Nothing more to do here." },
 };
 
+/** A wedding she is partway through, before anything is queued: the chip still reads ready or needs details. */
+const CARRY_ON = { button: "Carry on", next: "You are partway through. It opens where you left off." };
+
+/** The card's button and sentence: carry on when the wizard is following a package the chip does not name. */
+export function cardAction(card: Pick<WeddingCard, "chip" | "inProgress">): { button: string; next: string } {
+  const partway = card.inProgress && (card.chip.kind === "ready" || card.chip.kind === "needs_details");
+  return partway ? CARRY_ON : CARD_ACTION[card.chip.kind];
+}
+
 const CHIP_TONE: Record<ChipKind, string> = {
   ready: "border-emerald-300 bg-emerald-50 text-emerald-900",
   needs_details: "border-amber-300 bg-amber-50 text-amber-900",
@@ -115,7 +124,7 @@ function QueueLine() {
 }
 
 function Card({ wedding }: { wedding: WeddingCard }) {
-  const action = CARD_ACTION[wedding.chip.kind];
+  const action = cardAction(wedding);
   return (
     <li className="rounded-lg border border-slate-200 p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">

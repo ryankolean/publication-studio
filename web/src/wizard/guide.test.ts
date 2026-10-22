@@ -27,8 +27,14 @@ describe("the guide", () => {
     for (const line of lines) expect(line, line).not.toMatch(BANNED);
   });
 
+  it("names the real reorder controls on the photos step, not arrows", () => {
+    const lines = GUIDE.photos.todo.join(" ");
+    expect(lines).not.toMatch(/arrow/i);
+    for (const control of ['"Up"', '"Down"', '"Remove"']) expect(lines).toContain(control);
+  });
+
   it("catches each banned thing", () => {
-    for (const bad of ["the package is ready", "An event", "Attestation", "well — no", "Great!", "Done \u{1F389}"]) {
+    for (const bad of ["the package is ready", "An event", "Attestation", "well \u2014 no", "Great!", "Done \u{1F389}"]) {
       expect(bad, bad).toMatch(BANNED);
     }
     expect("The wedding is ready to send.").not.toMatch(BANNED);

@@ -19,7 +19,7 @@ export interface StepGuide {
 }
 
 /** Words she never reads, plus em dashes, exclamation marks and emoji. */
-export const BANNED = /\b(package|attestation|intake|inventory|event|derived|pool|grant)s?\b|[—!]|\p{Extended_Pictographic}/iu;
+export const BANNED = /\b(package|attestation|intake|inventory|event|derived|pool|grant)s?\b|[\u2014!]|\p{Extended_Pictographic}/iu;
 
 export const GUIDE: Record<StepId, StepGuide> = {
   wedding: {
@@ -73,7 +73,7 @@ export const GUIDE: Record<StepId, StepGuide> = {
       "In your gallery, select your favourites and download them at web size (around 1600 pixels on the long edge), not full size.",
       'Press "Add photos" and choose the files you downloaded.',
       'Tap each photo in the order you want it to appear, or press "Choose all".',
-      "Use the arrows to reorder.",
+      'Press "Up" or "Down" beside a photo to change its place, or "Remove" to take it out.',
       'Press "Continue" once the count fits the outlet\'s range, shown beside the button.',
     ],
     next: "Next up: the write-up and credits.",
