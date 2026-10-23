@@ -30,6 +30,7 @@ credit recovery.
 
 - `docs/publication-studio-design.md` — full product design v1.0: architecture, data model, state machines, workflows, risks, roadmap. Read this first.
 - `docs/phase-0-prompt.md` — the executable Phase 0 implementation brief for Claude Code.
+- `research/README.md`: the publication research files, one per outlet, and the rules every fact follows.
 - `CLAUDE.md` — conventions and directional guidance for Claude Code sessions in this repo.
 
 ## Structure
@@ -38,6 +39,7 @@ credit recovery.
 /web   — React + Vite + TS + Tailwind SPA → GitHub Pages
 /api   — Cloudflare Worker (Hono) + D1 + R2 → wrangler
 /docs  — design + implementation briefs
+/research  outlet research files (source of truth) and the tag and location vocabularies
 ```
 
 ## Working on it

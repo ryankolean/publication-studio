@@ -1,0 +1,313 @@
+# A complete, valid research file for a made-up outlet. Every field the schema
+# knows appears here, so it doubles as the reference example that
+# research/README.md points to. example.com pages do not exist.
+
+id: pub-example-weddings
+name: Example Weddings
+url: https://example.com
+kind: regional_magazine
+tier: primary
+recheck_every_days: 90
+taste_summary: Light-filled lakeside and garden weddings with full vendor detail.
+
+sources:
+  guidelines:
+    url: https://example.com/submit
+    read: 2026-10-20
+    kind: guidelines
+    title: Submission guidelines
+  form:
+    url: https://example.com/submit/form
+    read: 2026-10-20
+    kind: form
+  about:
+    url: https://example.com/about
+    read: 2026-10-21
+    kind: about
+  kit:
+    url: https://example.com/media-kit
+    read: 2026-10-21
+    kind: media_kit
+  editor_interview:
+    url: https://example.com/podcast/episode-12
+    read: 2026-10-21
+    kind: podcast
+  feature_lake:
+    url: https://example.com/weddings/lake-house
+    read: 2026-10-21
+    kind: feature
+
+identity:
+  parent_company:
+    value: Example Media Group
+    cite:
+      - source: about
+        quote: Example Weddings is published by Example Media Group.
+  sister_publications:
+    value: [Example Home]
+    cite:
+      - source: about
+        quote: Our sister title Example Home covers interiors.
+  shared_inbox_with:
+    value: unknown
+    checked: [about, guidelines]
+
+coverage:
+  regions:
+    value: [US-MI, US:midwest]
+    cite:
+      - source: guidelines
+        quote: We feature weddings held in Michigan and across the Midwest.
+  basis:
+    value: wedding_location
+    cite:
+      - source: guidelines
+        quote: The wedding itself must take place in our region.
+  destination_accepted:
+    value: false
+    cite:
+      - source: guidelines
+        quote: We do not publish destination weddings outside the Midwest.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: We publish real weddings year round.
+  elopement:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Elopements and micro weddings are welcome.
+  styled_shoot:
+    value: unknown
+    checked: [guidelines, form]
+    note: The form has a styled shoot option but the guidelines never mention them.
+  style_tags:
+    value: [lakefront, garden_botanical, romantic]
+    cite:
+      - source: feature_lake
+  seasonality:
+    value:
+      - wants: [winter, holiday_season]
+        submit_months: [8, 9]
+        note: Winter issue closes in September.
+    cite:
+      - source: guidelines
+        quote: Send winter and holiday weddings by the end of September.
+
+routes:
+  value:
+    - platform: web_form
+      url: https://example.com/submit/form
+      account_required: false
+      preferred: true
+      steps:
+        - Open the submission form.
+        - Paste the gallery link and list every vendor.
+        - Submit and keep the confirmation page.
+    - platform: email
+      account_required: unknown
+      steps:
+        - Email the submissions inbox with the couple's names in the subject.
+  cite:
+    - source: guidelines
+      quote: Submit through our online form or by email.
+
+package:
+  image_min:
+    value: 40
+    cite:
+      - source: form
+        quote: Please share at least 40 images.
+  image_max:
+    value: none
+    cite:
+      - source: form
+        quote: There is no upper limit on images.
+  resolution:
+    value:
+      min_long_edge_px: 1500
+      max_file_mb: 3
+    cite:
+      - source: form
+        quote: Images at least 1500 pixels on the long edge, under 3MB each.
+  size:
+    value: web
+    cite:
+      - source: form
+        quote: Web-size files only.
+  orientation_mix:
+    value: A mix of vertical and horizontal images.
+    cite:
+      - source: guidelines
+        quote: Include both vertical and horizontal images.
+  watermarks_allowed:
+    value: false
+    cite:
+      - source: guidelines
+        quote: No watermarks, please.
+  gallery_hosts:
+    value: [dropbox, pic_time]
+    cite:
+      - source: form
+        quote: Dropbox or Pic-Time gallery links only.
+  vendor_credits:
+    value:
+      required: true
+      fields: [role, business_name, instagram]
+    cite:
+      - source: form
+        quote: List every vendor with their role and Instagram handle.
+  story:
+    value:
+      required: true
+      min_words: 150
+      questionnaire: true
+    cite:
+      - source: form
+        quote: A story of at least 150 words, or the couple's questionnaire.
+  video_accepted:
+    value: unknown
+    checked: [guidelines, form]
+  other_requirements:
+    value: [Images in the order the day happened.]
+    cite:
+      - source: guidelines
+        quote: Please order images chronologically.
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_required
+      during_review: true
+      after_publication_days: 30
+    cite:
+      - source: guidelines
+        quote: Submissions must be exclusive while we review and for 30 days after.
+  prior_exposure:
+    publications:
+      value: disqualifies
+      cite:
+        - source: guidelines
+          quote: We cannot run weddings published elsewhere.
+    blogs:
+      value: allowed
+      cite:
+        - source: guidelines
+          quote: Your own blog post is fine.
+    social:
+      value: sneak_peeks_only
+      cite:
+        - source: guidelines
+          quote: A few sneak peeks on social media are fine; no full galleries.
+  freshness_window_months:
+    value: 12
+    cite:
+      - source: guidelines
+        quote: Weddings from the past 12 months only.
+  photographer_frequency:
+    value: unknown
+    checked: [guidelines]
+  submitter_roles:
+    value: [photographer, planner]
+    cite:
+      - source: form
+        quote: Submissions from photographers and planners only.
+
+rights:
+  image_usage:
+    value: Editorial use on the site and its social accounts, with credit.
+    cite:
+      - source: guidelines
+        quote: We use images editorially on our site and social channels, always credited.
+  credit_format:
+    value: Photographer name linked to their website.
+    cite:
+      - source: guidelines
+        quote: Photographers are credited by name with a link.
+  couple_consent_required:
+    value: true
+    cite:
+      - source: form
+        quote: The couple must approve this submission.
+  vendor_consent_required:
+    value: unknown
+    checked: [form]
+
+economics:
+  submission_fee:
+    value: none
+    cite:
+      - source: guidelines
+        quote: There is never a fee to submit.
+  publication_fee:
+    value: none
+    cite:
+      - source: guidelines
+        quote: Features are free.
+  priority_paid_tier:
+    value:
+      name: Vendor Guide listing
+      price:
+        amount: undisclosed
+        currency: USD
+      note: Listed vendors get faster review.
+    cite:
+      - source: kit
+        quote: Vendor Guide members receive priority review.
+  reach:
+    value:
+      - metric: instagram_followers
+        value: 85000
+        as_of: 2026-10-01
+      - metric: print_circulation
+        value: 40000
+        as_of: 2026-09-01
+    cite:
+      - source: kit
+        quote: 85K Instagram followers and 40,000 print copies.
+
+timing:
+  response_window:
+    value:
+      days: 42
+      replies: success_only
+    cite:
+      - source: guidelines
+        quote: If you have not heard from us in six weeks, we have passed.
+  publish_lead_days:
+    value:
+      min: 30
+      max: 90
+    cite:
+      - source: guidelines
+        quote: Accepted weddings run one to three months later.
+  publishing_cycle:
+    value: Online daily, print quarterly.
+    cite:
+      - source: kit
+        quote: New stories daily online and a quarterly print issue.
+
+people:
+  editors:
+    value:
+      - name: Jordan Example
+        role: Weddings Editor
+    cite:
+      - source: about
+        quote: Jordan Example, Weddings Editor
+
+insight:
+  secret_sauce:
+    - tip: Lead with the couple's story; the editor reads it before opening the gallery.
+      cite:
+        - source: editor_interview
+          quote: I read the story first. If it grabs me, I open the gallery.
+  recent_features:
+    - source: feature_lake
+      published: 2026-09-14
+      location: US-MI:traverse-city
+      content_type: real_wedding
+      tags: [lakefront, romantic]
