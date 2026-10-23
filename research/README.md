@@ -106,8 +106,18 @@ runs it on every pull request.
    Leave out either part when the outlet publishes none. A general support or
    billing inbox is not a submissions inbox.
 5. Research lands in batches, one pull request each, so a reviewer can follow
-   the sources. Merging a batch does not make it live: the import (SUMMIT-335)
-   holds every new or changed file for approval in the app.
+   the sources. Merging a batch does not make it live. The operator runs the
+   import, which holds every new or changed outlet for approval:
+
+   ```
+   npm run research:import --workspace @publication-studio/api -- --remote
+   ```
+
+   Then someone approves each update in the app, from the Publications page
+   ("Review them"). An unchanged outlet is skipped, so the import is safe to
+   re-run. Approving never touches the photographer's own tags or
+   corrections; a change to a field she corrected is flagged, and her
+   correction stays in force.
 
 ## Fields
 

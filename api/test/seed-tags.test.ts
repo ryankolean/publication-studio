@@ -9,7 +9,6 @@ import { TAG_CATEGORIES, tagLabel } from "../src/domain/tags.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const MIGRATION = join(here, "../migrations/0006_publication_research.sql");
-const PROVENANCE = join(here, "../../docs/research/publications-2026-10-19.json");
 
 let db: DatabaseSync;
 
@@ -92,25 +91,11 @@ describe("publication tags", () => {
   });
 });
 
+// The JSON this migration was generated from was retired in SUMMIT-335: the
+// research files in research/publications/ and the import replace it, and
+// git history keeps it.
 describe("research provenance", () => {
-  it("ships the source file the migration was generated from", () => {
-    const doc = JSON.parse(readFileSync(PROVENANCE, "utf8")) as {
-      verified: string;
-      publications: Array<{ id: string; sources: Array<{ url: string; quote: string }> }>;
-    };
-    expect(doc.verified).toBe("2026-10-19");
-    const ids = db.prepare("SELECT id FROM publications ORDER BY id").all() as Array<{ id: string }>;
-    expect(doc.publications.map((p) => p.id).sort()).toEqual(ids.map((row) => row.id));
-    for (const publication of doc.publications) {
-      for (const source of publication.sources) {
-        expect(source.url).toMatch(/^https?:\/\//);
-        expect(source.quote.split(/\s+/).length, publication.id).toBeLessThan(16);
-      }
-    }
-  });
-
   it("carries no email address into the public repo", () => {
     expect(readFileSync(MIGRATION, "utf8")).not.toMatch(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/);
-    expect(readFileSync(PROVENANCE, "utf8")).not.toMatch(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/);
   });
 });
