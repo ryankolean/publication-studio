@@ -120,7 +120,7 @@ function refusalFor(verdict: PackageVerdict): Refusal | null {
     return {
       status: 403,
       code: "RIGHTS_BLOCKED",
-      message: "This event cannot be submitted.",
+      message: "This wedding cannot go to an outlet yet.",
       details: verdict.gate.reasons,
     };
   }
@@ -182,7 +182,7 @@ submissionRoutes.post("/", async (c) => {
   }
 
   const verdict = await packageVerdict(c, packageId);
-  if (verdict === null) return fail(c, 404, "NOT_FOUND", "No such package.");
+  if (verdict === null) return fail(c, 404, "NOT_FOUND", "That submission could not be found.");
 
   const refused = refusalFor(verdict);
   if (refused !== null) {
@@ -199,7 +199,7 @@ submissionRoutes.post("/", async (c) => {
       c,
       409,
       "SUBMISSION_EXISTS",
-      "A submission already exists for this event and publication.",
+      "This wedding already has a submission for that outlet.",
       { submissionId: existing.id },
     );
   }
@@ -314,7 +314,7 @@ submissionRoutes.patch("/:id", async (c) => {
     const verdict =
       current.package_id === null ? null : await packageVerdict(c, current.package_id);
     if (verdict === null) {
-      return fail(c, 422, "PACKAGE_INCOMPLETE", "This submission has no package to send.", {
+      return fail(c, 422, "PACKAGE_INCOMPLETE", "This submission has nothing ready to send yet.", {
         missing: ["package"],
       });
     }

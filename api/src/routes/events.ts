@@ -227,7 +227,7 @@ eventRoutes.post("/", async (c) => {
     .bind(id)
     .first<EventRow>();
 
-  if (row === null) return fail(c, 500, "INTERNAL", "The event could not be read back.");
+  if (row === null) return fail(c, 500, "INTERNAL", "That was saved, but it could not be loaded again. Refresh the page.");
 
   return c.json(toView(row), 201);
 });
@@ -323,7 +323,7 @@ eventRoutes.get("/:id", async (c) => {
     .bind(c.req.param("id"))
     .first<EventRow>();
 
-  if (row === null) return fail(c, 404, "NOT_FOUND", "No such event.");
+  if (row === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
 
   return c.json(await detailView(c.env.DB, row));
 });
@@ -392,7 +392,7 @@ eventRoutes.patch("/:id", async (c) => {
   const existing = await c.env.DB.prepare("SELECT id FROM events WHERE id = ?")
     .bind(c.req.param("id"))
     .first<{ id: string }>();
-  if (existing === null) return fail(c, 404, "NOT_FOUND", "No such event.");
+  if (existing === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
 
   const parsed = validateEventIntake(payload);
   if (!parsed.ok) {
@@ -418,7 +418,7 @@ eventRoutes.patch("/:id", async (c) => {
   const row = await db.prepare("SELECT * FROM events WHERE id = ?")
     .bind(existing.id)
     .first<EventRow>();
-  if (row === null) return fail(c, 500, "INTERNAL", "The event could not be read back.");
+  if (row === null) return fail(c, 500, "INTERNAL", "That was saved, but it could not be loaded again. Refresh the page.");
 
   return c.json(await detailView(db, row));
 });
@@ -436,7 +436,7 @@ eventRoutes.get("/:id/walkthrough", async (c) => {
   const row = await db.prepare("SELECT * FROM events WHERE id = ?")
     .bind(c.req.param("id"))
     .first<EventRow>();
-  if (row === null) return fail(c, 404, "NOT_FOUND", "No such event.");
+  if (row === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
   const event = toView(row);
 
   const [credits, pool, outlets, packages] = await Promise.all([
@@ -460,7 +460,7 @@ eventRoutes.get("/:id/walkthrough", async (c) => {
   const loaded = followedId === null ? null : await loadFollowed(c, followedId, event.id);
   if (named !== undefined && loaded === null) {
     // A package from another event is reported exactly like a missing one.
-    return fail(c, 404, "NOT_FOUND", "No such package.");
+    return fail(c, 404, "NOT_FOUND", "That submission could not be found.");
   }
   const selected = named === undefined ? null : (loaded?.walkthrough ?? null);
   const vendorCreditCount = credits?.n ?? 0;
@@ -588,6 +588,6 @@ async function loadFollowed(
 
 eventRoutes.get("/:id/packages", async (c) => {
   const packages = await listEventPackages(c.env.DB, c.req.param("id"));
-  if (packages === null) return fail(c, 404, "NOT_FOUND", "No such event.");
+  if (packages === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
   return c.json({ packages });
 });

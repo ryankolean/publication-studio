@@ -246,14 +246,14 @@ describe("GET /events/:id/walkthrough", () => {
     const foreign = await startPackage(other, "pub-open");
     const res = await walkthrough(id, foreign);
     expect(res.status).toBe(404);
-    await expect(res.json()).resolves.toMatchObject({ code: "NOT_FOUND", message: "No such package." });
+    await expect(res.json()).resolves.toMatchObject({ code: "NOT_FOUND", message: "That submission could not be found." });
   });
 
   it("refuses an unknown package", async () => {
     const id = await createEvent();
     const res = await walkthrough(id, "nope");
     expect(res.status).toBe(404);
-    await expect(res.json()).resolves.toMatchObject({ code: "NOT_FOUND", message: "No such package." });
+    await expect(res.json()).resolves.toMatchObject({ code: "NOT_FOUND", message: "That submission could not be found." });
   });
 
   it("follows a sent submission to the reply, with the due date", async () => {

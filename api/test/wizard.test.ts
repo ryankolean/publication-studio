@@ -386,11 +386,11 @@ describe("weddingChip", () => {
   it("says blocked, and why, before anything else", () => {
     expect(weddingChip(event({ rightsStatus: "unverified", consentStatus: "unverified", hasGalleryUrl: false }), 0)).toMatchObject({
       kind: "blocked",
-      label: "Blocked: your contract is not confirmed and the couple has not agreed yet",
+      label: "On hold: your contract is not confirmed and the couple has not agreed yet",
     });
-    expect(weddingChip(event({ rightsStatus: "second_shooter" }), 1).label).toBe("Blocked: second-shooter wedding");
-    expect(weddingChip(event({ rightsStatus: "blocked" }), 1).label).toBe("Blocked: marked blocked");
-    expect(weddingChip(event({ consentStatus: "declined" }), 1).label).toBe("Blocked: the couple said no");
+    expect(weddingChip(event({ rightsStatus: "second_shooter" }), 1).label).toBe("On hold: second-shooter wedding");
+    expect(weddingChip(event({ rightsStatus: "blocked" }), 1).label).toBe("On hold: marked blocked");
+    expect(weddingChip(event({ consentStatus: "declined" }), 1).label).toBe("On hold: the couple said no");
   });
 });
 

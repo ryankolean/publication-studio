@@ -119,7 +119,7 @@ export function outletFit(
     warnings.push({
       code: "exclusive",
       text:
-        "Exclusive: sending here blocks every other outlet for this event until it answers." +
+        "Exclusive: sending here blocks every other outlet for this wedding until it answers." +
         (thirtyDays ? " Once it publishes, the feature stays exclusive to it for 30 days." : ""),
     });
   }
@@ -129,12 +129,12 @@ export function outletFit(
     if (publication.countsOwnBlogAsPublished === true && where !== null) {
       warnings.push({
         code: "prior_exposure_conflict",
-        text: `Takes only unpublished weddings and counts your own blog and Instagram as published. This event was already ${where}.`,
+        text: `Takes only unpublished weddings and counts your own blog and Instagram as published. This wedding was already ${where}.`,
       });
     } else {
       const unknown =
         publication.countsOwnBlogAsPublished === null && where !== null
-          ? ` This event was ${where}; the outlet does not say whether that counts.`
+          ? ` This wedding was ${where}; the outlet does not say whether that counts.`
           : "";
       const earlier =
         event.priorExposure.priorPubs.length > 0
@@ -150,7 +150,7 @@ export function outletFit(
   if (publication.earnedOrPaid === "paid" || requires.has("processing_fee_if_selected")) {
     warnings.push({
       code: "fee_on_selection",
-      text: "Pay to publish: the outlet charges a fee if it selects this event.",
+      text: "Pay to publish: the outlet charges a fee if it selects this wedding.",
     });
   } else if (publication.earnedOrPaid === "mixed") {
     warnings.push({
@@ -169,7 +169,7 @@ export function outletFit(
   if (requires.has("embargo_other_features_2_months_after_publication")) {
     warnings.push({
       code: "embargo",
-      text: "After it publishes, no other outlet can run this event for 2 months.",
+      text: "After it publishes, no other outlet can run this wedding for 2 months.",
     });
   }
 
@@ -268,10 +268,10 @@ const RESPONSE_SUMMARY: Partial<Record<SubmissionStatus, string>> = {
   sent: "Waiting for the outlet's answer.",
   accepted: "Accepted.",
   published: "Accepted and published.",
-  declined: "Declined. The event is free for another outlet.",
+  declined: "Declined. The wedding is free for another outlet.",
   expired: "No answer by the due date.",
   withdraw_pending: "Withdrawal pending.",
-  withdrawn: "Withdrawn. The event is free for another outlet.",
+  withdrawn: "Withdrawn. The wedding is free for another outlet.",
   cancelled: "Cancelled before it was sent.",
 };
 

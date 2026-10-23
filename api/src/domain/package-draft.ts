@@ -64,12 +64,36 @@ function placePhrase(source: DescriptionSource): string {
   return segments.join(" ");
 }
 
+const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+/** "2026-06-14" as an outlet would print it, "June 14, 2026"; anything else as stored. */
+function printedDate(value: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  const month = match === null ? undefined : MONTHS[Number(match[2]) - 1];
+  if (match === null || month === undefined) return value;
+  return `${month} ${Number(match[3])}, ${match[1]}`;
+}
+
 export function buildDescriptionDraft(source: DescriptionSource): string {
   const place = placePhrase(source);
+  const date = printedDate(source.eventDate);
   const opening =
     place.length > 0
-      ? `${source.coupleNames} were married on ${source.eventDate} ${place}.`
-      : `${source.coupleNames} were married on ${source.eventDate}.`;
+      ? `${source.coupleNames} were married on ${date} ${place}.`
+      : `${source.coupleNames} were married on ${date}.`;
 
   const paragraphs = [opening, text(source.coupleStory), text(source.uniqueAngle)];
 

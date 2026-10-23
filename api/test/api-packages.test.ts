@@ -181,7 +181,7 @@ describe("the generator drafts content", () => {
   it("drafts a description from the intake", async () => {
     await seedEvent("w1", { story: "They met at a bus stop." });
     const pkg = await created();
-    expect(pkg["descriptionMd"]).toContain("Sarah and James were married on 2026-06-14");
+    expect(pkg["descriptionMd"]).toContain("Sarah and James were married on June 14, 2026");
     expect(pkg["descriptionMd"]).toContain("They met at a bus stop.");
   });
 

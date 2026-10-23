@@ -262,7 +262,7 @@ packageRoutes.post("/", async (c) => {
   const event = await c.env.DB.prepare(`SELECT ${EVENT_COLUMNS} FROM events WHERE id = ?`)
     .bind(eventId)
     .first<EventRow>();
-  if (event === null) return fail(c, 404, "NOT_FOUND", "No such event.");
+  if (event === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
 
   const publication = await c.env.DB.prepare(
     "SELECT id, active FROM publications WHERE id = ?",
@@ -341,7 +341,7 @@ packageRoutes.post("/", async (c) => {
   const created = await c.env.DB.prepare("SELECT * FROM packages WHERE id = ?")
     .bind(id)
     .first<PackageRow>();
-  if (created === null) return fail(c, 500, "INTERNAL", "The package could not be read back.");
+  if (created === null) return fail(c, 500, "INTERNAL", "That was saved, but it could not be loaded again. Refresh the page.");
 
   return c.json(await viewFor(c, created, event), 201);
 });
@@ -421,7 +421,7 @@ export async function loadPackageView(
 
 packageRoutes.get("/:id", async (c) => {
   const view = await loadPackageView(c, c.req.param("id"));
-  if (view === null) return fail(c, 404, "NOT_FOUND", "No such package.");
+  if (view === null) return fail(c, 404, "NOT_FOUND", "That submission could not be found.");
   return c.json(view);
 });
 
@@ -438,7 +438,7 @@ packageRoutes.get("/:id/images", async (c) => {
   const pkg = await c.env.DB.prepare("SELECT event_id, image_keys FROM packages WHERE id = ?")
     .bind(c.req.param("id"))
     .first<{ event_id: string; image_keys: string }>();
-  if (pkg === null) return fail(c, 404, "NOT_FOUND", "No such package.");
+  if (pkg === null) return fail(c, 404, "NOT_FOUND", "That submission could not be found.");
 
   const keys = readJson<string[]>(pkg.image_keys, []);
   const { results } = await c.env.DB.prepare(
@@ -474,7 +474,7 @@ packageRoutes.patch("/:id", async (c) => {
   }
 
   const found = await loadPair(c, c.req.param("id"));
-  if (found === null) return fail(c, 404, "NOT_FOUND", "No such package.");
+  if (found === null) return fail(c, 404, "NOT_FOUND", "That submission could not be found.");
 
   const source = typeof body === "object" && body !== null ? (body as Record<string, unknown>) : {};
   const errors: Array<{ field: string; message: string }> = [];
@@ -483,7 +483,7 @@ packageRoutes.patch("/:id", async (c) => {
   if (source["imageKeys"] !== undefined) {
     const value = source["imageKeys"];
     if (!Array.isArray(value) || value.some((entry) => typeof entry !== "string")) {
-      errors.push({ field: "imageKeys", message: "Expected a list of image keys." });
+      errors.push({ field: "imageKeys", message: "Expected a list of photos." });
     } else {
       const keys = value as string[];
       // Keys are minted by the image route against this event. Accepting a
@@ -491,9 +491,9 @@ packageRoutes.patch("/:id", async (c) => {
       // another's images.
       const foreign = keys.filter((key) => !key.startsWith(`events/${found.pkg.event_id}/`));
       if (foreign.length > 0) {
-        errors.push({ field: "imageKeys", message: "Those images belong to another event." });
+        errors.push({ field: "imageKeys", message: "Those photos belong to another wedding." });
       } else if (new Set(keys).size !== keys.length) {
-        errors.push({ field: "imageKeys", message: "The same image is selected twice." });
+        errors.push({ field: "imageKeys", message: "The same photo is chosen twice." });
       } else {
         imageKeys = keys;
       }
@@ -561,7 +561,7 @@ packageRoutes.patch("/:id", async (c) => {
   const updated = await c.env.DB.prepare("SELECT * FROM packages WHERE id = ?")
     .bind(found.pkg.id)
     .first<PackageRow>();
-  if (updated === null) return fail(c, 500, "INTERNAL", "The package could not be read back.");
+  if (updated === null) return fail(c, 500, "INTERNAL", "That was saved, but it could not be loaded again. Refresh the page.");
 
   return c.json(await viewFor(c, updated, found.event));
 });

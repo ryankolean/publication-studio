@@ -249,7 +249,7 @@ function readVendorCredits(
 
 export function validateEventIntake(input: unknown): IntakeResult {
   if (!isObject(input)) {
-    return { ok: false, errors: [{ field: "", message: "Expected an event object." }] };
+    return { ok: false, errors: [{ field: "", message: "Expected the wedding's details." }] };
   }
 
   const errors = new Collector();

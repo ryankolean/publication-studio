@@ -168,7 +168,7 @@ export function weddingChip(
   if (codes.length > 0) {
     return {
       kind: "blocked",
-      label: `Blocked: ${codes.map((code) => GATE_WORDS[code].short).join(" and ")}`,
+      label: `On hold: ${codes.map((code) => GATE_WORDS[code].short).join(" and ")}`,
       packageId: null,
     };
   }

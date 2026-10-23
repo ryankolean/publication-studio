@@ -72,35 +72,44 @@ describe("buildCreditsBlock", () => {
 });
 
 describe("buildDescriptionDraft", () => {
+  it("keeps a date it cannot read exactly as stored", () => {
+    expect(buildDescriptionDraft({ ...event, eventDate: "2026-13-01", venueName: null, city: null, state: null })).toBe(
+      "Sarah and James were married on 2026-13-01.",
+    );
+    expect(buildDescriptionDraft({ ...event, eventDate: "June 2026", venueName: null, city: null, state: null })).toBe(
+      "Sarah and James were married on June 2026.",
+    );
+  });
+
   it("opens with the couple, the date, and the place", () => {
     expect(buildDescriptionDraft(event)).toBe(
-      "Sarah and James were married on 2026-06-14 at The Barn in Detroit, MI.",
+      "Sarah and James were married on June 14, 2026 at The Barn in Detroit, MI.",
     );
   });
 
   it("omits the venue when there is none", () => {
     expect(buildDescriptionDraft({ ...event, venueName: null })).toBe(
-      "Sarah and James were married on 2026-06-14 in Detroit, MI.",
+      "Sarah and James were married on June 14, 2026 in Detroit, MI.",
     );
   });
 
   it("omits the place entirely when nothing is known", () => {
     expect(
       buildDescriptionDraft({ ...event, venueName: null, city: null, state: null }),
-    ).toBe("Sarah and James were married on 2026-06-14.");
+    ).toBe("Sarah and James were married on June 14, 2026.");
   });
 
   it("includes the country when there is no state", () => {
     expect(
       buildDescriptionDraft({ ...event, city: "Lisbon", state: null, country: "Portugal" }),
-    ).toBe("Sarah and James were married on 2026-06-14 at The Barn in Lisbon, Portugal.");
+    ).toBe("Sarah and James were married on June 14, 2026 at The Barn in Lisbon, Portugal.");
   });
 
   it("adds the couple story as its own paragraph", () => {
     expect(
       buildDescriptionDraft({ ...event, coupleStory: "They met at a bus stop." }),
     ).toBe(
-      "Sarah and James were married on 2026-06-14 at The Barn in Detroit, MI.\n\nThey met at a bus stop.",
+      "Sarah and James were married on June 14, 2026 at The Barn in Detroit, MI.\n\nThey met at a bus stop.",
     );
   });
 
@@ -111,7 +120,7 @@ describe("buildDescriptionDraft", () => {
       uniqueAngle: "It rained the whole day.",
     });
     expect(draft.split("\n\n")).toEqual([
-      "Sarah and James were married on 2026-06-14 at The Barn in Detroit, MI.",
+      "Sarah and James were married on June 14, 2026 at The Barn in Detroit, MI.",
       "They met at a bus stop.",
       "It rained the whole day.",
     ]);
@@ -119,7 +128,7 @@ describe("buildDescriptionDraft", () => {
 
   it("ignores whitespace-only story text", () => {
     expect(buildDescriptionDraft({ ...event, coupleStory: "   " })).toBe(
-      "Sarah and James were married on 2026-06-14 at The Barn in Detroit, MI.",
+      "Sarah and James were married on June 14, 2026 at The Barn in Detroit, MI.",
     );
   });
 

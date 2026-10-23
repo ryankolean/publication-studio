@@ -356,7 +356,7 @@ describe("GET /events: the wizard's chip and progress", () => {
 
   it("says blocked, and why, in plain words", async () => {
     await create({ ...complete, consentStatus: "declined" });
-    expect((await list())[0]?.["chip"]).toMatchObject({ kind: "blocked", label: "Blocked: the couple said no" });
+    expect((await list())[0]?.["chip"]).toMatchObject({ kind: "blocked", label: "On hold: the couple said no" });
   });
 
   it("is in progress while a package is unqueued or its submission is open, and not after", async () => {
@@ -634,7 +634,7 @@ describe("PATCH /events/:id", () => {
   it("returns a typed 404 for an unknown id", async () => {
     const res = await patch("nope", minimal);
     expect(res.status).toBe(404);
-    await expect(res.json()).resolves.toMatchObject({ code: "NOT_FOUND", message: "No such event." });
+    await expect(res.json()).resolves.toMatchObject({ code: "NOT_FOUND", message: "That wedding could not be found." });
   });
 
   it("returns typed validation errors and changes nothing", async () => {

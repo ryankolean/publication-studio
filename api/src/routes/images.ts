@@ -44,7 +44,7 @@ imageRoutes.get("/events/:id/images", requireAuth, async (c) => {
   const event = await c.env.DB.prepare("SELECT id FROM events WHERE id = ?")
     .bind(c.req.param("id"))
     .first<{ id: string }>();
-  if (event === null) return fail(c, 404, "NOT_FOUND", "No such event.");
+  if (event === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
 
   // rowid breaks ties inside one second, so two uploads in a row still list
   // in the order they landed.
@@ -90,7 +90,7 @@ imageRoutes.delete("/events/:id/images/:key{.+}", requireAuth, async (c) => {
   )
     .bind(key, eventId)
     .first<{ key: string }>();
-  if (image === null) return fail(c, 404, "NOT_FOUND", "No such image.");
+  if (image === null) return fail(c, 404, "NOT_FOUND", "That photo could not be found.");
 
   // Exact element match across every package, not a substring of the JSON.
   const user = await c.env.DB.prepare(
@@ -167,7 +167,7 @@ imageRoutes.post("/events/:id/images", requireAuth, async (c) => {
     .bind(eventId)
     .first<{ id: string; rights_status: RightsStatus; consent_status: ConsentStatus }>();
 
-  if (event === null) return fail(c, 404, "NOT_FOUND", "No such event.");
+  if (event === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
 
   // DECISION: the rights gate applies here, not only at packaging. Uploading
   // curated selections is the first step of building a package, and section
@@ -200,9 +200,9 @@ imageRoutes.post("/events/:id/images", requireAuth, async (c) => {
 /** Mint a read capability for an object that already exists. */
 imageRoutes.post("/images/:key{.+}/read-url", requireAuth, async (c) => {
   const key = c.req.param("key");
-  if (key === undefined) return fail(c, 404, "NOT_FOUND", "No such image.");
+  if (key === undefined) return fail(c, 404, "NOT_FOUND", "That photo could not be found.");
   if ((await c.env.IMAGES.head(key)) === null) {
-    return fail(c, 404, "NOT_FOUND", "No such image.");
+    return fail(c, 404, "NOT_FOUND", "That photo could not be found.");
   }
 
   return c.json({
@@ -220,7 +220,7 @@ imageRoutes.post("/images/:key{.+}/read-url", requireAuth, async (c) => {
  */
 imageRoutes.put("/images/:key{.+}", async (c) => {
   const key = c.req.param("key");
-  if (key === undefined) return fail(c, 404, "NOT_FOUND", "No such image.");
+  if (key === undefined) return fail(c, 404, "NOT_FOUND", "That photo could not be found.");
   const token = c.req.query("token");
   if (token === undefined) return fail(c, 401, "UNAUTHORIZED", "A token is required.");
 
@@ -229,13 +229,13 @@ imageRoutes.put("/images/:key{.+}", async (c) => {
 
   const contentType = c.req.header("content-type") ?? "";
   if (ALLOWED_CONTENT_TYPES[contentType] === undefined) {
-    return fail(c, 400, "VALIDATION", "Unsupported image type.");
+    return fail(c, 400, "VALIDATION", "That file type is not supported. Use JPEG, PNG or WebP.");
   }
 
   const bytes = await c.req.arrayBuffer();
   if (bytes.byteLength === 0) return fail(c, 400, "VALIDATION", "The upload was empty.");
   if (bytes.byteLength > MAX_IMAGE_BYTES) {
-    return fail(c, 400, "VALIDATION", "That image is larger than the limit.");
+    return fail(c, 400, "VALIDATION", "That photo is larger than 12 MB. Export it at web size and try again.");
   }
 
   // DECISION: the event check runs before the R2 put, not after it. The
@@ -248,7 +248,7 @@ imageRoutes.put("/images/:key{.+}", async (c) => {
     eventId === null
       ? null
       : await c.env.DB.prepare("SELECT id FROM events WHERE id = ?").bind(eventId).first<{ id: string }>();
-  if (event === null) return fail(c, 404, "NOT_FOUND", "No such event.");
+  if (event === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
 
   await c.env.IMAGES.put(key, bytes, { httpMetadata: { contentType } });
 
@@ -273,16 +273,16 @@ imageRoutes.put("/images/:key{.+}", async (c) => {
 
 imageRoutes.get("/images/:key{.+}", async (c) => {
   const key = c.req.param("key");
-  if (key === undefined) return fail(c, 404, "NOT_FOUND", "No such image.");
+  if (key === undefined) return fail(c, 404, "NOT_FOUND", "That photo could not be found.");
   const token = c.req.query("token");
   if (token === undefined) return fail(c, 401, "UNAUTHORIZED", "A token is required.");
 
   const verdict = await verifyImageToken(c.env.JWT_SECRET, token, { key, purpose: "read" });
-  if (!verdict.ok) return fail(c, 401, "UNAUTHORIZED", "That image link is no longer valid.");
+  if (!verdict.ok) return fail(c, 401, "UNAUTHORIZED", "That photo link has expired. Refresh the page to get a new one.");
 
   const object = await c.env.IMAGES.get(key);
   if (object === null || object.body === null) {
-    return fail(c, 404, "NOT_FOUND", "No such image.");
+    return fail(c, 404, "NOT_FOUND", "That photo could not be found.");
   }
 
   return new Response(object.body, {

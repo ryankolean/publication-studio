@@ -676,7 +676,7 @@ describe("buildWalkthrough", () => {
         "Paste the description from the package.",
         "Paste the credits block from the package.",
         "Upload the selected images (32) in the package's order.",
-        "Exclusive: sending here blocks every other outlet for this event until it answers.",
+        "Exclusive: sending here blocks every other outlet for this wedding until it answers.",
         "Nothing is sent by this tool. Send it yourself, then mark it sent in the queue.",
       ]);
       expect(send.action).toEqual({ label: "Open the queue", href: "/queue" });

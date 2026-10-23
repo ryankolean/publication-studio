@@ -80,7 +80,7 @@ describe("GET /packages/:id/images", () => {
   it("404s an unknown package", async () => {
     const res = await imagesOf("ghost");
     expect(res.status).toBe(404);
-    expect(await res.json()).toMatchObject({ code: "NOT_FOUND", message: "No such package." });
+    expect(await res.json()).toMatchObject({ code: "NOT_FOUND", message: "That submission could not be found." });
   });
 
   it("returns an empty list for a package with nothing selected", async () => {
