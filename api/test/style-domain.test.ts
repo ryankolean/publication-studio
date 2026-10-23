@@ -5,18 +5,14 @@ import { describe, expect, it } from "vitest";
 import { parse } from "yaml";
 
 import {
-  MAX_ANALYSIS_BYTES,
-  MAX_ANALYSIS_PHOTOS,
   lookTags,
-  photoSetText,
-  pickPhotos,
-  planAnalysis,
+  planSuggestions,
   regionTags,
   seasonTags,
   validatePastFeature,
+  validateSuggestions,
 } from "../src/domain/style.js";
 import type { EventTagRow } from "../src/domain/style.js";
-import { STYLE_MODEL, buildSuggestRequest, parseSuggestions, photoVocabulary } from "../src/domain/style-analysis.js";
 import type { TagCategory } from "../src/domain/tags.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -25,33 +21,6 @@ const TAGS = parse(readFileSync(join(here, "../../research/vocab/tags.yaml"), "u
 const VOCABULARY = Object.entries(TAGS).flatMap(([category, ids]) =>
   ids.map((id) => ({ id, category: category as TagCategory })),
 );
-
-const photos = (count: number, bytes = 1000) =>
-  Array.from({ length: count }, (_, index) => ({ key: `events/e1/${String(index).padStart(3, "0")}.jpg`, bytes }));
-
-describe("pickPhotos", () => {
-  it("sends every photo when there are 20 or fewer", () => {
-    expect(pickPhotos(photos(3))).toEqual(photos(3).map((photo) => photo.key));
-  });
-
-  it("spreads 20 picks evenly across a bigger set, first photo included", () => {
-    const picked = pickPhotos(photos(39));
-    expect(picked).toHaveLength(MAX_ANALYSIS_PHOTOS);
-    expect(new Set(picked).size).toBe(MAX_ANALYSIS_PHOTOS);
-    expect(picked[0]).toBe("events/e1/000.jpg");
-    expect(picked.at(-1)).toBe("events/e1/037.jpg");
-  });
-
-  it("skips photos too large to send", () => {
-    const pool = [...photos(2), { key: "events/e1/huge.jpg", bytes: MAX_ANALYSIS_BYTES + 1 }];
-    expect(pickPhotos(pool)).not.toContain("events/e1/huge.jpg");
-    expect(pickPhotos([{ key: "k", bytes: MAX_ANALYSIS_BYTES }])).toEqual(["k"]);
-  });
-
-  it("compares photo sets by their keys, whatever the order", () => {
-    expect(photoSetText(["b", "a"])).toBe(photoSetText(["a", "b"]));
-  });
-});
 
 describe("seasonTags", () => {
   it.each([
@@ -109,7 +78,7 @@ describe("regionTags", () => {
   });
 });
 
-const row = (tag_id: string, state: EventTagRow["state"], source: EventTagRow["source"] = "analysis"): EventTagRow => ({
+const row = (tag_id: string, state: EventTagRow["state"], source: EventTagRow["source"] = "operator"): EventTagRow => ({
   tag_id,
   state,
   source,
@@ -117,17 +86,20 @@ const row = (tag_id: string, state: EventTagRow["state"], source: EventTagRow["s
   reason: null,
 });
 
-describe("planAnalysis", () => {
+describe("planSuggestions", () => {
   const suggest = (...tags: string[]) => tags.map((tag) => ({ tag, confidence: "high" as const, reason: "Photo 1." }));
 
   it("never touches a tag she has confirmed or rejected", () => {
-    const plan = planAnalysis([row("romantic", "confirmed"), row("bohemian", "rejected")], suggest("romantic", "bohemian", "whimsical"));
+    const plan = planSuggestions([row("romantic", "confirmed"), row("bohemian", "rejected")], suggest("romantic", "bohemian", "whimsical"));
     expect(plan.write.map((entry) => entry.tag)).toEqual(["whimsical"]);
     expect(plan.drop).toEqual([]);
   });
 
-  it("drops the last analysis's suggestions it no longer makes", () => {
-    const plan = planAnalysis([row("romantic", "suggested"), row("whimsical", "suggested")], suggest("whimsical"));
+  it("drops earlier operator suggestions the new set leaves out, and never a date or state tag", () => {
+    const plan = planSuggestions(
+      [row("romantic", "suggested"), row("whimsical", "suggested"), row("winter", "suggested", "derived")],
+      suggest("whimsical"),
+    );
     expect(plan.drop).toEqual(["romantic"]);
     expect(plan.write.map((entry) => entry.tag)).toEqual(["whimsical"]);
   });
@@ -145,7 +117,7 @@ describe("lookTags", () => {
     );
     expect(tags.map((tag) => [tag.id, tag.state, tag.source])).toEqual([
       ["michigan", "suggested", "derived"],
-      ["romantic", "confirmed", "analysis"],
+      ["romantic", "confirmed", "operator"],
       ["winter", "suggested", "derived"],
     ]);
   });
@@ -193,92 +165,40 @@ describe("validatePastFeature", () => {
   });
 });
 
-describe("buildSuggestRequest", () => {
-  const vocabulary = photoVocabulary(VOCABULARY);
-  const request = buildSuggestRequest({ vocabulary, photoUrls: ["https://api.example.com/images/a?token=t1", "https://api.example.com/images/b?token=t2"] });
+describe("validateSuggestions", () => {
+  const vocabulary = new Set(VOCABULARY.map((tag) => tag.id));
 
-  it("asks only about what photos can show", () => {
-    expect(new Set(vocabulary.map((tag) => tag.category))).toEqual(
-      new Set(["landscape_venue", "architecture", "aesthetic", "dress_style"]),
-    );
-  });
-
-  it("uses Opus 5.5 at low effort, with the server-side fallback", () => {
-    expect(request.model).toBe(STYLE_MODEL);
-    expect(STYLE_MODEL).toBe("claude-opus-5-5");
-    expect(request.output_config?.effort).toBe("low");
-    expect(request.fallbacks).toBe("default");
-    expect(request.betas).toEqual(["server-side-fallback-2026-07-01"]);
-  });
-
-  it("sends each photo by its link, numbered, before the question", () => {
-    const content = request.messages[0]?.content as Array<Record<string, any>>;
-    expect(content.slice(0, 4)).toEqual([
-      { type: "text", text: "Photo 1:" },
-      { type: "image", source: { type: "url", url: "https://api.example.com/images/a?token=t1" } },
-      { type: "text", text: "Photo 2:" },
-      { type: "image", source: { type: "url", url: "https://api.example.com/images/b?token=t2" } },
-    ]);
-    expect(content.at(-1)?.["text"]).toContain("aesthetic: classic_timeless, romantic");
-  });
-
-  it("constrains every answered tag to the vocabulary", () => {
-    const schema = request.output_config?.format?.schema as Record<string, any>;
-    const item = schema["properties"]["tags"]["items"];
-    expect(item["properties"]["tag"]["enum"]).toEqual(vocabulary.map((tag) => tag.id));
-    expect(item["properties"]["confidence"]["enum"]).toEqual(["high", "medium", "low"]);
-    expect(item["additionalProperties"]).toBe(false);
-  });
-
-  it("tells Claude never to identify anyone", () => {
-    expect(String(request.system)).toContain("Never identify anyone");
-  });
-});
-
-describe("parseSuggestions", () => {
-  const allowed = new Set(["romantic", "bohemian", "lakefront"]);
-  const answer = (tags: unknown, stop_reason: any = "end_turn") => ({
-    stop_reason,
-    content: [{ type: "text", text: JSON.stringify({ tags }), citations: null } as any],
-  });
-
-  it("keeps vocabulary tags once each, with a trimmed reason", () => {
-    const outcome = parseSuggestions(
-      answer([
-        { tag: "romantic", confidence: "high", reason: "  Photos 2 and 5: candlelit tables.  " },
-        { tag: "romantic", confidence: "low", reason: "again" },
-        { tag: "made_up", confidence: "high", reason: "x" },
-        { tag: "lakefront", confidence: "certain", reason: "x" },
-        { tag: "bohemian", confidence: "medium", reason: "r".repeat(300) },
-      ]),
-      allowed,
-    );
-    expect(outcome).toEqual({
+  it("accepts vocabulary tags with a confidence and a reason, trimmed", () => {
+    expect(validateSuggestions({ tags: [{ tag: "romantic", confidence: "high", reason: "  Photo 2: candles. " }] }, vocabulary)).toEqual({
       ok: true,
-      suggestions: [
-        { tag: "romantic", confidence: "high", reason: "Photos 2 and 5: candlelit tables." },
-        { tag: "bohemian", confidence: "medium", reason: "r".repeat(200) },
-      ],
+      value: [{ tag: "romantic", confidence: "high", reason: "Photo 2: candles." }],
     });
+    expect(validateSuggestions({ tags: [] }, vocabulary)).toEqual({ ok: true, value: [] });
   });
 
-  it("reports a refusal, a cut-off answer and an answer that is not JSON", () => {
-    expect(parseSuggestions(answer([], "refusal"), allowed)).toMatchObject({ ok: false, status: "refused" });
-    expect(parseSuggestions(answer([], "max_tokens"), allowed)).toMatchObject({ ok: false, status: "failed" });
-    expect(
-      parseSuggestions({ stop_reason: "end_turn", content: [{ type: "text", text: "Sure!", citations: null } as any] }, allowed),
-    ).toMatchObject({ ok: false, status: "failed", error: "answer was not JSON" });
-    expect(parseSuggestions(answer("nope"), allowed)).toMatchObject({ ok: false, status: "failed" });
+  it("refuses the set over any unknown, repeated or incomplete entry, naming each", () => {
+    const result = validateSuggestions(
+      {
+        tags: [
+          { tag: "romantic", confidence: "high", reason: "r" },
+          { tag: "romantic", confidence: "high", reason: "r" },
+          { tag: "made_up", confidence: "certain", reason: "" },
+          { tag: "lakefront", confidence: "low", reason: "r".repeat(201) },
+        ],
+      },
+      vocabulary,
+    );
+    expect(result.ok ? [] : result.errors.map((error) => error.field)).toEqual([
+      "tags.1.tag",
+      "tags.2.tag",
+      "tags.2.confidence",
+      "tags.2.reason",
+      "tags.3.reason",
+    ]);
   });
 
-  it("reads past a fallback block to the text", () => {
-    const message = {
-      stop_reason: "end_turn" as const,
-      content: [
-        { type: "fallback", from: { model: "a" }, to: { model: "b" } } as any,
-        { type: "text", text: JSON.stringify({ tags: [{ tag: "romantic", confidence: "high", reason: "r" }] }), citations: null } as any,
-      ],
-    };
-    expect(parseSuggestions(message, allowed)).toMatchObject({ ok: true, suggestions: [{ tag: "romantic" }] });
+  it("needs a list", () => {
+    expect(validateSuggestions({}, vocabulary)).toMatchObject({ ok: false, errors: [{ field: "tags" }] });
+    expect(validateSuggestions(null, vocabulary)).toMatchObject({ ok: false });
   });
 });

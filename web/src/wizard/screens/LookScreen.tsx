@@ -1,73 +1,37 @@
-import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-import { API_BASE_URL } from "../../config.js";
 import { useSession } from "../../session-context.js";
 import { CATEGORY_LABEL, tagLabel, type LookBody, type LookTag, type TagState } from "../../style/tags.js";
 import type { StepContext } from "../context.js";
 import { Alert, BUTTON, Frame, LABEL, Loading, Tick } from "../Frame.js";
 import { GUIDE } from "../guide.js";
 import { errorText } from "../model.js";
-import type { PoolImage } from "../package.js";
-import { AddPhotos } from "./AddPhotos.js";
 
 const SMALL = "rounded border border-slate-300 px-2 py-1 text-xs text-slate-700 hover:border-slate-900 disabled:opacity-40";
-const SHOWN_PHOTOS = 12;
 
-/** Why "Suggest tags" cannot run right now, in her words; null when it can. */
-function suggestBlocker(look: LookBody): string | null {
-  if (!look.analysis.available) return "Suggestions are not set up yet. Choose the tags yourself for now.";
-  if (!look.analysis.enabled) return "Suggestions are switched off. Turn them on under Your work.";
-  if (look.photos.count === 0) return "Add a few photos first.";
-  if (look.photos.usable === 0) return "Every photo here is over 7.5 MB. Add web-size copies first.";
-  if (look.analysis.current) return "These photos already have suggestions. Add more for a fresh look.";
-  return null;
-}
-
-/** [look] Photos in, tag suggestions out, and her answer to each. Never holds the wedding back. */
+/** [look] The suggested tags with their reasons, her answer to each, and any she adds. Never holds the wedding back. */
 export function LookScreen({ ctx }: { ctx: StepContext }) {
   const { api } = useSession();
   const [look, setLook] = useState<LookBody | null>(null);
-  const [pool, setPool] = useState<PoolImage[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [suggesting, setSuggesting] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState<string | null>(null);
   const [choice, setChoice] = useState("");
 
-  const load = useCallback(async () => {
-    const [body, images] = await Promise.all([
-      api.get<LookBody>(`/style/events/${ctx.eventId}`),
-      api.get<{ images: PoolImage[] }>(`/events/${ctx.eventId}/images`),
-    ]);
-    setLook(body);
-    setPool(images.images);
-  }, [api, ctx.eventId]);
-
   useEffect(() => {
-    load().catch((caught: unknown) => setLoadError(errorText(caught, "Could not load the look of this wedding.")));
-  }, [load]);
-
-  const reload = useCallback(async () => {
-    try {
-      await load();
-    } catch (caught) {
-      setError(errorText(caught, "Could not refresh the photos."));
-    }
-  }, [load]);
-
-  async function suggest() {
-    setSuggesting(true);
-    setError(null);
-    try {
-      setLook(await api.post<LookBody>(`/style/events/${ctx.eventId}/suggest`, {}));
-    } catch (caught) {
-      setError(errorText(caught, "Could not suggest tags just now."));
-    } finally {
-      setSuggesting(false);
-    }
-  }
+    let cancelled = false;
+    api
+      .get<LookBody>(`/style/events/${ctx.eventId}`)
+      .then((body) => {
+        if (!cancelled) setLook(body);
+      })
+      .catch((caught: unknown) => {
+        if (!cancelled) setLoadError(errorText(caught, "Could not load the look of this wedding."));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [api, ctx.eventId]);
 
   async function answer(tag: string, state: Exclude<TagState, "suggested">) {
     setSaving(tag);
@@ -82,7 +46,6 @@ export function LookScreen({ ctx }: { ctx: StepContext }) {
     }
   }
 
-  const blocker = look === null ? null : suggestBlocker(look);
   const shown = (look?.tags ?? []).filter((tag) => tag.state !== "rejected");
   const listed = new Set(shown.map((tag) => tag.id));
   const addable = (look?.vocabulary ?? []).filter((tag) => !listed.has(tag.id));
@@ -93,7 +56,7 @@ export function LookScreen({ ctx }: { ctx: StepContext }) {
       guide={GUIDE.look}
       rail={ctx.rail}
       back={ctx.back}
-      primary={{ label: "Continue", onClick: () => ctx.go("outlet"), disabledReason: null, busy: suggesting || uploading }}
+      primary={{ label: "Continue", onClick: () => ctx.go("outlet"), disabledReason: null, busy: saving !== null }}
       after={error !== null && <Alert>{error}</Alert>}
     >
       {loadError !== null ? (
@@ -102,63 +65,11 @@ export function LookScreen({ ctx }: { ctx: StepContext }) {
         <Loading what="the look of this wedding" />
       ) : (
         <>
-          <section aria-label="Your photos" className="space-y-3">
-            <AddPhotos eventId={ctx.eventId} onAdded={reload} onUploading={setUploading} />
-            {pool.length > 0 && (
-              <>
-                <p className="text-sm text-slate-600">
-                  {pool.length === 1 ? "1 photo here." : `${pool.length} photos here.`}
-                </p>
-                <ul aria-label="Photos so far" className="grid grid-cols-4 gap-2 sm:grid-cols-6">
-                  {pool.slice(0, SHOWN_PHOTOS).map((image) => (
-                    <li key={image.key} className="min-w-0">
-                      <img
-                        src={`${API_BASE_URL}${image.readUrl}`}
-                        alt=""
-                        loading="lazy"
-                        className="aspect-square w-full rounded bg-slate-50 object-cover"
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
-          </section>
-
-          <section aria-label="Suggestions" className="space-y-2">
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                onClick={() => void suggest()}
-                disabled={blocker !== null || suggesting || uploading}
-                aria-describedby={blocker !== null ? "suggest-reason" : undefined}
-                className={BUTTON}
-              >
-                Suggest tags
-              </button>
-              {suggesting ? (
-                <p role="status" className="text-sm text-slate-600">
-                  Looking at your photos. This can take a minute.
-                </p>
-              ) : (
-                blocker !== null && (
-                  <p id="suggest-reason" className="min-w-0 text-sm break-words text-slate-600">
-                    {blocker}
-                  </p>
-                )
-              )}
-            </div>
-            {!look.analysis.enabled && look.analysis.available && (
-              <Link to="/style" className="text-sm underline">
-                Your work
-              </Link>
-            )}
-          </section>
-
           <section aria-label="Tags" className="space-y-4">
             <p role="status" className="text-sm font-medium text-slate-900">
               {kept === 0 ? "No tags kept yet." : kept === 1 ? "1 tag kept." : `${kept} tags kept.`}
             </p>
+            {shown.length === 0 && <p className="text-sm text-slate-600">No suggestions for this wedding. Add tags below.</p>}
             {Object.entries(CATEGORY_LABEL).map(([category, categoryLabel]) => {
               const tags = shown.filter((tag) => tag.category === category);
               if (tags.length === 0) return null;
@@ -200,7 +111,12 @@ export function LookScreen({ ctx }: { ctx: StepContext }) {
                 ))}
               </select>
             </div>
-            <button type="button" disabled={choice === "" || saving !== null} onClick={() => void answer(choice, "confirmed")} className={BUTTON}>
+            <button
+              type="button"
+              disabled={choice === "" || saving !== null}
+              onClick={() => void answer(choice, "confirmed")}
+              className={BUTTON}
+            >
               Add
             </button>
           </div>

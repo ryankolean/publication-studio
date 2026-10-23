@@ -2,9 +2,12 @@
  * The photographer's style profile (SUMMIT-337).
  *
  * Each wedding carries tags from the shared vocabulary. A tag arrives as a
- * suggestion (from Claude looking at the photos, or from the wedding's date
- * and state) and counts only once she confirms it. Her profile is the
- * confirmed tags across her own weddings, plus where she has been published.
+ * suggestion (loaded by the operator, or from the wedding's date and state)
+ * and counts only once she confirms it. Her profile is the confirmed tags
+ * across her own weddings, plus where she has been published.
+ *
+ * The tool calls no AI service: suggestions worked out from the photos are
+ * prepared outside it and loaded through the operator's route.
  *
  * Pure: no database, no clock, no network.
  */
@@ -16,52 +19,15 @@ import type { TagCategory } from "./tags.js";
 export const EVENT_TAG_STATES = ["suggested", "confirmed", "rejected"] as const;
 export type EventTagState = (typeof EVENT_TAG_STATES)[number];
 
-/** analysis: Claude, from the photos. derived: the date or the state. photographer: added by her. */
-export const EVENT_TAG_SOURCES = ["analysis", "derived", "photographer"] as const;
+/** operator: loaded by the operator. derived: the date or the state. photographer: added by her. */
+export const EVENT_TAG_SOURCES = ["operator", "derived", "photographer"] as const;
 export type EventTagSource = (typeof EVENT_TAG_SOURCES)[number];
 
 export const TAG_CONFIDENCES = ["high", "medium", "low"] as const;
 export type TagConfidence = (typeof TAG_CONFIDENCES)[number];
 
-export const STYLE_RUN_STATUSES = ["ok", "failed", "refused"] as const;
-export type StyleRunStatus = (typeof STYLE_RUN_STATUSES)[number];
-
 export const FEATURE_ROLES = ["lead", "second_shooter"] as const;
 export type FeatureRole = (typeof FEATURE_ROLES)[number];
-
-export const SETTING_KEYS = ["photo_analysis"] as const;
-
-/** The categories a photo can show. Region and season come from the wedding's details. */
-export const PHOTO_CATEGORIES: readonly TagCategory[] = ["landscape_venue", "architecture", "aesthetic", "dress_style"];
-
-/**
- * Above 20 photos the API caps every photo at 2000 px a side, and uploads
- * are not resized, so a run sends at most 20.
- */
-export const MAX_ANALYSIS_PHOTOS = 20;
-
-/** The API takes up to 10 MB a photo once base64 encoded: 7.5 MB of bytes. */
-export const MAX_ANALYSIS_BYTES = 7_864_320;
-
-/** Runs a wedding may start in one UTC day, so a run of photo changes cannot run up a bill. */
-export const MAX_RUNS_PER_DAY = 5;
-
-/**
- * Up to MAX_ANALYSIS_PHOTOS keys spread evenly across the wedding's photos,
- * oldest first, so getting ready, the ceremony and the evening are all seen.
- * Photos too large to send are skipped.
- */
-export function pickPhotos(pool: ReadonlyArray<{ key: string; bytes: number }>): string[] {
-  const eligible = pool.filter((photo) => photo.bytes <= MAX_ANALYSIS_BYTES);
-  if (eligible.length <= MAX_ANALYSIS_PHOTOS) return eligible.map((photo) => photo.key);
-  return Array.from(
-    { length: MAX_ANALYSIS_PHOTOS },
-    (_, index) => (eligible[Math.floor((index * eligible.length) / MAX_ANALYSIS_PHOTOS)] as { key: string }).key,
-  );
-}
-
-/** What a run's photo set is compared by: the keys, order aside. */
-export const photoSetText = (keys: readonly string[]): string => [...keys].sort().join("\n");
 
 const SEASON_BY_MONTH: Record<number, string[]> = {
   1: ["winter"],
@@ -133,11 +99,47 @@ export function regionTags(state: string | null, country: string | null, geo: un
   return tags;
 }
 
-/** One suggestion from an analysis, already checked against the vocabulary. */
+/** One suggested tag, already checked against the vocabulary. */
 export interface Suggestion {
   tag: string;
   confidence: TagConfidence;
   reason: string;
+}
+
+const MAX_REASON = 200;
+
+/**
+ * The operator's suggestions for one wedding: vocabulary tags, each once,
+ * with a confidence and a short reason. Anything else is refused outright,
+ * so a typo never turns into a silently missing tag.
+ */
+export function validateSuggestions(
+  raw: unknown,
+  vocabulary: ReadonlySet<string>,
+): { ok: true; value: Suggestion[] } | { ok: false; errors: FieldError[] } {
+  const list = asRecord(raw)["tags"];
+  if (!Array.isArray(list)) return { ok: false, errors: [{ field: "tags", message: "Expected a list of tags." }] };
+  const errors: FieldError[] = [];
+  const seen = new Set<string>();
+  const value: Suggestion[] = [];
+  list.forEach((entry: unknown, index) => {
+    const field = `tags.${index}`;
+    const { tag, confidence, reason } = asRecord(entry);
+    if (typeof tag !== "string" || !vocabulary.has(tag)) {
+      errors.push({ field: `${field}.tag`, message: `Not a vocabulary tag: ${String(tag)}.` });
+    } else if (seen.has(tag)) {
+      errors.push({ field: `${field}.tag`, message: `Listed twice: ${tag}.` });
+    }
+    if (!(TAG_CONFIDENCES as readonly unknown[]).includes(confidence)) {
+      errors.push({ field: `${field}.confidence`, message: `Expected one of: ${TAG_CONFIDENCES.join(", ")}.` });
+    }
+    if (typeof reason !== "string" || reason.trim() === "" || reason.trim().length > MAX_REASON) {
+      errors.push({ field: `${field}.reason`, message: `Give a reason under ${MAX_REASON} characters.` });
+    }
+    if (typeof tag === "string") seen.add(tag);
+    value.push({ tag: String(tag), confidence: confidence as TagConfidence, reason: String(reason).trim() });
+  });
+  return errors.length > 0 ? { ok: false, errors } : { ok: true, value };
 }
 
 export interface EventTagRow {
@@ -149,11 +151,11 @@ export interface EventTagRow {
 }
 
 /**
- * What a new analysis changes: its suggestions are written unless she has
- * already decided on that tag, and the last analysis's suggestions it no
- * longer makes are dropped. Her decisions are never touched.
+ * What a new set of suggestions changes: each is written unless she has
+ * already decided on that tag, and earlier suggestions the new set no longer
+ * makes are dropped. Her decisions are never touched.
  */
-export function planAnalysis(
+export function planSuggestions(
   existing: readonly EventTagRow[],
   suggestions: readonly Suggestion[],
 ): { write: Suggestion[]; drop: string[] } {
@@ -161,7 +163,7 @@ export function planAnalysis(
   const write = suggestions.filter((suggestion) => !decided.has(suggestion.tag));
   const kept = new Set(write.map((suggestion) => suggestion.tag));
   const drop = existing
-    .filter((row) => row.state === "suggested" && row.source === "analysis" && !kept.has(row.tag_id))
+    .filter((row) => row.state === "suggested" && row.source === "operator" && !kept.has(row.tag_id))
     .map((row) => row.tag_id);
   return { write, drop };
 }

@@ -21,11 +21,6 @@ export type ErrorCode =
   | "FORBIDDEN"
   | "RESEARCH_VOCAB_MISSING"
   | "TAG_EXISTS"
-  | "PHOTO_ANALYSIS_OFF"
-  | "ANALYSIS_UNAVAILABLE"
-  | "NO_PHOTOS"
-  | "ANALYSIS_LIMIT"
-  | "ANALYSIS_FAILED"
   | "INTERNAL";
 
 export interface ErrorBody {
@@ -34,7 +29,7 @@ export interface ErrorBody {
   details?: unknown;
 }
 
-type StatusFor = 400 | 401 | 403 | 404 | 409 | 422 | 429 | 500 | 502 | 503;
+type StatusFor = 400 | 401 | 403 | 404 | 409 | 422 | 500;
 
 export function fail(
   c: Context,

@@ -57,15 +57,13 @@ export const GUIDE: Record<StepId, StepGuide> = {
   },
   look: {
     title: "The look",
-    lead: "Tag the setting, the style and what the couple wore. Your tags add up to your style profile, which is how outlets that publish your kind of wedding rise to the top.",
+    lead: "Tag the setting, the style and what the couple wore. Your tags add up to your style profile, which helps find the outlets that publish your kind of wedding.",
     todo: [
-      'Press "Add photos" and choose 10 to 20 favourites at web size. The Photos step uses them too, so nothing is added twice.',
-      'Press "Suggest tags". Claude looks at up to 20 of your photos and suggests tags, each with a reason.',
-      'For each suggestion, press "Keep" or "Not this".',
-      'Pick anything it missed under "Add a tag".',
+      'Read each suggestion and its reason, then press "Keep" or "Not this".',
+      'Pick anything missing under "Add a tag".',
       'Press "Continue".',
     ],
-    note: "Suggestions only run once you switch them on under Your work. You can always choose the tags yourself, or skip this step for now.",
+    note: "Suggestions come from the wedding date, where it was, and any tags suggested from your photos. This step never holds a wedding back, so you can skip it and come back from Your work.",
     next: "Next up: choosing an outlet.",
   },
   outlet: {

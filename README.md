@@ -60,11 +60,12 @@ the app with `npm run research:import --workspace @publication-studio/api --
 --local` (or `--remote`), then approve the updates in the app.
 
 Each wedding is tagged on the wizard's Look step, and "Your work" shows the
-photographer's style profile and past features (SUMMIT-337). "Suggest tags"
-sends up to 20 of a wedding's photos to Claude, and only once the
-photographer has switched photo suggestions on herself. It needs the Wrangler
-secret `ANTHROPIC_API_KEY`; without it, the button explains that suggestions
-are not set up and tags are chosen by hand.
+photographer's style profile and past features (SUMMIT-337). The tool calls
+no AI service and holds no AI key. Suggested tags worked out from a wedding's
+photos are prepared outside it, kept in the private folder, and loaded by the
+operator with `npm run style:suggest --workspace @publication-studio/api --
+--remote --file ../publication-studio-private/style/<wedding>.yaml` (format in
+`api/scripts/suggest-tags.ts`); the photographer keeps or turns down each one.
 
 ## Users
 

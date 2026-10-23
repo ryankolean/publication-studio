@@ -240,9 +240,8 @@ for (const method of ["PUT", "DELETE"]) {
   const submissions = await fetch(`${BASE}/submissions`);
   check("submissions rejects anonymous", submissions.status === 401, `got ${submissions.status}`);
 
-  // The style routes load the Anthropic SDK; this proves it bundles for workerd.
-  const suggest = await fetch(`${BASE}/style/events/smoke/suggest`, { method: "POST" });
-  check("tag suggestions reject anonymous", suggest.status === 401, `got ${suggest.status}`);
+  const suggestions = await fetch(`${BASE}/style/events/smoke/suggestions`, { method: "PUT" });
+  check("tag suggestions reject anonymous", suggestions.status === 401, `got ${suggestions.status}`);
 
   const markSent = await fetch(`${BASE}/submissions/smoke`, {
     method: "PATCH",

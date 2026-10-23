@@ -13,7 +13,8 @@
     "test:runtime": "node scripts/runtime-smoke.mjs",
     "test-account": "node scripts/ensure-test-account.mjs",
     "research:check": "vite-node scripts/check-research.ts --",
-    "research:import": "vite-node scripts/import-research.ts --"
+    "research:import": "vite-node scripts/import-research.ts --",
+    "style:suggest": "vite-node scripts/suggest-tags.ts --"
   },
   "devDependencies": {
     "@types/node": "^22.20.1",
@@ -22,7 +23,6 @@
     "yaml": "^2.9.1"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^1.2.0",
     "hono": "^4.13.3"
   }
 }

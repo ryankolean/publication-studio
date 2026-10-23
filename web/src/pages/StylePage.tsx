@@ -30,14 +30,12 @@ function publishedLabel(value: string): string {
 
 const plural = (count: number, one: string, many: string) => (count === 1 ? `1 ${one}` : `${count} ${many}`);
 
-/** /style: her style profile, the photo-suggestion switch, her weddings' tags and where she has been featured. */
+/** /style: her style profile, her weddings' tags and where she has been featured. */
 export function StylePage() {
-  const { api, user } = useSession();
+  const { api } = useSession();
   const [profile, setProfile] = useState<ProfileBody | null>(null);
   const [outlets, setOutlets] = useState<Array<{ id: string; name: string }>>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [switchError, setSwitchError] = useState<string | null>(null);
-  const [switching, setSwitching] = useState(false);
   const [editing, setEditing] = useState<Feature | null>(null);
 
   const load = useCallback(async () => {
@@ -53,23 +51,8 @@ export function StylePage() {
     load().catch((caught: unknown) => setLoadError(errorText(caught, "Could not load your work.")));
   }, [load]);
 
-  async function setAnalysis(enabled: boolean) {
-    setSwitching(true);
-    setSwitchError(null);
-    try {
-      await api.put("/style/settings/photo-analysis", { enabled });
-      await load();
-    } catch (caught) {
-      setSwitchError(errorText(caught, "Could not change that setting."));
-    } finally {
-      setSwitching(false);
-    }
-  }
-
   if (loadError !== null) return <Alert>{loadError}</Alert>;
   if (profile === null) return <Loading what="your work" />;
-
-  const isPhotographer = user?.role === "photographer";
 
   return (
     <div className="mx-auto max-w-2xl space-y-8">
@@ -80,37 +63,6 @@ export function StylePage() {
           outlets that suit you best.
         </p>
       </header>
-
-      <section aria-labelledby="suggestions-heading" className="space-y-2 rounded-lg border border-slate-200 p-4">
-        <h3 id="suggestions-heading" className="text-sm font-semibold text-slate-900">
-          Photo suggestions
-        </h3>
-        <p className="text-sm text-slate-600">
-          When this is on, pressing Suggest tags on a wedding sends up to 20 of its photos to Claude, an AI made by
-          Anthropic, which suggests tags for you to keep or turn down. Nothing is sent until you press that button.
-          Anthropic says it does not train on these photos or keep them after the request.
-        </p>
-        {!profile.analysis.available && (
-          <p className="text-sm text-slate-600">Suggestions are not set up yet. You can still choose tags yourself.</p>
-        )}
-        {isPhotographer ? (
-          <label className="flex items-center gap-2 text-sm text-slate-800">
-            <input
-              type="checkbox"
-              checked={profile.analysis.enabled}
-              disabled={switching}
-              onChange={(change) => void setAnalysis(change.target.checked)}
-              className="h-4 w-4"
-            />
-            Let Claude suggest tags from my photos
-          </label>
-        ) : (
-          <p className="text-sm text-slate-800">
-            {profile.analysis.enabled ? "Switched on." : "Switched off."} Only the photographer can change this.
-          </p>
-        )}
-        {switchError !== null && <Alert>{switchError}</Alert>}
-      </section>
 
       <section aria-labelledby="style-heading" className="space-y-3">
         <h3 id="style-heading" className="text-sm font-semibold text-slate-900">

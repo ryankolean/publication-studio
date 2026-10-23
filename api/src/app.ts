@@ -10,17 +10,14 @@ import { packageRoutes } from "./routes/packages.js";
 import { tagRoutes } from "./routes/tags.js";
 import { researchRoutes } from "./routes/research.js";
 import { submissionRoutes } from "./routes/submissions.js";
-import { createStyleRoutes } from "./routes/style.js";
-import type { Analyze } from "./routes/style.js";
+import { styleRoutes } from "./routes/style.js";
 import { fail } from "./errors.js";
 
 /**
  * There is deliberately no signup route and no user-creation route. Users are
  * created by seed migration only (design doc section 4).
- *
- * `analyze` replaces the Claude call behind tag suggestions; tests pass one.
  */
-export function createApp(deps: { analyze?: Analyze } = {}) {
+export function createApp() {
   const app = new Hono<AppContext>();
 
   // CORS is pinned to the SPA origin; anything else gets no allow-origin header.
@@ -49,7 +46,7 @@ export function createApp(deps: { analyze?: Analyze } = {}) {
   app.route("/tags", tagRoutes);
   app.route("/research", researchRoutes);
   app.route("/submissions", submissionRoutes);
-  app.route("/style", createStyleRoutes(deps.analyze));
+  app.route("/style", styleRoutes);
   // Mounted at the root: image routes own both /events/:id/images and /images/*.
   app.route("/", imageRoutes);
 

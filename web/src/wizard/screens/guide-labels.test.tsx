@@ -79,12 +79,9 @@ const OPEN: Record<StepId, () => Promise<unknown>> = {
   look: async () => {
     serve(api, {
       "/events/w1/walkthrough": walkthrough(wizardAt("look")),
-      "/events/w1/images": { images: pool },
       "/style/events/w1": {
-        tags: [{ id: "romantic", category: "aesthetic", state: "suggested", source: "analysis", confidence: "high", reason: "Photo 2." }],
+        tags: [{ id: "romantic", category: "aesthetic", state: "suggested", source: "operator", confidence: "high", reason: "Photo 2." }],
         vocabulary: [{ id: "romantic", category: "aesthetic" }, { id: "whimsical", category: "aesthetic" }],
-        photos: { count: 2, usable: 2 },
-        analysis: { enabled: true, available: true, lastRun: null, current: false },
       },
     });
     renderWizard(api, "/wizard/w1/look");

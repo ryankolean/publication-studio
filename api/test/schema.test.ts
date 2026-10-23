@@ -55,9 +55,8 @@ describe("migrations", () => {
     // vocabulary that events and outlets are matched on, and the research
     // store from migration 0008: research_revisions, research_vocab and
     // publication_edits, and the style profile from migration 0009:
-    // event_tags, style_runs, past_features and app_settings.
+    // event_tags and past_features.
     expect(tableNames(db)).toEqual([
-      "app_settings",
       "audit_log",
       "credit_requests",
       "event_images",
@@ -71,7 +70,6 @@ describe("migrations", () => {
       "publications",
       "research_revisions",
       "research_vocab",
-      "style_runs",
       "submissions",
       "tags",
       "users",

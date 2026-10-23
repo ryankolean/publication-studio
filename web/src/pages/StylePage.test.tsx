@@ -21,7 +21,6 @@ function fakeStorage(): StorageLike {
 let api: Record<"get" | "post" | "put" | "delete", ReturnType<typeof vi.fn>>;
 
 const profile = (overrides: Partial<ProfileBody> = {}): ProfileBody => ({
-  analysis: { enabled: false, available: true },
   tagged: 2,
   categories: [
     { category: "landscape_venue", tags: [{ id: "lakefront", weddings: 1 }] },
@@ -55,9 +54,9 @@ function serve(body: ProfileBody | (() => ProfileBody) = profile()) {
   });
 }
 
-function renderPage(role = "photographer") {
+function renderPage() {
   const session = createSession(fakeStorage());
-  session.signIn({ accessToken: "a", refreshToken: "r", user: { id: "u1", email: "p@example.com", name: "P", role } });
+  session.signIn({ accessToken: "a", refreshToken: "r", user: { id: "u1", email: "p@example.com", name: "P", role: "photographer" } });
   return render(
     <MemoryRouter>
       <SessionProvider session={session} api={api as unknown as ApiClient}>
@@ -92,28 +91,6 @@ describe("StylePage", () => {
     serve(profile({ tagged: 0, categories: [] }));
     renderPage();
     expect(await screen.findByText("Keep a few tags on one of your weddings and your style shows up here.")).toBeInTheDocument();
-  });
-
-  it("lets the photographer switch photo suggestions on", async () => {
-    let enabled = false;
-    serve(() => profile({ analysis: { enabled, available: true } }));
-    api.put.mockImplementation(async () => {
-      enabled = true;
-      return { enabled: true };
-    });
-    renderPage();
-    const box = await screen.findByRole("checkbox", { name: "Let Claude suggest tags from my photos" });
-    expect(box).not.toBeChecked();
-    await userEvent.click(box);
-    expect(api.put).toHaveBeenCalledWith("/style/settings/photo-analysis", { enabled: true });
-    expect(await screen.findByRole("checkbox", { name: "Let Claude suggest tags from my photos" })).toBeChecked();
-  });
-
-  it("shows the operator the switch's state without letting them change it", async () => {
-    serve();
-    renderPage("admin");
-    expect(await screen.findByText(/Only the photographer can change this\./)).toBeInTheDocument();
-    expect(screen.queryByRole("checkbox", { name: "Let Claude suggest tags from my photos" })).toBeNull();
   });
 
   it("lists past features with their month, wedding and link", async () => {

@@ -16,7 +16,7 @@ const tag = (id: string, category: string, overrides: Partial<LookTag> = {}): Lo
   id,
   category,
   state: "suggested",
-  source: "analysis",
+  source: "operator",
   confidence: "high",
   reason: null,
   ...overrides,
@@ -27,9 +27,11 @@ const look = (overrides: Partial<LookBody> = {}): LookBody => ({
     tag("lakefront", "landscape_venue", { reason: "Photos 1 and 3: dock on a lake." }),
     tag("romantic", "aesthetic", { state: "confirmed" }),
     tag("bohemian", "aesthetic", { state: "rejected" }),
+    tag("midwest_us", "region", { source: "derived", confidence: null, reason: "From where the wedding was." }),
     tag("winter", "season", { source: "derived", confidence: null, reason: "From the wedding date." }),
   ],
   vocabulary: [
+    { id: "midwest_us", category: "region" },
     { id: "lakefront", category: "landscape_venue" },
     { id: "romantic", category: "aesthetic" },
     { id: "bohemian", category: "aesthetic" },
@@ -37,26 +39,13 @@ const look = (overrides: Partial<LookBody> = {}): LookBody => ({
     { id: "ball_gown", category: "dress_style" },
     { id: "winter", category: "season" },
   ],
-  photos: { count: 2, usable: 2 },
-  analysis: { enabled: true, available: true, lastRun: null, current: false },
   ...overrides,
 });
 
-const image = (name: string) => ({
-  key: `events/w1/${name}.jpg`,
-  originalName: `${name}.jpg`,
-  contentType: "image/jpeg",
-  bytes: 5,
-  createdAt: "",
-  readUrl: `/images/events/w1/${name}.jpg?token=${name}`,
-  expiresIn: 900,
-});
-
-function open(body: LookBody | (() => LookBody) = look()) {
+function open(body: LookBody = look()) {
   serve(api, {
     "/events/w1/walkthrough": walkthrough(wizardAt("look")),
     "/style/events/w1": body,
-    "/events/w1/images": { images: [image("a"), image("b")] },
   });
   renderWizard(api, "/wizard/w1/look");
 }
@@ -64,18 +53,18 @@ function open(body: LookBody | (() => LookBody) = look()) {
 const location = () => screen.getByTestId("location").textContent;
 
 describe("LookScreen", () => {
-  it("lists suggestions with their reasons, kept tags, and hides tags she turned down", async () => {
+  it("lists suggestions with their reasons and kept tags, and hides tags she turned down", async () => {
     open();
     expect(await screen.findByText("Photos 1 and 3: dock on a lake.")).toBeInTheDocument();
     expect(screen.getByText("From the wedding date.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Keep Lakefront" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Keep Midwest US" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Remove Romantic" })).toBeInTheDocument();
     expect(within(screen.getByRole("region", { name: "Tags" })).queryByText("Bohemian")).toBeNull();
     expect(screen.getByText("1 tag kept.")).toBeInTheDocument();
-    expect(screen.getByRole("list", { name: "Photos so far" }).querySelectorAll("img")).toHaveLength(2);
   });
 
-  it("saves Keep and Not this, and shows the server's answer", async () => {
+  it("saves Keep and Remove, and shows the server's answer", async () => {
     open();
     api.put.mockResolvedValueOnce(
       look({ tags: [tag("lakefront", "landscape_venue", { state: "confirmed" }), tag("romantic", "aesthetic", { state: "confirmed" })] }),
@@ -88,43 +77,21 @@ describe("LookScreen", () => {
     await userEvent.click(screen.getByRole("button", { name: "Remove Romantic" }));
     expect(api.put).toHaveBeenLastCalledWith("/style/events/w1/tags/romantic", { state: "rejected" });
     expect(await screen.findByText("No tags kept yet.")).toBeInTheDocument();
+    expect(screen.getByText("No suggestions for this wedding. Add tags below.")).toBeInTheDocument();
   });
 
-  it("suggests tags from the photos", async () => {
-    open(look({ tags: [] }));
-    let finish: (value: LookBody) => void = () => undefined;
-    api.post.mockReturnValueOnce(new Promise<LookBody>((resolve) => (finish = resolve)));
-    await userEvent.click(await screen.findByRole("button", { name: "Suggest tags" }));
-    expect(api.post).toHaveBeenCalledWith("/style/events/w1/suggest", {});
-    expect(screen.getByText("Looking at your photos. This can take a minute.")).toBeInTheDocument();
-    finish(look({ tags: [tag("whimsical", "aesthetic", { reason: "Photo 4: balloons." })], fresh: true }));
-    expect(await screen.findByText("Photo 4: balloons.")).toBeInTheDocument();
+  it("turns a suggestion down with Not this", async () => {
+    open();
+    api.put.mockResolvedValueOnce(look());
+    await userEvent.click(await screen.findByRole("button", { name: "Not this: Winter" }));
+    expect(api.put).toHaveBeenCalledWith("/style/events/w1/tags/winter", { state: "rejected" });
   });
 
-  it("says why it cannot suggest, and where to switch suggestions on", async () => {
-    open(look({ analysis: { enabled: false, available: true, lastRun: null, current: false } }));
-    const button = await screen.findByRole("button", { name: "Suggest tags" });
-    expect(button).toBeDisabled();
-    expect(screen.getByText("Suggestions are switched off. Turn them on under Your work.")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Your work" })).toHaveAttribute("href", "/style");
-  });
-
-  it.each([
-    [{ photos: { count: 0, usable: 0 } }, "Add a few photos first."],
-    [{ photos: { count: 3, usable: 0 } }, "Every photo here is over 7.5 MB. Add web-size copies first."],
-    [{ analysis: { enabled: true, available: false, lastRun: null, current: false } }, "Suggestions are not set up yet. Choose the tags yourself for now."],
-    [{ analysis: { enabled: true, available: true, lastRun: null, current: true } }, "These photos already have suggestions. Add more for a fresh look."],
-  ])("holds Suggest tags: %j", async (overrides, reason) => {
-    open(look(overrides as Partial<LookBody>));
-    expect(await screen.findByRole("button", { name: "Suggest tags" })).toBeDisabled();
-    expect(screen.getByText(reason)).toBeInTheDocument();
-  });
-
-  it("shows the server's reason when a suggestion fails", async () => {
-    open(look({ tags: [] }));
-    api.post.mockRejectedValueOnce(new ApiError(502, "ANALYSIS_FAILED", "Claude could not suggest tags just now. Try again later, or choose the tags yourself."));
-    await userEvent.click(await screen.findByRole("button", { name: "Suggest tags" }));
-    expect(await screen.findByRole("alert")).toHaveTextContent("Claude could not suggest tags just now.");
+  it("shows the server's reason when a save fails", async () => {
+    open();
+    api.put.mockRejectedValueOnce(new ApiError(404, "NOT_FOUND", "That tag could not be found."));
+    await userEvent.click(await screen.findByRole("button", { name: "Keep Lakefront" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("That tag could not be found.");
   });
 
   it("adds a tag she picks, offering only tags not already listed", async () => {

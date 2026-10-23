@@ -54,7 +54,4 @@ export interface Env {
 
   /** Exact origin the SPA is served from; CORS is pinned to it. */
   ALLOWED_ORIGIN: string;
-
-  /** Wrangler secret for tag suggestions. Unset, the photographer tags by hand. */
-  ANTHROPIC_API_KEY?: string | undefined;
 }

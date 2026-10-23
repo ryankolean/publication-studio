@@ -6,8 +6,8 @@ export interface LookTag {
   id: string;
   category: string;
   state: TagState;
-  /** analysis: Claude; derived: the date or the state; photographer: hers. */
-  source: "analysis" | "derived" | "photographer";
+  /** operator: suggested by the operator; derived: the date or the state; photographer: hers. */
+  source: "operator" | "derived" | "photographer";
   confidence: "high" | "medium" | "low" | null;
   reason: string | null;
 }
@@ -16,15 +16,6 @@ export interface LookTag {
 export interface LookBody {
   tags: LookTag[];
   vocabulary: Array<{ id: string; category: string }>;
-  photos: { count: number; usable: number };
-  analysis: {
-    enabled: boolean;
-    available: boolean;
-    lastRun: { at: string; status: string; photoCount: number } | null;
-    /** The last run looked at exactly the photos there are now. */
-    current: boolean;
-  };
-  fresh?: boolean;
 }
 
 export interface Feature {
@@ -41,7 +32,6 @@ export interface Feature {
 
 /** GET /style/profile. */
 export interface ProfileBody {
-  analysis: { enabled: boolean; available: boolean };
   tagged: number;
   categories: Array<{ category: string; tags: Array<{ id: string; weddings: number }> }>;
   weddings: Array<{
