@@ -1,0 +1,374 @@
+id: pub-the-anti-bride
+name: The Anti-Bride
+url: https://www.antibride.com.au
+kind: destination_international
+tier: primary
+recheck_every_days: 90
+taste_summary: Non-traditional, fashion-led real weddings from anywhere in the world, with designer outfits and outfit changes, micro weddings and elopements, and couples blending cultures.
+notes: The Australian online magazine at antibride.com.au, not theantibride.com (a Jacksonville florist and planner). The Brand Partnerships enquiry form asks for a portfolio gallery link with 20 images of recent work.
+
+sources:
+  home:
+    url: https://www.antibride.com.au
+    read: 2026-10-23
+    kind: other
+    title: Home page
+  guidelines:
+    url: https://www.antibride.com.au/photography-submissions
+    read: 2026-10-23
+    kind: guidelines
+    title: Photography Submissions (guidelines and the embedded submission form)
+  about:
+    url: https://www.antibride.com.au/about-us
+    read: 2026-10-23
+    kind: about
+    title: Our Story
+  partnerships:
+    url: https://www.antibride.com.au/advertise-with-us
+    read: 2026-10-23
+    kind: media_kit
+    title: Brand Partnerships (linked as Advertise With Us)
+  contact:
+    url: https://www.antibride.com.au/contact-us
+    read: 2026-10-23
+    kind: other
+    title: Contact Us
+  feature_ane_diego:
+    url: https://www.antibride.com.au/post/wedding-ane-diego
+    read: 2026-10-23
+    kind: feature
+    title: Wedding | Ane & Diego
+  feature_amanda_paul:
+    url: https://www.antibride.com.au/post/wedding-amanda-paul
+    read: 2026-10-23
+    kind: feature
+    title: Wedding | Amanda & Paul
+  feature_emily_josh:
+    url: https://www.antibride.com.au/post/wedding-emily-josh
+    read: 2026-10-23
+    kind: feature
+    title: Wedding | Emily & Josh
+  feature_aurelie_kyran:
+    url: https://www.antibride.com.au/post/wedding-aurelie-kyran
+    read: 2026-10-23
+    kind: feature
+    title: Wedding | Aurelie & Kyran
+  feature_tais_bruno:
+    url: https://www.antibride.com.au/post/wedding-tais-bruno
+    read: 2026-10-23
+    kind: feature
+    title: Wedding | Tais & Bruno
+
+identity:
+  parent_company:
+    value: The Anti-Bride Co.
+    cite:
+      - source: home
+        quote: "©2026 by The Anti-Bride Co. ™"
+    note: The copyright holder named in the site footer, the outlet's own company; no separate group is named.
+  sister_publications:
+    value: unknown
+    checked: [ about, home ]
+  shared_inbox_with:
+    value: unknown
+    checked: [ guidelines, contact ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: guidelines
+        quote: We accept worldwide submissions.
+  basis:
+    value: unknown
+    checked: [ guidelines ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: guidelines
+        quote: We accept worldwide submissions.
+      - source: feature_aurelie_kyran
+      - source: feature_emily_josh
+    note: Recent features include couples marrying abroad, such as a Luxembourg couple in Japan and a US couple in Germany.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: "We are always looking for authentic, non-traditional, modern and above all 'anti-bride' weddings to feature."
+  elopement:
+    value: true
+    cite:
+      - source: guidelines
+        quote: think elopements, relaxed micro-weddings with the couple in bold colours or prints
+  styled_shoot:
+    value: true
+    cite:
+      - source: guidelines
+        quote: We accept a small number of worldwide styled shoot submissions captured in an editorial style.
+    note: Editorials only; shoots that are mainly of the couple (engagement or pre-wedding) are refused.
+  style_tags:
+    value: [ alternative_nontraditional, fashion_forward_editorial, culturally_rooted, multiple_looks, wedding_suit_pantsuit, intimate_micro ]
+    cite:
+      - source: guidelines
+        quote: We love weddings that have a fashion focus, a little je ne sais quoi and those that are beautifully captured.
+      - source: feature_ane_diego
+      - source: feature_amanda_paul
+      - source: feature_emily_josh
+      - source: feature_aurelie_kyran
+      - source: feature_tais_bruno
+  seasonality:
+    value: unknown
+    checked: [ guidelines ]
+
+routes:
+  value:
+    - platform: web_form
+      url: https://www.antibride.com.au/photography-submissions
+      account_required: false
+      preferred: true
+      steps:
+        - Confirm you are the photographer or wedding planner, and say whether the wedding has been published in a magazine or blog.
+        - Give your name, email and the date of the wedding or editorial.
+        - Paste a Pixieset or similar gallery link with hi-res and web-size downloads; no Dropbox.
+        - List the vendors involved and explain what makes the wedding anti-bride.
+        - Tick that every submission criterion has been met, then submit.
+      note: The form sits on the public submissions page and asks for no sign-in.
+  cite:
+    - source: guidelines
+      quote: Are you the photographer or wedding planner?
+    - source: guidelines
+      quote: What makes your submission a good fit for The Anti-Bride? How is this wedding anti-bride?
+
+package:
+  image_min:
+    value: 100
+    cite:
+      - source: guidelines
+        quote: Please only submit a gallery of around 100-120 images, which shows the whole story of the day/weekend
+    note: Around 100 to 120 images for a real wedding; around 50 to 70 for a styled shoot.
+  image_max:
+    value: 120
+    cite:
+      - source: guidelines
+        quote: Please only submit a gallery of around 100-120 images, which shows the whole story of the day/weekend
+    note: Around 50 to 70 images for a styled shoot.
+  resolution:
+    value:
+      note: The gallery must offer both hi-res and web-size downloads; no pixel sizes are given.
+    cite:
+      - source: guidelines
+        quote: with hi-res and web size images ready for download
+  size:
+    value: both
+    cite:
+      - source: guidelines
+        quote: with hi-res and web size images ready for download
+  orientation_mix:
+    value: unknown
+    checked: [ guidelines ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ guidelines ]
+  gallery_hosts:
+    value:
+      - pixieset
+      - pic_time
+      - shootproof
+      - smugmug
+    cite:
+      - source: guidelines
+        quote: Please submit your images using a Pixieset or similar gallery (please no Dropbox link)
+    note: Pixieset is named; the others are read from "or similar gallery". Dropbox links are refused.
+  vendor_credits:
+    value:
+      required: true
+      fields: [ business_name ]
+      note: A required form field lists the vendors' names; styled shoots must name every vendor involved.
+    cite:
+      - source: guidelines
+        quote: Please list names of vendors invloved.
+      - source: guidelines
+        quote: Please make sure to include all vendors that were involved in creating your styled shoot on our submission form.
+  story:
+    value:
+      required: true
+      note: A required form field asks what makes the submission a good fit and how the wedding is anti-bride. Published features run as a couple Q&A covering how they met, venue, guests, budget, outfits, tips and vendors.
+    cite:
+      - source: guidelines
+        quote: What makes your submission a good fit for The Anti-Bride? How is this wedding anti-bride?
+  video_accepted:
+    value: unknown
+    checked: [ guidelines ]
+  other_requirements:
+    value:
+      - "The wedding must be \"anti-bride\", that is non-traditional."
+      - The gallery shows the whole day, from getting ready through the ceremony to the celebration after.
+      - Styled shoots must not be primarily couple, engagement or pre-wedding shoots.
+      - The form ends with a checkbox confirming every submission criterion has been met.
+      - The photographer or planner of any accepted wedding must become an Anti-Bride brand partner (see economics).
+    cite:
+      - source: guidelines
+        quote: "We only accept weddings that are 'anti-bride'"
+      - source: guidelines
+        quote: which shows the whole story of the day/weekend (i.e. getting ready, ceremony, celebration after the ceremony)
+      - source: guidelines
+        quote: We do not share editorials that are primarily couple shoots - including engagement shoots or pre-wedding shoots.
+      - source: guidelines
+        quote: All of the submission criteria has been met.
+      - source: guidelines
+        quote: we require the photographer or wedding planner from any accepted submission to be an Anti-Bride partner.
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [ guidelines ]
+    note: The guidelines require weddings not published elsewhere before (see prior_exposure) but say nothing about exclusivity during review or after publication.
+  prior_exposure:
+    publications:
+      value: disqualifies
+      cite:
+        - source: guidelines
+          quote: We only accept weddings that have not been published in any other online publications or magazines.
+    blogs:
+      value: unknown
+      checked: [ guidelines ]
+      note: The form asks whether the wedding has been published in a magazine or blog; the guidelines name only online publications and magazines, so a photographer's own blog post is not addressed.
+    social:
+      value: unknown
+      checked: [ guidelines ]
+  freshness_window_months:
+    value: 12
+    cite:
+      - source: guidelines
+        quote: We only accept recent weddings that have taken place within the past 12 months.
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines ]
+  submitter_roles:
+    value: [ photographer, planner ]
+    cite:
+      - source: guidelines
+        quote: We only accept submissions from (primary) photographers and wedding planners/stylists.
+    note: Couples may not submit directly.
+
+rights:
+  image_usage:
+    value: unknown
+    checked: [ guidelines ]
+  credit_format:
+    value: A vendor list closes each feature, photographer first, giving each role with the business name and Instagram handle.
+    cite:
+      - source: feature_ane_diego
+      - source: feature_amanda_paul
+      - source: feature_tais_bruno
+  couple_consent_required:
+    value: unknown
+    checked: [ guidelines ]
+  vendor_consent_required:
+    value: unknown
+    checked: [ guidelines ]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ guidelines ]
+  publication_fee:
+    value:
+      amount: undisclosed
+      currency: AUD
+      note: Accepted work requires the photographer or planner to hold an Anti-Bride brand partnership, which the site offers under Advertise With Us. No price is published; the currency is taken from the site's shop, which prices in AUD.
+    cite:
+      - source: guidelines
+        quote: we require the photographer or wedding planner from any accepted submission to be an Anti-Bride partner.
+      - source: partnerships
+        quote: We offer limited Brand Partnership opportunities to selected designers, photographers, wedding planners
+  priority_paid_tier:
+    value: unknown
+    checked: [ partnerships, guidelines ]
+  reach:
+    value: unknown
+    checked: [ partnerships, about, home ]
+
+timing:
+  response_window:
+    value:
+      days: 21
+      replies: success_only
+    cite:
+      - source: guidelines
+        quote: if you have not heard back within 2-3 weeks, please feel free to send us a follow-up email.
+      - source: guidelines
+        quote: we are only able to respond to submissions that meet all of the criteria above.
+    note: Only submissions meeting every criterion get a reply; after 2 to 3 weeks (stored as 21 days) a follow-up email is invited.
+  publish_lead_days:
+    value: unknown
+    checked: [ guidelines ]
+  publishing_cycle:
+    value: Online magazine; new real weddings were posted several times a week in October 2026.
+    cite:
+      - source: about
+        quote: The Anti-Bride is an online magazine serving as your go-to source for modern weddings.
+      - source: feature_ane_diego
+      - source: feature_emily_josh
+      - source: feature_tais_bruno
+
+people:
+  editors:
+    value:
+      - name: Shelly Nikles
+        role: Founder
+    cite:
+      - source: about
+        quote: Established by Shelly Nikles in 2017
+    note: The about page mentions a locally based editorial team but names no one else.
+
+insight:
+  secret_sauce:
+    - tip: Pitch the fashion angle; the editors want fashion-focused, non-traditional weddings, and a required form field asks how the wedding is anti-bride.
+      cite:
+        - source: guidelines
+          quote: We love weddings that have a fashion focus, a little je ne sais quoi and those that are beautifully captured.
+    - tip: Recent features credit designer outfits and outfit changes in detail, so gather the couple's outfit credits before submitting.
+      cite:
+        - source: feature_amanda_paul
+        - source: feature_ane_diego
+        - source: feature_aurelie_kyran
+    - tip: Published weddings run as a couple Q&A (how they met, why the venue, guest count, budget, outfits, tips, favourite vendors); have the couple's answers ready.
+      cite:
+        - source: feature_ane_diego
+        - source: feature_emily_josh
+        - source: feature_tais_bruno
+    - tip: For a styled shoot, show many collaborating vendors; couple-only shoots are refused.
+      cite:
+        - source: guidelines
+          quote: We love sharing editorials that show a collaboration between many different wedding professionals
+        - source: guidelines
+          quote: We do not share editorials that are primarily couple shoots - including engagement shoots or pre-wedding shoots.
+  recent_features:
+    - source: feature_ane_diego
+      published: 2026-10-22
+      location: ES
+      content_type: real_wedding
+      tags: [ historic_manor_estate, garden_botanical, vintage_heirloom, alternative_nontraditional, multiple_looks ]
+    - source: feature_amanda_paul
+      published: 2026-10-20
+      location: SE
+      content_type: real_wedding
+      tags: [ multiple_looks, wedding_suit_pantsuit, fashion_forward_editorial, culturally_rooted ]
+    - source: feature_emily_josh
+      published: 2026-10-20
+      location: DE
+      content_type: real_wedding
+      tags: [ lakefront, mountain_alpine, church_cathedral, culturally_rooted, multiple_looks ]
+    - source: feature_aurelie_kyran
+      published: 2026-10-19
+      location: JP
+      content_type: real_wedding
+      tags: [ intimate_micro, culturally_rooted, fashion_forward_editorial, couture_designer ]
+    - source: feature_tais_bruno
+      published: 2026-10-17
+      location: NL
+      content_type: real_wedding
+      tags: [ intimate_micro, wedding_suit_pantsuit, restaurant_private_dining, alternative_nontraditional ]

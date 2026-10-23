@@ -7,6 +7,7 @@ person approves it in the app (SUMMIT-335).
 
 ```
 research/
+  OUTLETS.md               the research plan: which outlets, in which batch
   publications/<id>.yaml   one file per outlet, named for its id (pub-brides.yaml)
   vocab/tags.yaml          the shared tag vocabulary for outlets and weddings
   vocab/geo.yaml           location codes for coverage and the wedding location
@@ -64,6 +65,49 @@ states there is none: no fee, no limit) and `any` (any gallery host).
 
 `npm test` checks every file in `publications/` against these rules, and CI
 runs it on every pull request.
+
+## Doing the research
+
+1. Draft each outlet's file anywhere outside the repo, then check it:
+
+   ```
+   npm run research:check --workspace @publication-studio/api -- /path/to/pub-x.yaml
+   ```
+
+   With no paths it checks every file in `publications/`. The checker enforces
+   the schema; it cannot tell whether a quote is real, so read every page you
+   cite.
+2. Open the outlet's own pages first: submission guidelines, the submission
+   form when it is public, about and contact pages, the media kit or advertise
+   page, three to five recent real-wedding features, and any editor interview
+   or podcast. Reach figures come only from the outlet's own pages or a
+   reputable press article, never from scraping social media.
+3. Some forms are drawn by JavaScript and fetch empty. A page that did not
+   load is not evidence of anything: render it in a browser before citing it,
+   and never mark a fact unknown because a page came back blank.
+4. Public contact details go in the private overlay, one file per outlet at
+   `publication-studio-private/research/contacts/<id>.yaml`, next to this
+   repository's checkout and never committed:
+
+   ```yaml
+   id: pub-example-weddings
+   submission_inbox:      # only a published submissions address
+     email: <address>
+     source: <url of the page that lists it>
+     read: 2026-10-23
+   editors:               # only professional addresses the outlet publishes
+     - name: <name>
+       role: <role>
+       email: <address>
+       source: <url>
+       read: 2026-10-23
+   ```
+
+   Leave out either part when the outlet publishes none. A general support or
+   billing inbox is not a submissions inbox.
+5. Research lands in batches, one pull request each, so a reviewer can follow
+   the sources. Merging a batch does not make it live: the import (SUMMIT-335)
+   holds every new or changed file for approval in the app.
 
 ## Fields
 

@@ -1,0 +1,369 @@
+id: pub-wezoree
+name: Wezoree
+url: https://wezoree.com
+kind: destination_international
+tier: secondary
+recheck_every_days: 90
+taste_summary: Long, story-led features with full vendor credits; chateaux, castles and destination weddings in Europe, Asia and Africa alongside US cities.
+notes: A vendor directory and subscription platform with a real-weddings gallery and an online magazine with a limited print run. Free editorial consideration exists, but a processing fee applies if a wedding is selected, and a paid option guarantees placement. Published dates come from the real-weddings listing, since the feature pages carry no usable date.
+
+sources:
+  guidelines:
+    url: https://wezoree.com/profile/services/submit-real-wedding.php
+    read: 2026-10-23
+    kind: guidelines
+    title: Submit Your Real Wedding
+  form:
+    url: https://docs.google.com/forms/d/12WPA86dmzwTIRvKIoLBiMoSAr3l1S8NIpLztFlG-O1c/viewform
+    read: 2026-10-23
+    kind: form
+    title: Submit a Real Wedding (Google Form linked from the submit page)
+  real_weddings:
+    url: https://wezoree.com/real-weddings/
+    read: 2026-10-23
+    kind: guidelines
+    title: Real Weddings gallery, FAQ and submission routes
+  about:
+    url: https://wezoree.com/about/
+    read: 2026-10-23
+    kind: about
+    title: About us
+  team:
+    url: https://wezoree.com/about/team.php
+    read: 2026-10-23
+    kind: about
+    title: Wezoree Editor's Team
+  advertising:
+    url: https://wezoree.com/about/landing/advertising.php
+    read: 2026-10-23
+    kind: media_kit
+    title: Advertising
+  magazine:
+    url: https://wezoree.com/about/landing/magazine.php
+    read: 2026-10-23
+    kind: other
+    title: Wezoree Magazine
+  refund:
+    url: https://wezoree.com/about/terms/refund-policy.php
+    read: 2026-10-23
+    kind: other
+    title: Refund Policy
+  feature_bali:
+    url: https://wezoree.com/real-weddings/a-floating-stage-paragliders-overhead-and-100-guests-who-flew-across-the-world-karen-joey-s-wedding-/
+    read: 2026-10-23
+    kind: feature
+    title: Karen & Joey's Wedding at Pandawa Cliff Estate
+  feature_rocher_portail:
+    url: https://wezoree.com/real-weddings/35-countries-four-cats-and-one-medieval-ch-teau-eyma-val-rian-s-wedding-at-ch-teau-du-rocher-portail/
+    read: 2026-10-23
+    kind: feature
+    title: Seyma & Valerian's Wedding at Chateau du Rocher Portail
+  feature_ashford:
+    url: https://wezoree.com/real-weddings/she-noticed-his-smile-from-across-the-street-molly-garrett-s-wedding-at-ashford-castle-1792134675/
+    read: 2026-10-23
+    kind: feature
+    title: Molly & Garrett's Wedding at Ashford Castle
+  feature_hospitalet:
+    url: https://wezoree.com/real-weddings/a-south-of-france-weekend-to-remember-jasmine-max-s-wedding-at-ch-teau-l-hospitalet-1791524071/
+    read: 2026-10-23
+    kind: feature
+    title: Jasmine & Max's Wedding at Chateau l'Hospitalet
+  feature_cambridge_mill:
+    url: https://wezoree.com/real-weddings/their-ring-bearer-wore-a-bow-tie-and-had-four-legs-emma-andrew-s-wedding-at-cambridge-mill-178886491/
+    read: 2026-10-23
+    kind: feature
+    title: Emma & Andrew's Wedding at Cambridge Mill
+
+identity:
+  parent_company:
+    value: unknown
+    checked: [ about, team ]
+  sister_publications:
+    value: unknown
+    checked: [ about, magazine ]
+    note: Wezoree Magazine is the platform's own issue, not a separate title.
+  shared_inbox_with:
+    value: unknown
+    checked: [ guidelines, about ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: real_weddings
+        quote: The gallery presents weddings from around the world
+  basis:
+    value: unknown
+    checked: [ real_weddings, form ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: real_weddings
+        quote: Destination wedding stories are some of the most popular in our gallery.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Feature Your Real Wedding and Inspire Couples Worldwide
+  elopement:
+    value: true
+    cite:
+      - source: about
+        quote: featuring everything from intimate elopements to lavish ceremonies
+  styled_shoot:
+    value: unknown
+    checked: [ real_weddings, guidelines ]
+    note: Styled shoots appear in the Inspiration section; no page says they are taken as submissions.
+  style_tags:
+    value: [ castle_chateau, classic_timeless, glamorous_luxe, garden_botanical, romantic ]
+    cite:
+      - source: real_weddings
+        quote: We have no specific requirements regarding style, budget, or venue
+      - source: feature_bali
+      - source: feature_rocher_portail
+      - source: feature_ashford
+      - source: feature_hospitalet
+      - source: feature_cambridge_mill
+  seasonality:
+    value: unknown
+    checked: [ real_weddings, guidelines ]
+
+routes:
+  value:
+    - platform: web_form
+      url: https://docs.google.com/forms/d/12WPA86dmzwTIRvKIoLBiMoSAr3l1S8NIpLztFlG-O1c/viewform
+      account_required: false
+      preferred: true
+      steps:
+        - Fill out the short Real Wedding form with email, the couple's names, venue and city, wedding date, a gallery link and any gallery password.
+        - Optionally add the planner's Instagram and a Google Drive link to behind-the-scenes vendor content.
+        - Choose complimentary editorial consideration, a guaranteed paid feature, or ask about both.
+        - If the wedding is selected, the editors reply within 15 days; then complete the detailed form about the event.
+      note: Google sign-in is optional and only saves progress. A processing fee applies if the wedding is selected (see economics).
+  cite:
+    - source: guidelines
+      quote: Submit the short Real Wedding form.
+    - source: form
+      quote: Sign in to Google to save your progress.
+    - source: guidelines
+      quote: You will need to fill out the detailed form and provide more information about the event.
+
+package:
+  image_min:
+    value: unknown
+    checked: [ guidelines, form, real_weddings ]
+  image_max:
+    value: unknown
+    checked: [ guidelines, form, real_weddings ]
+  resolution:
+    value: unknown
+    checked: [ guidelines, form ]
+  size:
+    value: unknown
+    checked: [ guidelines, form ]
+  orientation_mix:
+    value: unknown
+    checked: [ guidelines, form ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ guidelines, form ]
+  gallery_hosts:
+    value: unknown
+    checked: [ form ]
+    note: Any lasting gallery link; temporary file platforms such as WeTransfer are refused.
+  vendor_credits:
+    value:
+      required: true
+      note: Gathered in the detailed form after selection and published with links to Wezoree and social profiles.
+    cite:
+      - source: real_weddings
+        quote: Yes, every gallery feature lists all vendor credits.
+      - source: real_weddings
+        quote: "Vendor credits: A full list of every professional involved, with links to their pages and social profiles."
+  story:
+    value:
+      required: true
+      note: How the couple met, how they prepared and what mattered most; gathered in the detailed form after selection, and Wezoree's editors write the article.
+    cite:
+      - source: real_weddings
+        quote: "Couple's story: how they met, how they prepared for the wedding, and what was most important to them."
+      - source: guidelines
+        quote: The processing fee covers the full editorial production of your Real Wedding feature
+  video_accepted:
+    value: unknown
+    checked: [ guidelines, form ]
+  other_requirements:
+    value:
+      - The wedding took place in 2025 or 2026.
+      - The gallery link is on a lasting host; temporary file platforms such as WeTransfer are refused.
+      - A selected wedding needs a detailed form with more information about the event.
+    cite:
+      - source: form
+        quote: Wedding date (please note that we accept 2025-2026 weddings)
+      - source: form
+        quote: We do not accept links to platforms that store files temporarily, such as WeTransfer, etc.
+      - source: guidelines
+        quote: You will need to fill out the detailed form and provide more information about the event.
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [ guidelines, form, real_weddings ]
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ guidelines, form, real_weddings ]
+    blogs:
+      value: unknown
+      checked: [ guidelines, form ]
+    social:
+      value: unknown
+      checked: [ guidelines, form ]
+  freshness_window_months:
+    value: unknown
+    checked: [ form, guidelines ]
+    note: The form accepts 2025-2026 weddings, a calendar range rather than a rolling window (see other_requirements).
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines, real_weddings ]
+  submitter_roles:
+    value: [ couple, photographer, planner ]
+    cite:
+      - source: real_weddings
+        quote: whether you’re the bride and groom, a photographer, or a wedding planner
+
+rights:
+  image_usage:
+    value: unknown
+    checked: [ guidelines, form, real_weddings ]
+  credit_format:
+    value: A Wedding Team list closes each feature, giving each role with the vendor's name or Instagram handle, linked to their Wezoree profile.
+    cite:
+      - source: feature_hospitalet
+      - source: feature_bali
+  couple_consent_required:
+    value: unknown
+    checked: [ guidelines, form ]
+  vendor_consent_required:
+    value: unknown
+    checked: [ guidelines, form ]
+
+economics:
+  submission_fee:
+    value: none
+    cite:
+      - source: real_weddings
+        quote: submit it free of charge for editorial review, though publication is not guaranteed
+      - source: form
+        quote: "Complimentary Editorial Consideration: I'd like to submit my wedding for editorial consideration."
+  publication_fee:
+    value:
+      amount: undisclosed
+      currency: USD
+      note: Charged to whoever submitted if the wedding is selected; it covers story development, writing, visual curation, design, publication and some promotion. No amount is published, and the real-weddings page describes the free route without mentioning it. USD is taken from the dollar prices on the advertising page.
+    cite:
+      - source: guidelines
+        quote: If your submission is selected for publication, a processing fee will apply and will be covered by the person or company submitting the wedding.
+      - source: refund
+        quote: features in articles, Real Wedding publications, or custom promotions
+  priority_paid_tier:
+    value:
+      name: Guaranteed Editorial Feature
+      price:
+        amount: undisclosed
+        currency: USD
+      note: A paid submission option with confirmed placement; a Top subscription also includes a guaranteed feature. No price is published.
+    cite:
+      - source: form
+        quote: "Guaranteed Editorial Feature: I'm interested in a guaranteed paid publication to showcase my work on Wezoree."
+      - source: real_weddings
+        quote: choose the paid submission option for a confirmed placement
+      - source: real_weddings
+        quote: if you hold a Top subscription, you receive a guaranteed feature as part of your plan
+  reach:
+    value:
+      - metric: monthly_visitors
+        value: 201493
+        as_of: 2026-10-23
+    cite:
+      - source: advertising
+        quote: Monthly Visits 201 493
+    note: The advertising page labels the figure Monthly Visits, with data from Similarweb; visits rather than unique visitors. The page gives no date, so as_of is the date it was read.
+
+timing:
+  response_window:
+    value:
+      days: 15
+      replies: success_only
+    cite:
+      - source: guidelines
+        quote: Our editorial team will contact you within 15 days if the wedding has been selected.
+  publish_lead_days:
+    value: unknown
+    checked: [ guidelines, real_weddings ]
+  publishing_cycle:
+    value: New real weddings online about twice a week (October 2026), plus Wezoree Magazine issues online with a limited print run.
+    cite:
+      - source: magazine
+        quote: A full issue available online. Print edition released in limited quantity.
+      - source: feature_bali
+      - source: feature_rocher_portail
+      - source: feature_ashford
+      - source: feature_hospitalet
+
+people:
+  editors:
+    value:
+      - name: Natali Grace Levine
+        role: Chief Editor
+      - name: Sofia Hartwell
+        role: Real Weddings Editor
+    cite:
+      - source: team
+        quote: Natali Grace Levine The Chief Editor of the Wezoree since 2022
+      - source: team
+        quote: Sofia Hartwell Real Weddings Editor
+
+insight:
+  secret_sauce:
+    - tip: Lead with story and atmosphere; the editors want interesting stories, authentic moments and photos that capture the whole day.
+      cite:
+        - source: real_weddings
+          quote: Our editorial team is looking for interesting stories, authentic moments, and photos that capture the full atmosphere of a wedding.
+    - tip: Features run long and in fixed sections (love story, morning details, getting ready, first look, ceremony, portraits, venue and decor, couple's advice, reception), so send a gallery covering each part and gather the couple's quotes.
+      cite:
+        - source: feature_rocher_portail
+        - source: feature_ashford
+        - source: feature_hospitalet
+    - tip: Fill in the optional Google Drive link to behind-the-scenes vendor content; the form asks for it to show vendors at work.
+      cite:
+        - source: form
+          quote: Please add Google Drive link with any available behind-the-scenes content showcasing vendors’ work during the wedding
+  recent_features:
+    - source: feature_bali
+      published: 2026-10-23
+      location: ID
+      content_type: real_wedding
+      tags: [ island_tropical, glamorous_luxe, classic_timeless, culturally_rooted, couture_designer ]
+    - source: feature_rocher_portail
+      published: 2026-10-20
+      location: FR
+      content_type: real_wedding
+      tags: [ castle_chateau, garden_botanical, romantic, fashion_forward_editorial ]
+    - source: feature_ashford
+      published: 2026-10-16
+      location: IE
+      content_type: real_wedding
+      tags: [ castle_chateau, church_cathedral, ball_gown, classic_timeless, british_isles ]
+    - source: feature_hospitalet
+      published: 2026-10-13
+      location: FR
+      content_type: real_wedding
+      tags: [ castle_chateau, vineyard_winery, glamorous_luxe, classic_timeless ]
+    - source: feature_cambridge_mill
+      published: 2026-09-08
+      location: CA
+      content_type: real_wedding
+      tags: [ intimate_micro, historic_manor_estate, garden_botanical, romantic, vintage_heritage ]

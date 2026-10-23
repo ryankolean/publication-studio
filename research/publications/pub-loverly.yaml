@@ -1,0 +1,363 @@
+id: pub-loverly
+name: Loverly
+url: https://loverly.com
+kind: blog
+tier: secondary
+recheck_every_days: 90
+notes: loverly.com answers automated fetches with a Cloudflare challenge (HTTP 403); every page below was read in a browser on 2026-10-23.
+
+sources:
+  vendor_faq:
+    url: https://loverly.com/vendor-frequently-asked-questions
+    read: 2026-10-23
+    kind: guidelines
+    title: "Loverly Vendors: Frequently Asked Questions"
+  submit_page:
+    url: https://loverly.com/tools/submit-wedding
+    read: 2026-10-23
+    kind: guidelines
+    title: Real Weddings, Real Inspiration
+  tips_article:
+    url: https://loverly.com/planning/wedding-101/optimizing-your-real-wedding-submissions
+    read: 2026-10-23
+    kind: guidelines
+    title: Optimizing Your Real Wedding Submissions
+  about_us:
+    url: https://loverly.com/about-us
+    read: 2026-10-23
+    kind: about
+  partner:
+    url: https://loverly.com/partner
+    read: 2026-10-23
+    kind: other
+    title: Partner With Us
+  feature_cabo:
+    url: https://loverly.com/real-weddings/from-a-second-date-in-cabo-to-forever
+    read: 2026-10-23
+    kind: feature
+  feature_portugal:
+    url: https://loverly.com/real-weddings/old-world-romance-meets-multicultural-elegance-in-portugal
+    read: 2026-10-23
+    kind: feature
+  feature_gilded:
+    url: https://loverly.com/real-weddings/a-gilded-age-wedding-in-shades-of-pink-blue
+    read: 2026-10-23
+    kind: feature
+  feature_tennessee:
+    url: https://loverly.com/real-weddings/greek-traditions-meet-southern-charm-in-tennessee
+    read: 2026-10-23
+    kind: feature
+
+identity:
+  parent_company:
+    value: Loverly Inc.
+    cite:
+      - source: about_us
+        quote: © 2026 Loverly Inc. All rights reserved.
+    note: The operating company; no page names a parent above it.
+  sister_publications:
+    value: unknown
+    checked: [ about_us ]
+  shared_inbox_with:
+    value: unknown
+    checked: [ vendor_faq, partner ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: feature_cabo
+      - source: feature_portugal
+      - source: feature_gilded
+      - source: feature_tennessee
+    note: Inferred from recent features in the US, Mexico and Portugal; no page states a coverage policy.
+  basis:
+    value: unknown
+    checked: [ vendor_faq, submit_page ]
+  destination_accepted:
+    value: unknown
+    checked:
+      - vendor_faq
+      - submit_page
+      - feature_cabo
+      - feature_portugal
+    note: Recent features include weddings in Mexico and Portugal, but no page says whether the couples traveled or states a policy.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: vendor_faq
+        quote: Yes. Vendors are encouraged to submit real wedding albums.
+  elopement:
+    value: unknown
+    checked: [ vendor_faq, submit_page, about_us ]
+    note: The about page covers elopements as planning advice, not as a submission type.
+  styled_shoot:
+    value: unknown
+    checked: [ vendor_faq, submit_page ]
+  style_tags:
+    value: [ classic_timeless, romantic, modern_minimal ]
+    cite:
+      - source: feature_gilded
+      - source: feature_tennessee
+      - source: feature_portugal
+      - source: feature_cabo
+    note: From each feature's style category on the site (Classic, Romantic, Modern).
+  seasonality:
+    value: unknown
+    checked: [ vendor_faq, submit_page ]
+
+routes:
+  value:
+    - platform: portal
+      url: https://loverly.com/tools/submit-wedding
+      account_required: true
+      preferred: true
+      steps:
+        - Create or sign in to a Loverly account from the submit page.
+        - Curate the top 25 to 40 images, favoring details, fashion and design, in a mix of portrait and landscape.
+        - Write a description of the inspiration, special touches and personalized details, plus a story about the couple.
+        - Credit every vendor, including the venue and the photographer.
+        - Submit, then follow the status in the vendor dashboard.
+  cite:
+    - source: submit_page
+      quote: Already have an account? Sign in
+    - source: submit_page
+      quote: spend time curating the top 25-40 images with a focus on details and special moments
+    - source: vendor_faq
+      quote: You can check status updates anytime in your vendor dashboard.
+
+package:
+  image_min:
+    value: 30
+    cite:
+      - source: submit_page
+        quote: To be considered complete, a submission should include at least 30–40 high-resolution images in a mix of portrait and landscape
+    note: The vendor FAQ recommends 20 to 30 images instead; the submit page's stricter figure is used.
+  image_max:
+    value: 40
+    cite:
+      - source: submit_page
+        quote: spend time curating the top 25-40 images with a focus on details and special moments
+    note: The top of the 25-40 curation range the submit page asks for.
+  resolution:
+    value:
+      note: Minimum 720 px and maximum 1920 px; the page does not say which edge.
+    cite:
+      - source: submit_page
+        quote: Images should have a minimum of 720 px with a max of 1920px.
+  size:
+    value: unknown
+    checked: [ submit_page, vendor_faq ]
+    note: Only pixel limits are stated.
+  orientation_mix:
+    value: A mix of portrait and landscape images.
+    cite:
+      - source: submit_page
+        quote: Please provide a mix of portrait and landscape images.
+  watermarks_allowed:
+    value: false
+    cite:
+      - source: tips_article
+        quote: Mix wide shots with close-ups, and avoid watermarks or overly filtered images.
+    note: Advice in Loverly's own submission guide rather than a stated rule.
+  gallery_hosts:
+    value: [ direct_upload ]
+    cite:
+      - source: submit_page
+        quote: UPLOAD YOUR GALLERY
+  vendor_credits:
+    value:
+      required: true
+      fields: [ role, business_name, website, instagram ]
+      note: The venue and the photographer are required; a website link or a social handle for each vendor.
+    cite:
+      - source: vendor_faq
+        quote: Real wedding submissions must include the venue and photographer in the vendor list.
+      - source: submit_page
+        quote: we prioritize submissions that have a full list of vendors
+      - source: tips_article
+        quote: Website links or social handles
+      - source: tips_article
+        quote: The specific service each one provided
+  story:
+    value:
+      required: true
+      note: A description of the design inspiration, special touches and personalized details, plus a story about the couple.
+    cite:
+      - source: submit_page
+        quote: Provide a description of the event including the inspiration behind the design, special touches, and personalized details.
+      - source: submit_page
+        quote: details such as the color palette, style and a story about the couple
+  video_accepted:
+    value: true
+    cite:
+      - source: vendor_faq
+        quote: You can also add videos using Vimeo links or YouTube embed links to enhance your submission.
+  other_requirements:
+    value: [ The color palette and style of the wedding. ]
+    cite:
+      - source: submit_page
+        quote: details such as the color palette, style and a story about the couple
+
+rules:
+  exclusivity:
+    value:
+      policy: non_exclusive
+    cite:
+      - source: vendor_faq
+        quote: Nope! We do not require exclusivity.
+  prior_exposure:
+    publications:
+      value: allowed
+      cite:
+        - source: vendor_faq
+          quote: you’re free to share your wedding elsewhere
+    blogs:
+      value: allowed
+      cite:
+        - source: vendor_faq
+          quote: you’re free to share your wedding elsewhere
+    social:
+      value: allowed
+      cite:
+        - source: vendor_faq
+          quote: you’re free to share your wedding elsewhere
+  freshness_window_months:
+    value: unknown
+    checked: [ vendor_faq, submit_page ]
+  photographer_frequency:
+    value: unknown
+    checked: [ vendor_faq, submit_page ]
+    note: The FAQ allows submitting as many weddings as you like but says nothing about how often one photographer is featured.
+  submitter_roles:
+    value: [ photographer, planner, vendor, couple ]
+    cite:
+      - source: vendor_faq
+        quote: Any vendor can submit a real wedding.
+      - source: submit_page
+        quote: Whether you’re a couple excited to share your day or a vendor proud of your work
+
+rights:
+  image_usage:
+    value: Loverly may feature the submitted images on its site and on social media.
+    cite:
+      - source: vendor_faq
+        quote: agree that Loverly may feature the images on the site and social media.
+  credit_format:
+    value: Listed vendors are tagged when a published album is shared on social media.
+    cite:
+      - source: vendor_faq
+        quote: If they decide to feature it, they’ll tag all listed vendors.
+  couple_consent_required:
+    value: true
+    cite:
+      - source: vendor_faq
+        quote: When you submit, you confirm that you have permission from the couple and photographer
+  vendor_consent_required:
+    value: true
+    cite:
+      - source: vendor_faq
+        quote: When you submit, you confirm that you have permission from the couple and photographer
+    note: The photographer's permission only; other vendors are not mentioned.
+
+economics:
+  submission_fee:
+    value: none
+    cite:
+      - source: vendor_faq
+        quote: A standard Loverly vendor profile is completely free and includes
+      - source: vendor_faq
+        quote: The ability to submit real weddings
+  publication_fee:
+    value: unknown
+    checked: [ vendor_faq, submit_page ]
+  priority_paid_tier:
+    value:
+      name: Loverly Preferred
+      price:
+        amount: 79
+        currency: USD
+        note: Per month, no contract.
+      note: Unpaid vendors are still reviewed; Preferred adds priority review.
+    cite:
+      - source: vendor_faq
+        quote: It also includes priority review for real wedding submissions
+      - source: vendor_faq
+        quote: Loverly Preferred is $79/month and is billed automatically.
+      - source: vendor_faq
+        quote: There is no contract, and you can cancel anytime
+  reach:
+    value: unknown
+    checked: [ about_us, partner ]
+
+timing:
+  response_window:
+    value:
+      days: 14
+      replies: all
+    cite:
+      - source: vendor_faq
+        quote: Approval typically takes about two weeks.
+      - source: vendor_faq
+        quote: You can check status updates anytime in your vendor dashboard.
+    note: Status shows in the vendor dashboard; the submit page puts the whole publication process at 2 to 3 weeks.
+  publish_lead_days:
+    value:
+      max: 14
+    cite:
+      - source: vendor_faq
+        quote: Once approved, your album is usually published within another two weeks.
+  publishing_cycle:
+    value: Real weddings publish online through the week; four went live between 2026-10-21 and 2026-10-23.
+    cite:
+      - source: feature_cabo
+      - source: feature_portugal
+      - source: feature_gilded
+      - source: feature_tennessee
+
+people:
+  editors:
+    value: unknown
+    checked: [ about_us, partner ]
+
+insight:
+  secret_sauce:
+    - tip: Favor an editorial lens; the details, fashion and overall design carry a submission.
+      cite:
+        - source: submit_page
+          quote: We favor submissions that have an editorial lens with images that showcase the details, fashion, and overall design.
+    - tip: Send the full vendor list; complete credits are prioritized.
+      cite:
+        - source: submit_page
+          quote: we prioritize submissions that have a full list of vendors
+    - tip: Put searchable keywords for style, season and place in the description.
+      cite:
+        - source: tips_article
+          quote: Use keywords like “modern fall wedding in Austin” or “colorful outdoor ceremony in Napa” to help boost search visibility.
+    - tip: A request for missing details is not a decline; fix it and resubmit.
+      cite:
+        - source: vendor_faq
+          quote: You can add the missing details and resubmit. This does not mean it is declined.
+  recent_features:
+    - source: feature_cabo
+      published: 2026-10-23
+      location: MX
+      content_type: real_wedding
+      tags: [ modern_minimal ]
+    - source: feature_portugal
+      published: 2026-10-23
+      location: PT
+      content_type: real_wedding
+      tags: [ romantic ]
+    - source: feature_gilded
+      published: 2026-10-21
+      location: US-DC
+      content_type: real_wedding
+      tags: [ classic_timeless ]
+    - source: feature_tennessee
+      published: 2026-10-21
+      location: US-TN
+      content_type: real_wedding
+      tags: [ classic_timeless ]

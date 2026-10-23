@@ -1,0 +1,303 @@
+id: pub-vogue-weddings
+name: Vogue Weddings
+url: https://www.vogue.com/weddings
+kind: national_magazine
+tier: dream
+recheck_every_days: 90
+taste_summary: Fashion-led real weddings told through the clothes, with designer, vintage and custom looks and several outfit changes per couple; mixes celebrities with stylish private couples.
+notes: >-
+  No public submission route was found: the contact page and FAQ cover subscriptions only, and the about and masthead pages name no submissions process. The masthead (dated September 2026) lists Liam Hess as Senior Lifestyle and Weddings Editor. Real weddings run as photo slideshows several times a week; captions are written in the couple's own voice. Of the features read that give a wedding date, they ran about 2.5 and 6.5 months after the wedding. A Business of Fashion article on Vogue's wedding coverage returned 403 and was not used.
+
+sources:
+  weddings:
+    url: https://www.vogue.com/weddings
+    read: 2026-10-23
+    kind: other
+    title: Weddings
+  real_weddings:
+    url: https://www.vogue.com/tag/misc/real-weddings
+    read: 2026-10-23
+    kind: other
+    title: Real Weddings tag page
+  contact:
+    url: https://www.vogue.com/contact
+    read: 2026-10-23
+    kind: other
+    title: Contact Us
+  about:
+    url: https://www.vogue.com/about-us
+    read: 2026-10-23
+    kind: about
+    title: About Vogue
+  masthead:
+    url: https://www.vogue.com/masthead
+    read: 2026-10-23
+    kind: about
+    title: Masthead
+  faq:
+    url: https://www.vogue.com/about/faq
+    read: 2026-10-23
+    kind: other
+    title: Frequently Asked Questions
+  condenast:
+    url: https://www.condenast.com/brands/vogue
+    read: 2026-10-23
+    kind: other
+    title: VOGUE, Condé Nast brand page
+  feature_seattle:
+    url: https://www.vogue.com/slideshow/sara-walker-and-joe-ratliffe-wedding
+    read: 2026-10-23
+    kind: feature
+    title: This Backyard Wedding in Seattle Was Inspired by Ralph Lauren and '00s Rom-Coms
+  feature_mexico_city:
+    url: https://www.vogue.com/slideshow/ela-villarreal-morales-and-andy-mccune-wedding
+    read: 2026-10-23
+    kind: feature
+    title: This Cinematic Mexico City Wedding Featured a Fairy Tale-Inspired Reception Space With a Hidden Nightclub
+  feature_newport:
+    url: https://www.vogue.com/slideshow/hannah-mullin-and-sean-oconnell-wedding
+    read: 2026-10-23
+    kind: feature
+    title: A Classic Rhode Island Wedding With Tennis-Inspired Details and a Performance by Norah Jones
+  feature_palm_beach:
+    url: https://www.vogue.com/slideshow/alexa-fama-and-george-robinson-wedding
+    read: 2026-10-23
+    kind: feature
+    title: The Bride Wore Vintage '60s Christian Dior, Danielle Frankel, and Emilia Wickstead for Her Palm Beach Wedding Weekend
+  feature_jalisco:
+    url: https://www.vogue.com/slideshow/schuyler-ebersol-clementina-davila-wedding
+    read: 2026-10-23
+    kind: feature
+    title: The Couple Wed at an 18th-Century Hacienda in Jalisco Set Among Agave Fields and Golden Hills
+
+identity:
+  parent_company:
+    value: Condé Nast
+    cite:
+      - source: about
+        quote: © 2026 Condé Nast. All rights reserved.
+  sister_publications:
+    value: [ Teen Vogue, The New Yorker, Vanity Fair, Vogue Business ]
+    cite:
+      - source: condenast
+        quote: TEEN VOGUE THE NEW YORKER THE WORLD OF INTERIORS VANITY FAIR VOGUE VOGUE BUSINESS
+  shared_inbox_with:
+    value: unknown
+    checked: [ contact, about, faq ]
+
+coverage:
+  regions:
+    value: unknown
+    checked: [ weddings, real_weddings, about, contact, faq ]
+  basis:
+    value: unknown
+    checked: [ weddings, real_weddings, about, contact, faq ]
+  destination_accepted:
+    value: unknown
+    checked: [ about, contact, faq, feature_mexico_city, feature_jalisco ]
+    note: Recent features include weddings in Mexico City and Jalisco, but none calls itself a destination wedding and no page states a policy.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: feature_seattle
+      - source: feature_newport
+      - source: feature_palm_beach
+    note: Inferred from published features; no page states what the outlet accepts.
+  elopement:
+    value: unknown
+    checked: [ weddings, real_weddings, about ]
+  styled_shoot:
+    value: unknown
+    checked: [ weddings, real_weddings, about ]
+  style_tags:
+    value: [ fashion_forward_editorial, multiple_looks, vintage_heirloom, couture_designer ]
+    cite:
+      - source: feature_seattle
+      - source: feature_mexico_city
+      - source: feature_newport
+      - source: feature_palm_beach
+      - source: feature_jalisco
+  seasonality:
+    value: unknown
+    checked: [ weddings, real_weddings, about ]
+
+routes:
+  value: unknown
+  checked: [ contact, about, faq, masthead, weddings, real_weddings ]
+  note: No submission page, form or address was found; the contact page and FAQ cover subscriptions only.
+
+package:
+  image_min:
+    value: unknown
+    checked: [ contact, about, faq ]
+  image_max:
+    value: unknown
+    checked: [ contact, about, faq ]
+  resolution:
+    value: unknown
+    checked: [ contact, about, faq ]
+  size:
+    value: unknown
+    checked: [ contact, about, faq ]
+  orientation_mix:
+    value: unknown
+    checked: [ contact, about, faq ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ contact, about, faq ]
+  gallery_hosts:
+    value: unknown
+    checked: [ contact, about, faq ]
+  vendor_credits:
+    value: unknown
+    checked: [ contact, about, faq ]
+  story:
+    value: unknown
+    checked: [ contact, about, faq ]
+  video_accepted:
+    value: unknown
+    checked: [ contact, about, faq ]
+  other_requirements:
+    value: unknown
+    checked: [ contact, about, faq ]
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [ contact, about, faq ]
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ contact, about, faq ]
+    blogs:
+      value: unknown
+      checked: [ contact, about, faq ]
+    social:
+      value: unknown
+      checked: [ contact, about, faq ]
+  freshness_window_months:
+    value: unknown
+    checked: [ contact, about, faq ]
+    note: The Mexico City wedding of 2026-08-01 ran 2026-10-20 and the Palm Beach wedding of 2026-03-28 ran 2026-10-15.
+  photographer_frequency:
+    value: unknown
+    checked: [ contact, about, faq ]
+  submitter_roles:
+    value: unknown
+    checked: [ contact, about, faq ]
+
+rights:
+  image_usage:
+    value: unknown
+    checked: [ contact, about, faq ]
+  credit_format:
+    value: Each slideshow image is captioned Photo and the photographer's name.
+    cite:
+      - source: feature_seattle
+      - source: feature_mexico_city
+      - source: feature_newport
+  couple_consent_required:
+    value: unknown
+    checked: [ contact, about, faq ]
+  vendor_consent_required:
+    value: unknown
+    checked: [ contact, about, faq ]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ contact, about, faq ]
+  publication_fee:
+    value: unknown
+    checked: [ contact, about, faq ]
+  priority_paid_tier:
+    value: unknown
+    checked: [ contact, about, faq, condenast ]
+  reach:
+    value: unknown
+    checked: [ about, masthead, condenast ]
+    note: Neither Vogue nor the Condé Nast brand page publishes audience figures; third-party figures were not used.
+
+timing:
+  response_window:
+    value: unknown
+    checked: [ contact, about, faq ]
+  publish_lead_days:
+    value: unknown
+    checked: [ contact, about, faq ]
+  publishing_cycle:
+    value: Online photo slideshows, several a week; the five read were published 2026-10-05 to 2026-10-23.
+    cite:
+      - source: feature_seattle
+      - source: feature_mexico_city
+      - source: feature_newport
+      - source: feature_palm_beach
+      - source: feature_jalisco
+
+people:
+  editors:
+    value:
+      - name: Chloe Malle
+        role: Head of Editorial Content
+      - name: Liam Hess
+        role: Senior Lifestyle and Weddings Editor
+      - name: Anna Grace Lee
+        role: Lifestyle Writer
+      - name: Alexandra Macon
+        role: Contributing Editor
+      - name: Shelby Wax
+        role: Contributing Editor
+    cite:
+      - source: masthead
+        quote: CHLOE MALLE Head of Editorial Content
+      - source: masthead
+        quote: "Senior Lifestyle and Weddings Editor: Liam Hess"
+      - source: masthead
+        quote: "Lifestyle Writer: Anna Grace Lee"
+      - source: masthead
+        quote: "Contributing Editors: Alexandra Macon, Shelby Wax"
+
+insight:
+  secret_sauce:
+    - tip: >-
+        Lead with the clothes. Headlines name the designers, and at least four of the five features read follow the couple through several looks or outfit changes, with vintage and custom pieces recurring.
+      cite:
+        - source: feature_palm_beach
+        - source: feature_seattle
+        - source: feature_mexico_city
+        - source: feature_newport
+    - tip: >-
+        Captions run in the couple's own words beside each photo, so a couple who can speak to every look and moment fits the format.
+      cite:
+        - source: feature_mexico_city
+          quote: Nikki Reynen at Raffe Vintage found this spring 2008 Valentino dress for me
+        - source: feature_newport
+          quote: I always knew I wanted a second look for my reception
+  recent_features:
+    - source: feature_seattle
+      published: 2026-10-23
+      location: US-WA
+      content_type: real_wedding
+      tags: [ backyard_private_home, vintage_heirloom, multiple_looks ]
+    - source: feature_mexico_city
+      published: 2026-10-20
+      location: MX
+      content_type: real_wedding
+      tags: [ vintage_heirloom, multiple_looks ]
+    - source: feature_newport
+      published: 2026-10-16
+      location: US-RI
+      content_type: real_wedding
+      tags: [ classic_timeless, multiple_looks ]
+    - source: feature_palm_beach
+      published: 2026-10-15
+      location: US-FL:palm-beach
+      content_type: real_wedding
+      tags: [ hotel_resort, vintage_heirloom, multiple_looks ]
+    - source: feature_jalisco
+      published: 2026-10-05
+      location: MX
+      content_type: real_wedding
+      tags: [ adobe_hacienda, culturally_rooted, couture_designer ]

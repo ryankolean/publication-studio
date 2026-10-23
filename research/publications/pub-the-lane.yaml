@@ -1,0 +1,330 @@
+id: pub-the-lane
+name: The Lane
+url: https://thelane.com
+kind: destination_international
+tier: primary
+recheck_every_days: 90
+taste_summary: Luxe, design-led European estate weddings told through a fashion and interiors lens, with sculptural florals, draped fabric, vintage silver and old stone.
+notes: Raw HTML served to non-browser fetchers carries hidden casino spam links and keywords, and the site hosts spam posts under /blog-pages/ (seen on 2026-10-19 and again on 2026-10-23). Feature bodies are partly behind The Lane Premium paywall; only the public part was read. The agency's audience demographics and creative services pages are password-protected and were not read.
+
+sources:
+  guidelines:
+    url: https://thelane.com/submissions/
+    read: 2026-10-23
+    kind: guidelines
+    title: Submissions
+  about:
+    url: https://thelane.com/about/
+    read: 2026-10-23
+    kind: about
+    title: About
+  contact:
+    url: https://thelane.com/contact-us/
+    read: 2026-10-23
+    kind: other
+    title: Contact Us
+  category:
+    url: https://thelane.com/category/real-weddings/
+    read: 2026-10-23
+    kind: other
+    title: Real Weddings category page
+  agency:
+    url: https://www.thelanecreativeagency.com/
+    read: 2026-10-23
+    kind: media_kit
+    title: The Lane Creative Agency (brand partnerships)
+  founder_page:
+    url: https://thelane.com/brand/the-lane-wedding-and-events/
+    read: 2026-10-23
+    kind: about
+    title: The Lane Wedding & Events directory listing
+  feature_sintra:
+    url: https://thelane.com/sintra-portugal-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: An Opulent Garden Wedding in Sintra, Portugal
+  feature_borgo_stomennano:
+    url: https://thelane.com/tuscany-villa-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: "Decadence Against Stone: A Tuscan Wedding at Borgo Stomennano"
+  feature_villa_palmieri:
+    url: https://thelane.com/florence-italy-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: A Florentine Reverie at Villa Palmieri
+  feature_royal_scotsman:
+    url: https://thelane.com/edinburgh-train-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: "Romance in Movement: A Wedding aboard the Royal Scotsman"
+  feature_barcelona:
+    url: https://thelane.com/barcelona-wedding-venues/
+    read: 2026-10-23
+    kind: feature
+    title: "Decadence Undone: A Barcelona Wedding at Castell de Ben Viure"
+
+identity:
+  parent_company:
+    value: The Lane Creative Enterprises Pty Ltd.
+    cite:
+      - source: about
+        quote: The Lane Creative Enterprises Pty Ltd.
+      - source: contact
+        quote: The Lane Creative Enterprises Pty Ltd.
+    note: The publishing company named on the about and contact pages, with a Byron Bay, NSW address.
+  sister_publications:
+    value: unknown
+    checked: [about, agency]
+    note: The Lane Creative Agency and The Lane Wedding & Event Service are business arms of the same company, not separate titles.
+  shared_inbox_with:
+    value: unknown
+    checked: [contact, guidelines]
+
+coverage:
+  regions:
+    value: [WORLD]
+    cite:
+      - source: category
+        quote: A collection of uniquely styled real weddings from around the world.
+    note: The submissions page sets no regional limit.
+  basis:
+    value: unknown
+    checked: [guidelines, category]
+  destination_accepted:
+    value: true
+    cite:
+      - source: category
+        quote: Destination weddings, elopements, traditional and modern ceremonies.
+      - source: feature_villa_palmieri
+      - source: feature_royal_scotsman
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: with Real Wedding + Couple’s names in the subject line
+  elopement:
+    value: true
+    cite:
+      - source: category
+        quote: Destination weddings, elopements, traditional and modern ceremonies.
+  styled_shoot:
+    value: true
+    cite:
+      - source: guidelines
+        quote: We accept Lifestyle-themed styled shoot submissions.
+      - source: guidelines
+        quote: The Lane is currently not accepting any bridal fashion or beauty editorial submissions.
+    note: Lifestyle styled shoots only (table styling, decor, stationery, floristry, food and beverage styling); bridal fashion and beauty editorials are closed for now.
+  style_tags:
+    value: [glamorous_luxe, organic_textural, historic_manor_estate, garden_botanical, mediterranean_europe]
+    cite:
+      - source: feature_sintra
+      - source: feature_borgo_stomennano
+      - source: feature_villa_palmieri
+      - source: feature_royal_scotsman
+      - source: feature_barcelona
+  seasonality:
+    value: unknown
+    checked: [guidelines]
+
+routes:
+  value:
+    - platform: email
+      account_required: false
+      preferred: true
+      steps:
+        - Email the submissions inbox with "Real Wedding" and the couple's names in the subject line.
+        - Include a Dropbox link to at least 30 images showing details from pre-reception, ceremony and reception.
+        - For a lifestyle styled shoot, put "Styled Shoot Submission" and the concept name in the subject, and add a few sentences on the concept, inspiration and key vendors.
+        - Expect a reply within 10 business days only if the submission is accepted.
+      note: The inbox address is in the private contacts overlay.
+  cite:
+    - source: guidelines
+      quote: with Real Wedding + Couple’s names in the subject line with Dropbox link to imagery.
+    - source: guidelines
+      quote: with ‘Styled Shoot Submission’ & your concept name in the subject line with Dropbox link to imagery.
+
+package:
+  image_min:
+    value: 30
+    cite:
+      - source: guidelines
+        quote: Send a Dropbox link to a sample of 30 images minimum
+  image_max:
+    value: unknown
+    checked: [guidelines]
+  resolution:
+    value: unknown
+    checked: [guidelines]
+  size:
+    value: unknown
+    checked: [guidelines]
+  orientation_mix:
+    value: unknown
+    checked: [guidelines]
+  watermarks_allowed:
+    value: unknown
+    checked: [guidelines]
+  gallery_hosts:
+    value: [dropbox]
+    cite:
+      - source: guidelines
+        quote: Send a Dropbox link to a sample of 30 images minimum
+  vendor_credits:
+    value: unknown
+    checked: [guidelines]
+    note: Styled shoot pitches must name the key vendors; the real-wedding instructions do not mention credits.
+  story:
+    value: unknown
+    checked: [guidelines]
+    note: Real-wedding submissions ask only for the subject line and the Dropbox link; styled shoots need a few sentences on concept, inspiration and key vendors. Published features carry an "Our Story" Q&A (names, location, date, guest numbers, budget, how they met).
+  video_accepted:
+    value: unknown
+    checked: [guidelines]
+  other_requirements:
+    value:
+      - The email subject reads "Real Wedding" plus the couple's names.
+      - The images show a variety of details from pre-reception, ceremony and reception.
+      - A styled shoot pitch includes a few sentences on the concept, the inspiration and the key vendors.
+    cite:
+      - source: guidelines
+        quote: with Real Wedding + Couple’s names in the subject line
+      - source: guidelines
+        quote: (showing a variety of details from pre-reception, ceremony, reception etc.)
+      - source: guidelines
+        quote: Please include a few sentences about the concept of your shoot, your inspiration and your key vendors.
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [guidelines]
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [guidelines]
+    blogs:
+      value: unknown
+      checked: [guidelines]
+    social:
+      value: unknown
+      checked: [guidelines]
+  freshness_window_months:
+    value: unknown
+    checked: [guidelines]
+    note: No rule is stated; the Barcelona feature ran about ten months after its November 2025 wedding.
+  photographer_frequency:
+    value: unknown
+    checked: [guidelines]
+  submitter_roles:
+    value: unknown
+    checked: [guidelines]
+
+rights:
+  image_usage:
+    value: unknown
+    checked: [guidelines]
+  credit_format:
+    value: The photographer is named in the standfirst under the headline, as "Photography by" and the name.
+    cite:
+      - source: feature_sintra
+        quote: Photography by The Vernacular.
+      - source: feature_royal_scotsman
+        quote: Photography by Luke Bell Photography.
+  couple_consent_required:
+    value: unknown
+    checked: [guidelines]
+  vendor_consent_required:
+    value: unknown
+    checked: [guidelines]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [guidelines]
+  publication_fee:
+    value: unknown
+    checked: [guidelines]
+  priority_paid_tier:
+    value: unknown
+    checked: [guidelines, agency]
+    note: Paid brand partnerships run through The Lane Creative Agency, which offers a 500 dollar credit toward a first partnership; nothing ties them to real-wedding submissions.
+  reach:
+    value: unknown
+    checked: [agency, about]
+    note: The agency home page claims "Monthly Audience Reach 11M+", a combined figure that fits none of the schema's metrics; the audience demographics page is password-protected.
+
+timing:
+  response_window:
+    value:
+      days: 14
+      replies: success_only
+    cite:
+      - source: guidelines
+        quote: we will be in touch within 10 business days to confirm successful submissions only.
+    note: 10 business days, stored as 14 calendar days.
+  publish_lead_days:
+    value: unknown
+    checked: [guidelines]
+  publishing_cycle:
+    value: Online magazine. Paying Premium members see real weddings a month before they go public, and part of each feature stays behind the Premium paywall.
+    cite:
+      - source: about
+        quote: The Lane is an online magazine and creative agency
+      - source: feature_sintra
+        quote: Real Weddings, one month before public
+      - source: feature_sintra
+        quote: Unlock the rest with The Lane Premium
+
+people:
+  editors:
+    value:
+      - name: Karissa Dalton
+        role: Founder and Creative Director
+    cite:
+      - source: founder_page
+        quote: Lead by The Lane's Founder and Creative Director, Karissa Dalton
+
+insight:
+  secret_sauce:
+    - tip: Match the house look. The Lane frames weddings through fashion, art, interiors and travel, and recent features are luxe European estates with sculptural florals, layered fabric and silver.
+      cite:
+        - source: about
+          quote: reimagines weddings and events through the lens of fashion, art, interiors and travel
+        - source: feature_borgo_stomennano
+        - source: feature_barcelona
+    - tip: Have the couple's "Our Story" answers ready; published features list names, location, wedding date, guest numbers and budget, then how they met and the engagement.
+      cite:
+        - source: feature_barcelona
+    - tip: A decline is not final; the editors invite photographers to keep sending other weddings.
+      cite:
+        - source: guidelines
+          quote: we encourage you to please keep in touch and send through any other submissions for consideration in future.
+  recent_features:
+    - source: feature_sintra
+      published: 2026-10-20
+      location: PT
+      content_type: real_wedding
+      tags: [garden_botanical, historic_manor_estate, glamorous_luxe, mediterranean_europe]
+    - source: feature_borgo_stomennano
+      published: 2026-09-25
+      location: IT
+      content_type: real_wedding
+      tags: [historic_manor_estate, glamorous_luxe, organic_textural, mediterranean_europe]
+    - source: feature_villa_palmieri
+      published: 2026-09-17
+      location: IT
+      content_type: real_wedding
+      tags: [italian_villa, garden_botanical, culturally_rooted, mediterranean_europe]
+    - source: feature_royal_scotsman
+      published: 2026-09-04
+      location: GB
+      content_type: real_wedding
+      tags: [intimate_micro, farm_ranch_countryside, organic_textural, british_isles]
+    - source: feature_barcelona
+      published: 2026-08-28
+      location: ES
+      content_type: real_wedding
+      tags: [castle_chateau, moody_dramatic, organic_textural, glamorous_luxe, mediterranean_europe]

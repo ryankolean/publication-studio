@@ -1,0 +1,397 @@
+id: pub-carats-and-cake
+name: Carats & Cake
+url: https://caratsandcake.com
+kind: blog
+tier: primary
+recheck_every_days: 90
+taste_summary: Merit-based editorial with no single aesthetic or budget target; recent features lean romantic garden settings, European villas and chateaux, and outfit changes.
+notes: The submission form sits behind a free account login and was not viewed; package facts come from the public help-center articles. The about page (https://caratsandcake.com/about-carats-and-cake) returned no body text without a browser render and is not used here.
+
+sources:
+  help_submissions:
+    url: https://help.caratsandcake.com/weddings/uDfDhtgNjTopcbFEDBB8xr/wedding-submissions/84FiPRGiU4YM6S5Mj5Gho7
+    read: 2026-10-23
+    kind: guidelines
+    title: Wedding Submissions (help center)
+  help_featured:
+    url: https://help.caratsandcake.com/weddings/uDfDhtgNjTopcbFEDBB8xr/featured-weddings/84FiPRGiU3LB6eVbchVXjY
+    read: 2026-10-23
+    kind: guidelines
+    title: Featured Weddings (help center)
+  help_editorial:
+    url: https://help.caratsandcake.com/weddings/uDfDhtgNjTopcbFEDBB8xr/editorial-submissions/84FiPRGiU6cvsarC84Wmdh
+    read: 2026-10-23
+    kind: guidelines
+    title: Editorial Submissions (help center)
+  submit_page:
+    url: https://caratsandcake.com/submit-a-wedding
+    read: 2026-10-23
+    kind: form
+    title: Submit a Wedding (login wall)
+  how_it_works:
+    url: https://caratsandcake.com/how-wedding-submissions-work
+    read: 2026-10-23
+    kind: guidelines
+    title: How Carats + Cake Wedding Submissions Work
+  pricing:
+    url: https://caratsandcake.com/membership-features-and-pricing
+    read: 2026-10-23
+    kind: media_kit
+    title: Membership Features & Pricing
+  why_join:
+    url: https://caratsandcake.com/why-carats-and-cake
+    read: 2026-10-23
+    kind: about
+    title: Carats + Cake for Vendors and Venues
+  contact:
+    url: https://caratsandcake.com/get-in-touch
+    read: 2026-10-23
+    kind: about
+    title: Get in Touch
+  terms:
+    url: https://caratsandcake.com/terms-of-use
+    read: 2026-10-23
+    kind: other
+    title: Terms of Use (last updated 2026-05-01)
+  feature_meredith_cody:
+    url: https://caratsandcake.com/wedding/meredith-and-cody
+    read: 2026-10-23
+    kind: feature
+    title: A Vineyard Wedding That Put a Spin on Secret Garden
+  feature_laura_hunter:
+    url: https://caratsandcake.com/wedding/laura-and-hunter
+    read: 2026-10-23
+    kind: feature
+    title: A Hot Pink and Tangerine Wedding of Winding Blooms and Fringe
+  feature_emily_brennan:
+    url: https://caratsandcake.com/wedding/emily-and-brennan
+    read: 2026-10-23
+    kind: feature
+    title: A French Chateau Wedding Draped, Pooled and Sculpted in Ivory
+  feature_cassandra_breno:
+    url: https://caratsandcake.com/wedding/cassandra-and-breno
+    read: 2026-10-23
+    kind: feature
+    title: A New York City Elopement That Made the Avenues Its Aisle
+
+identity:
+  parent_company:
+    value: Carats & Cake LLC
+    cite:
+      - source: terms
+        quote: a website operated by Carats & Cake LLC, a Michigan limited liability company
+    note: The operating company; no separate parent or media group is named.
+  sister_publications:
+    value: unknown
+    checked: [ terms, pricing, contact, why_join ]
+    note: Pages promote the Bliss & Bone wedding website brand but never call it a sister title.
+  shared_inbox_with:
+    value: unknown
+    checked: [ contact, help_submissions ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: feature_meredith_cody
+      - source: feature_laura_hunter
+      - source: feature_emily_brennan
+      - source: feature_cassandra_breno
+    note: No page states a geographic limit; recent features are in Virginia, New York, Italy and France, and the featured index also shows Canada.
+  basis:
+    value: unknown
+    checked: [ help_submissions, how_it_works ]
+  destination_accepted:
+    value: unknown
+    checked: [ help_submissions, how_it_works, feature_laura_hunter, feature_emily_brennan ]
+    note: Features of weddings in Italy and France do not say whether the couples traveled there.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: help_featured
+        quote: A Featured Wedding is a real wedding submission selected for publication on caratsandcake.com.
+  elopement:
+    value: true
+    cite:
+      - source: feature_cassandra_breno
+    note: Inferred from a feature headlined as an elopement; no page lists elopements as a submission type.
+  styled_shoot:
+    value: true
+    cite:
+      - source: help_editorial
+        quote: A styled shoot or creative concept created for inspiration rather than documenting a real wedding.
+      - source: help_editorial
+        quote: Editorials are published less often than real weddings, so selection is especially competitive
+  style_tags:
+    value: [ romantic, garden_botanical, multiple_looks, mediterranean_europe ]
+    cite:
+      - source: feature_meredith_cody
+      - source: feature_laura_hunter
+      - source: feature_emily_brennan
+      - source: feature_cassandra_breno
+  seasonality:
+    value: unknown
+    checked: [ help_submissions, how_it_works ]
+
+routes:
+  value:
+    - platform: portal
+      url: https://caratsandcake.com/submit-a-wedding
+      account_required: true
+      preferred: true
+      steps:
+        - Sign in to a free Carats + Cake account.
+        - Select Submit a Wedding from the site header.
+        - Choose Real Wedding, or Editorial Submission for a styled shoot.
+        - Complete the submission details.
+        - Upload the images.
+        - Tag all known vendors.
+        - Submit in a single session.
+      note: The form itself is behind the login wall and was not viewed.
+  cite:
+    - source: submit_page
+      quote: Login or create an account to submit a wedding and join the queue.
+    - source: help_submissions
+      quote: Sign in to your Account. Select Submit a Wedding from the site header or navigation.
+    - source: help_editorial
+      quote: select Editorial Submission instead of Real Wedding.
+
+package:
+  image_min:
+    value: unknown
+    checked: [ help_submissions, how_it_works ]
+  image_max:
+    value: unknown
+    checked: [ help_submissions, how_it_works ]
+    note: Non-featured weddings become Albums of up to 20 images curated by the editors; that is not a submission cap.
+  resolution:
+    value: unknown
+    checked: [ help_submissions ]
+    note: Only web-size files are asked for; no pixel or file-size figures are published.
+  size:
+    value: web
+    cite:
+      - source: help_submissions
+        quote: Please upload only web-size files. High resolution images are too large for web display and should be reserved for print only.
+  orientation_mix:
+    value: unknown
+    checked: [ help_submissions, help_editorial ]
+  watermarks_allowed:
+    value: false
+    cite:
+      - source: help_submissions
+        quote: Images with watermarks are not accepted.
+  gallery_hosts:
+    value: [ direct_upload ]
+    cite:
+      - source: help_submissions
+        quote: Upload your images.
+    note: Images are uploaded into the form; a link to the photographer's complete gallery (with passwords or PINs) is also asked for, on any host.
+  vendor_credits:
+    value:
+      required: true
+      fields: [ business_name, email ]
+      note: An email address is needed only for vendors not yet in the Carats + Cake database.
+    cite:
+      - source: help_submissions
+        quote: Tag every known vendor with their correct business name.
+      - source: help_submissions
+        quote: you will be asked to enter them as a new vendor, which requires their Business Name and email address.
+  story:
+    value: unknown
+    checked: [ help_submissions, how_it_works ]
+    note: The listed submission information does not include a written story; the form itself was not viewed.
+  video_accepted:
+    value: true
+    cite:
+      - source: help_submissions
+        quote: Video gallery link (if available)
+  other_requirements:
+    value:
+      - Photos following the form's requested categories.
+      - Venue and location.
+      - Guest count.
+      - Budget tier.
+      - Link to the photographer's complete gallery, not only the selects, with any passwords or download PINs.
+    cite:
+      - source: help_submissions
+        quote: Photos (following the requested categories)
+      - source: help_submissions
+        quote: Guest count
+      - source: help_submissions
+        quote: Budget tier
+      - source: help_submissions
+        quote: Link to the photographer's complete gallery — not a folder of only your uploaded selects. Include any required passwords or download PINs.
+      - source: help_submissions
+        quote: Venue and location
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [ help_submissions, how_it_works, pricing, terms ]
+    note: The terms grant Carats + Cake a non-exclusive license to submitted content; that is a rights term, not an editorial exclusivity rule.
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ help_submissions, how_it_works ]
+    blogs:
+      value: unknown
+      checked: [ help_submissions, how_it_works ]
+    social:
+      value: unknown
+      checked: [ help_submissions, how_it_works ]
+  freshness_window_months:
+    value: unknown
+    checked: [ help_submissions, how_it_works ]
+  photographer_frequency:
+    value: unknown
+    checked: [ help_submissions, how_it_works ]
+  submitter_roles:
+    value: [ photographer, planner, vendor ]
+    cite:
+      - source: pricing
+        quote: No. Any vendor can submit regardless of membership tier.
+    note: The footer lists Submit a Wedding under For Couples, but no page says couples may submit.
+
+rights:
+  image_usage:
+    value: Perpetual, worldwide, non-exclusive, sublicensable royalty-free license to submitted images and details, including use in its AI search tools and to train its machine learning models; ownership stays with the submitter.
+    cite:
+      - source: terms
+        quote: you expressly grant C&C a perpetual, worldwide, non-exclusive, fully sublicensable, royalty-free license to use, reproduce, display, modify, index, tag
+      - source: terms
+        quote: the right to use Your Content and associated metadata to develop, train, test, and improve the machine learning models
+      - source: terms
+        quote: submitting Your Content does not transfer ownership to C&C.
+      - source: terms
+        quote: the right to use such content within AI-powered or algorithmic tools that allow users to search and discover content
+  credit_format:
+    value: A Vendor Team list naming each tagged vendor's role and business name, linked to their Carats + Cake profile where one exists.
+    cite:
+      - source: help_featured
+        quote: All tagged businesses are credited and the wedding becomes part of our editorial collection.
+      - source: feature_meredith_cody
+  couple_consent_required:
+    value: unknown
+    checked: [ help_submissions, terms ]
+  vendor_consent_required:
+    value: unknown
+    checked: [ help_submissions, terms ]
+    note: Tagged vendors are notified of a submission; the pages do not ask for their consent.
+
+economics:
+  submission_fee:
+    value: none
+    cite:
+      - source: pricing
+        quote: No. Any vendor can submit regardless of membership tier.
+      - source: pricing
+        quote: A Free Profile gives you a basic presence
+    note: A free account is enough to submit.
+  publication_fee:
+    value: none
+    cite:
+      - source: help_featured
+        quote: No. Carats + Cake does not sell editorial placement.
+      - source: pricing
+        quote: We don't make money on sponsorships, advertising, paid editorial, or promoted posts.
+  priority_paid_tier:
+    value:
+      name: Pro Plus membership
+      price:
+        amount: 55
+        currency: USD
+        note: Per month, no annual contract.
+      note: Expedited review only, typically within one week; no editorial advantage.
+    cite:
+      - source: pricing
+        quote: Pro is $35 per month. Pro Plus is $55 per month.
+      - source: help_submissions
+        quote: Pro Plus Members get expedited review, meaning their submissions are reviewed first. There's no editorial advantage for Members — it's timing only.
+      - source: how_it_works
+        quote: with Pro Plus members receiving priority review, typically within one week.
+  reach:
+    value: unknown
+    checked: [ pricing, why_join, how_it_works, contact ]
+
+timing:
+  response_window:
+    value:
+      days: 35
+      replies: all
+    cite:
+      - source: help_submissions
+        quote: Once a submission enters the queue, review typically takes 4–5 weeks.
+      - source: help_submissions
+        quote: You'll receive an email notifying you of either outcome — Featured or Album.
+      - source: how_it_works
+        quote: You'll hear from us regardless of the outcome. No ghosting, ever.
+    note: Typical, not a deadline. Editorial Submissions take longer; the page asks submitters not to email for status.
+  publish_lead_days:
+    value: unknown
+    checked: [ help_submissions, help_featured ]
+    note: Featured submitters get an email with the scheduled publication date; no lead time is published.
+  publishing_cycle:
+    value: Online; four features went live between 2026-10-10 and 2026-10-23.
+    cite:
+      - source: feature_meredith_cody
+      - source: feature_laura_hunter
+      - source: feature_emily_brennan
+      - source: feature_cassandra_breno
+
+people:
+  editors:
+    value: unknown
+    checked: [ contact, pricing, why_join ]
+
+insight:
+  secret_sauce:
+    - tip: Link the photographer's complete gallery with any passwords or download PINs; gallery problems are the top cause of review delays.
+      cite:
+        - source: help_submissions
+          quote: Issues with the photo gallery are the number one reason your submission review will be delayed.
+    - tip: Finish every vendor credit before submitting; incomplete submissions are the biggest cause of delays.
+      cite:
+        - source: help_submissions
+          quote: Incomplete submissions are the single biggest cause of review delays — complete yours fully before you submit.
+    - tip: Show what is new; the editors ask whether a wedding widens the locations, aesthetics, cultures, markets or budgets they cover.
+      cite:
+        - source: help_submissions
+          quote: Does it expand the range of locations, aesthetics, cultures, markets, or budgets represented?
+    - tip: Send a varied selection across the requested categories; the editors cut it down to the story themselves.
+      cite:
+        - source: help_submissions
+          quote: Follow the requested categories and don't be afraid to provide variety. We will always edit the selection down to tell the most cohesive story.
+    - tip: For styled shoots, keep the concept attainable and tied to real weddings; the editors flag concepts that feel unattainable or disconnected.
+      cite:
+        - source: help_editorial
+          quote: Concepts that feel unattainable or disconnected from real weddings.
+    - tip: Recent features went live four to six months after the wedding date.
+      cite:
+        - source: feature_meredith_cody
+        - source: feature_laura_hunter
+        - source: feature_emily_brennan
+        - source: feature_cassandra_breno
+  recent_features:
+    - source: feature_meredith_cody
+      published: 2026-10-23
+      location: US-VA
+      content_type: real_wedding
+      tags: [ vineyard_winery, garden_botanical, romantic, multiple_looks ]
+    - source: feature_laura_hunter
+      published: 2026-10-22
+      location: IT
+      content_type: real_wedding
+      tags: [ italian_villa, lakefront, greenhouse_conservatory, bold_color_maximalist, romantic, mediterranean_europe ]
+    - source: feature_emily_brennan
+      published: 2026-10-19
+      location: FR
+      content_type: real_wedding
+      tags: [ castle_chateau, garden_botanical, classic_timeless, romantic, fashion_forward_editorial, multiple_looks, mediterranean_europe ]
+    - source: feature_cassandra_breno
+      published: 2026-10-10
+      location: US-NY
+      content_type: elopement
+      tags: [ modern_minimal, intimate_micro, wedding_suit_pantsuit, short_mini_courthouse, restaurant_private_dining, multiple_looks ]

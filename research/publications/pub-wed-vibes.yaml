@@ -1,0 +1,369 @@
+id: pub-wed-vibes
+name: Wed Vibes
+url: https://wedvibes.media
+kind: destination_international
+tier: secondary
+recheck_every_days: 90
+taste_summary: Design-led destination weekends and European palazzo and villa weddings, often with fashion credits, cultural traditions and playful party details.
+notes: The live site is wedvibes.media; wedvibes.com is a parked for-sale domain. The submission form is drawn by a script and fetches empty; it was read in a browser on 2026-10-23. Wed Vibes also sells paid group editorials, a paid community membership and a paid feature product.
+
+sources:
+  guidelines:
+    url: https://wedvibes.media/submissions/
+    read: 2026-10-23
+    kind: guidelines
+    title: Submissions page and FAQ
+  form:
+    url: https://wedvibes.media/submissions/
+    read: 2026-10-23
+    kind: form
+    title: Submission form, rendered in a browser
+  about:
+    url: https://wedvibes.media/about-us/
+    read: 2026-10-23
+    kind: about
+    title: About and Meet the Team
+  contact:
+    url: https://wedvibes.media/contact-us/
+    read: 2026-10-23
+    kind: other
+    title: Contact Us
+  kit:
+    url: https://wedvibes.media/brand-partnership-media-kit/
+    read: 2026-10-23
+    kind: media_kit
+    title: Brand partnership media kit page
+  community:
+    url: https://wedvibes.media/join-our-community/
+    read: 2026-10-23
+    kind: other
+    title: Join Our Community (plans and paid features)
+  owners_interview:
+    url: https://wedvibes.media/team/interview-with-our-owners/
+    read: 2026-10-23
+    kind: interview
+    title: Interview With Our Owners (March 27, 2024)
+  feature_lake_como:
+    url: https://wedvibes.media/real-weddings/a-timeless-lake-como-elopement-inspired-by-classic-italy/
+    read: 2026-10-23
+    kind: feature
+    title: A Timeless Lake Como Elopement Inspired by Classic Italy
+  feature_brazil:
+    url: https://wedvibes.media/real-weddings/a-brazilian-beach-wedding-weekend-that-felt-like-a-festival/
+    read: 2026-10-23
+    kind: feature
+    title: A Brazilian Beach Wedding Weekend That Felt Like a Festival
+  feature_paris:
+    url: https://wedvibes.media/real-weddings/a-paris-wedding-with-main-character-energy/
+    read: 2026-10-23
+    kind: feature
+    title: "Horseback Entrances and Caviar Nuggets: A Paris Wedding With Main Character Energy"
+  feature_malta:
+    url: https://wedvibes.media/real-weddings/a-malta-wedding-inspired-by-baroque-romance-and-old-world-glamour/
+    read: 2026-10-23
+    kind: feature
+    title: A Malta Wedding Inspired by Baroque Romance and Old-World Glamour
+
+identity:
+  parent_company:
+    value: unknown
+    checked: [ about, owners_interview ]
+    note: The co-owners are named by first name (Daria and Alina); no company name is given.
+  sister_publications:
+    value: unknown
+    checked: [ about, owners_interview ]
+  shared_inbox_with:
+    value: unknown
+    checked: [ contact, about ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: about
+        quote: love to feature unique weddings and works of professionals around the globe
+  basis:
+    value: unknown
+    checked: [ guidelines, about ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: feature_lake_como
+      - source: feature_malta
+      - source: feature_brazil
+    note: Recent features include a Singapore couple at Lake Como, an Irish couple living in Dubai who married in Malta, and a destination weekend in Preá, Brazil.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: about
+        quote: love to feature unique weddings and works of professionals around the globe
+      - source: feature_paris
+  elopement:
+    value: true
+    cite:
+      - source: feature_lake_como
+    note: Published and tagged as an elopement; it is a two-person shoot at Villa del Balbianello.
+  styled_shoot:
+    value: unknown
+    checked:
+      - guidelines
+      - form
+      - about
+    note: Neither the form nor the guidelines say whether styled shoots are taken. Wed Vibes publishes editorial shoots and runs its own paid group editorials.
+  style_tags:
+    value: [ historic_manor_estate, playful_party, mediterranean_europe ]
+    cite:
+      - source: feature_paris
+      - source: feature_malta
+      - source: feature_brazil
+      - source: feature_lake_como
+  seasonality:
+    value: unknown
+    checked: [ guidelines ]
+
+routes:
+  value:
+    - platform: web_form
+      url: https://wedvibes.media/submissions/
+      account_required: false
+      preferred: true
+      steps:
+        - Open the submissions page; the form is on the page, no sign-in.
+        - Give your name, email, Instagram handle, a gallery link with 100 to 150 of the best images, and a description.
+        - Confirm you are authorized to submit the images, then submit.
+        - Allow 21 business days; only successful submissions hear back.
+    - platform: web_form
+      url: https://wedvibes.media/contact-us/
+      account_required: false
+      preferred: false
+      steps:
+        - Fill out the general contact form, which also takes wedding submissions.
+  cite:
+    - source: form
+      quote: Please submit 100-150 of the very best photos
+    - source: contact
+      quote: "Please, for general inquiries, wedding submissions, or advertising opportunities, fill out the form below:"
+
+package:
+  image_min:
+    value: 100
+    cite:
+      - source: form
+        quote: Please submit 100-150 of the very best photos
+  image_max:
+    value: 150
+    cite:
+      - source: form
+        quote: Please submit 100-150 of the very best photos
+  resolution:
+    value:
+      min_width_px: 1500
+      max_width_px: 2400
+      max_file_mb: 2
+      note: The width range is a recommendation; 2MB is the stated maximum file size.
+    cite:
+      - source: form
+        quote: we recommend that your images have a width between 1500 and 2400 pixels
+      - source: form
+        quote: The maximum file size allowed is 2MB.
+  size:
+    value: unknown
+    checked: [ form, guidelines ]
+    note: The form never says web or print; its 2MB cap and 1500 to 2400 pixel width describe web-size files.
+  orientation_mix:
+    value: unknown
+    checked: [ guidelines ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ guidelines ]
+  gallery_hosts:
+    value: [ dropbox, wetransfer, google_drive, pic_time, pixieset ]
+    cite:
+      - source: form
+        quote: You can share your portfolio with us using platforms like Dropbox, WeTransfer, Google Drive, or online gallery services such as Pic-Time or Pixieset.
+  vendor_credits:
+    value: unknown
+    checked: [ form, guidelines ]
+    note: The form has no vendor field; published features close with a full vendor credit list.
+  story:
+    value:
+      required: true
+      note: A required Description field. Published features open with a fact box (location, style, guests, planning time, setting, season) and close with the couple's advice.
+    cite:
+      - source: form
+        quote: Description
+  video_accepted:
+    value: true
+    cite:
+      - source: form
+        quote: For videos, you can provide Vimeo and YouTube links.
+  other_requirements:
+    value:
+      - The submitter's Instagram handle.
+      - A yes or no answer confirming the submitter is authorized to submit the images.
+    cite:
+      - source: form
+        quote: Your Instagram handle
+      - source: form
+        quote: I am authorized to submit these images (Yes / No)
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_preferred
+      after_publication_days: 60
+    cite:
+      - source: guidelines
+        quote: We simply ask that any other feature is not posted until 2 months after the Wed Vibes feature.
+    note: Two months after publication, stored as 60 days; submitting elsewhere is welcome after that.
+  prior_exposure:
+    publications:
+      value: allowed
+      cite:
+        - source: guidelines
+          quote: We prefer stories that haven’t been published elsewhere, but we’re always open to exceptions for the right submission.
+      note: Unpublished stories are preferred, with exceptions for the right submission.
+    blogs:
+      value: unknown
+      checked: [ guidelines ]
+    social:
+      value: unknown
+      checked: [ guidelines ]
+  freshness_window_months:
+    value: unknown
+    checked: [ guidelines ]
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines ]
+  submitter_roles:
+    value: unknown
+    checked: [ guidelines, contact ]
+
+rights:
+  image_usage:
+    value: Submitting grants Wed Vibes the right to publish the work.
+    cite:
+      - source: guidelines
+        quote: By submitting, you grant Wed Vibes the rights to publish this work without violating, infringing or misappropriating the privacy rights
+  credit_format:
+    value: A closing credit list gives each role in capitals followed by the name (for example PHOTOGRAPHY then the photographer); a Featured Members box near the top names the credited community member.
+    cite:
+      - source: feature_malta
+      - source: feature_paris
+      - source: feature_brazil
+  couple_consent_required:
+    value: unknown
+    checked: [ guidelines ]
+  vendor_consent_required:
+    value: unknown
+    checked: [ guidelines ]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ guidelines, contact ]
+  publication_fee:
+    value: unknown
+    checked: [ guidelines, community ]
+    note: The free submission route mentions no fee; a paid feature is sold separately (see priority_paid_tier).
+  priority_paid_tier:
+    value:
+      name: Wedding/Workshop Feature
+      price:
+        amount: 1899
+        currency: USD
+      note: A paid feature of the whole vendor team on the website and Instagram, published within 4 months of signing up; vendors can split the cost. The price shows as 1899.00 beside the plan name.
+    cite:
+      - source: community
+        quote: Wedding/Workshop Feature $ 1899
+      - source: community
+        quote: Publication within 4 months after signing up for the service.
+      - source: community
+        quote: "*All the prices are in USD"
+  reach:
+    value: unknown
+    checked: [ kit, owners_interview, about ]
+    note: The owners' interview (March 2024) claims 165,000 followers worldwide without naming the platform; the media kit page is a video with no figures in its text.
+
+timing:
+  response_window:
+    value:
+      days: 29
+      replies: success_only
+    cite:
+      - source: guidelines
+        quote: we will be in touch within 21 business days to confirm successful submissions only.
+    note: 21 business days, stored as 29 calendar days.
+  publish_lead_days:
+    value:
+      min: 45
+      max: 60
+    cite:
+      - source: guidelines
+        quote: If accepted, how soon should I expect my submission to be published?
+      - source: guidelines
+        quote: In 45-60 days.
+  publishing_cycle:
+    value: Online, with new stories daily.
+    cite:
+      - source: about
+        quote: WedVibes is your daily media source for inspiration, education, editorial shoots, and creative collaboration
+
+people:
+  editors:
+    value:
+      - name: Helen
+        role: Editor-in-chief
+      - name: Ann
+        role: Deputy Chief Editor
+    cite:
+      - source: about
+        quote: Helen Editor-in-chief
+      - source: about
+        quote: Ann Deputy Chief Editor
+    note: The team page gives first names only.
+
+insight:
+  secret_sauce:
+    - tip: Lead with polished, trend-aware images; the owners describe the content they publish as stylish, smart, likable, saveable and sellable.
+      cite:
+        - source: owners_interview
+          quote: Our content strategy focuses on creating the most ‘stylish, smart, likable, saveable, and sellable’ content
+    - tip: Have the facts each feature prints up front (location, style, guest count, planning time, setting, season) plus the couple's advice and a full vendor list.
+      cite:
+        - source: feature_brazil
+        - source: feature_malta
+        - source: feature_paris
+    - tip: Paid community members are prominent; each recent feature opens with a Featured Members box, and the paid community plans advertise an extra website and Instagram feature.
+      cite:
+        - source: community
+          quote: "Opportunity for extra website & IG feature: a WedVibes Contributor"
+        - source: feature_lake_como
+        - source: feature_brazil
+    - tip: A decline is not final; the editors invite photographers to keep sending other weddings.
+      cite:
+        - source: guidelines
+          quote: we encourage you to please keep in touch and send through any other submissions for consideration in future.
+  recent_features:
+    - source: feature_lake_como
+      published: 2026-10-23
+      location: IT
+      content_type: elopement
+      tags: [ lakefront, italian_villa, classic_timeless, intimate_micro, mediterranean_europe ]
+    - source: feature_brazil
+      published: 2026-10-22
+      location: BR
+      content_type: real_wedding
+      tags: [ beach_coastal, playful_party ]
+    - source: feature_paris
+      published: 2026-10-21
+      location: FR
+      content_type: real_wedding
+      tags: [ historic_manor_estate, garden_botanical, culturally_rooted, playful_party, fashion_forward_editorial ]
+    - source: feature_malta
+      published: 2026-10-21
+      location: MT
+      content_type: real_wedding
+      tags: [ historic_manor_estate, ballroom_grand_hall, glamorous_luxe, lace_romantic, multiple_looks, mediterranean_europe ]

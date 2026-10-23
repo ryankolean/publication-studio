@@ -1,0 +1,377 @@
+id: pub-over-the-moon
+name: Over The Moon
+url: https://overthemoon.com
+kind: blog
+tier: primary
+recheck_every_days: 90
+taste_summary: Modern, fashionable real weddings from around the world, often of couples with fashion or media careers, told through designer looks, outfit changes and personal details.
+notes: Weddings run on blog.overthemoon.com; the shop and registry sit on overthemoon.com. The submission form is a Hulkapps form embedded on the submissions page (same form id today as on 2026-10-19) and returned its full text without a browser.
+
+sources:
+  submissions:
+    url: https://overthemoon.com/pages/wedding-submissions
+    read: 2026-10-23
+    kind: guidelines
+    title: Wedding Submissions
+  form:
+    url: https://formbuilder.hulkapps.com/corepage/customform?id=rgr-xbmVYpqTGeBOkyJnlg
+    read: 2026-10-23
+    kind: form
+    title: Wedding Submissions form (Hulkapps, embedded on the submissions page)
+  directory_submissions:
+    url: https://overthemoon.com/pages/directory-submissions
+    read: 2026-10-23
+    kind: guidelines
+    title: Directory Wedding Submissions (form behind a password)
+  about:
+    url: https://blog.overthemoon.com/about/
+    read: 2026-10-23
+    kind: about
+    title: About
+  partner:
+    url: https://help.overthemoon.com/partner-with-us/
+    read: 2026-10-23
+    kind: media_kit
+    title: Partner With Us
+  terms:
+    url: https://overthemoon.com/policies/terms-of-service
+    read: 2026-10-23
+    kind: other
+    title: Terms of Service
+  real_weddings_index:
+    url: https://blog.overthemoon.com/category/weddings/real-weddings/
+    read: 2026-10-23
+    kind: other
+    title: Real Weddings category
+  feature_danielle_brian:
+    url: https://blog.overthemoon.com/weddings/danielle-oconnell-and-brian-sherlock/
+    read: 2026-10-23
+    kind: feature
+    title: A Celebrity Stylist Wore 10 Looks for Her Fashion-Filled Wedding at Wildflower Farms
+  feature_ella_may_hughie:
+    url: https://blog.overthemoon.com/weddings/ella-may-sangster-and-hughie-de-zulueta-in-england/
+    read: 2026-10-23
+    kind: feature
+    title: Ella May London Founder's Bespoke Wedding Dress Took More Than 700 Hours to Create
+  feature_claire_will:
+    url: https://blog.overthemoon.com/weddings/claire-emily-ocallaghan-and-william-van-brunt-knox-in-connecticut/
+    read: 2026-10-23
+    kind: feature
+    title: Claire O'Callaghan and Will Knox's Sunlit Wedding at Manursing Island Club
+  feature_villa_cimbrone:
+    url: https://blog.overthemoon.com/weddings/a-dream-suspended-in-sunlight-wedding-at-villa-cimbrone/
+    read: 2026-10-23
+    kind: feature
+    title: A Dream Suspended in Sunlight Wedding at Villa Cimbrone
+  feature_paola_guillermo:
+    url: https://blog.overthemoon.com/weddings/paola-franssen-and-guillermo-nieto-in-mexico/
+    read: 2026-10-23
+    kind: feature
+    title: Paola Franssen and Guillermo Nieto Wed in Baja
+
+identity:
+  parent_company:
+    value: Over The Moon LLC
+    cite:
+      - source: terms
+        quote: entered into by and between you and Over The Moon LLC
+    note: The operating company; no separate parent is named.
+  sister_publications:
+    value: unknown
+    checked: [ about, partner ]
+  shared_inbox_with:
+    value: unknown
+    checked: [ submissions, form ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: about
+        quote: created Over The Moon to feature aspirational, yet relatable, real weddings from around the world
+  basis:
+    value: unknown
+    checked: [ submissions, form ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: feature_villa_cimbrone
+    note: A couple then living in London married at Villa Cimbrone in Ravello, Italy.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: submissions
+        quote: We feature aspirational yet relatable real weddings—the kind you frequently find yourself stalking on Instagram.
+  elopement:
+    value: true
+    cite:
+      - source: real_weddings_index
+        quote: Micro-Weddings & Elopements
+    note: A blog category of that name; the submission form does not ask about wedding size.
+  styled_shoot:
+    value: unknown
+    checked: [ submissions, form ]
+  style_tags:
+    value: [ couture_designer, multiple_looks, beach_coastal ]
+    cite:
+      - source: feature_danielle_brian
+      - source: feature_ella_may_hughie
+      - source: feature_claire_will
+      - source: feature_villa_cimbrone
+      - source: feature_paola_guillermo
+  seasonality:
+    value: unknown
+    checked: [ submissions, form ]
+
+routes:
+  value:
+    - platform: web_form
+      url: https://overthemoon.com/pages/wedding-submissions
+      account_required: false
+      preferred: true
+      steps:
+        - Open the submissions page; the form loads on the page.
+        - Choose who is submitting (photographer, couple or wedding planner).
+        - Give the venue or location, wedding date and contact details.
+        - Paste a non-expiring Dropbox-style link to up to 150 chronological, unwatermarked images of 1 to 3MB each.
+        - Give both partners' names, professions and Instagram handles.
+        - Answer whether an Over The Moon registry was made.
+        - Write the wedding notes, accept the agreement and submit.
+    - platform: web_form
+      url: https://overthemoon.com/pages/directory-submissions
+      account_required: true
+      steps:
+        - Enter the password Over The Moon gives Directory members.
+        - Complete the Directory submission form for prioritized review.
+      note: For paid Directory members only; the page is password-protected and the form was not viewed.
+  cite:
+    - source: submissions
+      quote: Please fill out the form below and follow the guidelines in order to be considered for a feature on our site.
+    - source: submissions
+      quote: Are you a Directory member? If so, please submit your wedding HERE for prioritized review.
+    - source: directory_submissions
+      quote: Please enter the password provided by OTM to access this page
+
+package:
+  image_min:
+    value: unknown
+    checked: [ form, submissions ]
+  image_max:
+    value: 150
+    cite:
+      - source: form
+        quote: Do not submit more than 150 photos.
+  resolution:
+    value:
+      min_file_mb: 1
+      max_file_mb: 3
+    cite:
+      - source: form
+        quote: Photos should be 1-3MB each.
+  size:
+    value: unknown
+    checked: [ form, submissions ]
+    note: Only a 1 to 3MB file size is given; the pages never say web or print size.
+  orientation_mix:
+    value: unknown
+    checked: [ form, submissions ]
+  watermarks_allowed:
+    value: false
+    cite:
+      - source: form
+        quote: Images should be free of all watermarks.
+  gallery_hosts:
+    value:
+      - dropbox
+      - google_drive
+      - pic_time
+      - pixieset
+      - smugmug
+      - shootproof
+    cite:
+      - source: form
+        quote: Photos should be sent via a non-expiring Dropbox link, or a similar image-hosting format where pictures can easily be downloaded. Please no WeTransfers.
+    note: Dropbox is named; the others are read from "or a similar image-hosting format" where images download easily. WeTransfer is refused.
+  vendor_credits:
+    value: unknown
+    checked: [ form, submissions ]
+    note: The form has no vendor list field.
+  story:
+    value:
+      required: true
+      note: A required Wedding Notes field asking for funny, unexpected or special moments, key guests, personalized details and anything from Over The Moon.
+    cite:
+      - source: form
+        quote: Wedding Notes*
+      - source: form
+        quote: Did anything funny, unexpected, or special happen? Were there key guests or personalized details?
+  video_accepted:
+    value: unknown
+    checked: [ form, submissions ]
+  other_requirements:
+    value:
+      - Images in chronological order.
+      - Both partners' professions and Instagram handles.
+      - Whether an Over The Moon registry was made.
+      - Wedding venue or location.
+    cite:
+      - source: form
+        quote: Images should be in chronological order.
+      - source: form
+        quote: Spouse Profession*
+      - source: form
+        quote: Spouse Instagram Handle*
+      - source: form
+        quote: Was an Over The Moon Registry made?
+      - source: form
+        quote: Wedding Venue/Location*
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [ submissions, form ]
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ submissions, form ]
+    blogs:
+      value: unknown
+      checked: [ submissions, form ]
+    social:
+      value: unknown
+      checked: [ submissions, form ]
+  freshness_window_months:
+    value: unknown
+    checked: [ submissions, form ]
+  photographer_frequency:
+    value: unknown
+    checked: [ submissions, form ]
+  submitter_roles:
+    value: [ photographer, couple, planner ]
+    cite:
+      - source: form
+        quote: Photographer Couple Wedding Planner
+    note: The three options of the required Submitted By field.
+
+rights:
+  image_usage:
+    value: unknown
+    checked: [ submissions, form, terms ]
+  credit_format:
+    value: Vendors, including the photographer, are named in the story text and linked to their Instagram or website.
+    cite:
+      - source: feature_ella_may_hughie
+      - source: feature_paola_guillermo
+      - source: feature_danielle_brian
+  couple_consent_required:
+    value: unknown
+    checked: [ form, submissions ]
+  vendor_consent_required:
+    value: unknown
+    checked: [ form, submissions ]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ submissions, form ]
+  publication_fee:
+    value: unknown
+    checked: [ submissions, partner ]
+  priority_paid_tier:
+    value:
+      name: Over The Moon Directory membership
+      note: Directory members submit through a separate form for prioritized review and can expect a reply within one week. The pages read give no price.
+    cite:
+      - source: submissions
+        quote: Are you a Directory member? If so, please submit your wedding HERE for prioritized review.
+      - source: directory_submissions
+        quote: you can expect to hear from us within one week of submitting your application.
+      - source: partner
+        quote: a wedding vendor (planners, photographers, and more) hoping to join the Over The Moon Directory
+  reach:
+    value: unknown
+    checked: [ about, partner ]
+
+timing:
+  response_window:
+    value:
+      days: 60
+      replies: success_only
+    cite:
+      - source: submissions
+        quote: it may take us up to 60 days for us to respond.
+      - source: submissions
+        quote: If you haven’t heard from us after 60 days, it can be assumed we unfortunately will not be featuring the wedding at this time.
+  publish_lead_days:
+    value: unknown
+    checked: [ submissions, form ]
+  publishing_cycle:
+    value: Online; five real weddings went live between 2026-09-22 and 2026-10-12.
+    cite:
+      - source: feature_danielle_brian
+      - source: feature_ella_may_hughie
+      - source: feature_claire_will
+      - source: feature_villa_cimbrone
+      - source: feature_paola_guillermo
+
+people:
+  editors:
+    value:
+      - name: Alexandra Macon
+        role: Founder
+    cite:
+      - source: about
+        quote: Vogue editor Alexandra Macon created Over The Moon
+    note: Four of the five newest real weddings carry Shayna Seid's byline; no page gives her title.
+
+insight:
+  secret_sauce:
+    - tip: Pitch couples with a visible story; recent features center a celebrity stylist, a bridal designer, a content creator and a planner, and the form asks for both partners' professions and Instagram handles.
+      cite:
+        - source: submissions
+          quote: real weddings—the kind you frequently find yourself stalking on Instagram.
+        - source: feature_danielle_brian
+        - source: feature_ella_may_hughie
+        - source: feature_claire_will
+        - source: feature_paola_guillermo
+    - tip: Name the fashion; recent features detail each designer look and outfit change across the weekend.
+      cite:
+        - source: feature_danielle_brian
+        - source: feature_claire_will
+        - source: feature_villa_cimbrone
+    - tip: Fill the wedding notes with funny, unexpected or special moments, key guests and personalized details, and say if anything came from Over The Moon.
+      cite:
+        - source: form
+          quote: Did anything funny, unexpected, or special happen? Were there key guests or personalized details? Was anything from the weekend from Over The Moon?
+    - tip: Recent wedding dates range widely, from a September 2026 wedding published five days later to a May 2025 wedding published in September 2026.
+      cite:
+        - source: feature_claire_will
+        - source: feature_villa_cimbrone
+  recent_features:
+    - source: feature_danielle_brian
+      published: 2026-10-12
+      location: US-NY
+      content_type: real_wedding
+      tags: [ hotel_resort, forest_woodland, fashion_forward_editorial, couture_designer, multiple_looks ]
+    - source: feature_ella_may_hughie
+      published: 2026-09-30
+      location: GB
+      content_type: real_wedding
+      tags: [ church_cathedral, couture_designer, british_isles ]
+    - source: feature_claire_will
+      published: 2026-09-24
+      location: US-CT
+      content_type: real_wedding
+      tags: [ beach_coastal, country_club, couture_designer, multiple_looks, playful_party ]
+    - source: feature_villa_cimbrone
+      published: 2026-09-22
+      location: IT
+      content_type: real_wedding
+      tags: [ italian_villa, garden_botanical, romantic, couture_designer, mediterranean_europe ]
+    - source: feature_paola_guillermo
+      published: 2026-09-22
+      location: MX
+      content_type: real_wedding
+      tags: [ beach_coastal, organic_textural, mexico_caribbean ]
