@@ -55,6 +55,10 @@ npm run dev:web   # SPA on :5173
 
 Migrations run with `npm run migrate:local --workspace @publication-studio/api`.
 
+Outlet research lives in `research/` (see `research/README.md`). Load it into
+the app with `npm run research:import --workspace @publication-studio/api --
+--local` (or `--remote`), then approve the updates in the app.
+
 ## Users
 
 There is no signup. A user row is created only by an operator with database

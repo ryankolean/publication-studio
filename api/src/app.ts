@@ -8,6 +8,7 @@ import { eventRoutes } from "./routes/events.js";
 import { imageRoutes } from "./routes/images.js";
 import { packageRoutes } from "./routes/packages.js";
 import { tagRoutes } from "./routes/tags.js";
+import { researchRoutes } from "./routes/research.js";
 import { submissionRoutes } from "./routes/submissions.js";
 import { fail } from "./errors.js";
 
@@ -42,6 +43,7 @@ export function createApp() {
   app.route("/events", eventRoutes);
   app.route("/packages", packageRoutes);
   app.route("/tags", tagRoutes);
+  app.route("/research", researchRoutes);
   app.route("/submissions", submissionRoutes);
   // Mounted at the root: image routes own both /events/:id/images and /images/*.
   app.route("/", imageRoutes);

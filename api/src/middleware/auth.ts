@@ -48,3 +48,14 @@ export async function requireAuth(c: Context<AppContext>, next: Next) {
   c.set("user", user);
   await next();
 }
+
+/**
+ * Runs after requireAuth. The research import is the operator's job; the
+ * photographer approves, corrects and tags, but never loads research.
+ */
+export function requireRole(role: UserRole) {
+  return async (c: Context<AppContext>, next: Next) => {
+    if (c.get("user").role !== role) return fail(c, 403, "FORBIDDEN", "Only the operator can do this.");
+    await next();
+  };
+}

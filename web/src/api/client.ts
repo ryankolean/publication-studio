@@ -31,6 +31,7 @@ export interface ApiClient {
   get<T>(path: string): Promise<T>;
   post<T>(path: string, body: unknown): Promise<T>;
   patch<T>(path: string, body: unknown): Promise<T>;
+  put<T>(path: string, body: unknown): Promise<T>;
   delete<T>(path: string): Promise<T>;
   /**
    * Raw bytes to a capability url the API minted (an image upload). The url
@@ -161,6 +162,7 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
     get: <T,>(path: string) => request<T>(path, "GET"),
     post: <T,>(path: string, body: unknown) => request<T>(path, "POST", body),
     patch: <T,>(path: string, body: unknown) => request<T>(path, "PATCH", body),
+    put: <T,>(path: string, body: unknown) => request<T>(path, "PUT", body),
     delete: <T,>(path: string) => request<T>(path, "DELETE"),
     putBytes,
   };

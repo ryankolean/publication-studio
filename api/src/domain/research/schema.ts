@@ -139,6 +139,10 @@ interface Reader<T> {
   optional?: true;
   /** A fact: leaving it out means nobody researched it, which the error says. */
   fact?: true;
+  /** A fact's value reader, so a single correction is checked like the file. */
+  inner?: Reader<unknown>;
+  /** A record's fields, so a fact can be found by its path. */
+  shape?: Record<string, Reader<unknown>>;
 }
 
 type Out<R> = R extends Reader<infer T> ? T : never;
@@ -319,6 +323,7 @@ function record<S extends Record<string, Reader<unknown>>>(
   ...checks: Check[]
 ): Reader<{ [K in keyof S]: Out<S[K]> }> {
   return {
+    shape,
     read(raw, at, ctx) {
       if (!isObject(raw)) return fail(ctx, at, "Expected a mapping.");
       let ok = true;
@@ -377,6 +382,7 @@ const FACT_KEYS = new Set(["value", "cite", "checked", "note"]);
 function fact<T>(reader: Reader<T>): Reader<Fact<T>> {
   return {
     fact: true,
+    inner: reader,
     read(raw, at, ctx) {
       if (!isObject(raw)) {
         return fail(ctx, at, "Expected a mapping with value and cite, or value: unknown and checked.");
@@ -654,6 +660,32 @@ export function validatePublicationFile(
     if (!ctx.used.has(id)) fail(ctx, join("sources", id), "This page is never cited or checked; cite it or remove it.");
   }
   return ctx.errors.length > 0 ? { ok: false, errors: ctx.errors } : { ok: true, value: file };
+}
+
+/**
+ * Checks one correction to one fact, at its path in the file (for example
+ * timing.response_window), with the same reader the file itself uses. Only a
+ * fact can be corrected, and a correction says what the photographer knows,
+ * so "unknown" is refused.
+ */
+export function validateFactEdit(
+  field: string,
+  raw: unknown,
+  vocab: ResearchVocab,
+  today: string,
+): ResearchResult<unknown> {
+  let reader: Reader<unknown> | undefined = FILE;
+  for (const key of field.split(".")) reader = reader?.shape?.[key];
+  if (reader?.inner === undefined) {
+    return { ok: false, errors: [{ field, message: "This is not a fact a correction can change." }] };
+  }
+  if (raw === "unknown") {
+    return { ok: false, errors: [{ field, message: "A correction says what you know; unknown is left to the research." }] };
+  }
+  const ctx: Context = { errors: [], vocab, today, sources: new Map(), used: new Set() };
+  findEmails(raw, field, ctx.errors);
+  const value = reader.inner.read(raw, field, ctx);
+  return value === undefined || ctx.errors.length > 0 ? { ok: false, errors: ctx.errors } : { ok: true, value };
 }
 
 /**

@@ -7,6 +7,7 @@ import { LoginPage } from "./pages/LoginPage.js";
 import { SetPasswordPage } from "./pages/SetPasswordPage.js";
 import { HomePage } from "./pages/HomePage.js";
 import { PublicationsPage } from "./pages/PublicationsPage.js";
+import { ResearchUpdatesPage } from "./pages/ResearchUpdatesPage.js";
 import { QueuePage } from "./pages/QueuePage.js";
 import { HelpPage } from "./pages/HelpPage.js";
 import { WizardNewWedding, WizardResume, WizardStep } from "./wizard/WizardRoutes.js";
@@ -84,6 +85,7 @@ function Routed() {
         <Route path="/help" element={<RequireSession><HelpPage /></RequireSession>} />
         <Route path="/queue" element={<RequireSession><QueuePage /></RequireSession>} />
         <Route path="/publications" element={<RequireSession><PublicationsPage /></RequireSession>} />
+        <Route path="/publications/updates" element={<RequireSession><ResearchUpdatesPage /></RequireSession>} />
         <Route path="/set-password" element={<SetPasswordPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

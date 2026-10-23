@@ -18,6 +18,9 @@ export type ErrorCode =
   | "SUBMISSION_EXISTS"
   | "ILLEGAL_TRANSITION"
   | "EVENT_HAS_LIVE_SUBMISSION"
+  | "FORBIDDEN"
+  | "RESEARCH_VOCAB_MISSING"
+  | "TAG_EXISTS"
   | "INTERNAL";
 
 export interface ErrorBody {
