@@ -66,7 +66,7 @@ function isObject(value: unknown): value is Record<string, unknown> {
 }
 
 /** A real calendar date, not merely a well-shaped string. 2026-02-30 is not one. */
-function isRealDate(value: string): boolean {
+export function isRealDate(value: string): boolean {
   if (!ISO_DATE.test(value)) return false;
   const [year, month, day] = value.split("-").map(Number) as [number, number, number];
   const date = new Date(Date.UTC(year, month - 1, day));
@@ -81,7 +81,7 @@ function isRealDate(value: string): boolean {
  * Only http and https. A gallery URL is rendered as a link and carries an
  * invite token; javascript: and data: URLs must never reach that surface.
  */
-function isSafeUrl(value: string): boolean {
+export function isSafeUrl(value: string): boolean {
   try {
     const url = new URL(value);
     return url.protocol === "http:" || url.protocol === "https:";

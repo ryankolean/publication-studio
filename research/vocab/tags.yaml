@@ -1,0 +1,99 @@
+# Shared tag vocabulary.
+#
+# Publications (research/publications/*.yaml, content.style_tags) and weddings
+# are tagged from this one list, so matching is a set comparison rather than a
+# text comparison. Order inside a category is display order.
+#
+# Seeded into D1 by migration 0006; `florida` is new here and reaches the
+# database when the import loads this file (SUMMIT-335).
+
+region:
+  - michigan
+  - florida
+  - midwest_us
+  - northeast_us
+  - mid_atlantic_us
+  - southeast_us
+  - south_central_us
+  - southwest_us
+  - mountain_west_us
+  - pacific_northwest_us
+  - california
+  - mexico_caribbean
+  - british_isles
+  - mediterranean_europe
+  - international_other
+
+landscape_venue:
+  - garden_botanical
+  - vineyard_winery
+  - beach_coastal
+  - lakefront
+  - mountain_alpine
+  - forest_woodland
+  - farm_ranch_countryside
+  - desert
+  - urban_rooftop
+  - island_tropical
+  - backyard_private_home
+  - hotel_resort
+  - restaurant_private_dining
+  - museum_gallery
+  - country_club
+
+architecture:
+  - castle_chateau
+  - italian_villa
+  - historic_manor_estate
+  - industrial_loft_warehouse
+  - modern_contemporary
+  - art_deco
+  - rustic_barn_timber
+  - greenhouse_conservatory
+  - church_cathedral
+  - ballroom_grand_hall
+  - adobe_hacienda
+  - mid_century_modern
+  - brick_historic_urban
+
+aesthetic:
+  - classic_timeless
+  - romantic
+  - whimsical
+  - modern_minimal
+  - bohemian
+  - glamorous_luxe
+  - alternative_nontraditional
+  - fashion_forward_editorial
+  - bold_color_maximalist
+  - moody_dramatic
+  - vintage_heritage
+  - organic_textural
+  - culturally_rooted
+  - intimate_micro
+  - playful_party
+
+dress_style:
+  - ball_gown
+  - a_line_classic
+  - sheath_column
+  - slip_minimalist
+  - lace_romantic
+  - couture_designer
+  - vintage_heirloom
+  - short_mini_courthouse
+  - wedding_suit_pantsuit
+  - colored_printed
+  - multiple_looks
+  - cultural_attire
+
+season:
+  - spring
+  - early_summer
+  - high_summer
+  - late_summer
+  - early_fall
+  - late_fall
+  - winter
+  - holiday_season
+  - year_round_climate

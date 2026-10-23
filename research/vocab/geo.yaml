@@ -1,0 +1,191 @@
+# Location codes.
+#
+# Publications list the places they cover (coverage.regions) in these codes,
+# and the wedding location dropdown offers the same states, metros and
+# countries, so a wedding's location and an outlet's coverage compare directly.
+#
+#   WORLD, US, INTL      whole scopes; INTL means anywhere outside the US
+#   US:<region>          a group of states, defined below
+#   US-<state>           ISO 3166-2 state or territory code
+#   US-<state>:<metro>   a metro or area inside that state
+#   <country>            ISO 3166-1 alpha-2 country code
+#
+# Region membership is how this file defines it; outlets rarely agree on where
+# the Mid-Atlantic ends. Metros and countries are listed where research has
+# needed them so far; add more as outlets name them.
+
+scopes:
+  WORLD: Anywhere
+  US: United States
+  INTL: Outside the United States
+
+us_regions:
+  US:northeast:
+    name: Northeast
+    states: [US-CT, US-ME, US-MA, US-NH, US-RI, US-VT, US-NY]
+  US:mid-atlantic:
+    name: Mid-Atlantic
+    states: [US-NJ, US-PA, US-DE, US-MD, US-DC, US-VA, US-WV]
+  US:southeast:
+    name: Southeast
+    states: [US-NC, US-SC, US-GA, US-FL, US-AL, US-MS, US-TN, US-KY]
+  US:south-central:
+    name: South Central
+    states: [US-TX, US-OK, US-AR, US-LA]
+  US:midwest:
+    name: Midwest
+    states: [US-IL, US-IN, US-IA, US-KS, US-MI, US-MN, US-MO, US-NE, US-ND, US-OH, US-SD, US-WI]
+  US:southwest:
+    name: Southwest
+    states: [US-AZ, US-NM, US-NV]
+  US:mountain-west:
+    name: Mountain West
+    states: [US-CO, US-UT, US-WY, US-MT, US-ID]
+  US:pacific-northwest:
+    name: Pacific Northwest
+    states: [US-WA, US-OR]
+
+states:
+  US-AL: Alabama
+  US-AK: Alaska
+  US-AZ: Arizona
+  US-AR: Arkansas
+  US-CA: California
+  US-CO: Colorado
+  US-CT: Connecticut
+  US-DE: Delaware
+  US-DC: District of Columbia
+  US-FL: Florida
+  US-GA: Georgia
+  US-HI: Hawaii
+  US-ID: Idaho
+  US-IL: Illinois
+  US-IN: Indiana
+  US-IA: Iowa
+  US-KS: Kansas
+  US-KY: Kentucky
+  US-LA: Louisiana
+  US-ME: Maine
+  US-MD: Maryland
+  US-MA: Massachusetts
+  US-MI: Michigan
+  US-MN: Minnesota
+  US-MS: Mississippi
+  US-MO: Missouri
+  US-MT: Montana
+  US-NE: Nebraska
+  US-NV: Nevada
+  US-NH: New Hampshire
+  US-NJ: New Jersey
+  US-NM: New Mexico
+  US-NY: New York
+  US-NC: North Carolina
+  US-ND: North Dakota
+  US-OH: Ohio
+  US-OK: Oklahoma
+  US-OR: Oregon
+  US-PA: Pennsylvania
+  US-RI: Rhode Island
+  US-SC: South Carolina
+  US-SD: South Dakota
+  US-TN: Tennessee
+  US-TX: Texas
+  US-UT: Utah
+  US-VT: Vermont
+  US-VA: Virginia
+  US-WA: Washington
+  US-WV: West Virginia
+  US-WI: Wisconsin
+  US-WY: Wyoming
+  US-PR: Puerto Rico
+  US-VI: U.S. Virgin Islands
+
+metros:
+  US-MI:
+    detroit: Metro Detroit
+    ann-arbor: Ann Arbor
+    lansing: Lansing
+    grand-rapids: Grand Rapids
+    west-michigan-lakeshore: West Michigan lakeshore
+    traverse-city: Traverse City
+    northern-michigan: Northern Michigan
+    upper-peninsula: Upper Peninsula
+  US-FL:
+    miami: Miami
+    fort-lauderdale: Fort Lauderdale
+    palm-beach: Palm Beach
+    florida-keys: Florida Keys
+    naples-fort-myers: Naples and Fort Myers
+    sarasota: Sarasota
+    tampa-bay: Tampa Bay
+    orlando: Orlando
+    st-augustine: St. Augustine
+    jacksonville: Jacksonville
+    panhandle-30a: Panhandle and 30A
+
+countries:
+  CA: Canada
+  MX: Mexico
+  BS: Bahamas
+  TC: Turks and Caicos Islands
+  KY: Cayman Islands
+  JM: Jamaica
+  DO: Dominican Republic
+  BB: Barbados
+  LC: Saint Lucia
+  AG: Antigua and Barbuda
+  AW: Aruba
+  CW: Curacao
+  VG: British Virgin Islands
+  BZ: Belize
+  CR: Costa Rica
+  PA: Panama
+  CO: Colombia
+  PE: Peru
+  AR: Argentina
+  CL: Chile
+  BR: Brazil
+  GB: United Kingdom
+  IE: Ireland
+  IS: Iceland
+  FR: France
+  MC: Monaco
+  BE: Belgium
+  NL: Netherlands
+  DE: Germany
+  AT: Austria
+  CH: Switzerland
+  IT: Italy
+  ES: Spain
+  PT: Portugal
+  GR: Greece
+  HR: Croatia
+  SI: Slovenia
+  ME: Montenegro
+  MT: Malta
+  CY: Cyprus
+  TR: Turkey
+  CZ: Czechia
+  HU: Hungary
+  PL: Poland
+  DK: Denmark
+  SE: Sweden
+  NO: Norway
+  FI: Finland
+  MA: Morocco
+  EG: Egypt
+  KE: Kenya
+  TZ: Tanzania
+  ZA: South Africa
+  AE: United Arab Emirates
+  IN: India
+  LK: Sri Lanka
+  MV: Maldives
+  TH: Thailand
+  VN: Vietnam
+  ID: Indonesia
+  JP: Japan
+  AU: Australia
+  NZ: New Zealand
+  FJ: Fiji
+  PF: French Polynesia
