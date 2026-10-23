@@ -57,6 +57,9 @@ const CHIP_TONE: Record<ChipKind, string> = {
  */
 export function cardHref(card: { id: string; chip: { kind: ChipKind; packageId: string | null } }): string {
   const { id, chip } = card;
+  // A wedding on hold opens at the questions that hold it, not at the first
+  // unfinished step, so "See what is holding it" shows exactly that.
+  if (chip.kind === "blocked") return `/wizard/${id}/permissions`;
   return chip.packageId === null ? `/wizard/${id}` : `/wizard/${id}?package=${encodeURIComponent(chip.packageId)}`;
 }
 

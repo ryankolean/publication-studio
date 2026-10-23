@@ -154,13 +154,13 @@ describe("[photos]", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "arrival.jpg" }));
     expect(screen.getByRole("status")).toHaveTextContent("1 chosen; Outlet A wants 2 to 3");
-    await userEvent.click(screen.getByRole("button", { name: "Photo 2" }));
+    await userEvent.click(screen.getByRole("button", { name: "Photo 3" }));
     expect(continueButton()).toBeEnabled();
   });
 
   it("holds Continue above the outlet's maximum", async () => {
     await open();
-    for (const name of ["arrival.jpg", "Photo 2", "cake.jpg", "dance.jpg"]) {
+    for (const name of ["arrival.jpg", "Photo 3", "cake.jpg", "dance.jpg"]) {
       await userEvent.click(screen.getByRole("button", { name }));
     }
     expect(screen.getByText("Choose no more than 3 to continue.")).toBeInTheDocument();
@@ -221,12 +221,20 @@ describe("[photos]", () => {
     expect(opened).toHaveBeenCalledTimes(1);
   });
 
+  it("shows the photos in the order they were added, so Choose all numbers them 1, 2, 3 down the grid", async () => {
+    await open(packageView({ imageKeys: [] }));
+    // The server lists newest first; the grid shows the oldest first.
+    const grid = within(screen.getByRole("list", { name: "Your photos" })).getAllByRole("button");
+    expect(grid.map((tile) => tile.getAttribute("aria-label"))).toEqual(["dance.jpg", "cake.jpg", "Photo 3", "arrival.jpg"]);
+    await userEvent.click(screen.getByRole("button", { name: "Choose all" }));
+    expect(within(screen.getByRole("list", { name: "Your photos" })).getAllByRole("button")[0]).toHaveTextContent("1");
+  });
+
   it("chooses every pool photo at once, oldest first, and clears them again", async () => {
     await open(packageView({ imageKeys: [] }));
     await userEvent.click(screen.getByRole("button", { name: "Choose all" }));
     const chosen = within(screen.getByRole("list", { name: "Selected photos" })).getAllByRole("listitem");
     expect(chosen).toHaveLength(4);
-    // The pool lists newest first; the selection runs the other way.
     expect(chosen[0]).toHaveTextContent("dance.jpg");
     expect(chosen[3]).toHaveTextContent("arrival.jpg");
     expect(screen.getByRole("button", { name: "Choose all" })).toBeDisabled();

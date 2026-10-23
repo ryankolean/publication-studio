@@ -34,9 +34,9 @@ describe("resuming", () => {
   });
 
   it("says so when the wedding cannot be opened", async () => {
-    serve(api, { "/events/w9/walkthrough": new ApiError(404, "NOT_FOUND", "No such event.") });
+    serve(api, { "/events/w9/walkthrough": new ApiError(404, "NOT_FOUND", "That wedding could not be found.") });
     renderWizard(api, "/wizard/w9");
-    expect(await screen.findByRole("alert")).toHaveTextContent("No such event.");
+    expect(await screen.findByRole("alert")).toHaveTextContent("That wedding could not be found.");
   });
 
   it("sends an unknown step back to the resume point", async () => {

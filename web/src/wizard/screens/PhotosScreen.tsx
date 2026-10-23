@@ -119,16 +119,13 @@ function Photos({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
     await reloadPool();
   }
 
-  // Adds every pool photo not yet chosen, oldest upload first, so the order
-  // of the day survives when the files were named or sorted that way.
+  // The server lists the pool newest first; the grid shows it in the order
+  // the photos were added, which is the order of the day when the files were
+  // named or sorted that way. Choose all follows the grid.
+  const shown = [...pool].reverse();
+
   function chooseAll() {
-    setSelection((current) => {
-      const missing = [...pool]
-        .reverse()
-        .map((image) => image.key)
-        .filter((key) => !current.includes(key));
-      return [...current, ...missing];
-    });
+    setSelection((current) => [...current, ...shown.map((image) => image.key).filter((key) => !current.includes(key))]);
   }
 
   function toggle(key: string) {
@@ -159,7 +156,7 @@ function Photos({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
 
   const min = pkg?.publication?.spec.imgMin ?? null;
   const max = pkg?.publication?.spec.imgMax ?? null;
-  const number = new Map(pool.map((image, index) => [image.key, index + 1]));
+  const number = new Map(shown.map((image, index) => [image.key, index + 1]));
   const byKey = new Map(pool.map((image) => [image.key, image]));
   const nameOf = (key: string) => {
     const image = byKey.get(key);
@@ -258,7 +255,7 @@ function Photos({ ctx, packageId }: { ctx: StepContext; packageId: string }) {
             <div>
               <p className="text-sm text-slate-600">Tap a photo to add it. Tap it again to take it out.</p>
               <ul aria-label="Your photos" className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-4">
-                {pool.map((image) => {
+                {shown.map((image) => {
                   const position = selection.indexOf(image.key);
                   const selected = position !== -1;
                   const name = nameOf(image.key);

@@ -99,6 +99,19 @@ describe("HomePage", () => {
     expect(screen.queryByRole("link", { name: "Start this one: Sarah and James" })).toBeNull();
   });
 
+  it("opens a wedding on hold straight at the permission questions that hold it", async () => {
+    serve({
+      events: [
+        card({ chip: { kind: "blocked", label: "On hold: the couple has not agreed yet", packageId: null } }),
+      ],
+    });
+    renderHome();
+    expect(await screen.findByRole("link", { name: "See what is holding it: Sarah and James" })).toHaveAttribute(
+      "href",
+      "/wizard/w1/permissions",
+    );
+  });
+
   it("opens a published wedding on its own submission", async () => {
     serve({ events: [card({ chip: { kind: "published", label: "Published at Outlet A", packageId: "pk3" }, hasPackage: true })] });
     renderHome();
@@ -115,7 +128,8 @@ describe("HomePage", () => {
       expect(action.next, kind).toMatch(/\.$/);
     }
     expect(cardHref({ id: "w9", chip: { kind: "live", packageId: "pk8" } })).toBe("/wizard/w9?package=pk8");
-    expect(cardHref({ id: "w9", chip: { kind: "blocked", packageId: null } })).toBe("/wizard/w9");
+    expect(cardHref({ id: "w9", chip: { kind: "blocked", packageId: null } })).toBe("/wizard/w9/permissions");
+    expect(cardHref({ id: "w9", chip: { kind: "ready", packageId: null } })).toBe("/wizard/w9");
   });
 
   it("sums the queue in one line and hides it when there is nothing to say", async () => {

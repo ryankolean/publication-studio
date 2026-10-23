@@ -91,7 +91,7 @@ describe("[review]", () => {
 
   it.each([
     [422, "PACKAGE_INCOMPLETE", "The package is not complete. Finish its checklist first."],
-    [409, "SUBMISSION_EXISTS", "A submission already exists for this event and publication."],
+    [409, "SUBMISSION_EXISTS", "This wedding already has a submission for that outlet."],
   ])("shows a %s from the server as its message", async (status, code, message) => {
     await open();
     api.post.mockRejectedValueOnce(new ApiError(status, code, message));
