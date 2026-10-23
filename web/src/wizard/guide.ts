@@ -53,6 +53,19 @@ export const GUIDE: Record<StepId, StepGuide> = {
       "Add every vendor: their role, business name, and website or Instagram if you have it.",
       'Press "Continue".',
     ],
+    next: "Next up: the look of the wedding.",
+  },
+  look: {
+    title: "The look",
+    lead: "Tag the setting, the style and what the couple wore. Your tags add up to your style profile, which is how outlets that publish your kind of wedding rise to the top.",
+    todo: [
+      'Press "Add photos" and choose 10 to 20 favourites at web size. The Photos step uses them too, so nothing is added twice.',
+      'Press "Suggest tags". Claude looks at up to 20 of your photos and suggests tags, each with a reason.',
+      'For each suggestion, press "Keep" or "Not this".',
+      'Pick anything it missed under "Add a tag".',
+      'Press "Continue".',
+    ],
+    note: "Suggestions only run once you switch them on under Your work. You can always choose the tags yourself, or skip this step for now.",
     next: "Next up: choosing an outlet.",
   },
   outlet: {

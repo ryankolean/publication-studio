@@ -29,7 +29,7 @@ describe("Frame", () => {
         <Frame guide={guide} rail={rail} primary={{ label: "Continue", onClick: noop, disabledReason: "Pick a photo to continue." }} />
       </MemoryRouter>,
     );
-    expect(screen.getByText("Step 5 of 10: Photos")).toBeInTheDocument();
+    expect(screen.getByText("Step 6 of 11: Photos")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Pick the photos" })).toBeInTheDocument();
     expect(screen.getByText("Why this matters.")).toBeInTheDocument();
 
@@ -60,7 +60,7 @@ describe("Frame", () => {
         <Frame guide={guide} rail={done} />
       </MemoryRouter>,
     );
-    expect(screen.getByText("Step 10 of 10: Reply")).toBeInTheDocument();
+    expect(screen.getByText("Step 11 of 11: Reply")).toBeInTheDocument();
     expect(screen.queryByText("Next up: the write-up.")).toBeNull();
   });
 

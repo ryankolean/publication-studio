@@ -7,6 +7,7 @@ import type { StepContext } from "./context.js";
 import { Alert, Frame, Loading } from "./Frame.js";
 import { errorText, isStep, stepBefore, wizardPath, type StepId, type Walkthrough } from "./model.js";
 import { ConfirmScreen } from "./screens/ConfirmScreen.js";
+import { LookScreen } from "./screens/LookScreen.js";
 import { OutletScreen } from "./screens/OutletScreen.js";
 import { PermissionsScreen } from "./screens/PermissionsScreen.js";
 import { PhotosScreen } from "./screens/PhotosScreen.js";
@@ -21,6 +22,7 @@ const SCREENS: Record<StepId, ComponentType<{ ctx: StepContext }>> = {
   wedding: WeddingScreen,
   permissions: PermissionsScreen,
   story: StoryScreen,
+  look: LookScreen,
   outlet: OutletScreen,
   photos: PhotosScreen,
   writeup: WriteupScreen,

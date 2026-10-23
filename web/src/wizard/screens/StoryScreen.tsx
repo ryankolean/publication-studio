@@ -86,7 +86,7 @@ export function StoryScreen({ ctx }: { ctx: StepContext }) {
           })),
         }),
       );
-      ctx.go("outlet");
+      ctx.go("look");
     } catch (caught) {
       setSaveError(errorText(caught, "Could not save the story."));
       setSaving(false);
