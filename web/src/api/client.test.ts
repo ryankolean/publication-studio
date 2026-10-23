@@ -167,6 +167,16 @@ describe("patch and delete", () => {
     expect((init.headers as Record<string, string>)["authorization"]).toBe("Bearer access-1");
   });
 
+  it("puts json", async () => {
+    session.signIn({ accessToken: "access-1", refreshToken: "refresh-1", user: USER });
+    fetchMock.mockResolvedValueOnce(json({ field: "tier" }));
+    await client().put("/publications/p1/edits/package.image_max", { value: 80 });
+    const init = fetchMock.mock.calls[0]?.[1] as RequestInit;
+    expect(init.method).toBe("PUT");
+    expect(init.body).toBe(JSON.stringify({ value: 80 }));
+    expect((init.headers as Record<string, string>)["authorization"]).toBe("Bearer access-1");
+  });
+
   it("deletes with the bearer token and no body", async () => {
     session.signIn({ accessToken: "access-1", refreshToken: "refresh-1", user: USER });
     fetchMock.mockResolvedValueOnce(json({ deleted: true }));
