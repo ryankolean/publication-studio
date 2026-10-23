@@ -1,0 +1,423 @@
+id: pub-100-layer-cake
+name: 100 Layer Cake
+url: https://www.100layercake.com
+kind: blog
+tier: secondary
+recheck_every_days: 90
+taste_summary: Design-forward, fashion-led weddings with a strong point of view; recent features run from surrealist black tie and sculptural Italian villa florals to a colorful Miami beach club, often with several outfit changes.
+notes: The email route is open to anyone, but paid Vendor Guide members and creative partners are reviewed first and non-members are accepted only occasionally. Three of the five newest features credit a Guide member. The real-weddings category page draws its post list by JavaScript; the newest features were found through the site's public WordPress posts listing and opened one by one.
+
+sources:
+  guidelines:
+    url: https://www.100layercake.com/submissions/
+    read: 2026-10-23
+    kind: guidelines
+    title: Submissions
+  about:
+    url: https://www.100layercake.com/about/
+    read: 2026-10-23
+    kind: about
+    title: About 100 Layer Cake
+  contact:
+    url: https://www.100layercake.com/contact/
+    read: 2026-10-23
+    kind: other
+    title: Get in Touch
+  advertise:
+    url: https://www.100layercake.com/advertise/
+    read: 2026-10-23
+    kind: media_kit
+    title: Advertise with 100 Layer Cake
+  guide:
+    url: https://www.100layercake.com/wedding-vendors/grow-my-wedding-business
+    read: 2026-10-23
+    kind: media_kit
+    title: Vendor Guide (grow my wedding business)
+  guide_tiers:
+    url: https://www.100layercake.com/wedding-vendors/post/
+    read: 2026-10-23
+    kind: other
+    title: Join the Vendor Guide (tiers and prices)
+  terms:
+    url: https://www.100layercake.com/terms-and-conditions/
+    read: 2026-10-23
+    kind: other
+    title: Terms and Conditions
+  substack_about:
+    url: https://100layercake.substack.com/about
+    read: 2026-10-23
+    kind: about
+    title: Behind the Veil (100 Layer Cake Substack) about page
+  feature_surrealist_austria:
+    url: https://www.100layercake.com/2026/10/16/an-italian-inspired-wedding-with-a-surrealist-black-tie-twist/
+    read: 2026-10-23
+    kind: feature
+    title: An Italian-Inspired Wedding With a Surrealist Black-Tie Twist
+  feature_mount_olympus:
+    url: https://www.100layercake.com/2026/09/15/mount-olympus-wedding-greece/
+    read: 2026-10-23
+    kind: feature
+    title: A Relaxed, Nature-Inspired Wedding at the Foot of Mount Olympus
+  feature_lucca:
+    url: https://www.100layercake.com/2026/09/01/a-historic-italian-villa-wedding-in-lucca-with-sculptural-florals-and-an-editorial-but-candid-feel/
+    read: 2026-10-23
+    kind: feature
+    title: A Historic Italian Villa Wedding in Lucca with Sculptural Florals and an Editorial-But-Candid Feel
+  feature_joia_beach:
+    url: https://www.100layercake.com/2026/08/04/joia-beach-miami-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: A Vibrant St. Barths-Inspired Beach Club Wedding at Joia Beach in Miami
+  feature_da_nang:
+    url: https://www.100layercake.com/2026/06/09/romantic-destination-wedding-da-nang-vietnam/
+    read: 2026-10-23
+    kind: feature
+    title: A Romantic Fairytale Lantern Wedding in Da Nang, Vietnam
+
+identity:
+  parent_company:
+    value: 100 Layer Cake, Inc.
+    cite:
+      - source: about
+        quote: 100 Layer Cake, Inc.
+    note: The company named in the site footer; no separate parent or media group is named.
+  sister_publications:
+    value: unknown
+    checked:
+      - about
+    note: The about page calls MatchBook a sister site; it is a vendor-matching service, not an editorial title.
+  shared_inbox_with:
+    value: unknown
+    checked: [ contact, guidelines ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: feature_surrealist_austria
+      - source: feature_mount_olympus
+      - source: feature_lucca
+      - source: feature_joia_beach
+      - source: feature_da_nang
+    note: Inferred from published features; no page states a geographic limit. The five newest features are in Austria, Greece, Italy, Florida and Vietnam.
+  basis:
+    value: unknown
+    checked: [ guidelines ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: feature_lucca
+        quote: I am happiest we spent money on our destination wedding in Italy
+      - source: feature_joia_beach
+        quote: For New Yorkers Jackie and Chase, Miami has always been their happy place
+    note: Inferred from published features; no page states that destination weddings are accepted. The Lucca couple live in Santa Cruz and the Miami couple are New Yorkers.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: For weddings, elopements and parties (including birthdays and kids parties), we’ll need 75-150 of the very best photos
+  elopement:
+    value: true
+    cite:
+      - source: guidelines
+        quote: For weddings, elopements and parties (including birthdays and kids parties), we’ll need 75-150 of the very best photos
+  styled_shoot:
+    value: unknown
+    checked: [ guidelines ]
+    note: The guidelines name weddings, elopements and parties only.
+  style_tags:
+    value: [ fashion_forward_editorial, multiple_looks, whimsical, italian_villa, bold_color_maximalist, organic_textural, romantic, mediterranean_europe ]
+    cite:
+      - source: feature_surrealist_austria
+      - source: feature_mount_olympus
+      - source: feature_lucca
+      - source: feature_joia_beach
+      - source: feature_da_nang
+  seasonality:
+    value: unknown
+    checked: [ guidelines ]
+
+routes:
+  value:
+    - platform: email
+      account_required: false
+      preferred: true
+      steps:
+        - Email the editorial submissions inbox (the Submit an Event button on the submissions page opens it).
+        - Give your name and your Vendor Guide listing link, if you have one.
+        - Add a descriptive title for the submission and a note on what makes it unique.
+        - Link a highlight gallery of 75 to 150 of the best photos, each 2000 pixels wide.
+        - Expect a reply within three weeks only if the submission is a fit.
+      note: The inbox address is in the private contacts overlay. Vendor Guide members and creative partners are reviewed first; non-members are accepted only occasionally.
+  cite:
+    - source: guidelines
+      quote: CLICK HERE TO SUBMIT AN EVENT
+    - source: contact
+      quote: FOR EDITORIAL SUBMISSIONS
+    - source: guidelines
+      quote: Your name and 100 Layer Cake Vendor Guide listing link, if you have one
+    - source: guidelines
+      quote: A descriptive title for your submission
+    - source: guidelines
+      quote: A note on what makes your submission unique
+    - source: guidelines
+      quote: we prioritize features from our Vendor Guide members and creative partners
+    - source: guidelines
+      quote: We do occasionally accept a limited number of non-member submissions that feel especially aligned.
+
+package:
+  image_min:
+    value: 75
+    cite:
+      - source: guidelines
+        quote: For weddings, elopements and parties (including birthdays and kids parties), we’ll need 75-150 of the very best photos
+  image_max:
+    value: 150
+    cite:
+      - source: guidelines
+        quote: For weddings, elopements and parties (including birthdays and kids parties), we’ll need 75-150 of the very best photos
+  resolution:
+    value:
+      min_width_px: 2000
+      max_width_px: 2000
+      note: Worded as an exact width, not a minimum or maximum.
+    cite:
+      - source: guidelines
+        quote: All photos must be 2000 pixels wide.
+  size:
+    value: unknown
+    checked: [ guidelines ]
+    note: Only a pixel width is given; the page does not say web or print size.
+  orientation_mix:
+    value: unknown
+    checked: [ guidelines ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ guidelines ]
+  gallery_hosts:
+    value: [ pixieset, pic_time, dropbox ]
+    cite:
+      - source: guidelines
+        quote: A link to a highlight gallery (we love Pixieset, Pic Time or Dropbox).
+    note: These three are named as favorites ("we love"); the page does not refuse other hosts.
+  vendor_credits:
+    value: unknown
+    checked: [ guidelines ]
+    note: The submission list does not ask for vendor credits; published features end with a full vendor list.
+  story:
+    value: unknown
+    checked: [ guidelines ]
+    note: Only a descriptive title and a note on what makes the submission unique are asked for; no story or questionnaire is mentioned.
+  video_accepted:
+    value: unknown
+    checked: [ guidelines ]
+  other_requirements:
+    value:
+      - The submitter's name and Vendor Guide listing link, if any.
+      - A descriptive title for the submission.
+      - A note on what makes the submission unique.
+      - Photos covering detail shots, portraits, ceremony, reception and fashion.
+    cite:
+      - source: guidelines
+        quote: Your name and 100 Layer Cake Vendor Guide listing link, if you have one
+      - source: guidelines
+        quote: A descriptive title for your submission
+      - source: guidelines
+        quote: A note on what makes your submission unique
+      - source: guidelines
+        quote: of detail shots, portraits, ceremony, reception, fashion, etc.
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_required
+      after_publication_days: 60
+    cite:
+      - source: guidelines
+        quote: 100 Layer Cake will retain the exclusive right to feature this submission for 60 days from the date of it first being published
+    note: The page says nothing about exclusivity while a submission is under review.
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ guidelines ]
+    blogs:
+      value: unknown
+      checked: [ guidelines ]
+    social:
+      value: unknown
+      checked: [ guidelines ]
+  freshness_window_months:
+    value: unknown
+    checked: [ guidelines ]
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines ]
+  submitter_roles:
+    value: unknown
+    checked: [ guidelines, advertise ]
+    note: The guidelines address wedding professionals with a Vendor Guide link but do not say who may submit.
+
+rights:
+  image_usage:
+    value: The right to publish the submitted work, with an exclusive right to feature it for 60 days after it is first published.
+    cite:
+      - source: guidelines
+        quote: You grant 100 Layer Cake the rights to publish this work
+      - source: guidelines
+        quote: 100 Layer Cake will retain the exclusive right to feature this submission for 60 days from the date of it first being published
+  credit_format:
+    value: A vendor list at the end of the feature naming each vendor's role and business, plus a Guide Members box for vendors in the Vendor Guide.
+    cite:
+      - source: feature_mount_olympus
+        quote: "Photography: Dimitrios Baloukas"
+      - source: feature_mount_olympus
+        quote: Dimitrios Baloukas is a member of our Guide
+      - source: feature_joia_beach
+        quote: Eclectic Elegance Photo is a member of our Guide
+  couple_consent_required:
+    value: unknown
+    checked: [ guidelines, terms ]
+    note: The submitter grants the right to publish without violating anyone's privacy or publicity rights; no consent step is named.
+  vendor_consent_required:
+    value: unknown
+    checked: [ guidelines, terms ]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ guidelines, guide_tiers ]
+  publication_fee:
+    value: unknown
+    checked: [ guidelines, advertise, guide_tiers ]
+    note: Sponsored editorial features are sold to brands on the advertise page; no page ties a fee to real-wedding features.
+  priority_paid_tier:
+    value:
+      name: Vendor Guide membership
+      price:
+        amount: 295
+        currency: USD
+        note: Per year for the Base tier, renewing automatically; Preferred is 1450 and Signature 2750 per year, both by application. Prices are shown with a dollar sign; USD read from it.
+      note: Guide members are reviewed first. Every tier lists enhanced submission visibility; only Signature lists priority submission review.
+    cite:
+      - source: guidelines
+        quote: we prioritize features from our Vendor Guide members and creative partners
+      - source: guidelines
+        quote: Priority consideration for real wedding submissions and editorial features
+      - source: guide_tiers
+        quote: Base $295 /yr
+      - source: guide_tiers
+        quote: Preferred - By Application
+      - source: guide_tiers
+        quote: $1450 /yr
+      - source: guide_tiers
+        quote: Signature - By Application
+      - source: guide_tiers
+        quote: $2750 /yr
+      - source: guide
+        quote: Priority review for inclusion in our curated editorials, trend stories, and real wedding features.
+      - source: guide_tiers
+        quote: All memberships are annual and renew automatically
+      - source: guide_tiers
+        quote: Enhanced submission visibility
+      - source: guide_tiers
+        quote: Priority submission review
+  reach:
+    value:
+      - metric: instagram_followers
+        value: 440000
+        as_of: 2026-10-23
+      - metric: newsletter_subscribers
+        value: 77000
+        as_of: 2026-10-23
+    cite:
+      - source: advertise
+        quote: With over 440K Instagram followers
+      - source: guide
+        quote: community of over 440,000 followers
+      - source: guide_tiers
+        quote: 2 Newsletter inclusions to our 77K subscribers
+    note: The pages are undated, so as_of is the date read. The about page also claims "1M SOCIAL REACH" and the Guide page "2.9M+ Monthly Instagram Reach", which fit none of the schema's metrics.
+
+timing:
+  response_window:
+    value:
+      days: 21
+      replies: success_only
+    cite:
+      - source: guidelines
+        quote: If your submission is a fit, you’ll hear from us within three weeks with next steps.
+  publish_lead_days:
+    value: unknown
+    checked: [ guidelines ]
+  publishing_cycle:
+    value: Online; five real weddings went live between 2026-06-09 and 2026-10-16, about one a month.
+    cite:
+      - source: feature_surrealist_austria
+      - source: feature_mount_olympus
+      - source: feature_lucca
+      - source: feature_joia_beach
+      - source: feature_da_nang
+
+people:
+  editors:
+    value:
+      - name: Amanda Dawbarn
+        role: founder
+    cite:
+      - source: substack_about
+        quote: Amanda Dawbarn, the founder of 100 Layer Cake
+    note: The about and contact pages list no staff; the outlet's own Substack names its founder.
+
+insight:
+  secret_sauce:
+    - tip: Join the Vendor Guide, or work with a vendor who is in it; members are reviewed first, and three of the five newest features credit a Guide member.
+      cite:
+        - source: guidelines
+          quote: we prioritize features from our Vendor Guide members and creative partners
+        - source: feature_mount_olympus
+          quote: as captured by our Guide member
+        - source: feature_lucca
+          quote: as designed by our Guide member
+        - source: feature_joia_beach
+          quote: See all the colorful photos by our photography Vendor Guide member
+    - tip: Pitch the point of view; the editors want original, thoughtful, polished work and ask for a note on what makes the submission unique.
+      cite:
+        - source: guidelines
+          quote: work that feels thoughtful, original, and executed with a high level of professionalism
+        - source: guidelines
+          quote: A note on what makes your submission unique
+    - tip: Cover fashion as well as details, portraits, ceremony and reception; recent features dwell on bridal looks and outfit changes.
+      cite:
+        - source: guidelines
+          quote: of detail shots, portraits, ceremony, reception, fashion, etc.
+        - source: feature_surrealist_austria
+        - source: feature_lucca
+        - source: feature_da_nang
+  recent_features:
+    - source: feature_surrealist_austria
+      published: 2026-10-16
+      location: AT
+      content_type: real_wedding
+      tags: [ whimsical, alternative_nontraditional, fashion_forward_editorial, vintage_heirloom, multiple_looks, farm_ranch_countryside, rustic_barn_timber ]
+    - source: feature_mount_olympus
+      published: 2026-09-15
+      location: GR
+      content_type: real_wedding
+      tags: [ mountain_alpine, forest_woodland, organic_textural, culturally_rooted, mediterranean_europe ]
+    - source: feature_lucca
+      published: 2026-09-01
+      location: IT
+      content_type: real_wedding
+      tags: [ italian_villa, fashion_forward_editorial, romantic, multiple_looks, mediterranean_europe ]
+    - source: feature_joia_beach
+      published: 2026-08-04
+      location: US-FL:miami
+      content_type: real_wedding
+      tags: [ beach_coastal, bold_color_maximalist, playful_party, florida ]
+    - source: feature_da_nang
+      published: 2026-06-09
+      location: VN
+      content_type: real_wedding
+      tags: [ hotel_resort, romantic, whimsical, multiple_looks, international_other ]

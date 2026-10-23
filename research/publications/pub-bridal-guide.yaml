@@ -1,0 +1,345 @@
+id: pub-bridal-guide
+name: Bridal Guide
+url: https://www.bridalguide.com
+kind: national_magazine
+tier: primary
+recheck_every_days: 90
+taste_summary: Relaunched in 2026 as a luxe print title celebrating the planners and designers behind the weddings; recent features range from short web posts on US hotel and waterfront weddings to long destination stories rich in cultural traditions and outfit changes.
+notes: The only published route is an email address for wedding photos on the contact page; no submission guidelines were found, so package and rules facts are unknown. Two of the five recent features (Hawaii, Saint-Tropez) carry no published_time metadata; their dates are the og:updated_time values, which may be later than first publication. Reach figures come from the 2027 media kit PDF (created 2026-09-22) and the AAM publisher's statement linked from the advertise page.
+
+sources:
+  contact:
+    url: https://bridalguide.com/contact-us/
+    read: 2026-10-23
+    kind: guidelines
+    title: Contact Us (lists the photo submissions inbox)
+  advertise:
+    url: https://bridalguide.com/advertise/
+    read: 2026-10-23
+    kind: media_kit
+    title: Advertise
+  kit:
+    url: https://bridalguide.com/wp-content/uploads/2026/09/BG-Media-Kit-2027.pdf
+    read: 2026-10-23
+    kind: media_kit
+    title: Media Kit 2027 (PDF)
+  circulation:
+    url: https://bridalguide.com/wp-content/uploads/2026/05/bridal-guide-circulation-6-30-25.pdf
+    read: 2026-10-23
+    kind: media_kit
+    title: AAM Publisher's Statement, 6 months ended June 30, 2025 (PDF)
+  magazine:
+    url: https://bridalguide.com/magazine/
+    read: 2026-10-23
+    kind: other
+    title: The Magazine
+  real_weddings:
+    url: https://bridalguide.com/category/real-weddings/
+    read: 2026-10-23
+    kind: other
+    title: Real Weddings index
+  feature_hawaii:
+    url: https://bridalguide.com/real-weddings/destination-wedding/two-worlds-joined-together-hawaii/
+    read: 2026-10-23
+    kind: feature
+    title: "Real Wedding: Two Worlds Joined Together in Hawaii"
+  feature_chicago:
+    url: https://bridalguide.com/real-weddings/midwest/glamorous-new-years-eve-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: "Real Wedding: A Glamorous New Year's Eve Celebration"
+  feature_raleigh:
+    url: https://bridalguide.com/real-weddings/south/modern-fall-wedding-north-carolina/
+    read: 2026-10-23
+    kind: feature
+    title: "Real Wedding: A Modern & Moody Fall Wedding in North Carolina"
+  feature_connecticut:
+    url: https://bridalguide.com/real-weddings/northeast/modern-waterfront-connecticut-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: "Real Wedding: A Modern Waterfront Celebration on the Connecticut Coast"
+  feature_saint_tropez:
+    url: https://bridalguide.com/real-weddings/destination-wedding/heart-and-heritage/
+    read: 2026-10-23
+    kind: feature
+    title: "Real Wedding Spotlight: Heart and Heritage"
+
+identity:
+  parent_company:
+    value: RFP Corp.
+    cite:
+      - source: contact
+        quote: BridalGuide.com is the web complement to Bridal Guide Magazine , published by RFP Corp.
+  sister_publications:
+    value: [ Rue ]
+    cite:
+      - source: kit
+        quote: Partnering with our sister publication, Rue, to bring expert advice on setting up life together.
+  shared_inbox_with:
+    value: unknown
+    checked: [ contact ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: feature_hawaii
+      - source: feature_chicago
+      - source: feature_raleigh
+      - source: feature_connecticut
+      - source: feature_saint_tropez
+    note: Inferred from published features; no page states a geographic limit. Real weddings are filed under Northeast, South, Midwest, West and Destination Wedding, and recent features are in Hawaii, Illinois, North Carolina, Connecticut and France.
+  basis:
+    value: unknown
+    checked: [ contact, real_weddings ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: feature_hawaii
+        quote: For the Houston-based lawyers
+      - source: feature_hawaii
+        quote: 100 friends and family members who traveled across an ocean to celebrate them
+      - source: feature_saint_tropez
+        quote: The Miami-based couple of eight years
+    note: Inferred from published features; no page states that destination weddings are accepted. The Hawaii and Saint-Tropez features show couples from Houston and Miami who traveled, filed under Destination Wedding.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: contact
+        quote: "To submit your wedding photos for consideration, please email:"
+  elopement:
+    value: true
+    cite:
+      - source: real_weddings
+        quote: "Real Wedding: A Wanderlust Two-Day Elopement in the Desert and Mountains"
+      - source: real_weddings
+        quote: A Breathtaking Elopement in Iceland
+    note: Inferred from published features; no page states that elopements are accepted.
+  styled_shoot:
+    value: unknown
+    checked: [ contact, real_weddings ]
+  style_tags:
+    value: [ glamorous_luxe, modern_minimal, hotel_resort, culturally_rooted, fashion_forward_editorial, multiple_looks ]
+    cite:
+      - source: feature_hawaii
+      - source: feature_chicago
+      - source: feature_raleigh
+      - source: feature_connecticut
+      - source: feature_saint_tropez
+  seasonality:
+    value: unknown
+    checked: [ contact, kit ]
+
+routes:
+  value:
+    - platform: email
+      account_required: false
+      preferred: true
+      steps:
+        - Email the wedding photos to the photo submissions inbox listed on the contact page.
+      note: The inbox address is in the private contacts overlay. The contact page gives no instructions beyond the address.
+  cite:
+    - source: contact
+      quote: "To submit your wedding photos for consideration, please email:"
+
+package:
+  image_min:
+    value: unknown
+    checked: [ contact ]
+  image_max:
+    value: unknown
+    checked: [ contact ]
+  resolution:
+    value: unknown
+    checked: [ contact ]
+  size:
+    value: unknown
+    checked: [ contact ]
+  orientation_mix:
+    value: unknown
+    checked: [ contact ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ contact ]
+  gallery_hosts:
+    value: unknown
+    checked: [ contact ]
+  vendor_credits:
+    value: unknown
+    checked: [ contact ]
+    note: Published features end with a full Vendors list; the contact page does not ask for one.
+  story:
+    value: unknown
+    checked: [ contact ]
+  video_accepted:
+    value: unknown
+    checked: [ contact ]
+  other_requirements:
+    value: unknown
+    checked: [ contact ]
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [ contact ]
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ contact ]
+    blogs:
+      value: unknown
+      checked: [ contact ]
+    social:
+      value: unknown
+      checked: [ contact ]
+  freshness_window_months:
+    value: unknown
+    checked: [ contact ]
+  photographer_frequency:
+    value: unknown
+    checked: [ contact ]
+  submitter_roles:
+    value: unknown
+    checked: [ contact ]
+    note: The contact page asks for "your wedding photos" without saying who may send them.
+
+rights:
+  image_usage:
+    value: unknown
+    checked: [ contact ]
+  credit_format:
+    value: The photographer is credited as "Photo:" and the studio name under the byline, and again as "Photography:" in a Vendors list at the end.
+    cite:
+      - source: feature_chicago
+        quote: "Photo: Cristina G Photo"
+      - source: feature_chicago
+        quote: "Vendors Photography: Cristina G Photo"
+  couple_consent_required:
+    value: unknown
+    checked: [ contact ]
+  vendor_consent_required:
+    value: unknown
+    checked: [ contact ]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ contact ]
+  publication_fee:
+    value: unknown
+    checked: [ contact, advertise, kit ]
+  priority_paid_tier:
+    value: unknown
+    checked: [ contact, advertise, kit ]
+  reach:
+    value:
+      - metric: print_circulation
+        value: 15480
+        as_of: 2025-06-30
+      - metric: monthly_pageviews
+        value: 2400000
+        as_of: 2026-09-22
+      - metric: newsletter_subscribers
+        value: 50000
+        as_of: 2026-09-22
+    cite:
+      - source: circulation
+        quote: 6 months ended June 30, 2025, Subject to Audit
+      - source: circulation
+        quote: Total Paid & Verified Circulation
+      - source: circulation
+        quote: 15,480
+      - source: kit
+        quote: Monthly page views
+      - source: kit
+        quote: 2.4 million
+      - source: kit
+        quote: 50,000+
+      - source: kit
+        quote: Opt-in subscribers
+    note: Print is 15,480 copies of the AAM total paid and verified average of 100,182 for the six months ended 2025-06-30; the other 84,702 are verified digital-issue copies. The kit's By the Numbers layout places 2.4 million under BridalGuide.com above Monthly page views, and 50,000+ under Newsletter above Opt-in subscribers; the kit (created 2026-09-22) gives no date, so as_of is that day.
+
+timing:
+  response_window:
+    value: unknown
+    checked: [ contact ]
+  publish_lead_days:
+    value: unknown
+    checked: [ contact ]
+  publishing_cycle:
+    value: Print issues for Spring, Summer, Fall and Winter 2026; online real weddings went live several times a month between 2026-08-24 and 2026-10-14.
+    cite:
+      - source: magazine
+        quote: SPRING 2026
+      - source: magazine
+        quote: SUMMER 2026
+      - source: magazine
+        quote: FALL 2026
+      - source: magazine
+        quote: Sneak Peek Inside the Winter 2026 Issue
+      - source: feature_hawaii
+      - source: feature_chicago
+      - source: feature_raleigh
+      - source: feature_connecticut
+      - source: feature_saint_tropez
+
+people:
+  editors:
+    value:
+      - name: Kristen Klein
+        role: Digital Marketing & Content Coordinator, BridalGuide.com
+    cite:
+      - source: contact
+        quote: "For BridalGuide.com editorial inquiries and any website-related questions, please contact: Kristen Klein Digital Marketing & Content Coordinator, BridalGuide.com"
+    note: Kristen Klein is the contact for website editorial inquiries and bylines recent web features. No masthead was found; the advertise page lists Danny Seo as Publisher, the contact for print advertising.
+
+insight:
+  secret_sauce:
+    - tip: Put the creative team forward; the relaunched magazine sets out to celebrate the artists behind the weddings.
+      cite:
+        - source: kit
+          quote: to pull back the curtain and celebrate the true artists creating some of the most
+    - tip: Send a complete vendor list; every feature ends with one, including gown designers and planners.
+      cite:
+        - source: feature_chicago
+          quote: "Vendors Photography: Cristina G Photo Planning: Events by Shaun Rajah"
+        - source: feature_saint_tropez
+    - tip: Destination weekends with cultural traditions and several outfits get long features; the Saint-Tropez story is marked as seen in the print magazine.
+      cite:
+        - source: feature_saint_tropez
+          quote: As Seen in Bridal Guide
+        - source: feature_hawaii
+          quote: The celebrations opened with a Vietnamese tea ceremony
+    - tip: Web-only features are short, a few paragraphs with a vendor list, so a strong edit of standout images matters more than a long story.
+      cite:
+        - source: feature_chicago
+        - source: feature_raleigh
+        - source: feature_connecticut
+  recent_features:
+    - source: feature_hawaii
+      published: 2026-10-14
+      location: US-HI
+      content_type: real_wedding
+      tags: [ hotel_resort, island_tropical, church_cathedral, culturally_rooted, fashion_forward_editorial, multiple_looks ]
+    - source: feature_chicago
+      published: 2026-09-21
+      location: US-IL
+      content_type: real_wedding
+      tags: [ hotel_resort, glamorous_luxe, romantic, holiday_season ]
+    - source: feature_raleigh
+      published: 2026-09-10
+      location: US-NC
+      content_type: real_wedding
+      tags: [ hotel_resort, moody_dramatic, intimate_micro, modern_minimal ]
+    - source: feature_connecticut
+      published: 2026-09-04
+      location: US-CT
+      content_type: real_wedding
+      tags: [ beach_coastal, ballroom_grand_hall, modern_minimal, fashion_forward_editorial, culturally_rooted ]
+    - source: feature_saint_tropez
+      published: 2026-08-24
+      location: FR
+      content_type: real_wedding
+      tags: [ castle_chateau, garden_botanical, culturally_rooted, multiple_looks, playful_party, mediterranean_europe ]

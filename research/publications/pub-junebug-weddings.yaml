@@ -1,0 +1,272 @@
+id: pub-junebug-weddings
+name: Junebug Weddings
+url: https://junebugweddings.com
+kind: blog
+tier: secondary
+recheck_every_days: 90
+taste_summary: Editorial real weddings, elopements and styled shoots worldwide, often destination and design-led.
+notes: junebugweddings.com answers plain fetches with a bot challenge; every page below was read in a browser on 2026-10-23. The guidelines, last updated October 23rd, 2024, put the submission form inside paid vendor accounts, so its requirements could not be read.
+
+sources:
+  guidelines:
+    url: https://junebugweddings.com/submission-guidelines
+    read: 2026-10-23
+    kind: guidelines
+    title: Editorial Submission Guidelines
+  membership:
+    url: https://junebugweddings.com/apply-for-membership
+    read: 2026-10-23
+    kind: other
+    title: Join Our Directory
+  blog_index:
+    url: https://junebugweddings.com/wedding-blog/category/real-weddings/
+    read: 2026-10-23
+    kind: other
+    title: Real weddings
+  feature_maine:
+    url: https://junebugweddings.com/wedding-blog/lakeside-summer-camp-wedding-weekend-at-migis-lodge-in-maine/
+    read: 2026-10-23
+    kind: feature
+  feature_sintra:
+    url: https://junebugweddings.com/wedding-blog/casa-dos-penedos-wedding-made-the-most-of-every-magical-corner-of-palace/
+    read: 2026-10-23
+    kind: feature
+  feature_san_francisco:
+    url: https://junebugweddings.com/wedding-blog/picturesque-san-francisco-city-hall-wedding-was-love-letter-to-city-by-the-bay/
+    read: 2026-10-23
+    kind: feature
+  feature_sorrento:
+    url: https://junebugweddings.com/wedding-blog/timeless-italian-elegance-in-this-bellevue-syrene-wedding-in-sorrento/
+    read: 2026-10-23
+    kind: feature
+
+identity:
+  parent_company:
+    value: unknown
+    checked: [ guidelines, membership ]
+  sister_publications:
+    value: unknown
+    checked: [ guidelines, membership ]
+  shared_inbox_with:
+    value: unknown
+    checked: [ guidelines ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: feature_maine
+      - source: feature_sintra
+      - source: feature_san_francisco
+      - source: feature_sorrento
+    note: Inferred from published features in the US, Portugal and Italy; no page states a coverage policy.
+  basis:
+    value: unknown
+    checked: [ guidelines ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: blog_index
+        quote: This Nature-Filled Portugal Destination Wedding at Areias do Seixo
+    note: Inferred from a recent feature headlined as a destination wedding; no page states a policy.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Submit Real Weddings, Elopements, and Styled Shoots
+  elopement:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Submit Real Weddings, Elopements, and Styled Shoots
+  styled_shoot:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Submit Real Weddings, Elopements, and Styled Shoots
+  style_tags:
+    value: [ lakefront, castle_chateau, hotel_resort, classic_timeless ]
+    cite:
+      - source: feature_maine
+      - source: feature_sintra
+      - source: feature_sorrento
+    note: From the features' headlines and settings (a lakeside lodge, a palace, a cliffside hotel, "timeless" elegance).
+  seasonality:
+    value: unknown
+    checked: [ guidelines ]
+
+routes:
+  value:
+    - platform: portal
+      url: https://junebugweddings.com/apply-for-membership
+      account_required: true
+      preferred: true
+      steps:
+        - Apply for a listing in the Junebug vendor directory and wait for approval.
+        - Once listed, open the submission form inside your Junebug account.
+        - Submit the wedding, elopement or styled shoot there.
+      note: Open only to listed Junebug Vendors, a paid 12-month directory listing.
+  cite:
+    - source: guidelines
+      quote: Editorial submissions are now open exclusively to Junebug Vendors.
+    - source: guidelines
+      quote: you can find the submission form inside your Junebug account.
+    - source: membership
+      quote: please complete our application below and a team member will get back to you within ten business days.
+    - source: guidelines
+      quote: "Latest Editorial Update: October 23rd, 2024"
+
+package:
+  image_min:
+    value: unknown
+    checked: [ guidelines ]
+    note: The submission form sits inside vendor accounts and was not read.
+  image_max:
+    value: unknown
+    checked: [ guidelines ]
+  resolution:
+    value: unknown
+    checked: [ guidelines ]
+  size:
+    value: unknown
+    checked: [ guidelines ]
+  orientation_mix:
+    value: unknown
+    checked: [ guidelines ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ guidelines ]
+  gallery_hosts:
+    value: unknown
+    checked: [ guidelines ]
+  vendor_credits:
+    value: unknown
+    checked: [ guidelines ]
+  story:
+    value: unknown
+    checked: [ guidelines ]
+  video_accepted:
+    value: unknown
+    checked: [ guidelines ]
+  other_requirements:
+    value: unknown
+    checked: [ guidelines ]
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [ guidelines ]
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ guidelines ]
+    blogs:
+      value: unknown
+      checked: [ guidelines ]
+    social:
+      value: unknown
+      checked: [ guidelines ]
+  freshness_window_months:
+    value: unknown
+    checked: [ guidelines ]
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines ]
+  submitter_roles:
+    value: [ vendor ]
+    cite:
+      - source: guidelines
+        quote: Editorial submissions are now open exclusively to Junebug Vendors.
+    note: Listed Junebug Vendors of any type, photographers included.
+
+rights:
+  image_usage:
+    value: unknown
+    checked: [ guidelines ]
+  credit_format:
+    value: unknown
+    checked: [ guidelines ]
+  couple_consent_required:
+    value: unknown
+    checked: [ guidelines ]
+  vendor_consent_required:
+    value: unknown
+    checked: [ guidelines ]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked:
+      - guidelines
+      - membership
+    note: Submitting requires a paid directory listing, recorded under priority_paid_tier; no per-submission fee is stated.
+  publication_fee:
+    value: unknown
+    checked: [ guidelines, membership ]
+  priority_paid_tier:
+    value:
+      name: Junebug vendor directory listing
+      price:
+        amount: 25
+        currency: USD
+        note: 25 to 150 a month on a 12-month contract. Currency inferred from the dollar sign.
+      note: The same listing that is required to submit; it also gives publication priority.
+    cite:
+      - source: membership
+        quote: Junebug-approved vendors each receive a custom portfolio, publication priority on our blog
+      - source: membership
+        quote: our listings are 12-month contracts that range in price from $25-150 per month depending on location and vendor type
+  reach:
+    value: unknown
+    checked: [ guidelines, membership ]
+
+timing:
+  response_window:
+    value: unknown
+    checked: [ guidelines ]
+  publish_lead_days:
+    value: unknown
+    checked: [ guidelines ]
+  publishing_cycle:
+    value: Real weddings publish online most days; four went live between 2026-10-18 and 2026-10-22.
+    cite:
+      - source: feature_maine
+      - source: feature_sintra
+      - source: feature_san_francisco
+      - source: feature_sorrento
+
+people:
+  editors:
+    value: unknown
+    checked: [ guidelines, membership ]
+
+insight:
+  secret_sauce:
+    - tip: A paid Junebug vendor listing is now the only way to submit, and listed vendors get publication priority.
+      cite:
+        - source: guidelines
+          quote: Editorial submissions are now open exclusively to Junebug Vendors.
+        - source: membership
+          quote: Junebug-approved vendors each receive a custom portfolio, publication priority on our blog
+  recent_features:
+    - source: feature_maine
+      published: 2026-10-22
+      location: US-ME
+      content_type: real_wedding
+      tags: [ lakefront ]
+    - source: feature_sintra
+      published: 2026-10-20
+      location: PT
+      content_type: real_wedding
+      tags: [ castle_chateau ]
+    - source: feature_san_francisco
+      published: 2026-10-19
+      location: US-CA
+      content_type: real_wedding
+    - source: feature_sorrento
+      published: 2026-10-18
+      location: IT
+      content_type: real_wedding
+      tags: [ hotel_resort, classic_timeless, mediterranean_europe ]

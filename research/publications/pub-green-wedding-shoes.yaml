@@ -1,0 +1,435 @@
+id: pub-green-wedding-shoes
+name: Green Wedding Shoes
+url: https://greenweddingshoes.com
+kind: blog
+tier: primary
+recheck_every_days: 90
+taste_summary: Fashion-forward, personality-driven weddings with handmade and DIY details; recent features are color-saturated, playful and culturally rooted, often with several outfit changes.
+notes: The site's Cloudflare check refused curl (HTTP 403), so the pages were read through a rendering fetch tool, with each quote checked against the page in a second pass; the quote verifier later fetched every cited page and found every quote. Feature pages show no visible publish date; the dates below come from each page's structured data (datePublished). The Real Weddings category page (https://greenweddingshoes.com/category/real-weddings/) lists no posts without JavaScript; the features were found through the home page. Separate forms exist for TikTok or Instagram Reels and for home tours.
+
+sources:
+  guidelines:
+    url: https://greenweddingshoes.com/submissions/
+    read: 2026-10-23
+    kind: guidelines
+    title: Submissions
+  form:
+    url: https://greenweddingshoes.com/submit-a-wedding/
+    read: 2026-10-23
+    kind: form
+    title: Submit a Wedding
+  about:
+    url: https://greenweddingshoes.com/about/
+    read: 2026-10-23
+    kind: about
+    title: About
+  contact:
+    url: https://greenweddingshoes.com/contact/
+    read: 2026-10-23
+    kind: about
+    title: Contact
+  advertise:
+    url: https://greenweddingshoes.com/advertise-with-gws/
+    read: 2026-10-23
+    kind: media_kit
+    title: Advertise with Green Wedding Shoes
+  feature_new_orleans:
+    url: https://greenweddingshoes.com/new-orleans-wedding-hotel-peter-and-paul-with-pink-wedding-dress/
+    read: 2026-10-23
+    kind: feature
+    title: A Colorful New Orleans Wedding at Hotel Peter and Paul with a Hand-Dyed Pink Wedding Dress
+  feature_swan_backdrop:
+    url: https://greenweddingshoes.com/heart-shaped-swan-backdrop-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: This Couple Built Their Whole Wedding Around a Heart-Shaped Swan Backdrop
+  feature_micarah_tewers:
+    url: https://greenweddingshoes.com/micarah-tewers-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: Micarah Tewers Sewed All Three of Her Wedding Dresses (One Cost Her $17)
+  feature_austin:
+    url: https://greenweddingshoes.com/pastel-drag-brunch-wedding-austin/
+    read: 2026-10-23
+    kind: feature
+    title: A Pastel Drag Brunch Wedding in Austin, With Eight Cakes the Bride Made Herself
+  feature_seattle:
+    url: https://greenweddingshoes.com/korean-paebaek-ceremony-seattle-garden-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: An Intimate PNW Garden Party with a Korean Paebaek Ceremony and a Dinner Made for Foodies
+
+identity:
+  parent_company:
+    value: unknown
+    checked: [ about, contact ]
+    note: The about page's structured data gives the legal name Green Wedding Shoes, LLC, and the visible text names founders Jen and Jason; no parent company is named.
+  sister_publications:
+    value: unknown
+    checked: [ about, advertise ]
+  shared_inbox_with:
+    value: unknown
+    checked: [ contact, guidelines ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: guidelines
+        quote: Real Weddings from all over the world
+  basis:
+    value: unknown
+    checked: [ guidelines, form ]
+  destination_accepted:
+    value: unknown
+    checked: [ guidelines, feature_new_orleans, feature_swan_backdrop, feature_austin, feature_seattle ]
+    note: The guidelines list weddings from all over the world and adventure elopements, but no page and none of the features read says whether a couple traveled for the wedding.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Real Weddings from all over the world
+  elopement:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Adventure Elopements
+  styled_shoot:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Styled Shoots to share new + fun ideas with our readers
+      - source: form
+        quote: Styled / Inspirational Photoshoot
+  style_tags:
+    value: [ bold_color_maximalist, whimsical, playful_party, culturally_rooted, multiple_looks, garden_botanical, church_cathedral ]
+    cite:
+      - source: feature_new_orleans
+      - source: feature_swan_backdrop
+      - source: feature_micarah_tewers
+      - source: feature_austin
+      - source: feature_seattle
+  seasonality:
+    value: unknown
+    checked: [ guidelines, form ]
+    note: The form has an optional Seasonal Feature field asking for a three- or four-word label such as Christmas Elopement; no seasonal preference is stated.
+
+routes:
+  value:
+    - platform: web_form
+      url: https://greenweddingshoes.com/submit-a-wedding/
+      account_required: false
+      preferred: true
+      steps:
+        - Open the four-step form and give the submitter's contact details and role (member of the couple, wedding party or family, or wedding professional).
+        - Give the couple's names, wedding titles and pronouns.
+        - Choose Real Wedding or Styled / Inspirational Photoshoot, give a descriptive title, and say why GWS should feature it.
+        - Link 50 to 250 photos (PASS Gallery or Pixieset preferred, Dropbox accepted), plus a public video link and an optional 9:16 vertical video.
+        - Credit the vendors; the photographer's name, website and Instagram are required.
+        - Agree to the GWS submission terms and submit, then keep the confirmation email.
+      note: The form is on the public page with no sign-in, and it offers Save and Continue Later. If no confirmation email arrives, GWS did not receive the submission.
+  cite:
+    - source: form
+      quote: Step 1 of 4 - Submitter Contact Info
+    - source: guidelines
+      quote: You will receive a confirmation email when you submit the form
+    - source: guidelines
+      quote: if you don't receive a confirmation email, we didn't receive your submission
+
+package:
+  image_min:
+    value: 50
+    cite:
+      - source: form
+        quote: "Share 50-250 (but NOT more than 250) photos that include:"
+      - source: guidelines
+        quote: "We need 50-250 (but NOT more than 250) photos including:"
+    note: Engagement, anniversary and proposal sessions take 30-60 images.
+  image_max:
+    value: 250
+    cite:
+      - source: form
+        quote: "Share 50-250 (but NOT more than 250) photos that include:"
+      - source: guidelines
+        quote: "We need 50-250 (but NOT more than 250) photos including:"
+  resolution:
+    value:
+      min_width_px: 2200
+      note: Portrait and landscape images alike need a 2200 px width; deliver as close to 2200 px wide as possible, since nothing larger is needed.
+    cite:
+      - source: guidelines
+        quote: All photos must be at least 2200px wide.
+      - source: guidelines
+        quote: Images should be delivered as close to 2200px in width as possible; we don't need images any larger than 2200px wide.
+      - source: guidelines
+        quote: both portrait AND landscape photos should have a min-width of 2200 pixels.
+  size:
+    value: unknown
+    checked: [ guidelines, form ]
+    note: Only a pixel width is given (at least, and ideally about, 2200 px wide); no page says web or print size.
+  orientation_mix:
+    value: unknown
+    checked: [ guidelines, form ]
+    note: Portrait and landscape images are both expected to meet the width rule; no mix is asked for.
+  watermarks_allowed:
+    value: false
+    cite:
+      - source: form
+        quote: Images must be at least 2200 pixels wide and without watermarks.
+  gallery_hosts:
+    value: [ pixieset, dropbox, wetransfer ]
+    cite:
+      - source: form
+        quote: PASS Gallery and Pixieset links are our preferred method for photo delivery
+      - source: form
+        quote: We strongly suggest using either Dropbox, PASS Gallery or Pixieset for delivering your photos to us.
+      - source: form
+        quote: Only use WeTransfer if you have a WeTransfer Plus (paid) account.
+    note: PASS Gallery, preferred alongside Pixieset, is not in the schema's host list. The form also has an Other link option. WeTransfer only from a paid Plus account; no blog-post links or zip files.
+  vendor_credits:
+    value:
+      required: true
+      fields: [ business_name, website, instagram ]
+      note: Only the photographer's name, website and Instagram are required fields; the other vendor fields are optional but should be filled in where possible, with HTTPS links.
+    cite:
+      - source: form
+        quote: photog instagram
+      - source: form
+        quote: Please complete as many fields as possible
+      - source: form
+        quote: please use HTTPS (ex. https://yoursite.com) whenever possible
+  story:
+    value:
+      required: true
+      note: A required field asks how the submission stands out and why it fits GWS; a succinct overview is enough.
+    cite:
+      - source: form
+        quote: Let Us Know Why We Should Feature Your Submission
+      - source: form
+        quote: How does your submission stands out from the crowd?
+      - source: form
+        quote: We don't need 5,000 words, but a succinct overview is super helpful.
+  video_accepted:
+    value: true
+    cite:
+      - source: form
+        quote: Please be sure your video is public and does not require a password.
+      - source: form
+        quote: If you have video that is 9:16 (1080px X 1920px) we may use it to promote your video
+  other_requirements:
+    value:
+      - A descriptive title for the submission.
+      - No links to a blog post and no zip files.
+      - Vertical video, if sent, as short clips or one edited clip of no more than 60 seconds.
+      - Couples submitting their own wedding need their photographer's permission.
+      - Say so if the feature was also submitted to other blogs.
+      - No weddings on a plantation, with cotton fields or raw cotton, Native American headdress, real fur, smoking or guns.
+    cite:
+      - source: form
+        quote: Descriptive Title for Your Submission
+      - source: form
+        quote: DO NOT send a link to a blog post or a zip file to download.
+      - source: form
+        quote: short clips that could be joined together or a single edited clip of no more than 60 seconds
+      - source: form
+        quote: Couples submitting your own wedding, please make sure you have permission from your photographer before sharing your photos!
+      - source: guidelines
+        quote: please let us know if you have also submitted this to other blogs
+      - source: guidelines
+        quote: "We do NOT share weddings that: take place on a plantation, involve cotton fields or raw cotton,"
+      - source: guidelines
+        quote: including the use of Native American Headdress, showcase real fur, highlight smoking or guns.
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_required
+      during_review: true
+      after_publication_days: 60
+    cite:
+      - source: guidelines
+        quote: We are looking for exclusive features to publish on Green Wedding Shoes.
+      - source: form
+        quote: will not be submitted elsewhere unless GWS declines to publish it.
+      - source: form
+        quote: GWS retains the exclusive right to feature this wedding or styled shoot for 60 days from the date GWS first publishes it.
+      - source: guidelines
+        quote: Once your feature has been accepted for publication on GWS we ask for a 60-day window of exclusivity
+      - source: form
+        quote: I grant GWS the right of first refusal to publish this wedding or styled shoot.
+    note: The form's terms bar submitting elsewhere until GWS declines, and GWS also takes the right of first refusal; the guidelines page more loosely asks to be told about other submissions.
+  prior_exposure:
+    publications:
+      value: disqualifies
+      cite:
+        - source: form
+          quote: I attest that this submission has not been submitted to or published by another digital outlet,
+    blogs:
+      value: unknown
+      checked: [ guidelines, form ]
+      note: The terms bar prior publication by another digital outlet; the photographer's own blog is not addressed.
+    social:
+      value: unknown
+      checked: [ guidelines, form ]
+  freshness_window_months:
+    value: unknown
+    checked: [ guidelines, form ]
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines, form ]
+  submitter_roles:
+    value: [ photographer, planner, vendor, couple ]
+    cite:
+      - source: contact
+        quote: We welcome submissions from photographers, brides, and other artists.
+      - source: form
+        quote: Wedding Professional
+    note: Planners and other vendors are read from the form's Wedding Professional option; couples (and their wedding party or family) can submit their own wedding.
+
+rights:
+  image_usage:
+    value: Perpetual, worldwide, non-exclusive, royalty-free license to publish, display, reproduce, edit for format and distribute the submitted materials, with credit, across all GWS channels including the website, newsletters and social media; an accepted submission cannot be pulled, and GWS may edit, update or remove it.
+    cite:
+      - source: form
+        quote: I grant Green Wedding Shoes a perpetual, worldwide, non-exclusive, royalty-free license to publish,
+      - source: form
+        quote: display, reproduce, edit for format, and distribute the submitted materials,
+      - source: form
+        quote: with credit, across all GWS channels, including its website, newsletters, and social media
+      - source: form
+        quote: Once my submission is accepted for publication, I may not require GWS to remove it.
+      - source: form
+        quote: GWS may edit, update, or remove any published content at its sole discretion.
+  credit_format:
+    value: The photographer is named in the body text, and a closing vendor list gives each vendor as role and business name, linked, separated by double slashes (for example Photography followed by the studio name).
+    cite:
+      - source: feature_new_orleans
+      - source: feature_austin
+      - source: feature_seattle
+  couple_consent_required:
+    value: unknown
+    checked: [ form, guidelines ]
+    note: The submitter attests to having informed all participating parties and to being authorized to accept the terms on their behalf; that is notice, not a stated consent requirement.
+  vendor_consent_required:
+    value: true
+    cite:
+      - source: form
+        quote: Couples submitting your own wedding, please make sure you have permission from your photographer before sharing your photos!
+    note: Only for couples submitting, and only the photographer's permission.
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ guidelines, form ]
+  publication_fee:
+    value: none
+    cite:
+      - source: about
+        quote: Editorial coverage is never for sale
+  priority_paid_tier:
+    value: unknown
+    checked: [ advertise, guidelines ]
+    note: The advertise page offers sponsored posts and a Wedding Artist Collection vendor directory; no page ties either to submission review.
+  reach:
+    value: unknown
+    checked: [ about, advertise ]
+    note: The about page claims 2.8M+ readers across platforms, a combined figure that fits none of the schema's metrics.
+
+timing:
+  response_window:
+    value:
+      days: 20
+      replies: all
+    cite:
+      - source: guidelines
+        quote: it may take up to 20 days for us to review your submission
+      - source: guidelines
+        quote: We work very hard to respond to every submission whether it is accepted or declined.
+      - source: guidelines
+        quote: If you don't hear from us within 20 days, please follow up to get the status before submitting elsewhere
+  publish_lead_days:
+    value: unknown
+    checked: [ guidelines, form ]
+  publishing_cycle:
+    value: Online; five real weddings went live between 2026-10-09 and 2026-10-23, about two a week.
+    cite:
+      - source: feature_new_orleans
+      - source: feature_swan_backdrop
+      - source: feature_micarah_tewers
+      - source: feature_austin
+      - source: feature_seattle
+
+people:
+  editors:
+    value:
+      - name: Jen Campbell
+        role: Editor and Creative Director
+    cite:
+      - source: about
+        quote: Jen serves as Editor and Creative Director
+      - source: feature_new_orleans
+    note: The about page names her as Jen, co-founder with Jason; the feature author sections name her Jen Campbell.
+
+insight:
+  secret_sauce:
+    - tip: Show the couple's personality and fashion; the editors want a fashion-forward couple whose style runs from decor to attire.
+      cite:
+        - source: guidelines
+          quote: A fashion-forward couple whose style is evident from their wedding decor to their attire.
+        - source: guidelines
+          quote: We love showcasing weddings of couples of all types with fashion and personality
+    - tip: Lead with unusual, personal details, ideally a new twist on an old idea; recent features center on handmade dresses, hand-painted decor and DIY cakes.
+      cite:
+        - source: guidelines
+          quote: We love unique and fabulous wedding details, especially when they include a new twist on an old idea
+        - source: guidelines
+          quote: A love for the small personal details – this is what inspires our readers!
+        - source: feature_micarah_tewers
+        - source: feature_austin
+    - tip: Budget does not decide it; low-budget and over-the-top weddings both run.
+      cite:
+        - source: guidelines
+          quote: We feature low-budget, high-budget, simple paired-back weddings, and elaborate over-the-top weddings.
+    - tip: Technical quality is a stated criterion; send properly lit, consistently processed, in-focus images.
+      cite:
+        - source: guidelines
+          quote: Properly lit and consistently processed photos that are in focus
+    - tip: Keep the pitch short and confident; the why-feature field wants a succinct overview of how the wedding stands out.
+      cite:
+        - source: form
+          quote: We don't need 5,000 words, but a succinct overview is super helpful.
+    - tip: Add a 9:16 vertical clip of 60 seconds or less; GWS may use it to promote the feature.
+      cite:
+        - source: form
+          quote: If you have video that is 9:16 (1080px X 1920px) we may use it to promote your video
+    - tip: Skip engagement sessions unless they are unusual.
+      cite:
+        - source: guidelines
+          quote: Please note that we are currently not looking for engagement submissions unless it's something unique.
+  recent_features:
+    - source: feature_new_orleans
+      published: 2026-10-23
+      location: US-LA
+      content_type: real_wedding
+      tags: [ bold_color_maximalist, church_cathedral, colored_printed ]
+    - source: feature_swan_backdrop
+      published: 2026-10-19
+      content_type: real_wedding
+      tags: [ bold_color_maximalist, whimsical, playful_party, ball_gown, multiple_looks ]
+    - source: feature_micarah_tewers
+      published: 2026-10-14
+      location: US-OH
+      content_type: real_wedding
+      tags: [ church_cathedral, vintage_heritage, whimsical, ball_gown, multiple_looks ]
+    - source: feature_austin
+      published: 2026-10-12
+      location: US-TX
+      content_type: real_wedding
+      tags: [ garden_botanical, historic_manor_estate, playful_party, culturally_rooted, multiple_looks ]
+    - source: feature_seattle
+      published: 2026-10-09
+      location: US-WA
+      content_type: real_wedding
+      tags: [ garden_botanical, intimate_micro, culturally_rooted, cultural_attire ]

@@ -1,0 +1,436 @@
+id: pub-ruffled
+name: Ruffled
+url: https://www.ruffledblog.com
+kind: blog
+tier: secondary
+recheck_every_days: 90
+taste_summary: Colorful, feminine, cheerful real weddings with strong decor and styling detail; recent features include a bold winter palette, a bright pink micro wedding, a moody modern Austin hotel and an organic Ritz-Carlton design.
+notes: Ruffled appears to have stopped publishing. As of 2026-10-23 the newest post on the home page, in the weddings category and in the site's public WordPress posts listing is the 2026-02-04 winter wedding, more than eight months earlier; before that, features ran several times a week in November 2025. Some older posts were edited on 2026-10-09, so the site is maintained. The guidelines refer to a submission form ("Please use the form here"), but no form appears in the page's HTML; the route below is the email route the same page gives.
+
+sources:
+  guidelines:
+    url: https://www.ruffledblog.com/submit-a-wedding/
+    read: 2026-10-23
+    kind: guidelines
+    title: Submit a Wedding
+  about:
+    url: https://www.ruffledblog.com/about-page/
+    read: 2026-10-23
+    kind: about
+    title: About
+  advertise:
+    url: https://www.ruffledblog.com/advertise/
+    read: 2026-10-23
+    kind: media_kit
+    title: Work with us (advertising options)
+  home:
+    url: https://www.ruffledblog.com/
+    read: 2026-10-23
+    kind: other
+    title: Home page
+  weddings_category:
+    url: https://www.ruffledblog.com/category/weddings/
+    read: 2026-10-23
+    kind: other
+    title: Wedding Blog category page
+  feature_whimsical_winter:
+    url: https://www.ruffledblog.com/a-whimsical-winter-wedding-with-a-custom-floral-wedding-dress/
+    read: 2026-10-23
+    kind: feature
+    title: A Whimsical Winter Wedding with a Custom Floral Wedding Dress
+  feature_georgia_pink:
+    url: https://www.ruffledblog.com/intimate-wedding-in-georgia-in-bold-pink/
+    read: 2026-10-23
+    kind: feature
+    title: Intimate Wedding in Georgia in Bold Pink
+  feature_south_congress:
+    url: https://www.ruffledblog.com/south-congress-hotel-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: South Congress Hotel wedding
+  feature_laguna_niguel:
+    url: https://www.ruffledblog.com/ritz-carlton-laguna-niguel-wedding-filled-with-organic-elegance/
+    read: 2026-10-23
+    kind: feature
+    title: Ritz-Carlton Laguna Niguel Wedding Filled With Organic Elegance
+  feature_coastal_orchid:
+    url: https://www.ruffledblog.com/destination-wedding-with-nautical-orchid-touches/
+    read: 2026-10-23
+    kind: feature
+    title: A Coastal Orchid Wedding Filled With Family Meaning
+
+identity:
+  parent_company:
+    value: unknown
+    checked: [ about, advertise ]
+  sister_publications:
+    value: unknown
+    checked: [ about, advertise ]
+    note: The about page mentions Recycle Your Wedding, a resale marketplace for used decor, but does not call it a sister title.
+  shared_inbox_with:
+    value: unknown
+    checked: [ guidelines ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: guidelines
+        quote: Destination weddings (domestic or international)
+    note: Listed under what Ruffled is currently looking for; the page sets no regional limit.
+  basis:
+    value: unknown
+    checked: [ guidelines ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Destination weddings (domestic or international)
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: we’re giving a stronger preference to real weddings over styled shoots
+  elopement:
+    value: true
+    cite:
+      - source: feature_coastal_orchid
+        quote: Modern Santorini Elopement with Hand-Painted Anthuriums
+      - source: guidelines
+        quote: Elopements that are primarily portraits
+    note: Inferred from published features (a Santorini elopement is linked from a recent feature); no page states that elopements are accepted, and the guidelines list elopements that are primarily portraits among what Ruffled does not typically share.
+  styled_shoot:
+    value: true
+    cite:
+      - source: guidelines
+        quote: we’re giving a stronger preference to real weddings over styled shoots
+      - source: guidelines
+        quote: we’re giving a stronger preference to those editorials where there’s at least one vendor who is a part of our directory
+    note: Styled shoots, workshops and shootouts are accepted but currently rank below real weddings.
+  style_tags:
+    value: [ bold_color_maximalist, romantic, whimsical, intimate_micro, backyard_private_home, culturally_rooted, hotel_resort, organic_textural ]
+    cite:
+      - source: guidelines
+        quote: Submissions with a chic, colorful, feminine, cheerful, elegant and stylish mood
+      - source: guidelines
+        quote: Micro weddings and chic backyard weddings
+      - source: guidelines
+        quote: Unique cultural weddings from diverse backgrounds
+      - source: feature_whimsical_winter
+      - source: feature_georgia_pink
+      - source: feature_south_congress
+      - source: feature_laguna_niguel
+      - source: feature_coastal_orchid
+  seasonality:
+    value: unknown
+    checked: [ guidelines ]
+    note: The guidelines list "Seasonal weddings" among what Ruffled wants, without naming seasons or deadlines.
+
+routes:
+  value:
+    - platform: email
+      account_required: false
+      preferred: true
+      steps:
+        - Email the submissions inbox.
+        - Include a direct link to download the images (no password, and no Dropbox or Google Drive folder invitation).
+        - Include a full vendor list, with Instagram handles and hyperlinked vendor links.
+        - Add the video embed URL, Instagram hashtags and a short story about the wedding or shoot.
+        - If no reply comes within 2 weeks, follow up before submitting elsewhere.
+      note: The inbox address is in the private contacts overlay. The same page asks submitters to "use the form here", but no form appears in the page's HTML.
+  cite:
+    - source: guidelines
+      quote: SUBMIT DIRECTLY VIA EMAIL
+    - source: guidelines
+      quote: with a link to the gallery (no password required, please), a full list of vendors, video embed url, IG hashtags
+    - source: guidelines
+      quote: a short story about the photoshoot or real wedding
+    - source: guidelines
+      quote: Please use the form here with a list of @instagram handles of all vendors, a vendor list of links
+    - source: guidelines
+      quote: please be sure to follow up to ensure we received your submission before submitting elsewhere
+
+package:
+  image_min:
+    value: 50
+    cite:
+      - source: guidelines
+        quote: Please send anywhere from 50-100 images for us to consider
+  image_max:
+    value: 100
+    cite:
+      - source: guidelines
+        quote: Please send anywhere from 50-100 images for us to consider
+  resolution:
+    value:
+      min_width_px: 1000
+      max_width_px: 3000
+    cite:
+      - source: guidelines
+        quote: Images should be at least 1000px wide, all single files (no collages and images no larger than 3000px wide please)
+  size:
+    value: unknown
+    checked: [ guidelines ]
+    note: Only pixel widths are given; the page does not say web or print size.
+  orientation_mix:
+    value: Verticals of the cake, the couple together, and the bridesmaids with their bouquets.
+    cite:
+      - source: guidelines
+        quote: cake, vertical
+      - source: guidelines
+        quote: couple together, vertical
+      - source: guidelines
+        quote: bridesmaids together with bouquets, vertical
+  watermarks_allowed:
+    value: false
+    cite:
+      - source: guidelines
+        quote: No watermarks, please
+  gallery_hosts:
+    value: any
+    cite:
+      - source: guidelines
+        quote: We welcome a number of different methods for sending images
+      - source: guidelines
+        quote: as long as it does not require to share folders such as Google Drive or Dropbox invitations
+      - source: guidelines
+        quote: "Here are an assortment of our preferred ways to share images: -PASS Gallery link -Pixieset link"
+    note: Any download link that does not need a folder-share invitation. PASS and Pixieset are preferred; a Dropbox link must be a direct link without "home" in the URL.
+  vendor_credits:
+    value:
+      required: true
+      fields: [ instagram, website ]
+      note: Instagram handles of all vendors plus a list of vendor links, hyperlinked if possible.
+    cite:
+      - source: guidelines
+        quote: Please use the form here with a list of @instagram handles of all vendors, a vendor list of links
+      - source: guidelines
+        quote: Be advised we will not respond to submissions without images and/or list of vendors.
+  story:
+    value:
+      required: true
+      note: A short story about the wedding or shoot; no length is given.
+    cite:
+      - source: guidelines
+        quote: a short story about the photoshoot or real wedding
+  video_accepted:
+    value: true
+    cite:
+      - source: guidelines
+        quote: with a link to the gallery (no password required, please), a full list of vendors, video embed url, IG hashtags
+  other_requirements:
+    value:
+      - Single image files only, no collages.
+      - Keep black-and-white photos to a minimum.
+      - Instagram hashtags.
+      - A direct gallery link rather than a shared-folder invitation; a Dropbox link must not contain "home".
+      - Note any download PIN or password with the vendor list and story.
+    cite:
+      - source: guidelines
+        quote: Images should be at least 1000px wide, all single files (no collages and images no larger than 3000px wide please)
+      - source: guidelines
+        quote: Keep black and white photos to a minimum
+      - source: guidelines
+        quote: with a link to the gallery (no password required, please), a full list of vendors, video embed url, IG hashtags
+      - source: guidelines
+        quote: please ensure that “home” is not present in the URL
+      - source: guidelines
+        quote: If your gallery requires a download pin or password, kindly make a note of it in post content along with your vendor list and story.
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_required
+      during_review: true
+      after_publication_days: 60
+    cite:
+      - source: guidelines
+        quote: Please do not submit if a submission is pending elsewhere, as we do not retract scheduled features.
+      - source: guidelines
+        quote: we just ask that you wait until 60 days have elapsed since your feature date on Ruffled
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ guidelines ]
+    blogs:
+      value: unknown
+      checked: [ guidelines ]
+    social:
+      value: unknown
+      checked: [ guidelines ]
+  freshness_window_months:
+    value: unknown
+    checked: [ guidelines ]
+    note: No rule is stated; the Georgia feature ran in December 2025 for a wedding held September 1, 2023.
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines ]
+  submitter_roles:
+    value: unknown
+    checked: [ guidelines ]
+
+rights:
+  image_usage:
+    value: Ruffled promotes each feature for at least a year after it runs, especially on social media; the submitter takes responsibility for the copyrighted work.
+    cite:
+      - source: guidelines
+        quote: We continuously promote your feature for at least a year to make sure it receives the exposure it deserves.
+      - source: guidelines
+        quote: This is especially true in social media channels.
+      - source: guidelines
+        quote: you hereby assume responsibility or ownership of its copyrighted work
+  credit_format:
+    value: A vendor list at the end of the feature naming each vendor's role and business, sometimes as Instagram handles.
+    cite:
+      - source: feature_whimsical_winter
+        quote: "Photographer: Haint Blue Collective"
+      - source: feature_georgia_pink
+        quote: "Photography: Sarah Blaze Photography"
+      - source: feature_south_congress
+        quote: "Planning + Design: @middletoneventsco"
+  couple_consent_required:
+    value: unknown
+    checked: [ guidelines ]
+  vendor_consent_required:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Make sure included vendors are all in accordance with the plans to submit a feature.
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ guidelines, advertise ]
+  publication_fee:
+    value: unknown
+    checked: [ guidelines, advertise ]
+    note: The advertise page sells sponsored posts and original styled shoots to brands; nothing ties a fee to real-wedding features.
+  priority_paid_tier:
+    value:
+      name: Vendor Guide membership
+      price:
+        amount: undisclosed
+        currency: USD
+        note: Rates are by email only; 12-month commitment. Currency inferred.
+      note: The preference applies to styled shoots, workshops and shootouts with at least one directory vendor; featured weddings are chosen on merit.
+    cite:
+      - source: guidelines
+        quote: we’re giving a stronger preference to those editorials where there’s at least one vendor who is a part of our directory
+      - source: guidelines
+        quote: Featured weddings are determined by merit through imagery, decor aesthetics and trends, unique details, style, fashion and seasonality
+      - source: advertise
+        quote: Memberships require a 12 month commitment.
+      - source: advertise
+        quote: Please email us for rates and more information
+  reach:
+    value: unknown
+    checked: [ about, advertise ]
+    note: The about page claims "over 4.4 million followers", a combined figure that fits none of the schema's metrics.
+
+timing:
+  response_window:
+    value:
+      days: 14
+      replies: all
+    cite:
+      - source: guidelines
+        quote: We respond to every wedding or wedding-related submission that follows our guidelines.
+      - source: guidelines
+        quote: it can take up to 2 weeks for us to review and respond to a submission
+  publish_lead_days:
+    value: unknown
+    checked: [ guidelines ]
+  publishing_cycle:
+    value: Online blog, apparently paused; the newest post is the 2026-02-04 winter wedding and nothing newer had appeared by 2026-10-23. Four of the other features read ran between 2025-11-19 and 2025-12-04.
+    cite:
+      - source: home
+        quote: A Whimsical Winter Wedding with a Custom Floral Wedding Dress
+      - source: weddings_category
+        quote: A Whimsical Winter Wedding with a Custom Floral Wedding Dress
+      - source: feature_whimsical_winter
+      - source: feature_georgia_pink
+      - source: feature_south_congress
+      - source: feature_laguna_niguel
+      - source: feature_coastal_orchid
+    note: The home page and the weddings category both list this post first, dated February 4; the feature page carries the year.
+
+people:
+  editors:
+    value: unknown
+    checked: [ about, guidelines, advertise ]
+    note: The about page carries a section headed "About Amanda Nistor", written in the first person by the person who started Ruffled, and the guidelines are signed "-Amanda", but no page gives her a title.
+
+insight:
+  secret_sauce:
+    - tip: Lead with styling and decor; selection rests on photography style, event styling, decor details and story.
+      cite:
+        - source: guidelines
+          quote: Our submissions are selected based on photography style, event styling, decor details and story.
+    - tip: Send a real wedding rather than a styled shoot for now; a styled shoot needs at least one Vendor Guide member to get the stronger preference.
+      cite:
+        - source: guidelines
+          quote: we’re giving a stronger preference to real weddings over styled shoots
+        - source: guidelines
+          quote: we’re giving a stronger preference to those editorials where there’s at least one vendor who is a part of our directory
+    - tip: Match the current wish list; micro and backyard weddings, cultural weddings, destination weddings and a colorful, cheerful mood are named.
+      cite:
+        - source: guidelines
+          quote: Micro weddings and chic backyard weddings
+        - source: guidelines
+          quote: Submissions with a chic, colorful, feminine, cheerful, elegant and stylish mood
+        - source: guidelines
+          quote: Unique cultural weddings from diverse backgrounds
+    - tip: Include the shots every feature uses, among them a stationery flatlay, a vertical of the cake, the bouquet close up, the rings in macro, place settings and the seating chart.
+      cite:
+        - source: guidelines
+          quote: flatlay of stationery
+        - source: guidelines
+          quote: macro of wedding and engagement rings
+        - source: guidelines
+          quote: seating chart display
+        - source: guidelines
+          quote: "IMAGES WE USUALLY INCLUDE IN ALL OF OUR FEATURES (REAL WEDDINGS/EDITORIALS):"
+        - source: guidelines
+          quote: cake, vertical
+        - source: guidelines
+          quote: close up of bouquet
+        - source: guidelines
+          quote: place setting
+    - tip: Send a direct download link; it gets a quicker response than a folder invitation.
+      cite:
+        - source: guidelines
+          quote: A direct link saves us both time and space, and will ensure a quicker response.
+    - tip: Skip engagement, bridal, boudoir, lifestyle, portrait and maternity sessions, which Ruffled does not typically share.
+      cite:
+        - source: guidelines
+          quote: Lifestyle, Portrait and Maternity Sessions
+        - source: guidelines
+          quote: Bridal Sessions or Boudoir
+        - source: guidelines
+          quote: Engagement Sessions
+  recent_features:
+    - source: feature_whimsical_winter
+      published: 2026-02-04
+      content_type: real_wedding
+      tags: [ bold_color_maximalist, whimsical, winter ]
+    - source: feature_georgia_pink
+      published: 2025-12-04
+      location: US-GA
+      content_type: real_wedding
+      tags: [ bold_color_maximalist, intimate_micro, garden_botanical ]
+    - source: feature_south_congress
+      published: 2025-11-21
+      location: US-TX
+      content_type: real_wedding
+      tags: [ hotel_resort, modern_minimal, moody_dramatic, multiple_looks ]
+    - source: feature_laguna_niguel
+      published: 2025-11-20
+      location: US-CA
+      content_type: real_wedding
+      tags: [ hotel_resort, organic_textural, romantic ]
+    - source: feature_coastal_orchid
+      published: 2025-11-19
+      content_type: real_wedding
+      tags: [ beach_coastal, romantic ]

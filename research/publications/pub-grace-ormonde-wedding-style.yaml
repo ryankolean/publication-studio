@@ -1,0 +1,379 @@
+id: pub-grace-ormonde-wedding-style
+name: Grace Ormonde Wedding Style
+url: https://www.weddingstylemagazine.com
+kind: national_magazine
+tier: secondary
+recheck_every_days: 90
+taste_summary: Luxury, fashion-led weddings with couture gowns, grand florals and five-star or historic venues; most recent features are destination weddings at European castles and villas or US resort hotels.
+notes: The submission form is a Typeform drawn by script. Its welcome screen was confirmed in a headless browser render; the questions, the thank-you screen and the field notes were read from the form definition embedded in the Typeform page, so plain fetches show none of that text. Feature pages show the wedding date but not the publication date; the recent_features dates come from each page's article:published_time metadata. The Digital Issues page (https://www.weddingstylemagazine.com/digital-magazine-issues/) listed no issues without a browser render, so print frequency was not read.
+
+sources:
+  submit_page:
+    url: https://www.weddingstylemagazine.com/photographer-submissions/
+    read: 2026-10-23
+    kind: other
+    title: Photographer Submissions (page embedding the Typeform)
+  form:
+    url: https://form.typeform.com/to/hORCu88h
+    read: 2026-10-23
+    kind: form
+    title: Photographer Submissions Typeform (drawn by script)
+  home:
+    url: https://www.weddingstylemagazine.com/
+    read: 2026-10-23
+    kind: other
+    title: Home page
+  about:
+    url: https://www.weddingstylemagazine.com/about-us/
+    read: 2026-10-23
+    kind: about
+    title: About us
+  contact:
+    url: https://www.weddingstylemagazine.com/contact-us/
+    read: 2026-10-23
+    kind: other
+    title: Contact (Typeform with Editorial and Advertising topics)
+  membership:
+    url: https://www.weddingstylemagazine.com/become-a-member/
+    read: 2026-10-23
+    kind: other
+    title: Become a Member (Wedding Talent, under the Advertising menu; Typeform)
+  advertising:
+    url: https://www.weddingstylemagazine.com/digital-advertising/
+    read: 2026-10-23
+    kind: media_kit
+    title: Digital / Print Advertising (Typeform)
+  analytics:
+    url: https://blog.weddingstylemagazine.com/wp-content/uploads/2022/02/wedding-style-analytics.pdf
+    read: 2026-10-23
+    kind: media_kit
+    title: Analytics 2022 (PDF, created 2022-02-02)
+  real_weddings:
+    url: https://www.weddingstylemagazine.com/wedding-ideas/real-weddings
+    read: 2026-10-23
+    kind: other
+    title: Real Weddings index
+  terms:
+    url: https://www.weddingstylemagazine.com/privacy-and-terms/
+    read: 2026-10-23
+    kind: other
+    title: Terms of Use / Privacy
+  feature_luttrellstown:
+    url: https://www.weddingstylemagazine.com/wedding-ideas/real-weddings/a-romantic-summer-destination-wedding-at-luttrellstown-castle-ireland
+    read: 2026-10-23
+    kind: feature
+    title: A Romantic Summer Destination Wedding at the Historic Luttrellstown Castle in Ireland
+  feature_longboat_key:
+    url: https://www.weddingstylemagazine.com/wedding-ideas/real-weddings/colorful-wedding-in-longboat-key-with-saturated-florals-and-custom-details
+    read: 2026-10-23
+    kind: feature
+    title: A Warm and Colorful Wedding in Longboat Key with Saturated Florals and Custom Details
+  feature_baltimore:
+    url: https://www.weddingstylemagazine.com/wedding-ideas/real-weddings/a-black-tie-wedding-in-baltimore
+    read: 2026-10-23
+    kind: feature
+    title: A Black-tie wedding in Baltimore centered around beautiful design and meaningful hospitality
+  feature_rome_castle:
+    url: https://www.weddingstylemagazine.com/wedding-ideas/real-weddings/a-moody-castle-wedding-in-italy-inspired-by-gothic-romance
+    read: 2026-10-23
+    kind: feature
+    title: A moody castle wedding in italy inspired by gothic romance
+  feature_villa_cimbrone:
+    url: https://www.weddingstylemagazine.com/wedding-ideas/real-weddings/a-music-led-wedding-weekend-at-villa-cimbrone-in-italy
+    read: 2026-10-23
+    kind: feature
+    title: A Music-Led Wedding Weekend at Villa Cimbrone in Italy
+
+identity:
+  parent_company:
+    value: Elegant Publishing Inc.
+    cite:
+      - source: terms
+        quote: This Internet website is provided by Elegant Publishing Inc. and its affiliates (collectively, Grace Ormonde Wedding Style,) with participating partners.
+    note: The terms give Barrington, Rhode Island as the company's headquarters.
+  sister_publications:
+    value: unknown
+    checked: [ about, terms ]
+    note: The about page says the brand is the print magazine, the website and an Instagram channel; it names no other title.
+  shared_inbox_with:
+    value: unknown
+    checked: [ contact, submit_page ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: home
+        quote: REAL WEDDINGS FROM AROUND THE WORLD
+      - source: about
+        quote: THIS SELECT GROUP OF TALENT PRODUCE WEDDINGS ALL OVER THE WORLD
+  basis:
+    value: unknown
+    checked: [ form, real_weddings ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: real_weddings
+        quote: For the majority of our couples, their real weddings take place outside of their current town, making destination weddings the most popular pick.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: form
+        quote: "Submissions: Proposals, Engagement Photo Shoots, Weddings, Fashion Shoots & Wedding Decor"
+  elopement:
+    value: unknown
+    checked: [ form, real_weddings ]
+    note: The submission form's type list has no elopement option (it allows an Other answer). The Become a Member form invites members to share elopements, but that is the paid membership, not the submission route.
+  styled_shoot:
+    value: true
+    cite:
+      - source: about
+        quote: featuring real weddings and styled shoots by wedding talent from around the world.
+      - source: form
+        quote: "Submissions: Proposals, Engagement Photo Shoots, Weddings, Fashion Shoots & Wedding Decor"
+    note: The form's types include fashion shoots and wedding decor; the about page says the decor section features styled shoots.
+  style_tags:
+    value: [ glamorous_luxe, romantic, castle_chateau, hotel_resort, garden_botanical, fashion_forward_editorial, mediterranean_europe ]
+    cite:
+      - source: feature_luttrellstown
+      - source: feature_longboat_key
+      - source: feature_baltimore
+      - source: feature_rome_castle
+      - source: feature_villa_cimbrone
+  seasonality:
+    value: unknown
+    checked: [ form, real_weddings ]
+
+routes:
+  value:
+    - platform: web_form
+      url: https://form.typeform.com/to/hORCu88h
+      account_required: false
+      preferred: true
+      steps:
+        - Open the Photographer Submissions form.
+        - Give the contact name and the company or agency name, and say whether you are a member (Platinum Member, Grace Ormonde Contributor or Photographer Ambassador) or not yet a member.
+        - Give an email address for the photography release, a phone number and, optionally, a website.
+        - Choose the submission type (Proposals, Engagement Photo Shoot, Real Weddings, Fashion Photo Shoot or Wedding Decor).
+        - Paste a Dropbox link.
+        - Sign the photography release form that arrives by email.
+        - Expect an acceptance email within 72 hours only if accepted.
+      note: The form is a public Typeform with no sign-in, embedded on the site's Photographer Submissions page. Non-members can submit.
+  cite:
+    - source: submit_page
+      quote: Photographer Submissions
+    - source: form
+      quote: "Are you a member?"
+    - source: form
+      quote: No, I am not a member yet
+    - source: form
+      quote: "Please share your Dropbox link here:"
+    - source: form
+      quote: We will sent you the photography release to this email.
+    - source: form
+      quote: You will receive an email to sign the release form.
+    - source: form
+      quote: If your submission is accepted, look for our accept email in 72 hours.
+
+package:
+  image_min:
+    value: unknown
+    checked: [ form ]
+  image_max:
+    value: unknown
+    checked: [ form ]
+  resolution:
+    value: unknown
+    checked: [ form ]
+  size:
+    value: unknown
+    checked: [ form ]
+  orientation_mix:
+    value: unknown
+    checked: [ form ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ form ]
+  gallery_hosts:
+    value: [ dropbox ]
+    cite:
+      - source: form
+        quote: "Please share your Dropbox link here:"
+  vendor_credits:
+    value: unknown
+    checked: [ form ]
+    note: The form asks for no vendor list; published features end with a Wedding Talent list of every vendor.
+  story:
+    value: unknown
+    checked: [ form ]
+    note: The form ends with an optional message box; it asks for no story or questionnaire.
+  video_accepted:
+    value: unknown
+    checked: [ form ]
+  other_requirements:
+    value:
+      - Sign the photography release form emailed after submitting.
+    cite:
+      - source: form
+        quote: You will receive an email to sign the release form.
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [ form, real_weddings, terms ]
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ form, real_weddings ]
+    blogs:
+      value: unknown
+      checked: [ form, real_weddings ]
+    social:
+      value: unknown
+      checked: [ form, real_weddings ]
+  freshness_window_months:
+    value: unknown
+    checked: [ form, real_weddings ]
+    note: No rule is stated; recent features ran between about two and a half and fourteen months after the wedding.
+  photographer_frequency:
+    value: unknown
+    checked: [ form ]
+  submitter_roles:
+    value: [ photographer ]
+    cite:
+      - source: submit_page
+        quote: Photographer Submissions
+    note: The route is the Photographer Submissions page; the form also asks for a company or agency name and does not say whether planners or other vendors may use it.
+
+rights:
+  image_usage:
+    value: unknown
+    checked: [ form, terms ]
+    note: The form says a photography release is emailed for signature after submitting; its terms are not published. The site terms say website content is the property of Elegant Publishing Inc. and its licensors, with no clause on submitted photos.
+  credit_format:
+    value: The photographer is named above the couple's names as "Photography By:" and the studio name, and a Wedding Talent list at the end credits each vendor by role.
+    cite:
+      - source: feature_luttrellstown
+        quote: "Photography By: The Falkenburgs"
+      - source: feature_luttrellstown
+        quote: "WEDDING TALENT Location: Luttrellstown Castle Resort ; Planner: Waterlily Weddings"
+  couple_consent_required:
+    value: unknown
+    checked: [ form ]
+  vendor_consent_required:
+    value: unknown
+    checked: [ form ]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ form, submit_page ]
+  publication_fee:
+    value: unknown
+    checked: [ form, membership, advertising ]
+  priority_paid_tier:
+    value: unknown
+    checked: [ form, membership ]
+    note: The form's welcome screen names Platinum Members, Grace Ormonde Contributors and Photographer Ambassadors, and the form asks which one the submitter is; no page says members get priority or what membership costs. Membership is offered as Wedding Talent under the site's Advertising menu.
+  reach:
+    value:
+      - metric: pinterest_monthly_views
+        value: 1300000
+        as_of: 2022-02-02
+      - metric: newsletter_subscribers
+        value: 8000
+        as_of: 2022-02-02
+    cite:
+      - source: analytics
+        quote: 390K+ 1.3M+
+      - source: analytics
+        quote: PINTEREST MONTHLY VIEWS
+      - source: analytics
+        quote: NEWSLETTER WITH 8k+ BRIDES
+    note: From the outlet's Analytics 2022 PDF, created 2022-02-02, so as_of is that date; the layout places 1.3M+ above the Pinterest monthly views label. The same PDF gives 600K yearly unique online audience, 503K combined social followers and 200K+ magazine readers, which fit none of the schema's metrics.
+
+timing:
+  response_window:
+    value:
+      days: 3
+      replies: success_only
+    cite:
+      - source: form
+        quote: If your submission is accepted, look for our accept email in 72 hours.
+      - source: form
+        quote: we will not respond to submissions that were not excepted at this time.
+    note: 72 hours, stored as 3 calendar days. The form's thank-you screen says declined submissions get no reply.
+  publish_lead_days:
+    value: unknown
+    checked: [ form ]
+  publishing_cycle:
+    value: Print magazine plus website; five web real weddings went live between 2026-07-20 and 2026-09-22.
+    cite:
+      - source: about
+        quote: The Grace Ormonde Brand consists of its print component Wedding Style Magazine, its digital platform WeddingStyleMagazine.com and its inspiring Instagram channel.
+      - source: feature_luttrellstown
+      - source: feature_longboat_key
+      - source: feature_baltimore
+      - source: feature_rome_castle
+      - source: feature_villa_cimbrone
+
+people:
+  editors:
+    value: unknown
+    checked: [ about, contact, feature_rome_castle ]
+    note: The about page names Grace Ormonde without a title; one recent feature is bylined Lauren Malamala with no title.
+
+insight:
+  secret_sauce:
+    - tip: Lead with the photography; the editors judge it first.
+      cite:
+        - source: real_weddings
+          quote: When choosing which real weddings to feature, our editors look at the wedding photography first
+    - tip: Show the destination, the dress designer, the artistic vision and the guest experience; those are the factors the editors weigh.
+      cite:
+        - source: real_weddings
+          quote: our editors look at factors like the wedding destination, wedding dress designer , artistic vision, photography, and overall guest experience.
+    - tip: Luxury here means care for guests rather than budget or showiness; show guest touches such as welcome parties, favor rooms and farewell brunches.
+      cite:
+        - source: real_weddings
+          quote: Luxury weddings have much less to do with budget and showiness
+        - source: real_weddings
+          quote: some of our favorites include welcome pizza parties in Italy, elaborate party favor rooms for guests
+        - source: real_weddings
+          quote: farewell brunches aboard luxury yachts
+    - tip: Destination weddings are the most common feature, so lead with the place and why the couple chose it.
+      cite:
+        - source: real_weddings
+          quote: For the majority of our couples, their real weddings take place outside of their current town, making destination weddings the most popular pick.
+    - tip: Name the gown designers; recent features credit couture gowns and outfit changes in the vendor list.
+      cite:
+        - source: feature_villa_cimbrone
+          quote: "Ceremony Dress: Ines Di Santo ; Reception Dress: Kim Kassas Couture"
+  recent_features:
+    - source: feature_luttrellstown
+      published: 2026-09-22
+      location: IE
+      content_type: real_wedding
+      tags: [ castle_chateau, garden_botanical, romantic, glamorous_luxe, british_isles ]
+    - source: feature_longboat_key
+      published: 2026-08-25
+      location: US-FL
+      content_type: real_wedding
+      tags: [ hotel_resort, beach_coastal, bold_color_maximalist, garden_botanical, playful_party, florida ]
+    - source: feature_baltimore
+      published: 2026-08-18
+      location: US-MD
+      content_type: real_wedding
+      tags: [ hotel_resort, ballroom_grand_hall, classic_timeless, glamorous_luxe ]
+    - source: feature_rome_castle
+      published: 2026-08-10
+      location: IT
+      content_type: real_wedding
+      tags: [ castle_chateau, moody_dramatic, vintage_heritage, mediterranean_europe ]
+    - source: feature_villa_cimbrone
+      published: 2026-07-20
+      location: IT
+      content_type: real_wedding
+      tags: [ italian_villa, garden_botanical, fashion_forward_editorial, couture_designer, multiple_looks, mediterranean_europe ]

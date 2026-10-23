@@ -1,0 +1,369 @@
+id: pub-inspired-by-this
+name: Inspired By This
+url: https://www.inspiredbythis.com
+kind: blog
+tier: primary
+recheck_every_days: 90
+taste_summary: Polished, classic-leaning real weddings with garden settings, black-tie elegance and fashion-forward bridal looks, often with outfit changes; weddings sit beside home, family, travel and work content on a broad lifestyle site.
+notes: A public web form with replies to every submission within about a week and publication about four to six weeks after acceptance. No advertise page or media kit is linked from the site, and no staff are named on its pages; features are bylined "IBT Girls".
+
+sources:
+  guidelines:
+    url: https://www.inspiredbythis.com/submissions/
+    read: 2026-10-23
+    kind: guidelines
+    title: Submissions (guidelines and public form)
+  about:
+    url: https://www.inspiredbythis.com/about/
+    read: 2026-10-23
+    kind: about
+    title: About Us
+  contact:
+    url: https://www.inspiredbythis.com/contact/
+    read: 2026-10-23
+    kind: other
+    title: Contact Us
+  home:
+    url: https://www.inspiredbythis.com/
+    read: 2026-10-23
+    kind: other
+    title: Home page
+  office_tour:
+    url: https://www.inspiredbythis.com/business/a-behind-the-scenes-look-at-our-oceanfront-office/
+    read: 2026-10-23
+    kind: other
+    title: A Behind the Scenes look at Be Inspired PR's Oceanfront Office
+  feature_rhode_island:
+    url: https://www.inspiredbythis.com/wed/a-storybook-rhode-island-wedding-at-shepherds-run/
+    read: 2026-10-23
+    kind: feature
+    title: A Storybook Rhode Island Wedding at Shepherd's Run
+  feature_palm_beach:
+    url: https://www.inspiredbythis.com/wed/a-romantic-palm-beach-wedding-at-the-sailfish-club/
+    read: 2026-10-23
+    kind: feature
+    title: A Romantic Palm Beach Wedding at The Sailfish Club
+  feature_charleston:
+    url: https://www.inspiredbythis.com/wed/a-chic-charleston-wedding-at-legare-waring-house/
+    read: 2026-10-23
+    kind: feature
+    title: A Chic Charleston Wedding at Legare Waring House
+  feature_tuscany:
+    url: https://www.inspiredbythis.com/wed/an-old-world-inspired-tuscan-wedding-at-conti-di-san-bonifacio/
+    read: 2026-10-23
+    kind: feature
+    title: An Old-World Inspired Tuscan Wedding at Conti di San Bonifacio
+  feature_yazoo_city:
+    url: https://www.inspiredbythis.com/wed/a-southern-garden-wedding-at-the-brides-childhood-home/
+    read: 2026-10-23
+    kind: feature
+    title: A Southern Garden Wedding at The Bride's Childhood Home
+
+identity:
+  parent_company:
+    value: unknown
+    checked: [ about, contact, home, office_tour ]
+    note: The pages name no company; the footer reads only "Inspired By This 2026".
+  sister_publications:
+    value: unknown
+    checked: [ about, home ]
+  shared_inbox_with:
+    value: unknown
+    checked: [ guidelines, contact ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: feature_rhode_island
+      - source: feature_palm_beach
+      - source: feature_charleston
+      - source: feature_tuscany
+      - source: feature_yazoo_city
+    note: Inferred from published features; no page states a geographic limit. The five newest features are in Rhode Island, Florida, South Carolina, Mississippi and Italy.
+  basis:
+    value: unknown
+    checked: [ guidelines ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: feature_tuscany
+        quote: Scott proposed there two years earlier during a two-week trip through Italy
+    note: Inferred from published features; no page states that destination weddings are accepted. The Tuscany couple chose the venue where they got engaged on a trip through Italy.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Weddings, Elopements, Styled Shoots, Bridal Events, Baby Showers
+  elopement:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Weddings, Elopements, Styled Shoots, Bridal Events, Baby Showers
+  styled_shoot:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Weddings, Elopements, Styled Shoots, Bridal Events, Baby Showers
+  style_tags:
+    value: [ classic_timeless, garden_botanical, fashion_forward_editorial, multiple_looks, romantic, glamorous_luxe ]
+    cite:
+      - source: feature_rhode_island
+      - source: feature_palm_beach
+      - source: feature_charleston
+      - source: feature_tuscany
+      - source: feature_yazoo_city
+  seasonality:
+    value: unknown
+    checked: [ guidelines ]
+    note: Time-sensitive and holiday content can skip the usual four-to-six-week wait, but no seasonal preference is stated.
+
+routes:
+  value:
+    - platform: web_form
+      url: https://www.inspiredbythis.com/submissions/
+      account_required: false
+      preferred: true
+      steps:
+        - Open the submission form on the submissions page.
+        - Give your name, business name and email, and choose the type of submission.
+        - Add the event date and location.
+        - Say whether the event or gallery has been submitted or featured elsewhere, and where.
+        - Paste a gallery link of up to 150 photos (no zip files) and a link to any social content.
+        - List the vendors involved.
+        - Describe the style, decor, inspiration and the story behind it.
+        - Submit; a reply comes within about a week either way.
+      note: Questions about a submission go to the submissions inbox, which is in the private contacts overlay.
+  cite:
+    - source: guidelines
+      quote: If you have a chic event you want to share with us, submit it via the form below.
+    - source: contact
+      quote: If you are submitting your work to be featured on Inspired By This, please do so through our submissions page.
+    - source: guidelines
+      quote: Has this event/gallery been submitted or featured elsewhere? If yes, where?
+    - source: guidelines
+      quote: Gallery Link of up to 150 photos
+    - source: guidelines
+      quote: Link to any social content you’d like to share
+    - source: guidelines
+      quote: The vendors involved
+    - source: guidelines
+      quote: Tell us about this submission; the style, decor, inspiration and the story behind it!
+    - source: guidelines
+      quote: Have a question about your submission?
+
+package:
+  image_min:
+    value: unknown
+    checked: [ guidelines ]
+  image_max:
+    value: 150
+    cite:
+      - source: guidelines
+        quote: Gallery Link of up to 150 photos
+  resolution:
+    value: unknown
+    checked: [ guidelines ]
+  size:
+    value: unknown
+    checked: [ guidelines ]
+  orientation_mix:
+    value: unknown
+    checked: [ guidelines ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ guidelines ]
+  gallery_hosts:
+    value: any
+    cite:
+      - source: guidelines
+        quote: Images are required with every submission through Dropbox, Pixieset, or your preferred platform.
+      - source: guidelines
+        quote: Please do not send zip files.
+    note: Dropbox and Pixieset are named, but any platform is accepted; zip files are refused.
+  vendor_credits:
+    value:
+      required: true
+      note: A required form field; the page does not say which details to give for each vendor.
+    cite:
+      - source: guidelines
+        quote: The vendors involved
+  story:
+    value:
+      required: true
+      note: The required form field asks about the style, decor, inspiration and story; the guidelines ask for a detailed write-up of why the submission is unique. No length is given.
+    cite:
+      - source: guidelines
+        quote: Tell us about this submission; the style, decor, inspiration and the story behind it!
+      - source: guidelines
+        quote: detailed story write-up that explains why your submission is unique!
+  video_accepted:
+    value: unknown
+    checked: [ guidelines ]
+  other_requirements:
+    value:
+      - Say whether the event or gallery has been submitted or featured elsewhere, and where.
+      - A link to any social content to share.
+      - The business name of the submitter.
+      - Product sources and decor highlights alongside big-picture and detail images.
+    cite:
+      - source: guidelines
+        quote: Has this event/gallery been submitted or featured elsewhere? If yes, where?
+      - source: guidelines
+        quote: Link to any social content you’d like to share
+      - source: guidelines
+        quote: Business Name
+      - source: guidelines
+        quote: Big picture images, detailed shots, decor highlights, product sources, unique details, detailed story write-up that explains why your submission is unique!
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [ guidelines ]
+    note: The page asks to be told in advance if a submission has been featured elsewhere but does not say whether that rules it out.
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ guidelines ]
+      note: Prior features must be disclosed; their effect is not stated.
+    blogs:
+      value: unknown
+      checked: [ guidelines ]
+    social:
+      value: unknown
+      checked: [ guidelines ]
+  freshness_window_months:
+    value: unknown
+    checked: [ guidelines ]
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines ]
+  submitter_roles:
+    value: unknown
+    checked: [ guidelines ]
+    note: The form requires a business name but does not say who may submit.
+
+rights:
+  image_usage:
+    value: Submitting grants the right to use the photos on any of Inspired By This's social channels, always credited; a social feature is not guaranteed.
+    cite:
+      - source: guidelines
+        quote: By submitting below, you acknowledge that we have the right to use these photos on any of our social channels.
+      - source: guidelines
+        quote: All photos will be credited appropriately.
+      - source: guidelines
+        quote: Being featured on Inspired By This social channels is not guaranteed
+  credit_format:
+    value: The photographer is named under the headline, and a Vendor Team list at the end of the feature names each vendor's role and business.
+    cite:
+      - source: feature_rhode_island
+        quote: "Photographer: Kelly Stevens Photography"
+      - source: feature_rhode_island
+        quote: Vendor Team
+  couple_consent_required:
+    value: unknown
+    checked: [ guidelines ]
+  vendor_consent_required:
+    value: unknown
+    checked: [ guidelines ]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ guidelines ]
+  publication_fee:
+    value: unknown
+    checked: [ guidelines, about ]
+  priority_paid_tier:
+    value: unknown
+    checked: [ guidelines, about, home ]
+  reach:
+    value: unknown
+    checked: [ about, home ]
+    note: The about page publishes no audience figures, and no advertise page or media kit is linked from the site.
+
+timing:
+  response_window:
+    value:
+      days: 7
+      replies: all
+    cite:
+      - source: guidelines
+        quote: We try our best to get back to all submissions within one week!
+      - source: guidelines
+        quote: whether your submission is a fit or not, you will hear from us!
+    note: A best effort, not a promise.
+  publish_lead_days:
+    value:
+      min: 28
+      max: 42
+    cite:
+      - source: guidelines
+        quote: you can expect it to go live in approximately 4-6 weeks time.
+      - source: guidelines
+        quote: Exceptions are made for time-sensitive & holiday content
+    note: Four to six weeks, stored as 28 to 42 days; time-sensitive and holiday content can run sooner.
+  publishing_cycle:
+    value: Online; five features (four real weddings and a styled shoot) went live between 2026-09-14 and 2026-10-21, two of them on the same day.
+    cite:
+      - source: feature_rhode_island
+      - source: feature_palm_beach
+      - source: feature_charleston
+      - source: feature_tuscany
+      - source: feature_yazoo_city
+
+people:
+  editors:
+    value: unknown
+    checked: [ about, contact, home, feature_rhode_island ]
+    note: No editor is named on the outlet's pages; features are bylined "IBT Girls". A press profile that may name the person behind the site (theeverygirl.com) returned 403 and did not load.
+
+insight:
+  secret_sauce:
+    - tip: Write the story up in detail and make the case for what is unique; the editors ask for it alongside big-picture images, details, decor highlights and product sources.
+      cite:
+        - source: guidelines
+          quote: Big picture images, detailed shots, decor highlights, product sources, unique details, detailed story write-up that explains why your submission is unique!
+    - tip: Send fresh work and be upfront about any earlier features; the site says it is about sharing new ideas.
+      cite:
+        - source: guidelines
+          quote: we’re all about sharing new, inspiring ideas over here
+        - source: guidelines
+          quote: please let us know in advance if your submission has been featured elsewhere!
+    - tip: Holiday and time-sensitive stories can skip the usual four-to-six-week wait.
+      cite:
+        - source: guidelines
+          quote: Exceptions are made for time-sensitive & holiday content
+    - tip: Show the bridal fashion story; three of the five newest features walk through several looks or outfit changes.
+      cite:
+        - source: feature_rhode_island
+        - source: feature_palm_beach
+        - source: feature_charleston
+  recent_features:
+    - source: feature_rhode_island
+      published: 2026-10-21
+      location: US-RI
+      content_type: real_wedding
+      tags: [ garden_botanical, classic_timeless, romantic, lace_romantic, multiple_looks ]
+    - source: feature_palm_beach
+      published: 2026-10-21
+      location: US-FL:palm-beach
+      content_type: real_wedding
+      tags: [ glamorous_luxe, bold_color_maximalist, fashion_forward_editorial, church_cathedral, multiple_looks, florida ]
+    - source: feature_charleston
+      published: 2026-09-25
+      location: US-SC
+      content_type: styled_shoot
+      tags: [ historic_manor_estate, organic_textural, fashion_forward_editorial, ball_gown, multiple_looks, southeast_us ]
+    - source: feature_tuscany
+      published: 2026-09-14
+      location: IT
+      content_type: real_wedding
+      tags: [ vineyard_winery, classic_timeless, fashion_forward_editorial, mediterranean_europe ]
+    - source: feature_yazoo_city
+      published: 2026-09-14
+      location: US-MS
+      content_type: real_wedding
+      tags: [ backyard_private_home, garden_botanical, classic_timeless, ball_gown, church_cathedral, southeast_us ]
