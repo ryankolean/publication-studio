@@ -52,7 +52,9 @@ describe("migrations", () => {
     // event_images, which migration 0005 adds so the curation board can list
     // an event's whole image pool rather than only what a package selected,
     // and tags plus publication_tags, which migration 0006 adds as the shared
-    // vocabulary that events and outlets are matched on.
+    // vocabulary that events and outlets are matched on, and the research
+    // store from migration 0008: research_revisions, research_vocab and
+    // publication_edits.
     expect(tableNames(db)).toEqual([
       "audit_log",
       "credit_requests",
@@ -60,8 +62,11 @@ describe("migrations", () => {
       "events",
       "packages",
       "password_invites",
+      "publication_edits",
       "publication_tags",
       "publications",
+      "research_revisions",
+      "research_vocab",
       "submissions",
       "tags",
       "users",
