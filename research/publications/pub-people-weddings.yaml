@@ -1,0 +1,268 @@
+id: pub-people-weddings
+name: People (Weddings)
+url: https://people.com/weddings
+kind: national_magazine
+tier: dream
+recheck_every_days: 90
+taste_summary: Celebrity and public-figure weddings, mostly as exclusives with the couple's own quotes, published within days of the event.
+notes: >-
+  No public route for submitting a wedding was found on the weddings section or the about page. The about page lists a general tips inbox for ideas and leads, which does not mention weddings, so it is not treated as a submissions inbox and no contacts overlay was written. The masthead lists a Weddings and Parents team. Sister brand Brides runs the People Inc. real-wedding submission form. Every wedding feature read was labeled Exclusive and centered on a public figure; they ran 2 to 7 days after the wedding.
+
+sources:
+  weddings:
+    url: https://people.com/weddings/
+    read: 2026-10-23
+    kind: other
+    title: Celebrity Weddings
+  about:
+    url: https://people.com/about-us-5499056
+    read: 2026-10-23
+    kind: about
+    title: About Us and masthead
+  advertise:
+    url: https://www.people.inc/advertising
+    read: 2026-10-23
+    kind: media_kit
+    title: Advertise with Us, People Inc
+  feature_cape_may:
+    url: https://people.com/abc-news-perry-russom-marries-leslie-zemnick-in-vintage-coastal-wedding-cape-may-exclusive-12182299
+    read: 2026-10-23
+    kind: feature
+    title: ABC News Correspondent Perry Russom Marries Leslie Zemnick in Cape May (Exclusive)
+  feature_nashville:
+    url: https://people.com/country-singer-shane-profitt-marries-chloe-crawford-exclusive-12182958
+    read: 2026-10-23
+    kind: feature
+    title: Country Singer Shane Profitt Marries Chloe Crawford in Nashville Wedding (Exclusive)
+  feature_auburn:
+    url: https://people.com/90-day-fiance-star-chantel-everett-marries-ashley-bowen-exclusive-12181915
+    read: 2026-10-23
+    kind: feature
+    title: 90 Day Fiance Star Chantel Everett Marries Ashley Bowen in Alabama Wedding (Exclusive)
+  feature_long_island:
+    url: https://people.com/marcia-marcia-marcia-marries-kyle-samuel-wedding-exclusive-12168422
+    read: 2026-10-23
+    kind: feature
+    title: Drag Race Star Marcia Marcia Marcia Marries Kyle Samuel in Vintage-Inspired Backyard Wedding (Exclusive)
+
+identity:
+  parent_company:
+    value: People Inc.
+    cite:
+      - source: about
+        quote: PEOPLE, a People Inc. brand, delivers the most trustworthy celebrity news
+  sister_publications:
+    value: [ Entertainment Weekly, PEOPLE en Español ]
+    cite:
+      - source: about
+        quote: editorial teams across all platforms at PEOPLE, Entertainment Weekly, and PEOPLE en Español
+  shared_inbox_with:
+    value: unknown
+    checked: [ about, weddings ]
+
+coverage:
+  regions:
+    value: unknown
+    checked: [ about, weddings ]
+  basis:
+    value: unknown
+    checked: [ about, weddings ]
+  destination_accepted:
+    value: unknown
+    checked: [ about, weddings ]
+    note: The section covers celebrity weddings abroad, such as in Italy and Rio de Janeiro, but no page states a policy for outside submissions.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: feature_cape_may
+      - source: feature_auburn
+      - source: feature_long_island
+    note: Inferred from published features; no page states what the outlet accepts.
+  elopement:
+    value: unknown
+    checked: [ about, weddings ]
+  styled_shoot:
+    value: unknown
+    checked: [ about, weddings ]
+  style_tags:
+    value: [ romantic, vintage_heritage ]
+    cite:
+      - source: feature_cape_may
+      - source: feature_auburn
+      - source: feature_long_island
+  seasonality:
+    value: unknown
+    checked: [ about, weddings ]
+
+routes:
+  value: unknown
+  checked: [ about, weddings ]
+  note: >-
+    No wedding submission page, form or inbox was found. The about page asks readers with an idea to share or a lead to write to a general tips inbox; it does not mention weddings.
+
+package:
+  image_min:
+    value: unknown
+    checked: [ about, weddings ]
+  image_max:
+    value: unknown
+    checked: [ about, weddings ]
+  resolution:
+    value: unknown
+    checked: [ about, weddings ]
+  size:
+    value: unknown
+    checked: [ about, weddings ]
+  orientation_mix:
+    value: unknown
+    checked: [ about, weddings ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ about, weddings ]
+  gallery_hosts:
+    value: unknown
+    checked: [ about, weddings ]
+  vendor_credits:
+    value: unknown
+    checked: [ about, weddings ]
+  story:
+    value: unknown
+    checked: [ about, weddings ]
+  video_accepted:
+    value: unknown
+    checked: [ about, weddings ]
+  other_requirements:
+    value: unknown
+    checked: [ about, weddings ]
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [ about, weddings, feature_long_island ]
+    note: Every wedding feature read is labeled Exclusive, and one says the couple shared details exclusively with PEOPLE; no page states a policy.
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ about, weddings ]
+    blogs:
+      value: unknown
+      checked: [ about, weddings ]
+    social:
+      value: unknown
+      checked: [ about, weddings ]
+  freshness_window_months:
+    value: unknown
+    checked: [ about, weddings ]
+    note: The features read ran 2 to 7 days after the wedding.
+  photographer_frequency:
+    value: unknown
+    checked: [ about, weddings ]
+  submitter_roles:
+    value: unknown
+    checked: [ about, weddings ]
+
+rights:
+  image_usage:
+    value: unknown
+    checked: [ about, weddings ]
+  credit_format:
+    value: Each image carries a Credit line naming the photography studio.
+    cite:
+      - source: feature_cape_may
+      - source: feature_nashville
+  couple_consent_required:
+    value: unknown
+    checked: [ about, weddings ]
+  vendor_consent_required:
+    value: unknown
+    checked: [ about, weddings ]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ about, weddings ]
+  publication_fee:
+    value: unknown
+    checked: [ about, weddings ]
+  priority_paid_tier:
+    value: unknown
+    checked: [ about, advertise ]
+  reach:
+    value: unknown
+    checked: [ about, advertise ]
+    note: The People Inc. advertising page gives no figures for PEOPLE alone; third-party audience figures were not used.
+
+timing:
+  response_window:
+    value: unknown
+    checked: [ about, weddings ]
+  publish_lead_days:
+    value: unknown
+    checked: [ about, weddings ]
+  publishing_cycle:
+    value: Online, with several wedding stories a week; the exclusives read were published 2026-10-11 to 2026-10-21, each 2 to 7 days after the wedding.
+    cite:
+      - source: feature_cape_may
+      - source: feature_nashville
+      - source: feature_auburn
+      - source: feature_long_island
+
+people:
+  editors:
+    value:
+      - name: Charlotte Triggs
+        role: General Manager and Editor-in-Chief, PEOPLE Group
+      - name: Emily Strohm
+        role: Director, Weddings and Parents
+      - name: Georgia Slater
+        role: Staff Editor, Weddings and Parents
+      - name: Ashlyn Robinette
+        role: Weddings Writer
+      - name: Kayla Grant
+        role: Writer/Reporter, Weddings and Parents
+      - name: Hannah Sacks
+        role: Writer/Reporter, Weddings and Parents
+    cite:
+      - source: about
+        quote: Charlotte Triggs, General Manager & Editor-in-Chief, PEOPLE Group
+      - source: about
+        quote: DIRECTOR, WEDDINGS & PARENTS Emily Strohm
+      - source: about
+        quote: "WEDDINGS & PARENTS Staff Editor: Georgia Slater"
+      - source: about
+        quote: "Writer/Reporters: Kayla Grant, Ashlyn Robinette, Hannah Sacks"
+      - source: feature_nashville
+        quote: Ashlyn Robinette is a Weddings Writer at PEOPLE.
+
+insight:
+  secret_sauce:
+    - tip: >-
+        Wedding exclusives center on public figures and run within days of the wedding, built on quotes the couple gives PEOPLE directly; a pitch needs a newsworthy couple ready to talk and a fast turnaround.
+      cite:
+        - source: feature_nashville
+          quote: the couple exclusively tells PEOPLE
+        - source: feature_cape_may
+        - source: feature_auburn
+        - source: feature_long_island
+  recent_features:
+    - source: feature_cape_may
+      published: 2026-10-21
+      location: US-NJ
+      content_type: real_wedding
+      tags: [ beach_coastal, church_cathedral, vintage_heritage, vintage_heirloom ]
+    - source: feature_nashville
+      published: 2026-10-20
+      location: US-TN
+      content_type: real_wedding
+    - source: feature_auburn
+      published: 2026-10-19
+      location: US-AL
+      content_type: real_wedding
+      tags: [ historic_manor_estate, classic_timeless, romantic ]
+    - source: feature_long_island
+      published: 2026-10-11
+      location: US-NY
+      content_type: real_wedding
+      tags: [ backyard_private_home, vintage_heritage, multiple_looks, romantic ]

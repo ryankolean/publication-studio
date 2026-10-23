@@ -1,0 +1,384 @@
+id: pub-brides
+name: Brides
+url: https://www.brides.com
+kind: national_magazine
+tier: primary
+recheck_every_days: 90
+taste_summary: Wedding weekends told event by event, with strong decor, fashion for every look and a personal story; recent features lean romantic and garden-led, often destination.
+notes: >-
+  Submissions go through a free Airtable form linked from the guidelines page; the form's text was read from the public form definition the page loads. Only Dropbox galleries are reviewed. No submissions inbox is published; the about page lists general, press, writer and sales addresses only. Real-wedding output on the site looks slow in 2026: the Real Weddings index showed four new features dated 2026-03-30 to 2026-07-29, and the one before them ran 2025-10-09. Weddings in the features read ran 11 to 15 months after the wedding date. The earlier pass noted a videographer-name field; the form read today has no such field, only an optional social-video question.
+
+sources:
+  guidelines:
+    url: https://www.brides.com/real-wedding-submission-guidelines-5222891
+    read: 2026-10-23
+    kind: guidelines
+    title: Real Wedding Submission Guidelines
+  form:
+    url: https://airtable.com/appMIIbAShOWgZURB/shrK7JfoOhigyH6u0
+    read: 2026-10-23
+    kind: form
+    title: Brides Real Weddings Submission Form
+  about:
+    url: https://www.brides.com/about-us-4777099
+    read: 2026-10-23
+    kind: about
+    title: About Us
+  editorial:
+    url: https://www.brides.com/editorial-guidelines-5222899
+    read: 2026-10-23
+    kind: other
+    title: Editorial Guidelines
+  advertise:
+    url: https://www.people.inc/advertising
+    read: 2026-10-23
+    kind: media_kit
+    title: Advertise with Us, People Inc (the Advertise link in the Brides footer)
+  index:
+    url: https://www.brides.com/real-weddings-4692024
+    read: 2026-10-23
+    kind: other
+    title: Real Weddings
+  feature_hudson_valley:
+    url: https://www.brides.com/italian-inspired-wedding-in-the-hudson-valley-11936966
+    read: 2026-10-23
+    kind: feature
+    title: A Beauty Founder's Romantic Italian-Inspired Wedding in the Hudson Valley
+  feature_los_angeles:
+    url: https://www.brides.com/historic-la-venue-mark-and-christopher-11937922
+    read: 2026-10-23
+    kind: feature
+    title: Love, Language, and Lush Florals at One of LA's Most Historic Venues
+  feature_utah:
+    url: https://www.brides.com/utah-destination-wedding-brianna-and-edward-11937062
+    read: 2026-10-23
+    kind: feature
+    title: A Destination Wedding in Utah Inspired by Nature's Four Elements
+  feature_san_miguel:
+    url: https://www.brides.com/elegant-mexico-wedding-alyx-and-osasu-11936945
+    read: 2026-10-23
+    kind: feature
+    title: An Elegant Destination Wedding with Heartfelt Personal Touches in Mexico
+  feature_ravello:
+    url: https://www.brides.com/flower-filled-timeless-elegant-ravello-italy-wedding-danilo-and-sharon-11809294
+    read: 2026-10-23
+    kind: feature
+    title: A Timeless, Elegant Destination Wedding on Italy's Amalfi Coast
+  feature_palm_springs:
+    url: https://www.brides.com/vintage-inspired-palm-springs-wedding-weekend-shannon-yen-11826327
+    read: 2026-10-23
+    kind: feature
+    title: Inspired By Father of the Bride and Vintage Wedding Style, a Weekend-Long Celebration in Palm Springs
+
+identity:
+  parent_company:
+    value: People Inc.
+    cite:
+      - source: about
+        quote: Brides is part of the People Inc. publishing family.
+  sister_publications:
+    value: [ PEOPLE, Byrdie, InStyle, Shape ]
+    cite:
+      - source: about
+        quote: oversees the brand identities and visual assets for Brides, Byrdie, InStyle, and Shape
+      - source: about
+        quote: "iconic brands include PEOPLE, Better Homes & Gardens, Verywell, FOOD & WINE"
+  shared_inbox_with:
+    value: unknown
+    checked: [ guidelines, form, about ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: about
+        quote: we regularly highlight the love stories and nuptials of couples across the globe through our Real Weddings
+  basis:
+    value: unknown
+    checked: [ guidelines, form, about ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: feature_utah
+      - source: feature_san_miguel
+      - source: feature_ravello
+    note: Each of these features is headlined as a destination wedding.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: One of our favorite ways to celebrate and inspire couples is with our Real Wedding features.
+  elopement:
+    value: true
+    cite:
+      - source: index
+        quote: From intimate elopements to formal affairs that cover every tradition
+  styled_shoot:
+    value: false
+    cite:
+      - source: form
+        quote: We do not accept styled shoots.
+  style_tags:
+    value: [ romantic, garden_botanical, multiple_looks ]
+    cite:
+      - source: feature_hudson_valley
+      - source: feature_san_miguel
+      - source: feature_ravello
+      - source: feature_utah
+  seasonality:
+    value: unknown
+    checked: [ guidelines, form, about ]
+    note: Submissions are taken on a rolling basis; no page states a seasonal preference or deadline.
+
+routes:
+  value:
+    - platform: web_form
+      url: https://airtable.com/appMIIbAShOWgZURB/shrK7JfoOhigyH6u0
+      account_required: false
+      preferred: true
+      steps:
+        - Open the form linked from the Real Wedding Submission Guidelines page.
+        - Give the submitter name and email, the couple's full names, the venue and location with a venue link, and the wedding date or dates.
+        - Give the photographer's full name and list the important vendors.
+        - Answer whether social video from a content creator or other vendor exists.
+        - Paste a Dropbox folder link holding 100 to 200 professionally shot images, then submit.
+      note: The shared form opened without signing in. Pre- and post-wedding events can go in with the wedding or on their own.
+  cite:
+    - source: guidelines
+      quote: To submit a wedding for consideration, please fill out and submit the form here.
+    - source: form
+      quote: We accept submissions on a rolling basis.
+
+package:
+  image_min:
+    value: 100
+    cite:
+      - source: form
+        quote: Link to Photo Gallery (100-200 professionally shot images)
+  image_max:
+    value: 200
+    cite:
+      - source: form
+        quote: Link to Photo Gallery (100-200 professionally shot images)
+  resolution:
+    value: unknown
+    checked: [ guidelines, form ]
+  size:
+    value: unknown
+    checked: [ guidelines, form ]
+  orientation_mix:
+    value: unknown
+    checked: [ guidelines, form ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ guidelines, form ]
+  gallery_hosts:
+    value: [ dropbox ]
+    cite:
+      - source: form
+        quote: Dropbox folder only. Submissions sent via other platforms will not be reviewed.
+  vendor_credits:
+    value:
+      required: true
+      note: A required form field; the form does not say which details to give for each vendor.
+    cite:
+      - source: form
+        quote: List of Important Vendors (planner, coordinator, floral designers, etc.)
+  story:
+    value: unknown
+    checked: [ guidelines, form ]
+    note: The form has no story or questionnaire field; published features quote the couple at length.
+  video_accepted:
+    value: unknown
+    checked: [ guidelines, form ]
+    note: The form asks whether social video from a content creator or other vendor exists, but does not say whether video is accepted.
+  other_requirements:
+    value:
+      - Professionally shot images only.
+      - The couple's full names and the wedding date or dates.
+      - The venue and location, with a link to the venue where there is one.
+      - The wedding photographer's full name.
+    cite:
+      - source: form
+        quote: Link to Photo Gallery (100-200 professionally shot images)
+      - source: form
+        quote: Full Names of the Couple
+      - source: form
+        quote: Please include a link to the venue (if applicable)
+      - source: form
+        quote: Full Name of Wedding Photographer
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_required
+      after_publication_days: 30
+    cite:
+      - source: form
+        quote: We require 30 days of exclusivity on all Real Weddings once they are published.
+  prior_exposure:
+    publications:
+      value: disqualifies
+      cite:
+        - source: guidelines
+          quote: will not feature weddings that have been previously highlighted in other publications or websites.
+    blogs:
+      value: disqualifies
+      cite:
+        - source: form
+          quote: We will not feature weddings that have been previously highlighted in other publication, websites, or social media channels.
+      note: The rule names websites; it does not say whether the photographer's own blog counts.
+    social:
+      value: disqualifies
+      cite:
+        - source: form
+          quote: We will not feature weddings that have been previously highlighted in other publication, websites, or social media channels.
+      note: The rule does not say whether a few sneak-peek posts count as highlighted.
+  freshness_window_months:
+    value: unknown
+    checked: [ guidelines, form ]
+    note: The features read ran 11 to 15 months after the wedding date.
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines, form ]
+  submitter_roles:
+    value: [ couple, planner, photographer, vendor, publicist ]
+    cite:
+      - source: about
+        quote: accept submissions from couples, planners, photographers, and other wedding vendors, as well as PR representatives on a rolling basis
+      - source: guidelines
+        quote: rely on submissions from couples, planners, photographers, and PR representatives
+
+rights:
+  image_usage:
+    value: unknown
+    checked: [ guidelines, form, editorial ]
+  credit_format:
+    value: Image captions read Photo by and the photographer's name; the vendor list at the end of the story names the photographer.
+    cite:
+      - source: feature_hudson_valley
+      - source: feature_los_angeles
+  couple_consent_required:
+    value: unknown
+    checked: [ guidelines, form ]
+  vendor_consent_required:
+    value: unknown
+    checked: [ guidelines, form ]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ guidelines, form ]
+    note: The form has no payment step, but no page states that submitting is free.
+  publication_fee:
+    value: unknown
+    checked: [ guidelines, form, editorial ]
+  priority_paid_tier:
+    value: unknown
+    checked: [ guidelines, about, editorial, advertise ]
+    note: The editorial policy says advertisers do not influence editorial content and sponsored content is labeled; no page sells or rules out paid real-wedding placement.
+  reach:
+    value:
+      - metric: monthly_visitors
+        value: 4000000
+        as_of: 2026-10-23
+    cite:
+      - source: about
+        quote: give our 4 million monthly readers the expert advice and beautiful inspiration
+    note: The about page is undated and says monthly readers; as_of is the date it was read.
+
+timing:
+  response_window:
+    value:
+      days: 60
+      replies: success_only
+    cite:
+      - source: form
+        quote: If you have not heard back from our team within two months, it means we have respectfully passed on the submission
+  publish_lead_days:
+    value: unknown
+    checked: [ guidelines, form ]
+  publishing_cycle:
+    value: Online articles plus quarterly digital issues. The Real Weddings index showed four new features in 2026, dated March 30 to July 29; the one before them ran 2025-10-09.
+    cite:
+      - source: about
+        quote: our library of 6,000+ articles and quarterly digital issues
+      - source: feature_hudson_valley
+      - source: feature_los_angeles
+      - source: feature_utah
+      - source: feature_san_miguel
+      - source: feature_palm_springs
+
+people:
+  editors:
+    value:
+      - name: Hallie Gould
+        role: General Manager
+      - name: Jessica Mahgerefteh
+        role: Director
+      - name: Star Donaldson
+        role: Social Media Director
+      - name: Araziel Jackson
+        role: Assistant Social Media Editor
+      - name: Sara Dickinson
+        role: Freelance writer, byline on recent real weddings
+    cite:
+      - source: about
+        quote: She has been general manager at Brides since 2023.
+      - source: about
+        quote: Jessica is a Director at Brides.
+      - source: about
+        quote: Star is the social media director at Brides.
+      - source: about
+        quote: she immediately joined the Brides team as an assistant social media editor.
+      - source: feature_los_angeles
+        quote: Sara Dickinson has been writing in the wedding world for six years. She started freelancing in 2016 at Brides.
+
+insight:
+  secret_sauce:
+    - tip: Lead with decor, a distinctive story and standout fashion; the guidelines name all three as what the editors want.
+      cite:
+        - source: guidelines
+          quote: We love to feature weddings with stunning décor, unique stories, and show-stopping fashion
+    - tip: Send the whole weekend. Welcome parties, rehearsal dinners and other events are taken alone or with the wedding, and every recent feature read walks through several events.
+      cite:
+        - source: guidelines
+          quote: These Real Wedding Events can be submitted along with a wedding or on their own for consideration.
+        - source: feature_hudson_valley
+        - source: feature_utah
+        - source: feature_san_miguel
+    - tip: Say so if a content creator or another vendor shot social video; the form asks.
+      cite:
+        - source: form
+          quote: Is there social video available from the wedding, via a content creator or other vendor?
+    - tip: Credit every outfit. Recent features list attire and accessories for each event in the vendor credits, alongside the usual vendors.
+      cite:
+        - source: feature_hudson_valley
+  recent_features:
+    - source: feature_hudson_valley
+      published: 2026-07-29
+      location: US-NY
+      content_type: real_wedding
+      tags: [ historic_manor_estate, garden_botanical, romantic, multiple_looks, culturally_rooted ]
+    - source: feature_los_angeles
+      published: 2026-03-31
+      location: US-CA
+      content_type: real_wedding
+      tags: [ intimate_micro, bold_color_maximalist ]
+    - source: feature_utah
+      published: 2026-03-30
+      location: US-UT
+      content_type: real_wedding
+      tags: [ desert, hotel_resort, multiple_looks ]
+    - source: feature_san_miguel
+      published: 2026-03-30
+      location: MX
+      content_type: real_wedding
+      tags: [ garden_botanical, organic_textural, romantic, multiple_looks ]
+    - source: feature_ravello
+      published: 2025-09-16
+      location: IT
+      content_type: real_wedding
+      tags: [ italian_villa, garden_botanical, classic_timeless, romantic ]
