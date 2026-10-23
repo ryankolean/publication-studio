@@ -121,6 +121,7 @@ metros:
     orlando: Orlando
     st-augustine: St. Augustine
     jacksonville: Jacksonville
+    amelia-island: Amelia Island
     panhandle-30a: Panhandle and 30A
 
 countries:
@@ -185,6 +186,7 @@ countries:
   TH: Thailand
   VN: Vietnam
   ID: Indonesia
+  PH: Philippines
   JP: Japan
   AU: Australia
   NZ: New Zealand

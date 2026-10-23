@@ -1,0 +1,372 @@
+id: pub-marry-me-tampa-bay
+name: Marry Me Tampa Bay
+url: https://marrymetampabay.com
+kind: regional_magazine
+tier: secondary
+recheck_every_days: 90
+taste_summary: Detail- and decor-led weddings in Tampa Bay, Clearwater, St. Pete and Sarasota, from candlelit romance to colorful retro.
+notes: marrymetampabay.com answers plain fetches with a bot challenge; every page below was read in a browser on 2026-10-23. Feature dates come from the site's own public posts listing.
+
+sources:
+  guidelines:
+    url: https://marrymetampabay.com/contact-us/submission/
+    read: 2026-10-23
+    kind: guidelines
+    title: Submit a Wedding to Be Published on Marry Me Tampa Bay
+  form:
+    url: https://airtable.com/embed/appwydu7O6VFRepZb/shrqAsWpYpl5mj60f
+    read: 2026-10-23
+    kind: form
+    title: Marry Me Tampa Bay Wedding Submission Form
+  terms:
+    url: https://marrymetampabay.com/submission-terms-and-conditions/
+    read: 2026-10-23
+    kind: guidelines
+    title: Publication Terms and Conditions
+  membership:
+    url: https://marrymetampabay.com/membership/
+    read: 2026-10-23
+    kind: other
+    title: Become a Preferred Vendor
+  feature_floridarama:
+    url: https://marrymetampabay.com/st-pete-floridarama-wedding-disco-meets-old-florida/
+    read: 2026-10-23
+    kind: feature
+  feature_birchwood:
+    url: https://marrymetampabay.com/downtown-st-pete-the-birchwood-wedding-romantic/
+    read: 2026-10-23
+    kind: feature
+  feature_innisbrook:
+    url: https://marrymetampabay.com/bridgerton-inspired-palm-harbor-innisbrook-wedding/
+    read: 2026-10-23
+    kind: feature
+  feature_nova_535:
+    url: https://marrymetampabay.com/st-pete-nova-535-wedding-burgundy-vintage-romance/
+    read: 2026-10-23
+    kind: feature
+  feature_sandpearl:
+    url: https://marrymetampabay.com/sandpearl-resort-wedding-coastal-light-blue-and-yellow/
+    read: 2026-10-23
+    kind: feature
+  posts_listing:
+    url: https://marrymetampabay.com/wp-json/wp/v2/posts?per_page=10&_fields=date,link,title,categories
+    read: 2026-10-23
+    kind: other
+    title: Public posts listing (publish dates)
+
+identity:
+  parent_company:
+    value: unknown
+    checked: [ guidelines, terms ]
+  sister_publications:
+    value: unknown
+    checked: [ guidelines ]
+  shared_inbox_with:
+    value: unknown
+    checked: [ guidelines ]
+
+coverage:
+  regions:
+    value: [ US-FL:tampa-bay, US-FL:sarasota ]
+    cite:
+      - source: guidelines
+        quote: The wedding must have taken place in the Tampa Bay, Central Florida, or Sarasota areas.
+      - source: guidelines
+        quote: We are currently not accepting submissions of weddings held in Orlando.
+    note: Central Florida outside Orlando is also accepted; geo.yaml has no code for it.
+  basis:
+    value: wedding_location
+    cite:
+      - source: guidelines
+        quote: The wedding must have taken place in the Tampa Bay, Central Florida, or Sarasota areas.
+  destination_accepted:
+    value: unknown
+    checked: [ guidelines ]
+    note: Coverage turns on where the wedding took place; whether the couple traveled is not discussed.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: To submit a wedding to Marry Me Tampa Bay, please make sure it has the following criteria
+  elopement:
+    value: unknown
+    checked: [ guidelines, form ]
+  styled_shoot:
+    value: true
+    cite:
+      - source: guidelines
+        quote: We do accept a limited number styled shoots, but do not accept engagement photos.
+    note: A limited number.
+  style_tags:
+    value: [ romantic, vintage_heritage, hotel_resort, beach_coastal, playful_party, bold_color_maximalist ]
+    cite:
+      - source: feature_floridarama
+      - source: feature_birchwood
+      - source: feature_innisbrook
+      - source: feature_nova_535
+      - source: feature_sandpearl
+    note: From the features' headlines and venues (neon disco, candlelit romance, Bridgerton-inspired resort, vintage romance, coastal beach resort).
+  seasonality:
+    value: unknown
+    checked: [ guidelines ]
+
+routes:
+  value:
+    - platform: web_form
+      url: https://marrymetampabay.com/contact-us/submission/
+      account_required: false
+      preferred: true
+      steps:
+        - Check with the couple that they want the wedding shared and are open to an interview.
+        - Open the submission form on the submit page; do not email the submission.
+        - Give your business name and the couple's contact details for text follow-up.
+        - Link the photographer's gallery with any passwords or download pins; Dropbox and Google Drive are refused.
+        - Add the vendor list, list any other outlets the wedding was sent to or ran in, accept the terms and the exclusivity policy, and submit.
+  cite:
+    - source: guidelines
+      quote: Do NOT email your submission.
+    - source: guidelines
+      quote: Before you submit, please double-check with the couple that they want their wedding shared (not all couples do).
+    - source: form
+      quote: Please include the photographer's gallery and any passwords/download pins.
+    - source: form
+      quote: We do NOT accept galleries via Dropbox, Google Drive, or other third-party sites.
+    - source: form
+      quote: What other publications have you submitted this wedding or what other publications have accepted or published this feature?
+    - source: form
+      quote: I have read and agree to the exclusivity policy as outlined above
+    - source: form
+      quote: Business Name
+    - source: form
+      quote: We will not call them, only text to follow up for their quotes
+
+package:
+  image_min:
+    value: unknown
+    checked: [ guidelines, form ]
+  image_max:
+    value: 200
+    cite:
+      - source: guidelines
+        quote: Submissions should include up to 200 non-watermarked photos, with each image having a minimum width of 2000 pixels.
+  resolution:
+    value:
+      min_width_px: 2000
+    cite:
+      - source: guidelines
+        quote: Submissions should include up to 200 non-watermarked photos, with each image having a minimum width of 2000 pixels.
+  size:
+    value: unknown
+    checked: [ guidelines ]
+    note: Only a 2000-pixel minimum width is stated.
+  orientation_mix:
+    value: unknown
+    checked: [ guidelines, form ]
+  watermarks_allowed:
+    value: false
+    cite:
+      - source: guidelines
+        quote: Submissions should include up to 200 non-watermarked photos, with each image having a minimum width of 2000 pixels.
+      - source: terms
+        quote: We do not accept watermarked photos
+  gallery_hosts:
+    value: unknown
+    checked:
+      - form
+    note: The form wants the photographer's gallery with any passwords or download pins and refuses Dropbox, Google Drive "or other third-party sites"; no accepted host is named.
+  vendor_credits:
+    value: unknown
+    checked: [ form, terms ]
+    note: The form asks for a vendor list (upload or paste) without marking it required; credits run at the bottom of each feature.
+  story:
+    value: unknown
+    checked:
+      - guidelines
+      - form
+    note: The editors interview the couple; the form's question about what makes the wedding unique carries no required mark.
+  video_accepted:
+    value: unknown
+    checked: [ guidelines, form ]
+  other_requirements:
+    value:
+      - About 60% of the gallery is detail and decor, including wide shots of the ceremony and reception.
+      - Photos covering the various phases of the wedding day.
+      - No individual portraits of the wedding party and no guests dancing.
+      - The couple's phone number, for text follow-up on their interview quotes.
+    cite:
+      - source: guidelines
+        quote: Your submission gallery should include 60% detail/decor photos, including wide shots of the ceremony and reception
+      - source: guidelines
+        quote: These photos should cover various phases of the wedding day, such as
+      - source: guidelines
+        quote: Do NOT include individual portraits of the wedding party (though we do want group photos) or guests dancing at the reception.
+      - source: form
+        quote: We will not call them, only text to follow up for their quotes
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_required
+      after_publication_days: 60
+    cite:
+      - source: guidelines
+        quote: Marry Me Tampa Bay requires exclusivity for featured weddings and styled shoots.
+      - source: guidelines
+        quote: cannot be submitted to or featured by another media outlet for a period of 60 days after it goes live on Marry Me Tampa Bay.
+    note: Afterwards the feature may run elsewhere if Marry Me Tampa Bay is credited as the original publisher. Exclusivity during review is not stated.
+  prior_exposure:
+    publications:
+      value: disqualifies
+      cite:
+        - source: guidelines
+          quote: We do accept weddings that have been previously featured on national publications
+        - source: guidelines
+          quote: Submissions must not have been previously published in any Florida-based wedding publication, magazine, or blog
+      note: Any Florida-based publication, magazine or blog disqualifies; national features are accepted.
+    blogs:
+      value: unknown
+      checked: [ guidelines ]
+      note: Florida-based wedding blogs disqualify; a vendor's own blog is not addressed.
+    social:
+      value: unknown
+      checked: [ guidelines ]
+      note: A Florida-based publication's social media counts as prior publication; posts by the couple or vendors are not addressed.
+  freshness_window_months:
+    value: 9
+    cite:
+      - source: guidelines
+        quote: Our preference is to feature weddings that have taken place within the last six to nine months.
+    note: A stated preference, not a hard limit.
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines ]
+  submitter_roles:
+    value: [ photographer, planner, vendor ]
+    cite:
+      - source: guidelines
+        quote: please go contact your wedding photographer or planner; we do not accept submissions from the couple.
+      - source: form
+        quote: Business Name
+    note: Wedding businesses only; never the couple.
+
+rights:
+  image_usage:
+    value: unknown
+    checked: [ terms ]
+  credit_format:
+    value: Vendor credits run at the bottom of the feature and link to past features or member profiles, never to outside websites; photos carry no photographer captions.
+    cite:
+      - source: terms
+        quote: All vendor credits are listed at the bottom of the feature.
+      - source: terms
+        quote: Vendor credits will be linked to past features on Marry Me Tampa Bay or to “member” profile pages.
+      - source: terms
+        quote: We do not link to external vendor websites.
+      - source: terms
+        quote: We do not accept watermarked photos or “caption” a photo with photographer credit.
+  couple_consent_required:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Before you submit, please double-check with the couple that they want their wedding shared (not all couples do).
+  vendor_consent_required:
+    value: unknown
+    checked: [ form ]
+    note: The form asks whether the photographer knows of the submission; permission is not asked for.
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ guidelines, terms ]
+  publication_fee:
+    value: unknown
+    checked: [ guidelines, terms ]
+  priority_paid_tier:
+    value: unknown
+    checked: [ terms, membership ]
+    note: Paid members are mentioned in the write-up and get contact buttons; no page says they get faster review, and no price is published.
+  reach:
+    value: unknown
+    checked: [ terms, membership ]
+    note: The terms claim 300,000+ annual readers, which fits no recorded metric.
+
+timing:
+  response_window:
+    value:
+      days: 84
+      replies: all
+    cite:
+      - source: guidelines
+        quote: Currently, our response time is eight to twelve weeks
+    note: Eight to twelve weeks, stored as the upper bound. No page says declined submissions get a reply; all is read from "response time".
+  publish_lead_days:
+    value:
+      min: 120
+      max: 180
+    cite:
+      - source: guidelines
+        quote: our publishing schedule is 4 to 6 months out.
+  publishing_cycle:
+    value: Online several times a week; five real weddings went live between 2026-10-13 and 2026-10-22.
+    cite:
+      - source: feature_floridarama
+      - source: feature_birchwood
+      - source: feature_innisbrook
+      - source: feature_nova_535
+      - source: feature_sandpearl
+      - source: posts_listing
+        quote: Neon Disco Meets Old Florida St. Pete Wedding
+
+people:
+  editors:
+    value: unknown
+    checked: [ guidelines, terms ]
+
+insight:
+  secret_sauce:
+    - tip: Details and decor carry a submission; make about 60% of the gallery detail and decor shots.
+      cite:
+        - source: guidelines
+          quote: Our main focus is the details and decor, so include LOTS of those shots!
+        - source: guidelines
+          quote: Your submission gallery should include 60% detail/decor photos, including wide shots of the ceremony and reception
+    - tip: Choose a couple who will happily be interviewed.
+      cite:
+        - source: guidelines
+          quote: We do interview the couple, so they must be open to speaking with us.
+    - tip: Say so on the form if a preferred vendor or an editor asked for the submission.
+      cite:
+        - source: form
+          quote: Did a Marry Me Tampa Bay preferred vendor or someone from our editorial team ask you to submit this wedding?
+    - tip: Fresh weddings are preferred, ideally within six to nine months.
+      cite:
+        - source: guidelines
+          quote: Our preference is to feature weddings that have taken place within the last six to nine months.
+  recent_features:
+    - source: feature_floridarama
+      published: 2026-10-22
+      location: US-FL:tampa-bay
+      content_type: real_wedding
+      tags: [ playful_party, bold_color_maximalist ]
+    - source: feature_birchwood
+      published: 2026-10-21
+      location: US-FL:tampa-bay
+      content_type: real_wedding
+      tags: [ romantic, hotel_resort ]
+    - source: feature_innisbrook
+      published: 2026-10-20
+      location: US-FL:tampa-bay
+      content_type: real_wedding
+      tags: [ hotel_resort, romantic ]
+    - source: feature_nova_535
+      published: 2026-10-15
+      location: US-FL:tampa-bay
+      content_type: real_wedding
+      tags: [ vintage_heritage, romantic ]
+    - source: feature_sandpearl
+      published: 2026-10-13
+      location: US-FL:tampa-bay
+      content_type: real_wedding
+      tags: [ beach_coastal, hotel_resort, classic_timeless ]

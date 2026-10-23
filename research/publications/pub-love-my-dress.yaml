@@ -1,0 +1,452 @@
+id: pub-love-my-dress
+name: Love My Dress
+url: https://www.lovemydress.net
+kind: destination_international
+tier: primary
+recheck_every_days: 90
+taste_summary: Story-led, human real weddings with a strong fashion and personality focus; recent features mix colourful, vintage-inspired London weddings with US and Paris celebrations, and the editor is keen on couples underrepresented in wedding media.
+notes: UK blog (North Yorkshire). US weddings are published (the five newest real weddings include Vermont and New York's Hudson Valley, and the site files weddings under a "USA" location). No page states a geographic limit or says anything about weddings abroad; the newest features include a London couple's Paris celebration filed under "Destination". Directory prices, the media pack and audience figures are shown only after a business registration is approved and were not viewed. The submissions inbox address is in the private contacts overlay.
+
+sources:
+  guidelines:
+    url: https://www.lovemydress.net/submissions
+    read: 2026-10-23
+    kind: guidelines
+    title: "Submission Guidelines: How To Submit A Real Wedding or Editorial Photoshoot to Love My Dress"
+  about:
+    url: https://www.lovemydress.net/about
+    read: 2026-10-23
+    kind: about
+    title: About Love My Dress & Our Founder, Annabel Beeforth
+  contact:
+    url: https://www.lovemydress.net/contact-us
+    read: 2026-10-23
+    kind: other
+    title: Contact Us
+  advertising:
+    url: https://www.lovemydress.net/advertising
+    read: 2026-10-23
+    kind: media_kit
+    title: Work With Love My Dress
+  category:
+    url: https://www.lovemydress.net/blog/category/real-weddings-to-inspire
+    read: 2026-10-23
+    kind: other
+    title: Real Weddings category page
+  terms:
+    url: https://www.lovemydress.net/terms-of-use
+    read: 2026-10-23
+    kind: other
+    title: Terms of Use
+  vuelio_interview:
+    url: https://www.vuelio.com/uk/blog/a-spotlight-with-top-wedding-blog-love-my-dress/
+    read: 2026-10-23
+    kind: interview
+    title: A Spotlight with Top Wedding Blog, Love My Dress (Vuelio, 2018-05-16)
+  feature_magic_show:
+    url: https://www.lovemydress.net/blog/2026/10/vintage-magic-show-inspired-wedding.html
+    read: 2026-10-23
+    kind: feature
+    title: Mikayla & Tessa's Colourful, Vintage Magic Show Inspired London Wedding
+  feature_retro_london:
+    url: https://www.lovemydress.net/blog/2026/10/retro-london-wedding-70s-disco.html
+    read: 2026-10-23
+    kind: feature
+    title: After 17 Years Together, Michelle & Alan Celebrated With a Joyous & Retro London Wedding
+  feature_vermont:
+    url: https://www.lovemydress.net/blog/2026/10/iranian-american-wedding-vermont-sofreh-aghd.html
+    read: 2026-10-23
+    kind: feature
+    title: A Joyful & Colourful, Iranian American Wedding Weekend
+  feature_paris:
+    url: https://www.lovemydress.net/blog/2026/10/audrey-hepburn-inspired-wedding-paris-seine.html
+    read: 2026-10-23
+    kind: feature
+    title: An Audrey Hepburn & Old Hollywood Glamour Inspired Wedding on The Clipper Yacht, Paris
+  feature_hudson_valley:
+    url: https://www.lovemydress.net/blog/2026/10/cosy-moody-autumn-wedding-brotherhood-winery-hudson-valley.html
+    read: 2026-10-23
+    kind: feature
+    title: From the Moment They Met, Molly Knew She Would Marry Anna
+
+identity:
+  parent_company:
+    value: unknown
+    checked: [ about, terms, guidelines ]
+    note: The about page names Philip as Director of Love My Dress; no company name is given.
+  sister_publications:
+    value: unknown
+    checked: [ about, advertising ]
+    note: The about page mentions Moonwind Flowers, a floral business run by the founder's husband; it is not a publication.
+  shared_inbox_with:
+    value: unknown
+    checked: [ guidelines, contact ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: feature_magic_show
+      - source: feature_vermont
+      - source: feature_paris
+      - source: feature_hudson_valley
+    note: Inferred from published features; no page states a geographic limit. The five newest real weddings are in London, Vermont, Paris and New York's Hudson Valley.
+  basis:
+    value: unknown
+    checked: [ guidelines, category ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: feature_paris
+        quote: followed by a spectacular celebration aboard The Clipper Yacht on the River Seine in Paris the following day.
+      - source: feature_paris
+        quote: We brought our own DJ from the UK and his name is Chris Green.
+    note: Inferred from published features; no page states whether weddings abroad are accepted. The Paris feature, filed under "Destination", shows a couple who married in London and celebrated in Paris the next day with a DJ brought from the UK.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: You Don’t Need To Be A Love My Dress Member To Submit Real Weddings
+  elopement:
+    value: unknown
+    checked: [ guidelines, category ]
+    note: No page mentions elopements, and none of the five newest real weddings is one.
+  styled_shoot:
+    value: true
+    cite:
+      - source: guidelines
+        quote: We only consider editorials and styled photoshoots for publication where the lead creative on the project
+      - source: guidelines
+        quote: is a Love My Dress Wedding Directory member.
+    note: Editorials and styled shoots are open only when the lead creative is a paid Directory member; having one member in the wider team does not qualify a shoot, and photography workshop images are not published.
+  style_tags:
+    value: [ bold_color_maximalist, vintage_heritage, culturally_rooted, playful_party, moody_dramatic, vineyard_winery, romantic ]
+    cite:
+      - source: feature_magic_show
+      - source: feature_retro_london
+      - source: feature_vermont
+      - source: feature_paris
+      - source: feature_hudson_valley
+  seasonality:
+    value: unknown
+    checked: [ guidelines ]
+
+routes:
+  value:
+    - platform: email
+      account_required: false
+      preferred: true
+      steps:
+        - Email the submissions inbox with a subject line that starts with the word "Submission".
+        - Attach 25 to 30 low-res images, at least 1000 pixels wide, directly to the email; no Zip files, WeTransfer, Dropbox or third-party gallery links at this stage.
+        - Include the date, the location or venue, the key suppliers (particularly the dress) and a little about the day; a short paragraph is fine.
+        - Love My Dress asks to be the first publication to feature the wedding; earlier social posts do not rule it out.
+        - Expect to hear back within 5 working days; if accepted, send the full wedding and pass the questionnaire to the couple.
+      note: Real weddings are open to everyone, with Directory members prioritised. Editorials and styled shoots go by the same route but only when the lead creative is a Directory member. The inbox address is in the private contacts overlay.
+  cite:
+    - source: guidelines
+      quote: Please submit 25-30 low-res images (at least 1000 pixels wide) via straight-forward email attachment to
+    - source: guidelines
+      quote: Please try to ensure your email subject line starts with the word ‘Submission’.
+    - source: guidelines
+      quote: If accepted, you will receive further instructions and a questionnaire to pass on to the bride/couple.
+    - source: guidelines
+      quote: Please do not send Zip files, Wetransfer, Dropbox or link to a third party website (ie, Pictime) at this stage.
+    - source: guidelines
+      quote: including the date, location or venue and key suppliers, particularly the dress, along with a little about the day itself.
+    - source: guidelines
+      quote: A short paragraph is absolutely great, but share as much as you like.
+    - source: guidelines
+      quote: We ask that Love My Dress is the first wedding publication to feature your wedding.
+    - source: guidelines
+      quote: If a carousel, reel or full gallery has already been shared, please don’t let that put you off submitting
+    - source: guidelines
+      quote: you can expect to hear back from us within 5 working days.
+    - source: guidelines
+      quote: Once we have received the full wedding and completed questionnaire
+
+package:
+  image_min:
+    value: 25
+    cite:
+      - source: guidelines
+        quote: Please submit 25-30 low-res images (at least 1000 pixels wide)
+  image_max:
+    value: 30
+    cite:
+      - source: guidelines
+        quote: Please submit 25-30 low-res images (at least 1000 pixels wide)
+    note: The count for the first email; the full wedding is sent after acceptance.
+  resolution:
+    value:
+      min_width_px: 1000
+      note: Low-res files sent as plain email attachments.
+    cite:
+      - source: guidelines
+        quote: Please submit 25-30 low-res images (at least 1000 pixels wide) via straight-forward email attachment to
+  size:
+    value: unknown
+    checked: [ guidelines ]
+    note: The page asks for low-res images at least 1000 pixels wide; it does not say web or print size.
+  orientation_mix:
+    value: About 80 percent portrait and 20 percent landscape, because most readers view the site on mobile.
+    cite:
+      - source: guidelines
+        quote: We share more portrait images than landscape and recommend an 80/20 portrait to landscape mix.
+      - source: guidelines
+        quote: Most of our readers view Love My Dress on mobile and hand-held devices
+  watermarks_allowed:
+    value: unknown
+    checked: [ guidelines ]
+  gallery_hosts:
+    value: [ direct_upload ]
+    cite:
+      - source: guidelines
+        quote: Please do not send Zip files, Wetransfer, Dropbox or link to a third party website (ie, Pictime) at this stage.
+      - source: guidelines
+        quote: Simple attachments at this submission stage are what we’re looking for.
+    note: Images go as plain email attachments. Zip files, WeTransfer, Dropbox and gallery links such as Pic-Time are refused for the first submission; the page does not say how the full wedding is sent after acceptance.
+  vendor_credits:
+    value:
+      required: true
+      note: Key suppliers, particularly the dress, go in the first email; published features end with a full credits list.
+    cite:
+      - source: guidelines
+        quote: including the date, location or venue and key suppliers, particularly the dress, along with a little about the day itself.
+      - source: guidelines
+        quote: full credits and links for the wedding team
+  story:
+    value:
+      required: true
+      questionnaire: true
+      note: A short paragraph about the day with the first email, then a questionnaire completed by the couple after acceptance.
+    cite:
+      - source: guidelines
+        quote: A short paragraph is absolutely great, but share as much as you like.
+      - source: guidelines
+        quote: Once we have received the full wedding and completed questionnaire
+  video_accepted:
+    value: unknown
+    checked: [ guidelines ]
+  other_requirements:
+    value:
+      - The email subject line starts with the word "Submission".
+      - The first email gives the wedding date and the location or venue.
+      - A generous mix of fashion and decor details and emotive moments of connection, joy and celebration.
+      - Tell the editors whether the wedding has appeared or is being arranged elsewhere, and what has been shared on social media and where.
+      - No AI-generated imagery; ordinary post-production is fine.
+      - No photography workshop images.
+    cite:
+      - source: guidelines
+        quote: Please try to ensure your email subject line starts with the word ‘Submission’.
+      - source: guidelines
+        quote: including the date, location or venue and key suppliers, particularly the dress
+      - source: guidelines
+        quote: It’s the emotive moments of connection, joy, celebration and love that bring a feature to life, though, so please include a generous mix of both.
+      - source: guidelines
+        quote: just tell us what’s been shared and where and we’ll look at the wedding with that in mind.
+      - source: guidelines
+        quote: Love My Dress does not publish AI-generated imagery and will not knowingly feature it.
+      - source: guidelines
+        quote: Adjustments to light, colour and exposure, the removal of minor distractions
+      - source: guidelines
+        quote: Kindly note, we don’t publish photography workshop images.
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_required
+      after_publication_days: 180
+    cite:
+      - source: guidelines
+        quote: We ask that Love My Dress is the first wedding publication to feature your wedding.
+      - source: guidelines
+        quote: After your feature is published, please wait six months before submitting the wedding to any other publication.
+    note: Six months stored as 180 days. Once accepted, no further carousels, reels or galleries may be shared until the feature is live.
+  prior_exposure:
+    publications:
+      value: unknown
+      checked:
+        - guidelines
+      note: Love My Dress asks to be the first publication and to be told of any earlier feature; it does not say one disqualifies.
+    blogs:
+      value: allowed
+      cite:
+        - source: guidelines
+          quote: You, the couple and the wider team are welcome to share individual images on your own websites and social channels at any time.
+      note: Own websites only; a feature on another blog counts as a prior publication.
+    social:
+      value: allowed
+      cite:
+        - source: guidelines
+          quote: If a carousel, reel or full gallery has already been shared, please don’t let that put you off submitting
+        - source: guidelines
+          quote: Once a submission is accepted, we ask that no further carousels, reels or galleries are shared until the feature is live
+      note: Individual images may be shared at any time; after acceptance, hold back further carousels, reels and galleries until the feature is live.
+  freshness_window_months:
+    value: 12
+    cite:
+      - source: guidelines
+        quote: Ideally, weddings that have happened within the past 12 months, though we’re always flexible.
+    note: A preference, not a cutoff; the Paris feature ran about 15 months after its July 2025 wedding.
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines ]
+  submitter_roles:
+    value: [ photographer, planner, vendor ]
+    cite:
+      - source: guidelines
+        quote: We genuinely love to hear from all suppliers, vendors and venues
+      - source: guidelines
+        quote: whether photographer, planner, stylist, venue or designer
+    note: The roles are named for editorials and shoots; real weddings are open to any supplier, vendor or venue. The couple receives the questionnaire through the submitter; no page says couples may submit.
+
+rights:
+  image_usage:
+    value: Published as a feature on the site and shared on the outlet's Instagram as a collaborative post with selected members of the wedding team.
+    cite:
+      - source: guidelines
+        quote: when we share the wedding on Instagram, we’ll invite selected members of the team to join the post as collaborators.
+    note: No licence terms for submitted images are published; the terms of use cover the site's own material only.
+  credit_format:
+    value: A "Credits & Thanks" list at the end of each feature names every supplier, vendor and venue by role, with Directory members marked; the photographer is also named in the introduction.
+    cite:
+      - source: feature_magic_show
+        quote: Below, you’ll find a full list of all suppliers, vendors & venues mentioned in this article.
+      - source: feature_magic_show
+        quote: Those marked with a ✓ are personally recommended members of the Love My Dress Wedding Directory
+      - source: feature_retro_london
+        quote: Their wedding was photographed by Conor on behalf of Helaina Storey Photography
+  couple_consent_required:
+    value: unknown
+    checked: [ guidelines ]
+    note: The couple completes a questionnaire after acceptance; the page does not ask for their consent.
+  vendor_consent_required:
+    value: unknown
+    checked: [ guidelines ]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ guidelines, advertising ]
+    note: Membership is not needed to submit real weddings, but no page states there is no fee.
+  publication_fee:
+    value: unknown
+    checked: [ guidelines, advertising ]
+    note: Paid "dedicated editorial" about a business is one of the advertising options; nothing ties it to real-wedding features.
+  priority_paid_tier:
+    value:
+      name: Love My Dress Wedding Directory membership
+      note: Members' real weddings are prioritised and published sooner, and membership of the lead creative is required for editorials and styled shoots. Four levels (Classic, Premium, Elite and Signature); prices are shown only after an approved registration.
+    cite:
+      - source: guidelines
+        quote: although we’ll always prioritise submissions from those who are.
+      - source: guidelines
+        quote: We will always prioritise timely publication of the work of our directory members.
+      - source: advertising
+        quote: detailed descriptions of our Classic, Premium, Elite and Signature listings
+  reach:
+    value: unknown
+    checked: [ advertising, about ]
+    note: Audience figures are in the media pack, released only after a business registration is approved.
+
+timing:
+  response_window:
+    value:
+      days: 7
+      replies: all
+    cite:
+      - source: guidelines
+        quote: We will let you know if your submission has been accepted or declined via email
+      - source: guidelines
+        quote: you can expect to hear back from us within 5 working days.
+    note: 5 working days, stored as 7 calendar days.
+  publish_lead_days:
+    value:
+      max: 56
+    cite:
+      - source: guidelines
+        quote: you can expect to wait up to 8 weeks for the content to be published – though this is subject to some variation.
+    note: Counted from receipt of the full wedding and the completed questionnaire. Directory members are published sooner.
+  publishing_cycle:
+    value: Online; five real weddings went live between 2026-10-07 and 2026-10-18.
+    cite:
+      - source: feature_magic_show
+      - source: feature_retro_london
+      - source: feature_vermont
+      - source: feature_paris
+      - source: feature_hudson_valley
+
+people:
+  editors:
+    value:
+      - name: Annabel Beeforth
+        role: Founder of Love My Dress, podcaster and editor
+    cite:
+      - source: about
+        quote: Founded and edited by Annabel Beeforth
+      - source: feature_magic_show
+        quote: Founder of Love My Dress, podcaster and editor
+
+insight:
+  secret_sauce:
+    - tip: Shoot and select mostly portrait images, about 80/20 portrait to landscape, because most readers view the site on mobile.
+      cite:
+        - source: guidelines
+          quote: We share more portrait images than landscape and recommend an 80/20 portrait to landscape mix.
+        - source: guidelines
+          quote: Most of our readers view Love My Dress on mobile and hand-held devices
+    - tip: Show how the couple brought their personalities into the day through fashion, decor and readings, alongside plenty of emotive moments of connection and joy.
+      cite:
+        - source: guidelines
+          quote: We love seeing how a couple brought their personalities into the day through fashion, decor, readings and the decisions they made while planning.
+        - source: guidelines
+          quote: It’s the emotive moments of connection, joy, celebration and love that bring a feature to life
+    - tip: Name the dress designer in the first email; it is the one supplier the guidelines single out.
+      cite:
+        - source: guidelines
+          quote: key suppliers, particularly the dress
+    - tip: Weddings from communities underrepresented in wedding media, and mature couples, are especially welcome.
+      cite:
+        - source: guidelines
+          quote: we’re especially keen to feature weddings from communities that are underrepresented in wedding media
+        - source: guidelines
+          quote: We also love to share the stories of mature couples
+    - tip: Keep sharing to individual images once accepted; a wedding already widely shared reaches fewer new people when the outlet posts it.
+      cite:
+        - source: guidelines
+          quote: a wedding that’s already been widely shared reaches far fewer new people when we post it.
+    - tip: The editor values the couple's story as much as the images, and favours honest weddings that reflect the couple.
+      cite:
+        - source: vuelio_interview
+          quote: it’s our consistent approach to the story and not just the images.
+        - source: vuelio_interview
+          quote: My favourite weddings, however, are always the most honest ones
+  recent_features:
+    - source: feature_magic_show
+      published: 2026-10-18
+      location: GB
+      content_type: real_wedding
+      tags: [ bold_color_maximalist, whimsical, playful_party, alternative_nontraditional ]
+    - source: feature_retro_london
+      published: 2026-10-15
+      location: GB
+      content_type: real_wedding
+      tags: [ vintage_heritage, playful_party, bold_color_maximalist, alternative_nontraditional ]
+    - source: feature_vermont
+      published: 2026-10-11
+      location: US-VT
+      content_type: real_wedding
+      tags: [ culturally_rooted, bold_color_maximalist, playful_party, historic_manor_estate ]
+    - source: feature_paris
+      published: 2026-10-09
+      location: FR
+      content_type: real_wedding
+      tags: [ glamorous_luxe, vintage_heritage, classic_timeless ]
+    - source: feature_hudson_valley
+      published: 2026-10-07
+      location: US-NY
+      content_type: real_wedding
+      tags: [ vineyard_winery, moody_dramatic, intimate_micro, wedding_suit_pantsuit ]

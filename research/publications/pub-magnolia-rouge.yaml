@@ -1,0 +1,388 @@
+id: pub-magnolia-rouge
+name: Magnolia Rouge
+url: https://magnoliarouge.com
+kind: destination_international
+tier: secondary
+recheck_every_days: 90
+taste_summary: Natural, organic and romantic real weddings and editorials from around the world, often in historic European venues or classic American settings, told as long narrative stories with full vendor credits.
+notes: The submissions page (https://magnoliarouge.com/dashboard/submissions/, which /submissions/ redirects to) returned a Cloudflare bot challenge to a plain fetch on 2026-10-23 and was not read; package, fee and timing facts are unknown because that page did not load, not because the outlet has no rule. The Vendor Collective sign-up page and the media kit and pricing need an account and were not viewed. A 2014 Loverly interview with the founder was blocked by a bot challenge and is not used.
+
+sources:
+  home:
+    url: https://magnoliarouge.com/
+    read: 2026-10-23
+    kind: other
+    title: Home page
+  about:
+    url: https://magnoliarouge.com/about/
+    read: 2026-10-23
+    kind: about
+    title: About
+  contact:
+    url: https://magnoliarouge.com/contact/
+    read: 2026-10-23
+    kind: about
+    title: Contact
+  advertising:
+    url: https://magnoliarouge.com/advertising/
+    read: 2026-10-23
+    kind: media_kit
+    title: Advertising on Magnolia Rouge
+  questionnaire:
+    url: https://magnoliarouge.com/real-wedding-questionnaire/
+    read: 2026-10-23
+    kind: form
+    title: Real Wedding Questionnaire (for couples whose wedding is being featured)
+  terms:
+    url: https://magnoliarouge.com/terms-of-use/
+    read: 2026-10-23
+    kind: other
+    title: Terms of Use
+  category:
+    url: https://magnoliarouge.com/category/real-weddings/
+    read: 2026-10-23
+    kind: other
+    title: Real Weddings category page
+  feature_talloires:
+    url: https://magnoliarouge.com/a-romantic-and-colourful-wedding-at-abbaye-de-talloires/
+    read: 2026-10-23
+    kind: feature
+    title: A Romantic and Colourful Wedding at Abbaye de Talloires
+  feature_seville:
+    url: https://magnoliarouge.com/an-elegant-seville-wedding-beneath-the-orange-trees/
+    read: 2026-10-23
+    kind: feature
+    title: An Elegant Seville Wedding Beneath the Orange Trees
+  feature_montaluce:
+    url: https://magnoliarouge.com/a-romantic-candlelit-wedding-in-north-georgia-wine-country/
+    read: 2026-10-23
+    kind: feature
+    title: A Romantic Candlelit Wedding in North Georgia Wine Country
+  feature_tacoma:
+    url: https://magnoliarouge.com/a-refined-waterfront-wedding-rooted-in-family-and-tradition/
+    read: 2026-10-23
+    kind: feature
+    title: A Refined Waterfront Wedding Rooted in Family and Tradition
+
+identity:
+  parent_company:
+    value: unknown
+    checked: [ contact, terms, about ]
+    note: The contact page calls Magnolia Rouge itself a weddings and lifestyle media company based in New Zealand; no owning company is named.
+  sister_publications:
+    value: unknown
+    checked: [ about, contact, advertising ]
+  shared_inbox_with:
+    value: unknown
+    checked: [ contact ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: contact
+        quote: Magnolia Rouge is a weddings and lifestyle media company based in New Zealand with a global focus.
+      - source: feature_talloires
+      - source: feature_seville
+      - source: feature_montaluce
+      - source: feature_tacoma
+    note: No page sets a geographic limit; recent features are in France, Spain, Georgia and Washington.
+  basis:
+    value: unknown
+    checked: [ contact, advertising, questionnaire ]
+    note: The submissions page did not load.
+  destination_accepted:
+    value: unknown
+    checked: [ feature_talloires, feature_seville, feature_montaluce, feature_tacoma ]
+    note: The Seville couple live in Spain; the other recent features do not say whether the couples traveled. The submissions page did not load.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: home
+        quote: Through curated real weddings and editorial shoots, it offers couples ideas to create their dream day.
+      - source: advertising
+        quote: whether it’s via a submitted wedding or editorial
+  elopement:
+    value: unknown
+    checked: [ home, category, advertising ]
+    note: The submissions page did not load; the recent real weddings read are all full weddings.
+  styled_shoot:
+    value: true
+    cite:
+      - source: home
+        quote: Through curated real weddings and editorial shoots, it offers couples ideas to create their dream day.
+      - source: advertising
+        quote: whether it’s via a submitted wedding or editorial
+    note: The site files styled shoots under Editorial.
+  style_tags:
+    value: [ romantic, organic_textural, classic_timeless, culturally_rooted, historic_manor_estate ]
+    cite:
+      - source: home
+        quote: Magnolia Rouge celebrates natural beauty, organic styling, and inspiring imagery.
+      - source: feature_talloires
+      - source: feature_seville
+      - source: feature_montaluce
+      - source: feature_tacoma
+  seasonality:
+    value: unknown
+    checked: [ advertising, contact ]
+    note: The submissions page did not load.
+
+routes:
+  value:
+    - platform: portal
+      url: https://magnoliarouge.com/dashboard/submissions/
+      account_required: unknown
+      preferred: true
+      steps:
+        - Open the Submissions section, linked from the contact page and the site header.
+        - Submit the wedding or editorial through the submissions dashboard.
+        - Once a wedding is chosen for a feature, the couple fills in the Real Wedding Questionnaire with their story and a full vendor list.
+      note: The submissions page sits under the site's account dashboard and returned a bot challenge, so it was not read and whether a free account is needed is not confirmed here. Vendor Collective members get a fast-track simplified submission process.
+  cite:
+    - source: contact
+      quote: For information about submissions, see the Submissions section.
+    - source: questionnaire
+      quote: We are thrilled to be featuring your wedding on Magnolia Rouge
+    - source: advertising
+      quote: As a Magnolia Rouge Collective member, you’ll also get priority consideration for submissions and a fast-track simplified submission process.
+
+package:
+  image_min:
+    value: unknown
+    checked: [ advertising, questionnaire ]
+    note: The submissions page did not load.
+  image_max:
+    value: unknown
+    checked: [ advertising, questionnaire ]
+    note: The submissions page did not load.
+  resolution:
+    value: unknown
+    checked: [ advertising, questionnaire ]
+    note: The submissions page did not load.
+  size:
+    value: unknown
+    checked: [ advertising, questionnaire ]
+    note: The submissions page did not load.
+  orientation_mix:
+    value: unknown
+    checked: [ advertising, questionnaire ]
+    note: The submissions page did not load.
+  watermarks_allowed:
+    value: unknown
+    checked: [ advertising, questionnaire ]
+    note: The submissions page did not load.
+  gallery_hosts:
+    value: unknown
+    checked: [ advertising, questionnaire ]
+    note: The submissions page did not load.
+  vendor_credits:
+    value:
+      required: true
+      fields: [ business_name, website, instagram ]
+      note: Asked of the couple in the Real Wedding Questionnaire; only listed vendors are credited, and websites are wanted, not just Instagram names.
+    cite:
+      - source: questionnaire
+        quote: We also ask for a comprehensive list of your vendors so we can ensure everyone gets the credit they deserve.
+      - source: questionnaire
+        quote: Please add (or paste) all your vendor information here (business name, website and instagram).
+      - source: questionnaire
+        quote: We will only add vendors you have listed here so please ensure you include everyone you’d like acknowledged.
+      - source: questionnaire
+        quote: Please ensure you add websites rather than just Instagram names.
+  story:
+    value:
+      required: true
+      questionnaire: true
+      note: The couple's Real Wedding Questionnaire asks how they met, the proposal, venue, getting ready, first look, fashion, florals, ceremony, cocktail hour, entertainment, reception and honeymoon. What the submission dashboard itself asks was not seen.
+    cite:
+      - source: questionnaire
+        quote: we want to be able to share some of your story for our viewers to engage with.
+      - source: questionnaire
+        quote: Please give us a rundown on the aspects that you are comfortable sharing (there is no such thing as too much information).
+  video_accepted:
+    value: unknown
+    checked: [ advertising, questionnaire ]
+    note: The submissions page did not load. Up to 3 Vimeo videos are allowed in paid directory listings, which is not a submission rule.
+  other_requirements:
+    value: unknown
+    checked: [ advertising, questionnaire ]
+    note: The submissions page did not load. The questionnaire's required fields are the couple's names, email, wedding photographer, wedding location and wedding date.
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [ terms, advertising ]
+    note: The terms grant Magnolia Rouge a non-exclusive license to submitted content; that is a rights term, not an editorial exclusivity rule. The submissions page did not load.
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ advertising, terms ]
+      note: The submissions page did not load.
+    blogs:
+      value: unknown
+      checked: [ advertising, terms ]
+      note: The submissions page did not load.
+    social:
+      value: unknown
+      checked: [ advertising, terms ]
+      note: The submissions page did not load.
+  freshness_window_months:
+    value: unknown
+    checked: [ advertising, questionnaire ]
+    note: The submissions page did not load.
+  photographer_frequency:
+    value: unknown
+    checked: [ advertising ]
+    note: The submissions page did not load.
+  submitter_roles:
+    value: [ photographer, planner, vendor ]
+    cite:
+      - source: advertising
+        quote: We prioritise submissions from our Collective members
+      - source: about
+        quote: photographers, floral designers, planners, stylists, and more
+    note: The Vendor Collective is the outlet's paid vendor directory, and the about page lists the vendors whose work it features. The submissions page did not load, so whether couples can submit is not known.
+
+rights:
+  image_usage:
+    value: A non-exclusive, royalty-free, transferable, sublicensable, worldwide license to use, adapt and distribute submitted content through any media; it ends when the content is removed, except for content already sublicensed. Magnolia Rouge claims no ownership.
+    cite:
+      - source: terms
+        quote: a non-exclusive, royalty-free, transferable, sublicensable, worldwide license to use, display, reproduce, adapt, modify (e.g., re-format), re-arrange, and distribute your User Content
+      - source: terms
+        quote: through any media now known or developed in the future
+      - source: terms
+        quote: This license will terminate at the time you remove your User Content from the Magnolia Rouge Services
+      - source: terms
+        quote: except as to any User Content that Magnolia Rouge has sublicensed prior to your removal of your User Content
+      - source: terms
+        quote: Magnolia Rouge does not claim any ownership rights
+  credit_format:
+    value: Attribution to the photographer or copyright holder; features carry the photographer as the byline, name the photographer and planner in the opening paragraph, and end with an Event Credits list of vendors by role.
+    cite:
+      - source: terms
+        quote: Photographs used on the Magnolia Rouge Services on in any Magnolia Rouge publication will include attribution to the photographer and/or copyright holder.
+      - source: feature_talloires
+      - source: feature_tacoma
+  couple_consent_required:
+    value: unknown
+    checked:
+      - terms
+      - questionnaire
+    note: The terms bar user content showing a person posted without their consent; no submission page asks for the couple's consent.
+  vendor_consent_required:
+    value: true
+    cite:
+      - source: terms
+        quote: without obtaining the prior written consent of the owner of such copyrighted material
+    note: The copyright owner's written consent (usually the photographer's) when the submitter does not own the images; from the terms' copyright policy.
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ advertising, contact ]
+    note: The submissions page did not load.
+  publication_fee:
+    value: unknown
+    checked: [ advertising, contact ]
+    note: The submissions page did not load.
+  priority_paid_tier:
+    value:
+      name: Magnolia Rouge Collective membership
+      note: Members get priority consideration for submissions and a fast-track simplified submission process, plus members-only call-outs for submissions. Yearly packages are named Venice, Stockholm and Paris; prices are shown only to account holders.
+    cite:
+      - source: advertising
+        quote: As a Magnolia Rouge Collective member, you’ll also get priority consideration for submissions and a fast-track simplified submission process.
+      - source: advertising
+        quote: We send exclusive call outs in our Facebook group to our vendor community to recruit image submissions on certain topics.
+      - source: advertising
+        quote: The subscription is yearly, so 365 days from the date of purchase.
+      - source: advertising
+        quote: Each package has a different number of locations available, from one in the Venice package to three locations in the Paris package.
+      - source: advertising
+        quote: followed by Stockholm and Venice.
+      - source: advertising
+        quote: sign up for a free account to gain access to our Media Kit & Pricing.
+  reach:
+    value: unknown
+    checked: [ advertising, about, contact ]
+    note: Audience figures are in the media kit, which needs an account.
+
+timing:
+  response_window:
+    value: unknown
+    checked: [ advertising, contact ]
+    note: The submissions page did not load.
+  publish_lead_days:
+    value: unknown
+    checked: [ advertising, questionnaire ]
+    note: The submissions page did not load.
+  publishing_cycle:
+    value: Online; the four newest real weddings went live between 2026-09-16 and 2026-10-14.
+    cite:
+      - source: feature_talloires
+      - source: feature_seville
+      - source: feature_montaluce
+      - source: feature_tacoma
+    note: The about page calls Magnolia Rouge a website and magazine; no print schedule is published. Editorials ran between these real weddings.
+
+people:
+  editors:
+    value:
+      - name: Kate
+        role: editor
+    cite:
+      - source: advertising
+        quote: Kate, our editor, does such a beautiful job of curating an editorial with an intentional, consistent aesthetic.
+    note: Named only as Kate, in a vendor testimonial on the advertising page and on the about page; the about page photo file is named Kate-Holland-Magnolia-Rouge.
+
+insight:
+  secret_sauce:
+    - tip: Join the Vendor Collective if the budget allows; members' submissions are considered first, go through a simpler fast-track process, and get members-only call-outs for submissions.
+      cite:
+        - source: advertising
+          quote: As a Magnolia Rouge Collective member, you’ll also get priority consideration for submissions and a fast-track simplified submission process.
+        - source: advertising
+          quote: We send exclusive call outs in our Facebook group to our vendor community to recruit image submissions on certain topics.
+    - tip: Match the house look of natural beauty, organic styling and romance; the editor curates for an intentional, consistent aesthetic.
+      cite:
+        - source: home
+          quote: Magnolia Rouge celebrates natural beauty, organic styling, and inspiring imagery.
+        - source: about
+          quote: has quickly become a website and magazine synonymous with romance, style, and exquisite photography.
+        - source: advertising
+          quote: Kate, our editor, does such a beautiful job of curating an editorial with an intentional, consistent aesthetic.
+    - tip: Collect every vendor's business name, website and Instagram before the couple fills in the questionnaire; only vendors listed there are credited.
+      cite:
+        - source: questionnaire
+          quote: Please add (or paste) all your vendor information here (business name, website and instagram).
+        - source: questionnaire
+          quote: We will only add vendors you have listed here so please ensure you include everyone you’d like acknowledged.
+    - tip: Brief the couple to share their story in detail; the questionnaire says there is no such thing as too much information.
+      cite:
+        - source: questionnaire
+          quote: Please give us a rundown on the aspects that you are comfortable sharing (there is no such thing as too much information).
+  recent_features:
+    - source: feature_talloires
+      published: 2026-10-14
+      location: FR
+      content_type: real_wedding
+      tags: [ lakefront, mountain_alpine, historic_manor_estate, church_cathedral, romantic, playful_party, multiple_looks, mediterranean_europe ]
+    - source: feature_seville
+      published: 2026-09-23
+      location: ES
+      content_type: real_wedding
+      tags: [ adobe_hacienda, historic_manor_estate, church_cathedral, culturally_rooted, classic_timeless, multiple_looks, mediterranean_europe ]
+    - source: feature_montaluce
+      published: 2026-09-18
+      location: US-GA
+      content_type: real_wedding
+      tags: [ vineyard_winery, romantic, classic_timeless, ball_gown, southeast_us ]
+    - source: feature_tacoma
+      published: 2026-09-16
+      location: US-WA
+      content_type: real_wedding
+      tags: [ country_club, beach_coastal, romantic, culturally_rooted, pacific_northwest_us ]

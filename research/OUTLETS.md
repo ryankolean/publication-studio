@@ -50,16 +50,16 @@ do run often in the national and destination outlets.
 |---|---|---|---|---|
 | pub-nearlywed | Nearlywed | michigan | https://nearlywed.com/submit-your-wedding/ | Statewide; absorbed Grand Rapids Bride |
 | pub-metro-detroit-weddings | Metro Detroit Weddings | michigan | https://www.detroitwed.com/wedding-album-submission-form/ | Print |
-| pub-marry-me-tampa-bay | Marry Me Tampa Bay | florida | https://marrymetampabay.com/contact-us/submission/ | Blocks plain fetches, read in a browser |
-| pub-amelia-island-weddings | Amelia Island Weddings Magazine | florida | https://ameliaislandweddingsmagazine.com/submit/ | |
+| pub-marry-me-tampa-bay | Marry Me Tampa Bay | florida | https://marrymetampabay.com/contact-us/submission/ | Tampa Bay, Central Florida and Sarasota only, not Orlando; pros only; read in a browser |
+| pub-amelia-island-weddings | Amelia Island Weddings Magazine | florida | https://ameliaislandweddingsmagazine.com/submit/ | Amelia Island only; routes worded for couples |
 | pub-the-wed | THE WED | destination | https://thewed.com/submissions | |
 | pub-love-my-dress | Love My Dress | destination | https://www.lovemydress.net/submissions | |
 | pub-rock-n-roll-bride | Rock n Roll Bride | destination | https://www.rocknrollbride.com/submissions/ | |
 | pub-boho-weddings | Boho Weddings | destination | https://www.boho-weddings.com/submit/ | |
-| pub-magnolia-rouge | Magnolia Rouge | destination | https://magnoliarouge.com/dashboard/submissions/ | Free account needed |
+| pub-magnolia-rouge | Magnolia Rouge | destination | https://magnoliarouge.com/dashboard/submissions/ | Submissions page behind a bot check; package facts need a manual read |
 | pub-french-wedding-style | French Wedding Style | destination | https://www.frenchweddingstyle.com/submit-wedding/ | France only |
-| pub-dancing-with-her | Dancing With Her | destination | https://dancingwithher.com/submit-a-story/ | |
-| pub-wedluxe | WedLuxe | destination | https://submissions.wedluxe.com/ | Non-partners wait 8 to 10 months |
+| pub-dancing-with-her | Dancing With Her | destination | https://dancingwithher.com/submit-a-story/ | Open on 2026-10-23; sometimes closed to all but directory partners |
+| pub-wedluxe | WedLuxe | destination | https://submissions.wedluxe.com/ | Non-partners wait 8 to 10 months; portal footer reads "review artifact" |
 
 ## Considered and left out
 

@@ -1,0 +1,494 @@
+id: pub-french-wedding-style
+name: French Wedding Style
+url: https://www.frenchweddingstyle.com
+kind: destination_international
+tier: secondary
+recheck_every_days: 90
+taste_summary: Weddings in France only, mostly château and estate weekends in Provence and the Riviera for international couples, with colourful florals, long dinner tables and full vendor teams.
+notes: Two routes. Anyone can send a free sneak peek and gets the full-form link only if the wedding is a fit; paid Premium members go straight to the full form. The full form was not viewed, because it opens only after approval or through the member door. The terms of use say some editorial content is written with AI assistance and reviewed by the editors.
+
+sources:
+  guidelines:
+    url: https://www.frenchweddingstyle.com/submit-wedding/
+    read: 2026-10-23
+    kind: guidelines
+    title: Submit Your Real Wedding
+  screening:
+    url: https://www.frenchweddingstyle.com/submit-wedding/screening/
+    read: 2026-10-23
+    kind: form
+    title: Submit a Sneak Peek
+  member_door:
+    url: https://www.frenchweddingstyle.com/submit-wedding/member/
+    read: 2026-10-23
+    kind: form
+    title: Submit Directly (Premium members)
+  about:
+    url: https://www.frenchweddingstyle.com/about-us/
+    read: 2026-10-23
+    kind: about
+    title: About Us
+  plans:
+    url: https://www.frenchweddingstyle.com/advertise-your-business/
+    read: 2026-10-23
+    kind: media_kit
+    title: Membership Plans
+  contact:
+    url: https://www.frenchweddingstyle.com/contact-us/
+    read: 2026-10-23
+    kind: other
+    title: Contact
+  editor_page:
+    url: https://www.frenchweddingstyle.com/team/anne-sophie-boubals/
+    read: 2026-10-23
+    kind: about
+    title: Anne-Sophie Boubals
+  terms:
+    url: https://www.frenchweddingstyle.com/terms-and-conditions/
+    read: 2026-10-23
+    kind: other
+    title: Terms of Use (last updated April 2026)
+  real_weddings:
+    url: https://www.frenchweddingstyle.com/real-weddings/
+    read: 2026-10-23
+    kind: other
+    title: Real Weddings in France
+  feature_vaugency:
+    url: https://www.frenchweddingstyle.com/burgundy-linen-styled-shoot-domaine-de-vaugency/
+    read: 2026-10-23
+    kind: feature
+    title: Burgundy Linen and Two Cymbeline Gowns at Domaine de Vaugency
+  feature_napoule:
+    url: https://www.frenchweddingstyle.com/fuchsia-and-red-wedding-chateau-napoule/
+    read: 2026-10-23
+    kind: feature
+    title: Fuchsia Florals and Family Heirlooms at Château de La Napoule
+  feature_barrenques:
+    url: https://www.frenchweddingstyle.com/ceramic-plates-wedding-chateau-des-barrenques/
+    read: 2026-10-23
+    kind: feature
+    title: Provençal Ceramics and Yellow Satin at Château des Barrenques
+  feature_sannes:
+    url: https://www.frenchweddingstyle.com/cest-la-fete-wedding-chateau-de-sannes/
+    read: 2026-10-23
+    kind: feature
+    title: "C’est la Fête: A French Château Wedding Full of Colour"
+
+identity:
+  parent_company:
+    value: Leanis Pty Ltd
+    cite:
+      - source: terms
+        quote: is made available by Leanis Pty Ltd A.C.N. 665 359 151
+    note: An Australian company (Western Australia); the editorial team is based in Montpellier.
+  sister_publications:
+    value: unknown
+    checked: [ about, terms, plans ]
+    note: The footer says the site is powered by VenuePartner.ai, a technology provider, not a sister title.
+  shared_inbox_with:
+    value: unknown
+    checked: [ contact, guidelines ]
+
+coverage:
+  regions:
+    value: [ FR ]
+    cite:
+      - source: guidelines
+        quote: The wedding or shoot took place in France
+      - source: about
+        quote: Yes. Our entire platform is dedicated to weddings in France.
+  basis:
+    value: wedding_location
+    cite:
+      - source: guidelines
+        quote: The wedding or shoot took place in France
+  destination_accepted:
+    value: true
+    cite:
+      - source: about
+        quote: French Wedding Style is the leading English-language platform for couples planning a destination wedding in France
+      - source: feature_sannes
+        quote: The New York couple did not want a wedding that took itself too seriously
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: We welcome real weddings, styled shoots, elopements, and vow renewals
+  elopement:
+    value: true
+    cite:
+      - source: guidelines
+        quote: We welcome real weddings, styled shoots, elopements, and vow renewals
+  styled_shoot:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Yes! We feature styled shoots and editorials alongside real weddings.
+  style_tags:
+    value: [ castle_chateau, garden_botanical, bold_color_maximalist, romantic, multiple_looks, mediterranean_europe ]
+    cite:
+      - source: feature_vaugency
+      - source: feature_napoule
+      - source: feature_barrenques
+      - source: feature_sannes
+  seasonality:
+    value: unknown
+    checked: [ guidelines, screening, real_weddings ]
+
+routes:
+  value:
+    - platform: web_form
+      url: https://www.frenchweddingstyle.com/submit-wedding/screening/
+      account_required: false
+      preferred: true
+      steps:
+        - Open the sneak peek form.
+        - Fill in your details and say whether the wedding has been published or sent to another website, and where.
+        - Paste the gallery link, with access details if the gallery is gated.
+        - Describe the wedding in at least 50 characters and submit.
+        - If approved, French Wedding Style sends the link to the full submission form.
+      note: The free route for everyone who is not a Premium member, including members whose plan does not include Real Wedding features.
+    - platform: web_form
+      url: https://www.frenchweddingstyle.com/submit-wedding/member/
+      account_required: unknown
+      steps:
+        - Enter your full name and business name at the member door.
+        - Continue straight to the full submission form, with no sneak peek.
+      note: Premium members only (a paid membership, see priority_paid_tier). The door asks only for a name and business name; it was not continued.
+  cite:
+    - source: guidelines
+      quote: Submit a sneak peek For everyone else, including members whose plan does not include Real Wedding features.
+    - source: screening
+      quote: Found the full form first? Share your gallery link below and we'll send you the link to complete your submission once approved.
+    - source: screening
+      quote: Has this wedding been published or sent to another website? If yes, please tell us where.
+    - source: screening
+      quote: Access details (optional) Only needed if the gallery is gated.
+    - source: screening
+      quote: 0/50 characters (min)
+    - source: member_door
+      quote: For Premium members. Add your name and business name, and we will take you straight to the full submission form, with no sneak peek needed.
+
+package:
+  image_min:
+    value: 50
+    cite:
+      - source: guidelines
+        quote: Minimum 50 images, ideally 60–80
+  image_max:
+    value: unknown
+    checked: [ guidelines, screening ]
+    note: The page asks for 50 to 80 images, ideally 60 to 80, but does not call 80 a limit.
+  resolution:
+    value:
+      min_long_edge_px: 2000
+      note: 3000px or more preferred; JPEG or TIFF in sRGB.
+    cite:
+      - source: guidelines
+        quote: Minimum 2000px on longest side (3000px+ preferred)
+      - source: guidelines
+        quote: JPEG or TIFF, high-resolution, sRGB colour space
+  size:
+    value: unknown
+    checked: [ guidelines ]
+    note: The page asks for high-resolution files with a pixel minimum (in resolution) but does not say web or print.
+  orientation_mix:
+    value: Vertical (portrait) images preferred for the hero and feature images.
+    cite:
+      - source: guidelines
+        quote: Vertical (portrait) preferred for hero and feature images
+  watermarks_allowed:
+    value: false
+    cite:
+      - source: guidelines
+        quote: No watermarks, we credit with a full link in every feature
+  gallery_hosts:
+    value: any
+    cite:
+      - source: screening
+        quote: Pic-Time, Pixieset, Cloudspot, ShootProof, Google Drive, Dropbox, WeTransfer, or any other hosted gallery works.
+  vendor_credits:
+    value:
+      required: true
+      fields: [ website, instagram ]
+      note: A videographer credit with Instagram handle is required when there is video; the bride's dress designer or boutique is asked for too.
+    cite:
+      - source: guidelines
+        quote: Full vendor credit list with website URLs and Instagram handles
+      - source: guidelines
+        quote: Videographer credit and Instagram handle required
+  story:
+    value:
+      required: true
+      questionnaire: true
+      note: Ten guided prompts, each at least 20 words, on the full form; the sneak peek needs only a description of at least 50 characters.
+    cite:
+      - source: guidelines
+        quote: Written story, 10 guided prompts, each at least 20 words
+  video_accepted:
+    value: true
+    cite:
+      - source: guidelines
+        quote: If the wedding was filmed, we would love to include the video
+  other_requirements:
+    value:
+      - Wedding date and couple names.
+      - Venue name and region in France.
+      - Guest count.
+      - The photographer's permission to publish.
+      - The bride's dress designer or boutique name.
+      - Images covering getting ready, ceremony, couple portraits, reception details and tablescapes, speeches and first dance, venue grounds, fashion details and florals.
+      - Clean editing with no heavy filters or over-processing.
+      - Video as a 2 to 5 minute highlights film by download link, native .mp4 preferred, with reels as separate links.
+    cite:
+      - source: guidelines
+        quote: Wedding date and couple names
+      - source: guidelines
+        quote: Venue name and region in France
+      - source: guidelines
+        quote: Guest count
+      - source: guidelines
+        quote: Photographer's permission to publish
+      - source: guidelines
+        quote: Bride's dress, designer or boutique name
+      - source: guidelines
+        quote: Getting ready preparations
+      - source: guidelines
+        quote: Ceremony moments
+      - source: guidelines
+        quote: Couple portraits
+      - source: guidelines
+        quote: Reception details & tablescapes
+      - source: guidelines
+        quote: Speeches & first dance
+      - source: guidelines
+        quote: Venue exterior & grounds
+      - source: guidelines
+        quote: Fashion & accessory details
+      - source: guidelines
+        quote: Floral arrangements
+      - source: guidelines
+        quote: Clean, professional editing. No heavy filters or over-processing
+      - source: guidelines
+        quote: Highlights film (2–5 min) via download link (Drive, Dropbox, WeTransfer)
+      - source: guidelines
+        quote: Social media reels and short-form clips welcome (separate links)
+      - source: guidelines
+        quote: Direct download link to native .mp4 preferred
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_preferred
+    cite:
+      - source: guidelines
+        quote: First-time publication preferred
+      - source: guidelines
+        quote: We prefer first-time publications, but consider weddings featured on smaller blogs.
+  prior_exposure:
+    publications:
+      value: allowed
+      cite:
+        - source: screening
+          quote: Has this wedding been published or sent to another website? If yes, please tell us where. This won't disqualify your submission.
+      note: First-time publication is still preferred.
+    blogs:
+      value: allowed
+      cite:
+        - source: guidelines
+          quote: We prefer first-time publications, but consider weddings featured on smaller blogs.
+    social:
+      value: unknown
+      checked: [ guidelines, screening ]
+  freshness_window_months:
+    value: 12
+    cite:
+      - source: guidelines
+        quote: We accept submissions up to 12 months after the wedding date.
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines, plans ]
+  submitter_roles:
+    value:
+      - photographer
+      - planner
+      - couple
+      - vendor
+    cite:
+      - source: contact
+        quote: Got married in France? Share your story and inspire other couples planning their celebration.
+      - source: guidelines
+        quote: Why Feature Your Work on French Wedding Style?
+      - source: plans
+        quote: Wedding Planners & Photographers only
+    note: Planners and photographers submit directly as Premium members; the guidelines speak to wedding professionals and the contact page invites couples.
+
+rights:
+  image_usage:
+    value: An irrevocable, worldwide, royalty-free right to use, edit and reproduce submitted images and video to suit its marketing, with images also published on Pinterest.
+    cite:
+      - source: terms
+        quote: You irrevocably grant to us the right to use any content, images, video, audio or otherwise copyright material/s on a world-wide, royalty free
+      - source: terms
+        quote: We reserve the right to edit, modify, reproduce any content, images, audio, video to suit our marketing needs.
+      - source: guidelines
+        quote: Your images published on Pinterest for long-term discovery by couples searching for wedding inspiration
+  credit_format:
+    value: Every vendor is credited with a link to their website in a wedding team list; the photographer is named in the byline.
+    cite:
+      - source: guidelines
+        quote: Every vendor is credited with a direct link to their website. Photographers receive prominent credit throughout.
+      - source: feature_napoule
+        quote: Photos by Hermeline Photographies
+  couple_consent_required:
+    value: unknown
+    checked: [ guidelines, screening, terms ]
+    note: The terms ask for written consent from the photographer and other relevant third parties whose work or personal information is included; the couple is not named.
+  vendor_consent_required:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Photographer's permission to publish
+      - source: terms
+        quote: You warrant that you have obtained written consent from the photographer and any other relevant third parties
+    note: The photographer's written permission.
+
+economics:
+  submission_fee:
+    value: none
+    cite:
+      - source: guidelines
+        quote: Is there a fee to be featured? No. Being featured on French Wedding Style is completely free.
+    note: The sneak peek route is open to non-members; direct submission needs a paid Premium membership (priority_paid_tier).
+  publication_fee:
+    value: none
+    cite:
+      - source: guidelines
+        quote: No. Being featured on French Wedding Style is completely free.
+  priority_paid_tier:
+    value:
+      name: Premium membership
+      price:
+        amount: 600
+        currency: EUR
+        note: Per year for the vendor plan, open to wedding planners and photographers only; the venue Premium plan is 1200 euros a year.
+      note: Premium members submit directly to the full form without a sneak peek, and the plan includes up to two Real Wedding features a year, subject to a suitable couple submission.
+    cite:
+      - source: plans
+        quote: Wedding Planners & Photographers only
+      - source: plans
+        quote: 600 /year
+      - source: plans
+        quote: 1200 /year
+      - source: plans
+        quote: All memberships are for 12 months.
+      - source: plans
+        quote: Up to 2 Real Wedding features per year
+      - source: plans
+        quote: Real Wedding features are offered subject to a suitable couple submission.
+      - source: guidelines
+        quote: Submit directly For Premium members. Add your details and go straight to the full form, with no sneak peek needed.
+  reach:
+    value:
+      - metric: instagram_followers
+        value: 57000
+        as_of: 2026-10-23
+      - metric: monthly_visitors
+        value: 27000
+        as_of: 2026-10-23
+      - metric: pinterest_monthly_views
+        value: 800000
+        as_of: 2026-10-23
+    cite:
+      - source: plans
+        quote: 57k Instagram Followers
+      - source: plans
+        quote: 27k Monthly Visitors
+      - source: about
+        quote: 800k+ Monthly Pinterest Views
+    note: The pages are undated, so as_of is the date read. The about and submission pages give 56k Instagram followers and the editor page about 60,000.
+
+timing:
+  response_window:
+    value: unknown
+    checked: [ guidelines, screening, contact ]
+    note: The 2 to 3 business days on the contact page is for general messages, not submissions.
+  publish_lead_days:
+    value: unknown
+    checked: [ guidelines ]
+  publishing_cycle:
+    value: Online, several weddings a week (four went live between 2026-10-20 and 2026-10-22), plus a bi-annual printed and digital eMagazine.
+    cite:
+      - source: guidelines
+        quote: A chance to be featured in our bi-annual printed and digital eMagazine
+      - source: feature_vaugency
+      - source: feature_napoule
+      - source: feature_barrenques
+      - source: feature_sannes
+
+people:
+  editors:
+    value:
+      - name: Anne-Sophie Boubals
+        role: Owner & Editor-in-Chief
+    cite:
+      - source: about
+        quote: Anne-Sophie Boubals Owner & Editor-in-Chief
+      - source: editor_page
+        quote: Anne-Sophie Boubals is the Editor-in-Chief of French Wedding Style
+
+insight:
+  secret_sauce:
+    - tip: Get the whole vendor team to link to the feature and show the As Featured On badge; features perform better when everyone takes part.
+      cite:
+        - source: guidelines
+          quote: Features perform significantly better when the entire vendor team participates.
+        - source: guidelines
+          quote: Display our "As Featured On" badge on your website
+    - tip: Tell the day as a visual story of details, atmosphere, portraits and setting, with authentic beauty, elevated design and heartfelt storytelling.
+      cite:
+        - source: guidelines
+          quote: "A strong visual narrative: details, atmosphere, portraits, and setting"
+        - source: guidelines
+          quote: Images reflect authentic beauty, elevated design, and heartfelt storytelling
+    - tip: Send 60 to 80 images at 3000px or more, with vertical frames for the hero and feature images.
+      cite:
+        - source: guidelines
+          quote: Minimum 50 images, ideally 60–80
+        - source: guidelines
+          quote: Minimum 2000px on longest side (3000px+ preferred)
+        - source: guidelines
+          quote: Vertical (portrait) preferred for hero and feature images
+    - tip: Submit within a year of the wedding, ideally before it appears anywhere else.
+      cite:
+        - source: guidelines
+          quote: We accept submissions up to 12 months after the wedding date.
+        - source: guidelines
+          quote: First-time publication preferred
+    - tip: Include the film if there is one; the editors would love to add the video.
+      cite:
+        - source: guidelines
+          quote: If the wedding was filmed, we would love to include the video
+  recent_features:
+    - source: feature_vaugency
+      published: 2026-10-22
+      location: FR
+      content_type: styled_shoot
+      tags: [ garden_botanical, historic_manor_estate, multiple_looks, romantic, fashion_forward_editorial ]
+    - source: feature_napoule
+      published: 2026-10-22
+      location: FR
+      content_type: real_wedding
+      tags: [ castle_chateau, beach_coastal, bold_color_maximalist, vintage_heritage, mediterranean_europe ]
+    - source: feature_barrenques
+      published: 2026-10-20
+      location: FR
+      content_type: real_wedding
+      tags: [ castle_chateau, garden_botanical, bold_color_maximalist, mediterranean_europe ]
+    - source: feature_sannes
+      published: 2026-10-20
+      location: FR
+      content_type: real_wedding
+      tags: [ castle_chateau, garden_botanical, bold_color_maximalist, romantic, multiple_looks, mediterranean_europe ]

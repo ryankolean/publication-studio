@@ -1,0 +1,400 @@
+id: pub-boho-weddings
+name: Boho Weddings
+url: https://www.boho-weddings.com
+kind: destination_international
+tier: secondary
+recheck_every_days: 90
+taste_summary: '"Boho Luxe" real weddings across many styles, from relaxed beach and woodland days to colourful mid-century and cultural celebrations; recent features are mostly US and destination weddings told with the couple, planner or photographer Q&A.'
+notes: UK blog (Sheffield) run by one editor. US weddings are published often (three of the newest five are in California and New York, and recent features also include Rhode Island and Massachusetts). The submit page lists "destination" among the wedding styles it wants; the exclusivity rule covers other UK blogs only. The submissions address is in the private contacts overlay; its link target and its displayed text differ (see the overlay).
+
+sources:
+  guidelines:
+    url: https://www.boho-weddings.com/submit/
+    read: 2026-10-23
+    kind: guidelines
+    title: Submit your content
+  about:
+    url: https://www.boho-weddings.com/about/
+    read: 2026-10-23
+    kind: about
+    title: About Boho Weddings
+  contact:
+    url: https://www.boho-weddings.com/contact/
+    read: 2026-10-23
+    kind: other
+    title: Contact
+  advertise:
+    url: https://www.boho-weddings.com/advertise-your-wedding-business/
+    read: 2026-10-23
+    kind: media_kit
+    title: Advertise your Wedding Business
+  legal:
+    url: https://www.boho-weddings.com/legal/
+    read: 2026-10-23
+    kind: other
+    title: Legal, terms & privacy
+  category:
+    url: https://www.boho-weddings.com/category/real-weddings/
+    read: 2026-10-23
+    kind: other
+    title: Real Weddings category page
+  feature_costa_rica:
+    url: https://www.boho-weddings.com/272104/costa-rica-beach-club-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: Stacy and DJ's Costa Rica Beach Club Wedding by Estefania Herrera Photography
+  feature_san_francisco:
+    url: https://www.boho-weddings.com/272038/elegant-san-francisco-city-hall-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: Jessica and Jordan's Elegant San Francisco City Hall Wedding by The Siren and Co. Films
+  feature_palm_springs:
+    url: https://www.boho-weddings.com/271968/stylish-palm-springs-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: Hannah and Jordan's 'Airline Chic' Cool and Stylish Palm Springs Wedding by Brogen Jessup
+  feature_new_york:
+    url: https://www.boho-weddings.com/271931/micro-wedding-in-new-york/
+    read: 2026-10-23
+    kind: feature
+    title: Rory and Linden's 'Summer Equinox' Micro Wedding in New York by Hawthorn Poto
+  feature_jaisalmer:
+    url: https://www.boho-weddings.com/271858/beautiful-indian-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: Mehek and Pooja's 'Bright Colours and Big Smiles' Beautiful Indian Wedding by Clikers Motion Picture
+
+identity:
+  parent_company:
+    value: Boho Weddings Ltd
+    cite:
+      - source: guidelines
+        quote: Kelly Hood, Boho Weddings Ltd 2009-2026
+      - source: legal
+        quote: This is the privacy notice of Boho Weddings Ltd.
+    note: The operating company, registered in the United Kingdom; no separate media group is named.
+  sister_publications:
+    value: unknown
+    checked: [about, advertise]
+    note: The Boho Wedding Directory is a paid supplier listing, not a separate title.
+  shared_inbox_with:
+    value: unknown
+    checked: [contact, guidelines]
+
+coverage:
+  regions:
+    value: [WORLD]
+    cite:
+      - source: feature_costa_rica
+      - source: feature_san_francisco
+      - source: feature_palm_springs
+      - source: feature_new_york
+      - source: feature_jaisalmer
+    note: Inferred from published features; no page states a geographic limit. The about page describes the blog as a place for couples from all around the world, which speaks to its readers; the newest five weddings are in Costa Rica, California, New York and India.
+  basis:
+    value: unknown
+    checked: [guidelines, about]
+  destination_accepted:
+    value: true
+    cite:
+      - source: guidelines
+        quote: "I am interested in lots of different styles of weddings: Bohemian, luxe, rustic, alternative, glam, modern, quirky, DIY, whimsical, destination"
+      - source: feature_costa_rica
+        quote: They chose Playa del Coco as the backdrop for their destination wedding
+    note: The site also runs a Destination category of real weddings.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: First of all I need to see a selection of images from the wedding you are submitting.
+  elopement:
+    value: true
+    cite:
+      - source: category
+        quote: Elopement
+    note: Inferred from the site's Elopement category of real weddings; the submit page does not mention elopements.
+  styled_shoot:
+    value: true
+    cite:
+      - source: category
+        quote: Styled Shoots
+    note: Inferred from the site's Styled Shoots category of real weddings; the submit page does not mention styled shoots, and none of the newest features is one.
+  style_tags:
+    value: [bohemian, beach_coastal, classic_timeless, culturally_rooted, bold_color_maximalist, intimate_micro, hotel_resort]
+    cite:
+      - source: feature_costa_rica
+      - source: feature_san_francisco
+      - source: feature_palm_springs
+      - source: feature_new_york
+      - source: feature_jaisalmer
+  seasonality:
+    value: unknown
+    checked: [guidelines]
+
+routes:
+  value:
+    - platform: email
+      account_required: false
+      preferred: true
+      steps:
+        - Email the submission to the editor's inbox.
+        - Send a link to the wedding if it is on the photographer's own blog; otherwise send about 50 JPEG images by Dropbox or in a small zip file.
+        - Expect a yes or no; re-send if there is no reply within 3 days.
+        - If accepted, send around 100 images for the full post as instructed, and pass the form to the couple.
+      note: The address is in the private contacts overlay.
+  cite:
+    - source: guidelines
+      quote: Please email all submissions to
+    - source: guidelines
+      quote: The easiest thing to do is send me a link to the wedding if you have blogged it on your own site.
+    - source: guidelines
+      quote: If not then I will need 50ish images in jpeg format, sent to me via drop box or in a small zip file.
+    - source: guidelines
+      quote: If successful I will then send you further information on how to submit the full wedding to me
+
+package:
+  image_min:
+    value: 50
+    cite:
+      - source: guidelines
+        quote: If not then I will need 50ish images in jpeg format, sent to me via drop box or in a small zip file.
+    note: About 50 for the first look when there is no blog post to link; around 100 are needed for the full post.
+  image_max:
+    value: unknown
+    checked: [guidelines]
+    note: The editor usually features about 80 images per wedding and asks for around 100 to choose from; no upper limit is stated.
+  resolution:
+    value:
+      min_width_px: 1000
+      note: Ideally around 2000px wide; JPEG format.
+    cite:
+      - source: guidelines
+        quote: The images should be no smaller than 1000px wide, ideally around 2000px in width.
+  size:
+    value: unknown
+    checked: [guidelines]
+    note: Only pixel widths are given.
+  orientation_mix:
+    value: unknown
+    checked: [guidelines]
+  watermarks_allowed:
+    value: unknown
+    checked: [guidelines]
+  gallery_hosts:
+    value: [dropbox, direct_upload]
+    cite:
+      - source: guidelines
+        quote: sent to me via drop box or in a small zip file.
+    note: A small zip file is sent with the email. A link to the photographer's own blog post of the wedding is the easiest first step when one exists.
+  vendor_credits:
+    value: unknown
+    checked: [guidelines]
+    note: The submit page does not ask for credits; published features end with a "Supplier Shout Outs" list.
+  story:
+    value: unknown
+    checked: [guidelines]
+    note: After acceptance a form goes to the couple; the page does not say a written story is required. Published features carry the couple's, planner's or photographer's account of the day.
+  video_accepted:
+    value: unknown
+    checked: [guidelines]
+  other_requirements:
+    value:
+      - Images in JPEG format.
+      - Photos that tell the story of the wedding day, with detail shots, portraits of the couple and an overview of the whole day.
+      - A couple submitting their own wedding needs the photographer's permission, and the photographer must email permission to use the images.
+    cite:
+      - source: guidelines
+        quote: If not then I will need 50ish images in jpeg format
+      - source: guidelines
+        quote: Main things I look out for are photos that tell the story of the wedding day
+      - source: guidelines
+        quote: detail shots are good as my readers love them, but also portrait shots of the couple and an overview of the whole wedding day.
+      - source: guidelines
+        quote: please get permission from your photographer before you send anything to me.
+      - source: guidelines
+        quote: I will also need an email from the photographer giving me permission to use their images.
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_required
+    cite:
+      - source: guidelines
+        quote: I only post weddings that haven’t been featured on any other UK blogs
+      - source: guidelines
+        quote: please let me know if you are submitting your wedding to more than one Blog.
+      - source: guidelines
+        quote: I also ask for a 6 weeks window before you submit it anywhere else.
+    note: First showing among UK blogs only. Sending to more than one blog must be disclosed. The 6-week window is not tied to a start point (submission or publication), so it is not stored as days after publication.
+  prior_exposure:
+    publications:
+      value: disqualifies
+      cite:
+        - source: guidelines
+          quote: I only post weddings that haven’t been featured on any other UK blogs
+      note: Applies to other UK blogs; the page says nothing about outlets outside the UK.
+    blogs:
+      value: allowed
+      cite:
+        - source: guidelines
+          quote: The easiest thing to do is send me a link to the wedding if you have blogged it on your own site.
+    social:
+      value: unknown
+      checked: [guidelines]
+  freshness_window_months:
+    value: unknown
+    checked: [guidelines]
+    note: No rule is stated; the newest feature ran about 19 months after its March 2025 wedding.
+  photographer_frequency:
+    value: unknown
+    checked: [guidelines]
+  submitter_roles:
+    value: [photographer, couple]
+    cite:
+      - source: guidelines
+        quote: If you think this sounds like your wedding or your work then I’d love for you to get in touch!
+      - source: guidelines
+        quote: If you are a couple and you would like to submit your own wedding, the same rules apply
+      - source: guidelines
+        quote: The easiest thing to do is send me a link to the wedding if you have blogged it on your own site.
+    note: The main instructions address the photographer whose work and blog post it is; couples may submit with the photographer's permission. Recent features were also written up by a planner and credit a wedding PR agency, but no page names those roles.
+
+rights:
+  image_usage:
+    value: unknown
+    checked: [guidelines, legal]
+    note: The legal page is a privacy notice and sets no terms for submitted images.
+  credit_format:
+    value: The photographer (or film studio) is named in the headline after "by", and a "Supplier Shout Outs" list at the end gives each role and business.
+    cite:
+      - source: feature_costa_rica
+        quote: Stacy and DJ’s Costa Rica Beach Club Wedding by Estefanía Herrera Photography
+      - source: feature_costa_rica
+        quote: "Photographer: Estefanía Herrera Photography"
+      - source: feature_san_francisco
+        quote: Supplier Shout Outs
+  couple_consent_required:
+    value: unknown
+    checked: [guidelines]
+    note: A form goes to the couple after acceptance; the page does not ask for their consent.
+  vendor_consent_required:
+    value: true
+    cite:
+      - source: guidelines
+        quote: I will also need an email from the photographer giving me permission to use their images.
+    note: The photographer's permission by email, asked for when the couple submits their own wedding.
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [guidelines, advertise]
+  publication_fee:
+    value: unknown
+    checked: [guidelines, advertise]
+    note: Paid "Featured Posts" (£250) are sponsored posts about a business written by the editor; nothing ties them to real-wedding features.
+  priority_paid_tier:
+    value: unknown
+    checked: [guidelines, advertise]
+    note: Directory listings (£65 standard, £99 premium a year) are sold as advertising; no page links them to submission review.
+  reach:
+    value: unknown
+    checked: [advertise, about]
+    note: The advertise page claims "hundreds of thousands of couples" and "thousands of followers" without exact figures.
+
+timing:
+  response_window:
+    value:
+      days: 3
+      replies: all
+    cite:
+      - source: guidelines
+        quote: I will always get back to you whether it is a yes or a no
+      - source: guidelines
+        quote: if you haven’t heard back within 3 days do re send the submission.
+  publish_lead_days:
+    value: unknown
+    checked: [guidelines]
+  publishing_cycle:
+    value: Online; five real weddings went live between 2026-10-13 and 2026-10-23.
+    cite:
+      - source: feature_costa_rica
+      - source: feature_san_francisco
+      - source: feature_palm_springs
+      - source: feature_new_york
+      - source: feature_jaisalmer
+
+people:
+  editors:
+    value:
+      - name: Kelly Hood
+        role: Founder and Editor in Chief
+    cite:
+      - source: about
+        quote: About Kelly (Founder and Editor in Chief)
+      - source: about
+        quote: Boho Weddings is a leading UK wedding blog written by Kelly Hood
+
+insight:
+  secret_sauce:
+    - tip: If the wedding is on the photographer's own blog, just send that link; it is the easiest first step.
+      cite:
+        - source: guidelines
+          quote: The easiest thing to do is send me a link to the wedding if you have blogged it on your own site.
+    - tip: Send pictures that tell the story of the day, with plenty of details, couple portraits and an overview of the whole wedding.
+      cite:
+        - source: guidelines
+          quote: Main things I look out for are photos that tell the story of the wedding day
+        - source: guidelines
+          quote: detail shots are good as my readers love them, but also portrait shots of the couple and an overview of the whole wedding day.
+    - tip: Have around 100 images ready; features usually run about 80.
+      cite:
+        - source: guidelines
+          quote: I usually feature about 80 images per wedding so I need around 100 images for me to pick from.
+    - tip: Any style can work if it fits the Boho brand, destination weddings included.
+      cite:
+        - source: guidelines
+          quote: "I am interested in lots of different styles of weddings: Bohemian, luxe, rustic, alternative, glam, modern, quirky, DIY, whimsical, destination"
+        - source: guidelines
+          quote: anything goes as long as it fits with the ‘BOHO’ brand.
+    - tip: Weddings from a wide range of cultures and communities are wanted.
+      cite:
+        - source: guidelines
+          quote: It is important that I represent all weddings from a wide variety of cultures and communities.
+    - tip: Re-send if there is no reply within 3 days.
+      cite:
+        - source: guidelines
+          quote: if you haven’t heard back within 3 days do re send the submission.
+    - tip: Be ready to write up the day; recent features hand over to the photographer or planner to describe it.
+      cite:
+        - source: feature_new_york
+          quote: Sarah the photographer tells us more about the day
+        - source: feature_costa_rica
+          quote: Meghan the planner tells us more about the day.
+  recent_features:
+    - source: feature_costa_rica
+      published: 2026-10-23
+      location: CR
+      content_type: real_wedding
+      tags: [beach_coastal, romantic, classic_timeless]
+    - source: feature_san_francisco
+      published: 2026-10-20
+      location: US-CA
+      content_type: real_wedding
+      tags: [classic_timeless, romantic, restaurant_private_dining]
+    - source: feature_palm_springs
+      published: 2026-10-16
+      location: US-CA
+      content_type: real_wedding
+      tags: [hotel_resort, mid_century_modern, bold_color_maximalist, playful_party, desert]
+    - source: feature_new_york
+      published: 2026-10-15
+      location: US-NY
+      content_type: real_wedding
+      tags: [lakefront, intimate_micro, bohemian, organic_textural]
+    - source: feature_jaisalmer
+      published: 2026-10-13
+      location: IN
+      content_type: real_wedding
+      tags: [culturally_rooted, bold_color_maximalist, desert, cultural_attire, multiple_looks]

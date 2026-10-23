@@ -1,0 +1,373 @@
+id: pub-metro-detroit-weddings
+name: Metro Detroit Weddings
+url: https://www.detroitwed.com
+kind: regional_magazine
+tier: secondary
+recheck_every_days: 90
+taste_summary: Hour Media's twice-yearly print bridal magazine for metro Detroit; its Real Weddings album entries are short listings (both partners' hometowns, wedding date, venue and a full vendor list), from Orthodox church weddings to historic estates and downtown lofts.
+notes: The Wedding Album form is the print route; album entries are reposted online, tagged with their print issue. The Third-Party Photo Release Agreement PDF the form requires (https://www.detroitwed.com/wp-content/uploads/sites/41/2024/06/MDW-Third-Party-Photo-Release-Agreement-7-25-21.pdf) returned 403 to plain fetches and was not read. The current media kit sits behind a lead form that was not submitted; the 2018/2019 media kit linked from the contact page was not read. The site also has engagement and marriage announcement forms, which are notices, not features.
+
+sources:
+  form:
+    url: https://www.detroitwed.com/wedding-album-submission-form/
+    read: 2026-10-23
+    kind: form
+    title: Wedding Album Submission Form
+  submissions:
+    url: https://www.detroitwed.com/submissions/
+    read: 2026-10-23
+    kind: guidelines
+    title: Submissions
+  contact:
+    url: https://www.detroitwed.com/contact-us/
+    read: 2026-10-23
+    kind: about
+    title: Contact Us
+  advertise:
+    url: https://www.detroitwed.com/advertise/
+    read: 2026-10-23
+    kind: media_kit
+    title: Advertise
+  media_kit:
+    url: https://www.detroitwed.com/media-kits/
+    read: 2026-10-23
+    kind: media_kit
+    title: Media Kit (lead form)
+  where_to_find:
+    url: https://www.detroitwed.com/where-to-find/
+    read: 2026-10-23
+    kind: other
+    title: Where to Find
+  editions:
+    url: https://www.detroitwed.com/digital-editions/
+    read: 2026-10-23
+    kind: other
+    title: Digital Editions
+  editor_letters:
+    url: https://www.detroitwed.com/letter-from-the-editor/
+    read: 2026-10-23
+    kind: other
+    title: Letter From the Editor (index)
+  real_weddings:
+    url: https://www.detroitwed.com/real-weddings/
+    read: 2026-10-23
+    kind: other
+    title: Real Weddings
+  feature_jill_yaksh:
+    url: https://www.detroitwed.com/jill-yaksh/
+    read: 2026-10-23
+    kind: feature
+    title: Jill & Yaksh
+  feature_zeta_lucas:
+    url: https://www.detroitwed.com/zeta-lucas/
+    read: 2026-10-23
+    kind: feature
+    title: Zeta & Lucas
+  feature_mckenna_ryan:
+    url: https://www.detroitwed.com/mckenna-ryan/
+    read: 2026-10-23
+    kind: feature
+    title: McKenna & Ryan
+
+identity:
+  parent_company:
+    value: HOUR Media, LLC
+    cite:
+      - source: contact
+        quote: HOUR Media, LLC
+      - source: form
+        quote: Please note that by submission of this form to HOUR Media you are authorizing publishing of information and images provided.
+  sister_publications:
+    value: [ Hour Detroit ]
+    cite:
+      - source: form
+        quote: Metro Detroit Weddings - Presented by Hour Detroit
+    note: Hour Detroit is Hour Media's city magazine; the general editorial inbox on the contact page is at its domain.
+  shared_inbox_with:
+    value: unknown
+    checked: [ contact, form ]
+
+coverage:
+  regions:
+    value: [ US-MI:detroit ]
+    cite:
+      - source: feature_jill_yaksh
+      - source: feature_zeta_lucas
+      - source: feature_mckenna_ryan
+    note: Inferred from published features; no page states a coverage area for submissions. The three newest album entries were held in Warren, Detroit and Rochester, and the form sets no geographic limit.
+  basis:
+    value: unknown
+    checked: [ form, submissions, real_weddings ]
+    note: No page says whether coverage means the wedding venue or the couple's home. The form asks each partner's hometown and state as well as the venue addresses, and entries print both (one groom listed is from Clearfield, Pennsylvania).
+  destination_accepted:
+    value: unknown
+    checked: [ form, submissions, feature_mckenna_ryan ]
+    note: No page addresses destination weddings, and no recent entry shows a couple who traveled.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: submissions
+        quote: We want to see your wedding photos! Share the memories of your big day with us.
+      - source: form
+        quote: Along with the form, please submit at least 10-15 photos per wedding that you wish to see featured.
+  elopement:
+    value: unknown
+    checked: [ form, submissions ]
+  styled_shoot:
+    value: unknown
+    checked: [ form, submissions ]
+    note: The magazine runs inspiration shoots made with local wedding professionals (for example Pastel Passion), but no page invites styled shoot submissions.
+  style_tags:
+    value: [ michigan, church_cathedral, historic_manor_estate ]
+    cite:
+      - source: feature_jill_yaksh
+      - source: feature_zeta_lucas
+      - source: feature_mckenna_ryan
+    note: Read from the venues named in the album entries.
+  seasonality:
+    value: unknown
+    checked: [ form, submissions ]
+
+routes:
+  value:
+    - platform: web_form
+      url: https://www.detroitwed.com/wedding-album-submission-form/
+      account_required: false
+      preferred: true
+      steps:
+        - Download the photo release form from the submission page, complete it and upload it as a PDF.
+        - Give the submitter's name, email and phone.
+        - Give both partners' names and hometowns, the wedding date, a partner's phone and email, and the ceremony and reception venues with addresses.
+        - Fill in every vendor field, including the photographer's and planner's emails; a photographer who lacks a detail writes "Do not know", a couple writes "N/A" where a field does not apply.
+        - Add at least 10 to 15 high-resolution photos, by upload or a sharing link, following the shot list.
+        - Complete the CAPTCHA and submit.
+      note: Every field is required for print consideration; the editorial team chooses the weddings.
+  cite:
+    - source: form
+      quote: All fields must be filled in for consideration to print.
+    - source: form
+      quote: Completed Photo Release Form * Download the form here
+    - source: form
+      quote: A submission does not guarantee your photos will be published. Weddings will be chosen by the editorial team.
+    - source: form
+      quote: "Form and photos submitted by: Name * First Last Email * Phone *"
+    - source: form
+      quote: CAPTCHA
+
+package:
+  image_min:
+    value: 10
+    cite:
+      - source: form
+        quote: Along with the form, please submit at least 10-15 photos per wedding that you wish to see featured.
+    note: The form asks for "at least 10-15"; 10 is the lower bound.
+  image_max:
+    value: unknown
+    checked: [ form ]
+  resolution:
+    value:
+      max_file_mb: 256
+      note: Images under 300 DPI at 8x10 inches are followed up by the editors.
+    cite:
+      - source: form
+        quote: "Accepted file types: jpg, gif, png, pdf, Max. file size: 256 MB."
+      - source: form
+        quote: If your images are not high enough resolution (300DPI at 8x10” size) we will contact you to resolve.
+    note: 300 DPI at 8x10 inches works out to 2400 by 3000 pixels. The 256 MB cap is the upload field's limit.
+  size:
+    value: print
+    cite:
+      - source: form
+        quote: In addition to having images published with the printed magazine
+      - source: form
+        quote: If your images are not high enough resolution (300DPI at 8x10” size) we will contact you to resolve.
+  orientation_mix:
+    value: unknown
+    checked: [ form ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ form ]
+  gallery_hosts:
+    value: [ direct_upload, google_drive, dropbox, pic_time, pixieset, smugmug, shootproof ]
+    cite:
+      - source: form
+        quote: Manually Upload File(s)
+      - source: form
+        quote: Sharing link (Google Drive, DropBox, etc.)
+      - source: form
+        quote: "Please upload your image files to a file sharing/storage app (example: Google Drive, DropBox, etc.), and share the link."
+    note: Google Drive and Dropbox are named; the others are read from "etc.". No host is refused.
+  vendor_credits:
+    value:
+      required: true
+      fields: [ role, business_name, email ]
+      note: Every vendor field is required; emails are asked only for the photographer and the planner.
+    cite:
+      - source: form
+        quote: All fields must be filled in for consideration to print.
+      - source: form
+        quote: Photographer * Photographer's Email * Planner * Planner's Email *
+  story:
+    value: unknown
+    checked: [ form ]
+    note: The form asks for no story, and the published album entries carry no story text.
+  video_accepted:
+    value: unknown
+    checked: [ form ]
+    note: The form asks for the videographer's name only; there is no video link field.
+  other_requirements:
+    value:
+      - A completed photo release form, uploaded as a PDF.
+      - Each partner's hometown and state.
+      - Ceremony and reception venue addresses.
+      - A partner's phone and email.
+      - Photos covering the couple, wedding party, cake and dessert, dress and shoes, rings, reception, flowers, a scene setter and table details.
+    cite:
+      - source: form
+        quote: Completed Photo Release Form
+      - source: form
+        quote: Bride's/Groom’s Hometown and State *
+      - source: form
+        quote: Wedding Venue Address * Reception Venue * Reception Venue Address *
+      - source: form
+        quote: Bride's or Groom's Phone * Bride's or Groom's Email *
+      - source: form
+        quote: 1. bride(s) and/or groom(s) 2. wedding party 3. cake/dessert 4. dress/shoes 5. rings 6. reception 7. flowers 8. scene setter 9. table details
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [ form, submissions ]
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ form ]
+    blogs:
+      value: unknown
+      checked: [ form ]
+    social:
+      value: unknown
+      checked: [ form ]
+  freshness_window_months:
+    value: unknown
+    checked: [ form, submissions ]
+    note: No limit is stated; the three newest entries were weddings from July to October 2025, posted from August to September 2026.
+  photographer_frequency:
+    value: unknown
+    checked: [ form ]
+  submitter_roles:
+    value: [ photographer, couple ]
+    cite:
+      - source: form
+        quote: 'If you are the photographer and do not know the information, write: "Do not know".'
+      - source: form
+        quote: 'If you are the bride or groom and the field does not apply, write: "N/A".'
+    note: No page mentions planners or other vendors submitting.
+
+rights:
+  image_usage:
+    value: Submitting authorizes Hour Media to publish the information and images; images run in the print magazine and may be used in any Metro Detroit Weddings marketing, including social media.
+    cite:
+      - source: form
+        quote: Please note that by submission of this form to HOUR Media you are authorizing publishing of information and images provided.
+      - source: form
+        quote: In addition to having images published with the printed magazine
+      - source: form
+        quote: images may also be used for any marketing within the Metro Detroit Weddings brand, including social media.
+  credit_format:
+    value: The photographer is listed by business name under PHOTOGRAPHER in the entry's vendor list, alongside every other vendor.
+    cite:
+      - source: feature_jill_yaksh
+        quote: PHOTOGRAPHER Molly Grunewald & Company
+      - source: feature_mckenna_ryan
+        quote: PHOTOGRAPHER Abby’s Focus
+  couple_consent_required:
+    value: unknown
+    checked: [ form ]
+    note: The form requires an uploaded photo release, but the release PDF did not load, so who signs it is not known.
+  vendor_consent_required:
+    value: unknown
+    checked: [ form ]
+    note: The required release is a "Third-Party Photo Release Agreement" (from its file name), which suggests the photographer's release when someone else submits; the PDF did not load.
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ form, submissions, advertise ]
+  publication_fee:
+    value: unknown
+    checked: [ form, submissions, advertise ]
+  priority_paid_tier:
+    value: unknown
+    checked: [ advertise, media_kit, contact ]
+    note: Advertisers get bi-weekly lead lists; no page ties advertising to album selection.
+  reach:
+    value: unknown
+    checked: [ advertise, media_kit, where_to_find, contact ]
+    note: The media kit is released only through a lead form, which was not submitted. Print copies are sold at Barnes & Noble, Kroger and Meijer stores in Michigan and a few in Illinois; no circulation figure is published.
+
+timing:
+  response_window:
+    value: unknown
+    checked: [ form, submissions ]
+  publish_lead_days:
+    value: unknown
+    checked: [ form, submissions ]
+  publishing_cycle:
+    value: Print twice a year (Winter/Spring and Summer/Fall); album entries from the Summer/Fall 2026 issue were posted online weekly from late August 2026.
+    cite:
+      - source: editions
+        quote: CURRENT ISSUE WINTER/SPRING 2026 DIGITAL EDITION ARCHIVE SUMMER/FALL 2025 WINTER/SPRING 2025
+      - source: feature_zeta_lucas
+        quote: Summer/Fall 2026
+      - source: feature_mckenna_ryan
+      - source: feature_jill_yaksh
+
+people:
+  editors:
+    value: unknown
+    checked: [ contact, editor_letters, feature_jill_yaksh ]
+    note: Album entries are bylined "Metro Detroit Weddings Staff"; the editor letters carry no name; the contact page names an engagement-photo contact and an advertising contact, not an editor.
+
+insight:
+  secret_sauce:
+    - tip: Complete every field, writing "Do not know" or "N/A" rather than leaving gaps; a blank field takes the wedding out of print consideration.
+      cite:
+        - source: form
+          quote: All fields must be filled in for consideration to print.
+        - source: form
+          quote: 'If you are the photographer and do not know the information, write: "Do not know".'
+        - source: form
+          quote: 'If you are the bride or groom and the field does not apply, write: "N/A".'
+    - tip: Send print-resolution files; the editors check for 300 DPI at 8x10 inches.
+      cite:
+        - source: form
+          quote: If your images are not high enough resolution (300DPI at 8x10” size) we will contact you to resolve.
+    - tip: Cover the shot list with a variety of images, from the couple and wedding party to rings, flowers and table details.
+      cite:
+        - source: form
+          quote: Try to submit a variety of photos and use this list as a loose guide
+        - source: form
+          quote: 1. bride(s) and/or groom(s) 2. wedding party 3. cake/dessert 4. dress/shoes 5. rings 6. reception 7. flowers 8. scene setter 9. table details
+    - tip: Include the completed photo release with the form; it is a required upload.
+      cite:
+        - source: form
+          quote: Completed Photo Release Form
+  recent_features:
+    - source: feature_jill_yaksh
+      published: 2026-09-09
+      location: US-MI:detroit
+      content_type: real_wedding
+      tags: [ michigan, church_cathedral ]
+    - source: feature_zeta_lucas
+      published: 2026-09-02
+      location: US-MI:detroit
+      content_type: real_wedding
+      tags: [ michigan ]
+    - source: feature_mckenna_ryan
+      published: 2026-08-26
+      location: US-MI:detroit
+      content_type: real_wedding
+      tags: [ michigan, historic_manor_estate ]

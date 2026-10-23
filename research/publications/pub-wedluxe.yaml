@@ -1,0 +1,434 @@
+id: pub-wedluxe
+name: WedLuxe
+url: https://wedluxe.com
+kind: destination_international
+tier: secondary
+recheck_every_days: 90
+taste_summary: Global luxury weddings told as editorial stories, recently Italian villa and Lake Como weekends and Asian resort weddings, with couture, candlelit long tables and soft romantic florals.
+notes: Real weddings go through the public portal at submissions.wedluxe.com, which needs no sign-in; its rules and gating messages were read from the portal page and its two script files (form_script, form_options). The portal footer reads "Review artifact" and "Production form and records remain unchanged" while the form itself is labelled a production submission form, so confirm the portal is still the live route at the next recheck. Styled shoots are a paid editorial path, not part of the free form. No about, advertise or masthead page is linked from the home page, so editors and reach are unknown.
+
+sources:
+  portal:
+    url: https://submissions.wedluxe.com/
+    read: 2026-10-23
+    kind: guidelines
+    title: Global Real Wedding Submissions (portal and form)
+  form_script:
+    url: https://submissions.wedluxe.com/app.js
+    read: 2026-10-23
+    kind: form
+    title: Portal form script (eligibility and category messages)
+  form_options:
+    url: https://submissions.wedluxe.com/source-options.js
+    read: 2026-10-23
+    kind: form
+    title: Portal form option lists (countries, roles, categories, vendor types)
+  partner:
+    url: https://partner.wedluxe.com/
+    read: 2026-10-23
+    kind: media_kit
+    title: WedLuxe Partnership Application
+  home:
+    url: https://wedluxe.com/
+    read: 2026-10-23
+    kind: other
+    title: Home page
+  real_weddings:
+    url: https://wedluxe.com/category/real-weddings/
+    read: 2026-10-23
+    kind: other
+    title: Real Weddings category page
+  magazine:
+    url: https://magazine.wedluxe.com/
+    read: 2026-10-23
+    kind: other
+    title: WedLuxe Digital Issues
+  terms:
+    url: https://wedluxe.com/terms-of-use/
+    read: 2026-10-23
+    kind: other
+    title: Terms of Use
+  feature_phuket:
+    url: https://wedluxe.com/2026/10/23/vivian-josen-destination-wedding-trisara-phuket/
+    read: 2026-10-23
+    kind: feature
+    title: Vivian and Josen's Destination Wedding at Trisara Phuket
+  feature_barberino:
+    url: https://wedluxe.com/2026/10/21/caroline-doug-vintage-inspired-tuscany-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: Caroline and Doug's Vintage-Inspired Tuscany Wedding
+  feature_pazzi:
+    url: https://wedluxe.com/2026/10/13/tuscany-villa-wedding-villa-pazzi/
+    read: 2026-10-23
+    kind: feature
+    title: A Chandelier-Lit Tuscany Villa Wedding at Villa Pazzi
+  feature_como:
+    url: https://wedluxe.com/2026/10/07/mahsa-bam-villa-erba-lake-como-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: "Couture, Culture & Lake Como: Mahsa and Bam at Villa Erba"
+
+identity:
+  parent_company:
+    value: Cloud Nine Omnimedia Inc.
+    cite:
+      - source: partner
+        quote: WedLuxe® is a registered trademark of Cloud Nine Omnimedia Inc.
+      - source: portal
+        quote: Cloud Nine Omnimedia Inc (dba WedLuxe® and WedLuxe® Experiences)
+    note: The website terms name the owner as Cloud Nine Creative Inc. and WedLuxe Magazine.
+  sister_publications:
+    value: unknown
+    checked: [ portal, partner, terms, magazine ]
+    note: WedLuxe Experiences is a trading name of the same company, not an editorial title; the digital issues are WedLuxe's own magazine.
+  shared_inbox_with:
+    value: unknown
+    checked: [ portal, form_script ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: portal
+        quote: Submit an exceptional real wedding from anywhere in the world for consideration on WedLuxe.com and WedLuxe social channels.
+  basis:
+    value: unknown
+    checked: [ portal, form_script ]
+    note: The form asks for the country where the work took place but no page ties coverage to the wedding or the couple's home.
+  destination_accepted:
+    value: true
+    cite:
+      - source: portal
+        quote: A destination wedding becomes an editorial journey through place, portraiture and personal detail.
+      - source: feature_pazzi
+        quote: with the couple laughing among the people who had travelled to Tuscany with them.
+    note: The portal shows the Ashford Castle destination wedding as an example of its format; the Villa Pazzi feature shows the guests travelled.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: portal
+        quote: Submit an exceptional real wedding from anywhere in the world for consideration on WedLuxe.com and WedLuxe social channels.
+  elopement:
+    value: unknown
+    checked: [ portal, form_options, real_weddings ]
+    note: The form's categories are Real Wedding, Styled Shoot, Fashion Editorial, Bridal Shower, Engagement Session, Workshop Styled Shoot and Other; elopements are not named.
+  styled_shoot:
+    value: true
+    cite:
+      - source: form_script
+        quote: Styled shoots and workshops are reviewed separately. Opportunities start at USD 1,500.
+    note: Only through a separate paid editorial path; the free form stops when Styled Shoot or Workshop Styled Shoot is chosen.
+  style_tags:
+    value: [ glamorous_luxe, italian_villa, garden_botanical, romantic, fashion_forward_editorial, mediterranean_europe ]
+    cite:
+      - source: feature_phuket
+      - source: feature_barberino
+      - source: feature_pazzi
+      - source: feature_como
+  seasonality:
+    value: none
+    cite:
+      - source: portal
+        quote: Photographers, event planners, and current WedLuxe Partners may submit real weddings from anywhere in the world, year-round.
+
+routes:
+  value:
+    - platform: web_form
+      url: https://submissions.wedluxe.com/
+      account_required: false
+      preferred: true
+      steps:
+        - Prepare a public Dropbox link with up to 200 curated images and confirm the photographer has authorized sharing.
+        - Have the story, the Dropbox gallery and the vendor credits ready; allow 20 to 30 minutes.
+        - Start a submission; photographers, event planners and WedLuxe Partners submit free, and other roles need a current Partnership.
+        - Say whether the wedding is exclusive to WedLuxe, previously featured, or under review elsewhere; a wedding under review elsewhere must wait.
+        - Complete the story, gallery and credits, send, and keep the confirmation reference.
+      note: Free for photographers, event planners and current WedLuxe Partners; other vendor roles need a current Partnership. The form opens from the public page with no sign-in. On 2026-10-23 the portal's footer read "REVIEW ARTIFACT · PRODUCTION FORM AND RECORDS REMAIN UNCHANGED", though wedluxe.com's Submit Real Weddings link points to it; confirm the form before relying on it.
+    - platform: email
+      account_required: unknown
+      steps:
+        - Email the WedLuxe content team about the styled shoot; these opportunities start at USD 1,500.
+      note: Styled shoots and workshop shoots only, through a paid editorial path starting at USD 1,500. The address is in the private contacts overlay.
+  cite:
+    - source: portal
+      quote: Allow 20–30 minutes. Have your story, Dropbox gallery, and vendor credits ready.
+    - source: portal
+      quote: Prepare a public Dropbox link with up to 200 curated images and confirm that the photographer has authorized sharing.
+    - source: portal
+      quote: Prior exposure * Exclusive to WedLuxe Previously featured Currently under review elsewhere
+    - source: portal
+      quote: Please keep the confirmation reference for your records.
+    - source: form_script
+      quote: Free global real wedding submissions are offered to photographers, event planners, and WedLuxe Partners.
+    - source: form_script
+      quote: This role requires a current WedLuxe Partnership to continue.
+    - source: form_script
+      quote: Styled shoots and workshops are reviewed separately. Opportunities start at USD 1,500.
+    - source: portal
+      quote: Please wait for the other review to conclude.
+
+package:
+  image_min:
+    value: unknown
+    checked: [ portal, form_script ]
+  image_max:
+    value: 200
+    cite:
+      - source: portal
+        quote: maximum 200 curated images.
+  resolution:
+    value: unknown
+    checked: [ portal, form_script ]
+  size:
+    value: unknown
+    checked: [ portal, form_script ]
+  orientation_mix:
+    value: unknown
+    checked: [ portal ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ portal ]
+  gallery_hosts:
+    value: [ dropbox ]
+    cite:
+      - source: portal
+        quote: Dropbox only. Public “anyone with the link can view,” no password, maximum 200 curated images. Google Drive and private gallery platforms are not accepted.
+    note: Google Drive and private gallery platforms are refused.
+  vendor_credits:
+    value:
+      required: true
+      fields: [ role, business_name, instagram ]
+      note: The role is the vendor category. Priority credits go first; Instagram feed posts tag at most 20 vendors, and further website credits can be added.
+    cite:
+      - source: portal
+        quote: Enter each vendor's category, company name, and Instagram handle below.
+      - source: portal
+        quote: Instagram feed posts can tag a maximum of 20 vendors.
+      - source: form_script
+        quote: At least one complete vendor credit is required.
+  story:
+    value:
+      required: true
+      min_words: 300
+      note: A content pitch of at least 300 words; a note about the couple is optional.
+    cite:
+      - source: form_script
+        quote: Write at least 300 words for the content pitch.
+      - source: portal
+        quote: Have the couple’s story, event details, and vendor names and Instagram handles ready to enter directly in the form.
+  video_accepted:
+    value: unknown
+    checked: [ portal, form_script ]
+    note: The form has no video field; the release mentions video only in its royalty waiver.
+  other_requirements:
+    value:
+      - A public Dropbox link with no password.
+      - The submitter's company, website and Instagram, and a description of their role and contribution.
+      - The photographer's name, company, email and Instagram.
+      - The country and date of the event and both partners' full names.
+      - A working title for the story.
+      - A signed release with the submitter's full legal name.
+    cite:
+      - source: portal
+        quote: Dropbox only. Public “anyone with the link can view,” no password
+      - source: portal
+        quote: Tell us about your role and contribution *
+      - source: portal
+        quote: Photographer’s full name * Company name * Email * Instagram *
+      - source: portal
+        quote: Country of event *
+      - source: portal
+        quote: Working title * Event date * The couple Person one — full name *
+      - source: portal
+        quote: Type your full legal name as signature *
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_required
+      during_review: true
+    cite:
+      - source: portal
+        quote: Please wait for the other review to conclude.
+      - source: portal
+        quote: The source form hides all remaining submission fields when content is currently under review elsewhere.
+    note: The lock covers review only. The form also accepts weddings previously featured elsewhere, and no period after publication is stated. Both quotes come from a portal whose footer reads "review artifact"; confirm against the live form before relying on them.
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ portal, form_script ]
+      note: The form offers "Previously featured" as an answer and asks where; it does not say how that affects selection.
+    blogs:
+      value: unknown
+      checked: [ portal ]
+    social:
+      value: unknown
+      checked: [ portal ]
+  freshness_window_months:
+    value: unknown
+    checked: [ portal, form_script ]
+  photographer_frequency:
+    value: unknown
+    checked: [ portal ]
+  submitter_roles:
+    value: [ photographer, planner ]
+    cite:
+      - source: portal
+        quote: Photographers, event planners, and current WedLuxe Partners may submit real weddings from anywhere in the world, year-round.
+      - source: form_script
+        quote: Couples must ask their photographer or planner to submit on their behalf.
+      - source: form_script
+        quote: Complimentary review is unavailable for PR and marketing agencies. Agency Partner Packages start at USD 4,500.
+    note: Other vendors may submit only as current WedLuxe Partners. PR and marketing agencies are sent to a paid Agency Partner Package (from USD 4,500) instead of the form.
+
+rights:
+  image_usage:
+    value: The submitter grants Cloud Nine Omnimedia (WedLuxe) the right to edit, copy, publish and distribute the photographs in its magazines, websites, social accounts and other promotional materials, in all languages, media and markets, without payment.
+    cite:
+      - source: portal
+        quote: the right, (but not the obligation) to edit, copy, publish, distribute and make use of any and all of the photographs I am submitting
+      - source: portal
+        quote: including but not limited to its magazines, websites, social networking accounts, or digital communications without payment or any other consideration.
+      - source: portal
+        quote: This authorization extends to all languages, media, formats, and markets.
+  credit_format:
+    value: A team list at the end of the feature naming each vendor by role; Instagram feed posts tag up to 20 vendors.
+    cite:
+      - source: feature_barberino
+        quote: Every professional who shaped this story, listed by role.
+      - source: portal
+        quote: Instagram feed posts can tag a maximum of 20 vendors.
+  couple_consent_required:
+    value: unknown
+    checked: [ portal, form_script ]
+  vendor_consent_required:
+    value: true
+    cite:
+      - source: portal
+        quote: Do you have the photographer’s permission to share this gallery?
+      - source: portal
+        quote: Permission is required before you continue. Photographers own their image copyright.
+    note: The photographer's permission; the form stops without it.
+
+economics:
+  submission_fee:
+    value: none
+    cite:
+      - source: form_script
+        quote: Free global real wedding submissions are offered to photographers, event planners, and WedLuxe Partners.
+  publication_fee:
+    value:
+      amount: 1500
+      currency: USD
+      note: Styled shoots and workshop shoots only, as a starting price on a paid editorial path. No page states a fee for publishing real weddings.
+    cite:
+      - source: form_script
+        quote: Styled shoots and workshops are reviewed separately. Opportunities start at USD 1,500.
+  priority_paid_tier:
+    value:
+      name: WedLuxe Partnership
+      price:
+        amount: 2350
+        currency: USD
+        note: Starting price for six months. Currency inferred from the dollar sign; WedLuxe may price in CAD.
+      note: Required for vendors other than photographers and planners to submit at all. Accepted Partner weddings publish within 3 weeks of approval instead of the 8 to 10 month queue, under the same editorial standard, and Partners can ask for an Instagram collaboration.
+    cite:
+      - source: partner
+        quote: Our partnerships begin at $2,350 for 6 months.
+      - source: partner
+        quote: A selective six-month partnership built around direct access to our team, a clear editorial plan, and sustained presence across WedLuxe.com and @wedluxe.
+      - source: portal
+        quote: Partnership changes publishing priority, not our editorial criteria. Partnership does not guarantee acceptance.
+      - source: portal
+        quote: Within 3 weeks of approval
+      - source: portal
+        quote: Partners only, upon request. We can collaborate with your Partner Instagram feed.
+      - source: form_script
+        quote: This role requires a current WedLuxe Partnership to continue.
+  reach:
+    value: unknown
+    checked: [ portal, partner, home, magazine ]
+
+timing:
+  response_window:
+    value: unknown
+    checked: [ portal, form_script ]
+  publish_lead_days:
+    value:
+      min: 240
+      max: 300
+    cite:
+      - source: portal
+        quote: Standard publishing queue 8–10 months Current public publishing guidance
+      - source: portal
+        quote: Non-Partner timing is indicative and depends on editorial scheduling.
+    note: The non-partner queue, 8 to 10 months stored as 240 to 300 days; the form says the current wait is about 8 months. Partners publish within 3 weeks of approval.
+  publishing_cycle:
+    value: Online, real weddings several times a month (four between 2026-10-07 and 2026-10-23), each with an Instagram feed post and Story, plus digital magazine issues (Issue 36 is current).
+    cite:
+      - source: portal
+        quote: WedLuxe.com post + @wedluxe feed post and Story.
+      - source: magazine
+        quote: Issue 36 is available now as a browser-only Digital Edition.
+      - source: feature_phuket
+      - source: feature_barberino
+      - source: feature_pazzi
+      - source: feature_como
+
+people:
+  editors:
+    value: unknown
+    checked: [ portal, partner, home, terms, magazine ]
+
+insight:
+  secret_sauce:
+    - tip: Write the pitch to make the editors lean in; at least 300 words are required.
+      cite:
+        - source: portal
+          quote: The story Give the editorial team a reason to lean in.
+        - source: form_script
+          quote: Write at least 300 words for the content pitch.
+    - tip: Edit the gallery into a cohesive story of setting, ceremony and atmosphere, at most 200 curated images rather than the full gallery.
+      cite:
+        - source: portal
+          quote: One celebration unfolds through setting, ceremony and atmosphere, edited into a cohesive visual narrative.
+        - source: portal
+          quote: maximum 200 curated images.
+    - tip: Put the most important vendor credits first, since Instagram feed posts tag at most 20 vendors.
+      cite:
+        - source: portal
+          quote: Put your priority credits first, then add any further website credits in the space below. Instagram feed posts can tag a maximum of 20 vendors.
+    - tip: Do not submit while the wedding is under review elsewhere; the form stops until that review ends.
+      cite:
+        - source: portal
+          quote: Please wait for the other review to conclude.
+    - tip: Expect a long queue without a Partnership; accepted non-partner weddings wait 8 to 10 months, Partners about 3 weeks.
+      cite:
+        - source: portal
+          quote: Standard publishing queue 8–10 months Current public publishing guidance
+        - source: portal
+          quote: Within 3 weeks of approval
+  recent_features:
+    - source: feature_phuket
+      published: 2026-10-23
+      location: TH
+      content_type: real_wedding
+      tags: [ hotel_resort, beach_coastal, romantic, glamorous_luxe ]
+    - source: feature_barberino
+      published: 2026-10-21
+      location: IT
+      content_type: real_wedding
+      tags: [ italian_villa, garden_botanical, vintage_heritage, romantic, mediterranean_europe ]
+    - source: feature_pazzi
+      published: 2026-10-13
+      location: IT
+      content_type: real_wedding
+      tags: [ italian_villa, garden_botanical, glamorous_luxe, romantic, multiple_looks, mediterranean_europe ]
+    - source: feature_como
+      published: 2026-10-07
+      location: IT
+      content_type: real_wedding
+      tags: [ italian_villa, lakefront, fashion_forward_editorial, culturally_rooted, multiple_looks, glamorous_luxe, mediterranean_europe ]
