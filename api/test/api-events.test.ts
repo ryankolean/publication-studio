@@ -212,13 +212,12 @@ describe("POST /events", () => {
     });
   });
 
-  it("round-trips prior exposure and style tags", async () => {
+  it("round-trips prior exposure", async () => {
     const body = await create({
       ...minimal,
-      styleTags: ["editorial", "destination"],
       priorExposure: { ownBlog: true, igPosted: false, priorPubs: ["Somewhere"] },
     });
-    expect(body["styleTags"]).toEqual(["editorial", "destination"]);
+    expect(body).not.toHaveProperty("styleTags");
     expect(body["priorExposure"]).toEqual({
       ownBlog: true,
       igPosted: false,
@@ -450,7 +449,6 @@ describe("PATCH /events/:id", () => {
     city: "Ann Arbor",
     state: "MI",
     country: "USA",
-    styleTags: ["editorial", "garden"],
     uniqueAngle: "A ferry ceremony.",
     rightsStatus: "own_contract",
     consentStatus: "granted_limited",

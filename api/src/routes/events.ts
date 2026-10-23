@@ -28,7 +28,6 @@ interface EventRow {
   state: string | null;
   country: string | null;
   gallery_url: string | null;
-  style_tags: string;
   unique_angle: string | null;
   rights_status: RightsStatus;
   consent_status: ConsentStatus;
@@ -53,7 +52,6 @@ interface EventView {
   city: string | null;
   state: string | null;
   country: string | null;
-  styleTags: string[];
   uniqueAngle: string | null;
   rightsStatus: RightsStatus;
   consentStatus: ConsentStatus;
@@ -98,7 +96,6 @@ function toView(row: EventRow): EventView {
     city: row.city,
     state: row.state,
     country: row.country,
-    styleTags: readJson<string[]>(row.style_tags, []),
     uniqueAngle: row.unique_angle,
     rightsStatus: row.rights_status,
     consentStatus: row.consent_status,
@@ -160,10 +157,10 @@ function eventStatement(db: D1Database, id: string, slug: string, intake: EventI
     .prepare(
       `INSERT INTO events (
          id, slug, couple_names, event_date, venue_name, city, state, country,
-         gallery_url, style_tags, unique_angle, rights_status, consent_status,
+         gallery_url, unique_angle, rights_status, consent_status,
          consent_notes, name_display, couple_story, is_destination, hero_picks,
          video_url, target_outlet_notes, prior_exposure
-       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .bind(
       id,
@@ -175,7 +172,6 @@ function eventStatement(db: D1Database, id: string, slug: string, intake: EventI
       intake.state,
       intake.country,
       intake.galleryUrl,
-      JSON.stringify(intake.styleTags),
       intake.uniqueAngle,
       intake.rightsStatus,
       intake.consentStatus,
@@ -350,7 +346,7 @@ function updateStatement(db: D1Database, id: string, intake: EventIntake, now: s
     .prepare(
       `UPDATE events SET
          couple_names = ?, event_date = ?, venue_name = ?, city = ?, state = ?, country = ?,
-         gallery_url = COALESCE(?, gallery_url), style_tags = ?, unique_angle = ?,
+         gallery_url = COALESCE(?, gallery_url), unique_angle = ?,
          rights_status = ?, consent_status = ?, consent_notes = ?, name_display = ?,
          couple_story = ?, is_destination = ?, hero_picks = ?, video_url = ?,
          target_outlet_notes = ?, prior_exposure = ?, updated_at = ?
@@ -364,7 +360,6 @@ function updateStatement(db: D1Database, id: string, intake: EventIntake, now: s
       intake.state,
       intake.country,
       intake.galleryUrl,
-      JSON.stringify(intake.styleTags),
       intake.uniqueAngle,
       intake.rightsStatus,
       intake.consentStatus,
@@ -439,7 +434,7 @@ eventRoutes.get("/:id/walkthrough", async (c) => {
   if (row === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
   const event = toView(row);
 
-  const [credits, pool, outlets, packages] = await Promise.all([
+  const [credits, pool, outlets, packages, tags] = await Promise.all([
     db.prepare("SELECT COUNT(*) AS n FROM vendor_credits WHERE event_id = ?")
       .bind(event.id)
       .first<{ n: number }>(),
@@ -448,6 +443,9 @@ eventRoutes.get("/:id/walkthrough", async (c) => {
       .first<{ n: number }>(),
     listPublications(db, false),
     listEventPackages(db, event.id),
+    db.prepare("SELECT COUNT(*) AS n FROM event_tags WHERE event_id = ? AND state = 'confirmed'")
+      .bind(event.id)
+      .first<{ n: number }>(),
   ]);
 
   const eventPackages = packages ?? [];
@@ -483,6 +481,8 @@ eventRoutes.get("/:id/walkthrough", async (c) => {
   const wizard = buildWizard({
     event,
     vendorCreditCount,
+    confirmedTagCount: tags?.n ?? 0,
+    packageCount: eventPackages.length,
     followed: loaded?.wizard ?? null,
     liveElsewhere: liveAt(loaded?.wizard.id ?? null),
   });

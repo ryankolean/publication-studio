@@ -33,6 +33,7 @@ export const WIZARD_STEPS = [
   "wedding",
   "permissions",
   "story",
+  "look",
   "outlet",
   "photos",
   "writeup",
@@ -60,6 +61,10 @@ export interface WizardPackage {
 export interface WizardInput {
   event: WalkthroughEvent;
   vendorCreditCount: number;
+  /** Tags she has confirmed on this wedding (SUMMIT-337). */
+  confirmedTagCount: number;
+  /** Every package the wedding has had, whatever became of it. */
+  packageCount: number;
   /** Null until an outlet is chosen. */
   followed: WizardPackage | null;
   /** Outlets where another of this event's packages is sent and unanswered. */
@@ -258,6 +263,10 @@ export function buildWizard(input: WizardInput): Wizard {
     permissions:
       has("gallery_link") && event.rightsStatus !== "unverified" && event.consentStatus !== "unverified",
     story: has("story") && has("vendor_credit"),
+    // DECISION: the look never holds a submission back. It is done once she
+    // has confirmed a tag, or once the wedding has been prepared for any
+    // outlet, so skipping it, or a declined outlet, never sends her back here.
+    look: input.confirmedTagCount > 0 || input.packageCount > 0,
     outlet: blockedBy.length === 0 && followed !== null,
     photos: followed?.imagesReady === true,
     writeup: followed?.writeupReady === true,

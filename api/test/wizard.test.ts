@@ -59,6 +59,8 @@ const submitted = (status: SubmissionStatus, extra: Partial<NonNullable<WizardPa
 const input = (overrides: Partial<WizardInput> = {}): WizardInput => ({
   event: event(),
   vendorCreditCount: 1,
+  confirmedTagCount: 1,
+  packageCount: 0,
   followed: null,
   liveElsewhere: [],
   ...overrides,
@@ -68,11 +70,12 @@ const done = (wizard: ReturnType<typeof buildWizard>) =>
   wizard.steps.filter((entry) => entry.done).map((entry) => entry.id);
 
 describe("WIZARD_STEPS", () => {
-  it("is the ten screens after choosing a wedding, in order", () => {
+  it("is the eleven screens after choosing a wedding, in order", () => {
     expect(WIZARD_STEPS).toEqual([
       "wedding",
       "permissions",
       "story",
+      "look",
       "outlet",
       "photos",
       "writeup",
@@ -122,7 +125,7 @@ describe("buildWizard: where to resume", () => {
 
   it("counts permissions done once both are answered, even with a no", () => {
     const wizard = buildWizard(input({ event: event({ rightsStatus: "second_shooter", consentStatus: "declined" }) }));
-    expect(done(wizard)).toEqual(["wedding", "permissions", "story"]);
+    expect(done(wizard)).toEqual(["wedding", "permissions", "story", "look"]);
   });
 
   it("resumes at the story with no standout detail and no story", () => {
@@ -142,7 +145,25 @@ describe("buildWizard: where to resume", () => {
     const wizard = buildWizard(input());
     expect(wizard.step).toBe("outlet");
     expect(wizard.packageId).toBeNull();
+    expect(done(wizard)).toEqual(["wedding", "permissions", "story", "look"]);
+  });
+
+  it("resumes at the look when no tag is confirmed and no outlet is chosen", () => {
+    const wizard = buildWizard(input({ confirmedTagCount: 0 }));
+    expect(wizard.step).toBe("look");
     expect(done(wizard)).toEqual(["wedding", "permissions", "story"]);
+  });
+
+  it("calls the look done once the wedding has been prepared for an outlet, tags or not", () => {
+    const wizard = buildWizard(
+      input({ confirmedTagCount: 0, packageCount: 1, followed: pkg({ imagesReady: false, complete: false }) }),
+    );
+    expect(done(wizard)).toContain("look");
+    expect(wizard.step).toBe("photos");
+  });
+
+  it("goes back to the outlet, not the look, after an outlet's answer", () => {
+    expect(buildWizard(input({ confirmedTagCount: 0, packageCount: 1 })).step).toBe("outlet");
   });
 
   it("resumes at the photos when the selection is short of the outlet's count", () => {
@@ -195,7 +216,7 @@ describe("buildWizard: the rights gate", () => {
   it("lets a blocked wedding through the first three steps and stops it at the outlet", () => {
     const wizard = buildWizard(input({ event: event({ rightsStatus: "second_shooter" }) }));
     expect(wizard.step).toBe("outlet");
-    expect(done(wizard)).toEqual(["wedding", "permissions", "story"]);
+    expect(done(wizard)).toEqual(["wedding", "permissions", "story", "look"]);
     expect(wizard.blocked).toEqual({
       step: "outlet",
       reasons: ["Second-shooter weddings cannot be submitted under your name."],

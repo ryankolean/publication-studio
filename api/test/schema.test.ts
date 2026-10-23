@@ -54,19 +54,24 @@ describe("migrations", () => {
     // and tags plus publication_tags, which migration 0006 adds as the shared
     // vocabulary that events and outlets are matched on, and the research
     // store from migration 0008: research_revisions, research_vocab and
-    // publication_edits.
+    // publication_edits, and the style profile from migration 0009:
+    // event_tags, style_runs, past_features and app_settings.
     expect(tableNames(db)).toEqual([
+      "app_settings",
       "audit_log",
       "credit_requests",
       "event_images",
+      "event_tags",
       "events",
       "packages",
       "password_invites",
+      "past_features",
       "publication_edits",
       "publication_tags",
       "publications",
       "research_revisions",
       "research_vocab",
+      "style_runs",
       "submissions",
       "tags",
       "users",
@@ -420,7 +425,6 @@ describe("intake coverage", () => {
       "hero_picks",
       "video_url",
       "target_outlet_notes",
-      "style_tags",
     ]) {
       expect(columns, `events is missing ${column}`).toContain(column);
     }
