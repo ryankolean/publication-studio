@@ -42,6 +42,7 @@ describe("migration 0008: the research store", () => {
       "publication_id",
       "payload_json",
       "content_hash",
+      "changes_json",
       "git_sha",
       "status",
       "proposed_by",

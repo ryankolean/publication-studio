@@ -18,6 +18,10 @@ CREATE TABLE IF NOT EXISTS research_revisions (
   publication_id TEXT NOT NULL,
   payload_json   TEXT NOT NULL,   -- {"file": <validated research file>, "contacts": <private overlay or null>}
   content_hash   TEXT NOT NULL,   -- SHA-256 of the canonical payload; an unchanged import adds nothing
+  -- Field changes against the approved research, worked out once when the
+  -- revision is proposed: an outlet has at most one pending revision, and only
+  -- approving it changes what it is compared with.
+  changes_json   TEXT NOT NULL DEFAULT '[]',
   git_sha        TEXT,            -- the commit the files were read from, when the import knows it
   status         TEXT NOT NULL DEFAULT 'pending'
                    CHECK (status IN ('pending', 'approved', 'rejected', 'superseded')),
