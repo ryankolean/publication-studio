@@ -53,6 +53,17 @@ export const GUIDE: Record<StepId, StepGuide> = {
       "Add every vendor: their role, business name, and website or Instagram if you have it.",
       'Press "Continue".',
     ],
+    next: "Next up: the look of the wedding.",
+  },
+  look: {
+    title: "The look",
+    lead: "Tag the setting, the style and what the couple wore. Your tags add up to your style profile, which helps find the outlets that publish your kind of wedding.",
+    todo: [
+      'Read each suggestion and its reason, then press "Keep" or "Not this".',
+      'Pick anything missing under "Add a tag".',
+      'Press "Continue".',
+    ],
+    note: "Suggestions come from the wedding date, where it was, and any tags suggested from your photos. This step never holds a wedding back, so you can skip it and come back from Your work.",
     next: "Next up: choosing an outlet.",
   },
   outlet: {

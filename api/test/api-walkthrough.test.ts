@@ -378,6 +378,9 @@ describe("GET /events/:id/walkthrough: the wizard", () => {
       uniqueAngle: "A ceremony on a frozen lake.",
       vendorCredits: [{ role: "Florist", businessName: "Stems" }],
     });
+    expect((await wizardOf(id))["step"]).toBe("look");
+
+    expect((await send("PUT", `/style/events/${id}/tags/romantic`, { state: "confirmed" })).status).toBe(200);
     const choosing = await wizardOf(id);
     expect(choosing).toMatchObject({ step: "outlet", packageId: null, blocked: null, outlet: null, finished: false });
 
@@ -427,7 +430,7 @@ describe("GET /events/:id/walkthrough: the wizard", () => {
   it("stops a blocked wedding at the outlet, with the reasons in plain words", async () => {
     const id = await createEvent({ ...COMPLETE, rightsStatus: "second_shooter" });
     const wizard = await wizardOf(id);
-    expect(wizard["step"]).toBe("outlet");
+    expect(wizard["step"]).toBe("look");
     expect(wizard["blocked"]).toEqual({
       step: "outlet",
       reasons: ["Second-shooter weddings cannot be submitted under your name."],

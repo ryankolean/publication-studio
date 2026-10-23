@@ -22,6 +22,7 @@ export interface FakeApi {
   get: Mock;
   post: Mock;
   patch: Mock;
+  put: Mock;
   delete: Mock;
   putBytes: Mock;
 }
@@ -30,6 +31,7 @@ export const fakeApi = (): FakeApi => ({
   get: vi.fn(),
   post: vi.fn(),
   patch: vi.fn(),
+  put: vi.fn(),
   delete: vi.fn(),
   putBytes: vi.fn(),
 });
@@ -141,7 +143,6 @@ export const storedEvent = (overrides: Record<string, unknown> = {}) => ({
   city: "Detroit",
   state: "MI",
   country: null,
-  styleTags: ["editorial"],
   uniqueAngle: "A ceremony on a frozen lake.",
   rightsStatus: "own_contract",
   consentStatus: "granted",

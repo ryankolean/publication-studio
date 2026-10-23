@@ -240,6 +240,9 @@ for (const method of ["PUT", "DELETE"]) {
   const submissions = await fetch(`${BASE}/submissions`);
   check("submissions rejects anonymous", submissions.status === 401, `got ${submissions.status}`);
 
+  const suggestions = await fetch(`${BASE}/style/events/smoke/suggestions`, { method: "PUT" });
+  check("tag suggestions reject anonymous", suggestions.status === 401, `got ${suggestions.status}`);
+
   const markSent = await fetch(`${BASE}/submissions/smoke`, {
     method: "PATCH",
     headers: { "content-type": "application/json" },

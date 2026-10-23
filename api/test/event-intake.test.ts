@@ -156,33 +156,6 @@ describe("destination flag", () => {
   });
 });
 
-describe("style tags", () => {
-  it("defaults to an empty list", () => {
-    expect(ok(minimal).styleTags).toEqual([]);
-  });
-
-  it("keeps trimmed non-empty strings", () => {
-    expect(ok({ ...minimal, styleTags: [" editorial ", "destination"] }).styleTags).toEqual([
-      "editorial",
-      "destination",
-    ]);
-  });
-
-  it("drops blanks and de-duplicates", () => {
-    expect(ok({ ...minimal, styleTags: ["editorial", "  ", "editorial"] }).styleTags).toEqual([
-      "editorial",
-    ]);
-  });
-
-  it("rejects a non-array", () => {
-    expect(errorFields({ ...minimal, styleTags: "editorial" })).toContain("styleTags");
-  });
-
-  it("rejects non-string entries", () => {
-    expect(errorFields({ ...minimal, styleTags: ["editorial", 7] })).toContain("styleTags");
-  });
-});
-
 describe("prior exposure", () => {
   it("defaults to nothing published anywhere", () => {
     expect(ok(minimal).priorExposure).toEqual({ ownBlog: false, igPosted: false, priorPubs: [] });

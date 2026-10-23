@@ -10,6 +10,7 @@ import { PublicationsPage } from "./pages/PublicationsPage.js";
 import { ResearchUpdatesPage } from "./pages/ResearchUpdatesPage.js";
 import { QueuePage } from "./pages/QueuePage.js";
 import { HelpPage } from "./pages/HelpPage.js";
+import { StylePage } from "./pages/StylePage.js";
 import { WizardNewWedding, WizardResume, WizardStep } from "./wizard/WizardRoutes.js";
 
 /**
@@ -42,6 +43,9 @@ function Shell({ children }: { children: ReactNode }) {
               </Link>
               <Link to="/publications" className="text-slate-600 hover:text-slate-900">
                 Publications
+              </Link>
+              <Link to="/style" className="text-slate-600 hover:text-slate-900">
+                Your work
               </Link>
               <Link to="/help" className="text-slate-600 hover:text-slate-900">
                 How it works
@@ -83,6 +87,7 @@ function Routed() {
         <Route path="/wizard/:eventId" element={<RequireSession><WizardResume /></RequireSession>} />
         <Route path="/wizard/:eventId/:step" element={<RequireSession><WizardStep /></RequireSession>} />
         <Route path="/help" element={<RequireSession><HelpPage /></RequireSession>} />
+        <Route path="/style" element={<RequireSession><StylePage /></RequireSession>} />
         <Route path="/queue" element={<RequireSession><QueuePage /></RequireSession>} />
         <Route path="/publications" element={<RequireSession><PublicationsPage /></RequireSession>} />
         <Route path="/publications/updates" element={<RequireSession><ResearchUpdatesPage /></RequireSession>} />

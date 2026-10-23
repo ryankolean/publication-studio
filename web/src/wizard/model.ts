@@ -6,6 +6,7 @@ export const STEPS = [
   "wedding",
   "permissions",
   "story",
+  "look",
   "outlet",
   "photos",
   "writeup",
@@ -22,6 +23,7 @@ export const RAIL_LABEL: Record<StepId, string> = {
   wedding: "Wedding",
   permissions: "Permissions",
   story: "Story",
+  look: "Look",
   outlet: "Outlet",
   photos: "Photos",
   writeup: "Write-up",
@@ -107,7 +109,6 @@ export interface StoredEvent {
   city: string | null;
   state: string | null;
   country: string | null;
-  styleTags: string[];
   uniqueAngle: string | null;
   rightsStatus: string;
   consentStatus: string;
@@ -141,7 +142,6 @@ export function eventPayload(stored: StoredEvent, changes: EventChanges): Record
     state: merged.state,
     country: merged.country,
     ...(gallery === "" ? {} : { galleryUrl: gallery }),
-    styleTags: merged.styleTags,
     uniqueAngle: merged.uniqueAngle,
     rightsStatus: merged.rightsStatus,
     consentStatus: merged.consentStatus,

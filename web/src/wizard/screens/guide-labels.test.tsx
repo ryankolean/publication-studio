@@ -76,6 +76,17 @@ const OPEN: Record<StepId, () => Promise<unknown>> = {
     renderWizard(api, "/wizard/w1/story");
     return screen.findByLabelText("What made this wedding stand out?");
   },
+  look: async () => {
+    serve(api, {
+      "/events/w1/walkthrough": walkthrough(wizardAt("look")),
+      "/style/events/w1": {
+        tags: [{ id: "romantic", category: "aesthetic", state: "suggested", source: "operator", confidence: "high", reason: "Photo 2." }],
+        vocabulary: [{ id: "romantic", category: "aesthetic" }, { id: "whimsical", category: "aesthetic" }],
+      },
+    });
+    renderWizard(api, "/wizard/w1/look");
+    return screen.findByText("Photo 2.");
+  },
   outlet: async () => {
     serve(api, { "/events/w1/walkthrough": walkthrough(wizardAt("outlet")) });
     renderWizard(api, "/wizard/w1/outlet");

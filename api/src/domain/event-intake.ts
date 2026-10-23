@@ -35,7 +35,6 @@ export interface EventIntake {
   state: string | null;
   country: string | null;
   galleryUrl: string | null;
-  styleTags: string[];
   uniqueAngle: string | null;
   rightsStatus: RightsStatus;
   consentStatus: ConsentStatus;
@@ -153,21 +152,6 @@ class Collector {
   }
 }
 
-function readStyleTags(source: Record<string, unknown>, errors: Collector): string[] {
-  const value = source["styleTags"];
-  if (value === undefined || value === null) return [];
-  if (!Array.isArray(value)) {
-    errors.add("styleTags", "Expected a list of tags.");
-    return [];
-  }
-  if (value.some((entry) => typeof entry !== "string")) {
-    errors.add("styleTags", "Every tag must be text.");
-    return [];
-  }
-  const trimmed = (value as string[]).map((tag) => tag.trim()).filter((tag) => tag.length > 0);
-  return [...new Set(trimmed)];
-}
-
 function readPriorExposure(source: Record<string, unknown>, errors: Collector): PriorExposure {
   const fallback: PriorExposure = { ownBlog: false, igPosted: false, priorPubs: [] };
   const value = source["priorExposure"];
@@ -269,7 +253,6 @@ export function validateEventIntake(input: unknown): IntakeResult {
     state: errors.optionalText(input, "state"),
     country: errors.optionalText(input, "country"),
     galleryUrl: errors.optionalUrl(input, "galleryUrl"),
-    styleTags: readStyleTags(input, errors),
     uniqueAngle: errors.optionalText(input, "uniqueAngle"),
     rightsStatus: errors.enumValue(input, "rightsStatus", RIGHTS_STATUSES, "unverified"),
     consentStatus: errors.enumValue(input, "consentStatus", CONSENT_STATUSES, "unverified"),

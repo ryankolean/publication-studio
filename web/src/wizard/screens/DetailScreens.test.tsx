@@ -105,7 +105,6 @@ describe("[wedding] an existing wedding", () => {
       venueName: "The Mill",
       // Fields this screen does not show still travel, so the full-replace PATCH keeps them.
       heroPicks: "The veil shot",
-      styleTags: ["editorial"],
       priorExposure: { ownBlog: true, igPosted: false, priorPubs: [] },
       vendorCredits: [{ role: "Florist", businessName: "Stems", website: null, instagram: "stems" }],
     });
@@ -250,7 +249,7 @@ describe("[story]", () => {
         { role: "Venue", businessName: "The Barn", website: null, instagram: "@thebarn" },
       ],
     });
-    await waitFor(() => expect(location(screen)).toBe("/wizard/w1/outlet"));
+    await waitFor(() => expect(location(screen)).toBe("/wizard/w1/look"));
   });
 
   it("removes a vendor row", async () => {

@@ -12,7 +12,7 @@ Two-user web app that helps a wedding photographer get published: tracks wedding
 - API: a Cloudflare Worker, auth-gated on every route except `/health`
 
 Built and verified in a browser: sign-in, the guided wizard from choosing a
-wedding to recording the outlet's reply (ten steps, each with a "What to do
+wedding to recording the outlet's reply (eleven steps, each with a "What to do
 here" box naming the exact controls, and a first-visit welcome on the home
 page), the ten seeded publications with live-verified specs, response
 windows and tags, and the queue. The wizard is the only path: the older
@@ -58,6 +58,14 @@ Migrations run with `npm run migrate:local --workspace @publication-studio/api`.
 Outlet research lives in `research/` (see `research/README.md`). Load it into
 the app with `npm run research:import --workspace @publication-studio/api --
 --local` (or `--remote`), then approve the updates in the app.
+
+Each wedding is tagged on the wizard's Look step, and "Your work" shows the
+photographer's style profile and past features (SUMMIT-337). The tool calls
+no AI service and holds no AI key. Suggested tags worked out from a wedding's
+photos are prepared outside it, kept in the private folder, and loaded by the
+operator with `npm run style:suggest --workspace @publication-studio/api --
+--remote --file ../publication-studio-private/style/<wedding>.yaml` (format in
+`api/scripts/suggest-tags.ts`); the photographer keeps or turns down each one.
 
 ## Users
 
