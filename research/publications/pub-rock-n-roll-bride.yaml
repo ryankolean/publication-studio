@@ -1,0 +1,465 @@
+id: pub-rock-n-roll-bride
+name: Rock n Roll Bride
+url: https://www.rocknrollbride.com
+kind: destination_international
+tier: secondary
+recheck_every_days: 90
+taste_summary: Alternative, rule-breaking weddings with big personality, colour, gothic and punk streaks, DIY and budget-conscious celebrations, inclusive of queer and neurodivergent couples; online most weekdays plus a bi-monthly print magazine.
+notes: UK title (Reading). US weddings are published often (three of the newest five features are in Oregon and Florida, and US features are tagged "America"). No page sets a geographic limit or mentions weddings abroad in its rules; the site runs a "Destination weddings" section, and a recent feature shows a London couple who flew to the Philippines for a celebration it calls a destination wedding. The submissions inbox and the editor's address are in the private contacts overlay. A podcast interview with the editor (Weddings Unveiled, evergreenpodcasts.com) returned HTTP 403 and was not read.
+
+sources:
+  guidelines:
+    url: https://www.rocknrollbride.com/submissions/
+    read: 2026-10-23
+    kind: guidelines
+    title: Getting Featured
+  about:
+    url: https://www.rocknrollbride.com/about/
+    read: 2026-10-23
+    kind: about
+    title: About
+  contact:
+    url: https://www.rocknrollbride.com/contact/
+    read: 2026-10-23
+    kind: other
+    title: Contact Us
+  advertising:
+    url: https://www.rocknrollbride.com/advertising/
+    read: 2026-10-23
+    kind: media_kit
+    title: Advertising
+  rockstar_vendors:
+    url: https://www.rocknrollbride.com/rockstar-vendors/
+    read: 2026-10-23
+    kind: other
+    title: Rockstar Vendors directory
+  category:
+    url: https://www.rocknrollbride.com/topic/wedding/
+    read: 2026-10-23
+    kind: other
+    title: Wedding topic page
+  feature_western_pixies:
+    url: https://www.rocknrollbride.com/2026/10/western-pixies-meets-vintage-fae-wedding-planned-in-six-months/
+    read: 2026-10-23
+    kind: feature
+    title: Western Pixies Meets Vintage Fae Wedding Planned in Six Months
+  feature_portland_castle:
+    url: https://www.rocknrollbride.com/2026/10/sultry-spooky-romantic-portland-castle-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: Sultry, Spooky & Romantic Portland Castle Wedding
+  feature_suwannee:
+    url: https://www.rocknrollbride.com/2026/10/a-barefoot-bride-and-a-campsite-ceremony-at-spirit-of-suwannee-music-festival/
+    read: 2026-10-23
+    kind: feature
+    title: A Barefoot Bride and a Campsite Ceremony at Spirit of Suwannee Music Festival
+  feature_working_mens_club:
+    url: https://www.rocknrollbride.com/2026/10/a-10k-camp-music-video-inspired-working-mens-club-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: A 10k 'Camp Music Video'-Inspired Working Men's Club Wedding
+  feature_goths_beach:
+    url: https://www.rocknrollbride.com/2026/10/goths-on-the-beach/
+    read: 2026-10-23
+    kind: feature
+    title: Goths on the Beach
+
+identity:
+  parent_company:
+    value: Rock n Roll Bride Ltd
+    cite:
+      - source: guidelines
+        quote: Rock n Roll Bride Ltd, PO Box 3246, Reading, RG1 9LG, United Kingdom.
+      - source: about
+        quote: the UK’s leading independent alternative wedding magazine
+    note: The operating company named in the site footer; the about page calls the title independent.
+  sister_publications:
+    value: unknown
+    checked: [ about, advertising ]
+    note: The editor's book, Rock n Roll Bride The Ultimate Guide for Alternative Brides, is a book, not a sister title.
+  shared_inbox_with:
+    value: unknown
+    checked: [ contact, guidelines ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: feature_western_pixies
+      - source: feature_portland_castle
+      - source: feature_suwannee
+      - source: feature_working_mens_club
+      - source: feature_goths_beach
+    note: Inferred from published features; no page states a geographic limit. The newest five are in Wales, England, Oregon, Florida and the Philippines.
+  basis:
+    value: unknown
+    checked: [ guidelines ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: feature_goths_beach
+        quote: flew to the Philippines for their big gothic fantasy beach celebration.
+      - source: feature_goths_beach
+        quote: especially as it was a destination wedding
+    note: Inferred from published features; no page states a rule on weddings abroad. The couple live in London and married there before flying to the Philippines for the celebration.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: We accept real wedding submissions from photographers, newlyweds or any wedding supplier involved in the day.
+  elopement:
+    value: true
+    cite:
+      - source: category
+        quote: A Private Joshua Tree Elopement
+      - source: feature_suwannee
+    note: Inferred from published features; no page lists elopements as a submission type. The site also has an Elopements section.
+  styled_shoot:
+    value: true
+    cite:
+      - source: guidelines
+        quote: We primarily feature real weddings, however we do publish a very limited number of editorial and engagement shoots.
+      - source: guidelines
+        quote: Photo shoots may be accepted if they have been featured elsewhere.
+    note: Real weddings get priority; shoots are few and need high-res images from the start.
+  style_tags:
+    value: [ alternative_nontraditional, moody_dramatic, bold_color_maximalist, playful_party, bohemian, vintage_heritage, whimsical ]
+    cite:
+      - source: feature_western_pixies
+      - source: feature_portland_castle
+      - source: feature_suwannee
+      - source: feature_working_mens_club
+      - source: feature_goths_beach
+  seasonality:
+    value: unknown
+    checked: [ guidelines ]
+
+routes:
+  value:
+    - platform: email
+      account_required: false
+      preferred: true
+      steps:
+        - Email the magazine inbox after the wedding has taken place.
+        - Attach 10 to 20 low-res images, or link an online gallery (for Dropbox, send a direct link to the folder rather than an invitation).
+        - Include portraits of the couple and detail shots, with no watermarks.
+        - Give the couple's names, the wedding date and the location.
+        - Add a short paragraph or a few bullet points on why the wedding suits Rock n Roll Bride and what makes it stand out.
+        - Expect a yes or no in 2 to 3 working days; follow up if nothing arrives within a week.
+        - If accepted, send the full gallery, have the couple complete the questionnaire and the photographer sign the permission form.
+      note: Photo shoots go to the same inbox with a link to high-res 300 DPI images, a supplier list (business name, Instagram handle and role) and a short pitch. The inbox and editor addresses are in the private contacts overlay.
+  cite:
+    - source: guidelines
+      quote: Please submit your wedding AFTER it has already taken place.
+    - source: guidelines
+      quote: Drop us an email and include the following info
+    - source: contact
+      quote: For real wedding submissions, freelance writing opportunities, advertising info, brand collaborations, press enquires, messages of love and everything in between
+    - source: guidelines
+      quote: If the submission is accepted we will then ask you to send the full gallery.
+    - source: guidelines
+      quote: Between 10 and 20 low res images.
+    - source: guidelines
+      quote: Images can be sent attached to an email or linked to an external online gallery.
+    - source: guidelines
+      quote: please email a direct link to the folder itself rather than inviting us to a folder within Dropbox
+    - source: guidelines
+      quote: Please include portraits of the couple and detail shots (the cake, centrepieces, decorations etc).
+    - source: guidelines
+      quote: Images must not have watermarks on them.
+    - source: guidelines
+      quote: The couple’s names, wedding date and location
+    - source: guidelines
+      quote: A short paragraph or a few bullet points laying out why you think this wedding is perfect for Rock n Roll Bride
+    - source: guidelines
+      quote: You will hear back, usually within 2-3 working days, whether your submission is successful or not.
+    - source: guidelines
+      quote: If you haven’t heard back within a week, feel free to send a follow-up
+    - source: guidelines
+      quote: Weddings cannot be featured without the questionnaire filled in by the couple and the signed permission form.
+
+package:
+  image_min:
+    value: 10
+    cite:
+      - source: guidelines
+        quote: Between 10 and 20 low res images.
+  image_max:
+    value: 20
+    cite:
+      - source: guidelines
+        quote: Between 10 and 20 low res images.
+    note: The count for the first email; the full gallery follows after acceptance.
+  resolution:
+    value:
+      note: Low-res images for a real-wedding submission; photo shoots need a link to high-res 300 DPI images. No pixel or file-size figures are given.
+    cite:
+      - source: guidelines
+        quote: Between 10 and 20 low res images.
+      - source: guidelines
+        quote: A link to high res, 300 DPI images.
+  size:
+    value: unknown
+    checked: [ guidelines ]
+    note: The page asks for low-res images for real weddings and high-res 300 DPI images for shoots; it does not say web or print size.
+  orientation_mix:
+    value: unknown
+    checked: [ guidelines ]
+  watermarks_allowed:
+    value: false
+    cite:
+      - source: guidelines
+        quote: Images must not have watermarks on them.
+  gallery_hosts:
+    value: any
+    cite:
+      - source: guidelines
+        quote: Images can be sent attached to an email or linked to an external online gallery.
+      - source: guidelines
+        quote: please email a direct link to the folder itself rather than inviting us to a folder within Dropbox
+    note: Any online gallery link or email attachments. Dropbox needs a direct folder link, not a folder invitation; for shoots, Dropbox or a link that will not expire is preferred.
+  vendor_credits:
+    value:
+      required: true
+      fields: [ business_name, instagram, role ]
+      note: Asked for up front for photo shoots; for real weddings the feature details are requested after acceptance, and published features end with a Suppliers list.
+    cite:
+      - source: guidelines
+        quote: The list of suppliers involved (business name, IG handle and what they do)
+  story:
+    value:
+      required: true
+      questionnaire: true
+      note: A short paragraph or bullet points with the first email; the couple completes a questionnaire before publication.
+    cite:
+      - source: guidelines
+        quote: A short paragraph or a few bullet points laying out why you think this wedding is perfect for Rock n Roll Bride
+      - source: guidelines
+        quote: Weddings cannot be featured without the questionnaire filled in by the couple and the signed permission form.
+  video_accepted:
+    value: unknown
+    checked: [ guidelines ]
+  other_requirements:
+    value:
+      - Submit only after the wedding has taken place.
+      - Include portraits of the couple and detail shots such as the cake, centrepieces and decorations.
+      - Colour images are generally preferred over black and white.
+      - Give the couple's names, wedding date and location.
+      - The image copyright holder, usually the photographer, signs a permission form before any image is shared.
+    cite:
+      - source: guidelines
+        quote: Please submit your wedding AFTER it has already taken place.
+      - source: guidelines
+        quote: Please include portraits of the couple and detail shots (the cake, centrepieces, decorations etc).
+      - source: guidelines
+        quote: Colour images are generally preferred over black and white.
+      - source: guidelines
+        quote: The couple’s names, wedding date and location
+      - source: guidelines
+        quote: the image copyright holder (typically the photographer) will be required to sign a permission form before we share any images.
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_required
+      during_review: true
+    cite:
+      - source: guidelines
+        quote: We require FIRST SHOWING EXCLUSIVITY of all our real wedding features
+      - source: guidelines
+        quote: Please do not submit anything that is currently pending with another publication.
+      - source: guidelines
+        quote: We do not expect the images to be held back for any specified period of time after our feature.
+    note: First showing only; the wedding may go to other outlets as soon as the feature is live. The editors occasionally bend the rule, so disclose any earlier submission or feature.
+  prior_exposure:
+    publications:
+      value: disqualifies
+      cite:
+        - source: guidelines
+          quote: Rock n Roll Bride will only publish weddings that have not been previously featured on any other wedding blogs or magazines.
+      note: Rare exceptions are made; photo shoots featured elsewhere are judged case by case.
+    blogs:
+      value: allowed
+      cite:
+        - source: guidelines
+          quote: You are very welcome to publish the images on your own blog, website or social media
+      note: If another blog, magazine or publisher picks the images up, the feature may be at risk.
+    social:
+      value: allowed
+      cite:
+        - source: guidelines
+          quote: You are very welcome to publish the images on your own blog, website or social media
+  freshness_window_months:
+    value: none
+    cite:
+      - source: guidelines
+        quote: there is no time limit on submitting, and it doesn’t matter if you got married yesterday or three years ago
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines ]
+  submitter_roles:
+    value: [ photographer, couple, vendor ]
+    cite:
+      - source: guidelines
+        quote: We accept real wedding submissions from photographers, newlyweds or any wedding supplier involved in the day.
+
+rights:
+  image_usage:
+    value: Published online or in the print magazine, with the editors deciding the placement; a photography credit runs wherever an image is published.
+    cite:
+      - source: guidelines
+        quote: While we will make the final decision on whether a feature is placed in print or online
+      - source: guidelines
+        quote: A photography credit will always be included wherever an image is published.
+    note: Submitters may state a print preference, which is taken into account.
+  credit_format:
+    value: The photographer is named under the headline, and a Suppliers list at the end gives each role and business, starting with Photography.
+    cite:
+      - source: guidelines
+        quote: A photography credit will always be included wherever an image is published.
+      - source: feature_western_pixies
+        quote: "Photography: O&C Photography"
+  couple_consent_required:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Permission to be featured from both the photographer and the couple is imperative
+  vendor_consent_required:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Permission to be featured from both the photographer and the couple is imperative
+      - source: guidelines
+        quote: the image copyright holder (typically the photographer) will be required to sign a permission form before we share any images.
+    note: The photographer's permission, as the image copyright holder, given on a signed form.
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ guidelines, advertising ]
+  publication_fee:
+    value: unknown
+    checked: [ guidelines, advertising ]
+    note: The page says contributors are not paid for features; it does not mention a fee to be featured. A spotlight on a business is a separate paid option.
+  priority_paid_tier:
+    value: unknown
+    checked: [ guidelines, advertising, rockstar_vendors ]
+    note: The paid Rockstar Vendors directory is sold as advertising; no page ties it to submission review.
+  reach:
+    value: unknown
+    checked: [ advertising, about ]
+    note: The advertising page claims "hundreds of thousands of visitors from all around the world" without a figure or period; the media kit is sent on request.
+
+timing:
+  response_window:
+    value:
+      days: 5
+      replies: all
+    cite:
+      - source: guidelines
+        quote: You will hear back, usually within 2-3 working days, whether your submission is successful or not.
+      - source: guidelines
+        quote: If you haven’t heard back within a week, feel free to send a follow-up
+    note: 3 working days, stored as 5 calendar days.
+  publish_lead_days:
+    value:
+      min: 90
+      max: 120
+    cite:
+      - source: guidelines
+        quote: Our current lead time for publication is around three months for online features and two issues (four months) for print features.
+    note: About 90 days for online features and about 120 for print.
+  publishing_cycle:
+    value: Online, with a new real wedding most weekdays (five went live from 2026-10-19 to 2026-10-23), plus a bi-monthly print magazine distributed internationally.
+    cite:
+      - source: advertising
+        quote: our print magazine is one of the only bi-monthly, internationally distributed print magazines left in the UK
+      - source: feature_western_pixies
+      - source: feature_portland_castle
+      - source: feature_suwannee
+      - source: feature_working_mens_club
+      - source: feature_goths_beach
+
+people:
+  editors:
+    value:
+      - name: Kat Williams
+        role: founder and editor
+      - name: Aja Jewel
+        role: Fashion Editor
+    cite:
+      - source: about
+        quote: Kat Williams is the founder and editor of Rock n Roll Bride
+      - source: about
+        quote: Aja Jewel Fashion Editor
+
+insight:
+  secret_sauce:
+    - tip: Lead the email with why the wedding is right for Rock n Roll Bride and what makes it stand out.
+      cite:
+        - source: guidelines
+          quote: laying out why you think this wedding is perfect for Rock n Roll Bride and anything that makes it particularly stand out.
+    - tip: Send colour images, portraits of the couple and detail shots such as the cake, centrepieces and decorations.
+      cite:
+        - source: guidelines
+          quote: Please include portraits of the couple and detail shots (the cake, centrepieces, decorations etc).
+        - source: guidelines
+          quote: Colour images are generally preferred over black and white.
+    - tip: The editors list what they love - happy, smiley couples, creative portraits, colour, unique details, fashion and personal style, and pets at weddings.
+      cite:
+        - source: guidelines
+          quote: Happy, smiley couples in love.
+        - source: guidelines
+          quote: Creative and beautiful portraits.
+        - source: guidelines
+          quote: Unique wedding details (cakes, centrepieces, flowers etc).
+        - source: guidelines
+          quote: Incredible fashion and personal style.
+        - source: guidelines
+          quote: Pets at weddings. Honestly, the more the better.
+    - tip: Older weddings are welcome; there is no time limit, even three years after the date.
+      cite:
+        - source: guidelines
+          quote: there is no time limit on submitting, and it doesn’t matter if you got married yesterday or three years ago
+    - tip: Prefer real weddings over styled shoots; real wedding stories get priority for publication.
+      cite:
+        - source: guidelines
+          quote: real wedding stories are given priority for publication
+    - tip: For Dropbox, send a direct link to the folder; folder invitations can be missed.
+      cite:
+        - source: guidelines
+          quote: rather than inviting us to a folder within Dropbox (as these can often be missed).
+    - tip: Lean into individuality and inclusivity; the title champions self-expression and underrepresented couples.
+      cite:
+        - source: guidelines
+          quote: We champion individuality, inclusivity, and self-expression
+        - source: about
+          quote: We’re here to represent the underrepresented.
+  recent_features:
+    - source: feature_western_pixies
+      published: 2026-10-23
+      location: GB
+      content_type: real_wedding
+      tags: [ bohemian, whimsical, vintage_heritage, farm_ranch_countryside, church_cathedral, alternative_nontraditional ]
+    - source: feature_portland_castle
+      published: 2026-10-22
+      location: US-OR
+      content_type: real_wedding
+      tags: [ moody_dramatic, castle_chateau, romantic, alternative_nontraditional ]
+    - source: feature_suwannee
+      published: 2026-10-21
+      location: US-FL
+      content_type: elopement
+      tags: [ bohemian, alternative_nontraditional, playful_party ]
+    - source: feature_working_mens_club
+      published: 2026-10-20
+      location: GB
+      content_type: real_wedding
+      tags: [ playful_party, bold_color_maximalist, alternative_nontraditional, wedding_suit_pantsuit ]
+    - source: feature_goths_beach
+      published: 2026-10-19
+      content_type: real_wedding
+      tags: [ beach_coastal, island_tropical, moody_dramatic, alternative_nontraditional ]
+      location: PH

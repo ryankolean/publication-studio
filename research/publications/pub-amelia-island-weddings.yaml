@@ -1,0 +1,326 @@
+id: pub-amelia-island-weddings
+name: Amelia Island Weddings Magazine
+url: https://ameliaislandweddingsmagazine.com
+kind: regional_magazine
+tier: secondary
+recheck_every_days: 180
+taste_summary: Story-led features of Amelia Island weddings, many with local roots, written by staff writers from interviews; resort, church and marsh-front venues, with the photographer credited in the byline.
+notes: The site answers 403 to the research verifier's user agent but serves pages to a standard client, which is how these pages were read on 2026-10-23. Masthead facts come from the Summer 2026 issue PDF linked from the site's current-issue page. Both submission routes are addressed to couples; neither mentions photographers.
+
+sources:
+  submit:
+    url: https://ameliaislandweddingsmagazine.com/submit/
+    read: 2026-10-23
+    kind: guidelines
+    title: Submit Your Story
+  scrapbook:
+    url: https://ameliaislandweddingsmagazine.com/submit-your-photo/
+    read: 2026-10-23
+    kind: guidelines
+    title: Submit Your Photo (Scrapbook)
+  advertise:
+    url: https://ameliaislandweddingsmagazine.com/advertise-2/
+    read: 2026-10-23
+    kind: media_kit
+    title: Advertise
+  contact:
+    url: https://ameliaislandweddingsmagazine.com/contact-us-2/
+    read: 2026-10-23
+    kind: about
+    title: Contact Us
+  past_issues:
+    url: https://ameliaislandweddingsmagazine.com/past-issues/
+    read: 2026-10-23
+    kind: other
+    title: Past Issues
+  issue_s26:
+    url: https://ameliaislandweddingsmagazine.com/wp-content/uploads/2026/07/AIW_S26.pdf
+    read: 2026-10-23
+    kind: other
+    title: Amelia Island Weddings Summer 2026 issue (PDF, masthead and contents)
+  feature_peyton_luke:
+    url: https://ameliaislandweddingsmagazine.com/peyton-luke/
+    read: 2026-10-23
+    kind: feature
+    title: Peyton & Luke
+  feature_sarah_madison:
+    url: https://ameliaislandweddingsmagazine.com/sarah-madison/
+    read: 2026-10-23
+    kind: feature
+    title: Sarah & Madison
+  feature_peyton_greg:
+    url: https://ameliaislandweddingsmagazine.com/peyton-greg/
+    read: 2026-10-23
+    kind: feature
+    title: Peyton & Greg
+
+identity:
+  parent_company:
+    value: Sweetpea Media, Inc.
+    cite:
+      - source: issue_s26
+        quote: copyrighted 2026 Sweetpea Media, Inc.
+  sister_publications:
+    value: unknown
+    checked: [ issue_s26, advertise, contact ]
+    note: The issue's gown feature signs off "we at Amelia Islander Magazine", and the masthead and advertising contacts use the Amelia Islander domain, but no page calls it a sister title.
+  shared_inbox_with:
+    value: unknown
+    checked: [ submit, contact ]
+
+coverage:
+  regions:
+    value:
+      - US-FL:amelia-island
+    cite:
+      - source: submit
+        quote: the many brides who chose Amelia Island as their wedding location
+      - source: advertise
+        quote: Amelia Island Weddings is the only wedding magazine devoted entirely to Amelia Island!
+    note: Amelia Island only, by wedding location. The 2025 Sarah & Madison story was held just off the island, at the Ribault Club on Fort George Island in Jacksonville.
+  basis:
+    value: wedding_location
+    cite:
+      - source: submit
+        quote: the many brides who chose Amelia Island as their wedding location
+      - source: issue_s26
+        quote: some of the terrific couples who have begun their lives together here on Amelia Island.
+    note: The pages describe stories from couples who married on the island; the couple's home is not the test (recent couples lived in Brooklyn and Jacksonville).
+  destination_accepted:
+    value: true
+    cite:
+      - source: advertise
+        quote: Amelia Island Weddings is the one resource that both local brides and destination brides count on
+      - source: issue_s26
+        quote: These couples have used their local connections to create unforgettable destination weddings for their family and friends.
+      - source: feature_peyton_greg
+        quote: In September 2020, Greg moved to New York City, where Peyton was already living
+    note: Destination here means couples traveling to Amelia Island; the Peyton & Greg couple lived in New York and married at the Ritz-Carlton, Amelia Island.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: submit
+        quote: If you would like to share your wedding story with our readers, either online or in our print magazine
+  elopement:
+    value: unknown
+    checked: [ submit, scrapbook ]
+  styled_shoot:
+    value: unknown
+    checked: [ submit, scrapbook ]
+  style_tags:
+    value: [ florida, beach_coastal, hotel_resort, church_cathedral, historic_manor_estate ]
+    cite:
+      - source: feature_peyton_luke
+      - source: feature_sarah_madison
+      - source: feature_peyton_greg
+  seasonality:
+    value: unknown
+    checked: [ submit, scrapbook ]
+
+routes:
+  value:
+    - platform: email
+      account_required: false
+      preferred: true
+      steps:
+        - Email the submissions inbox with your name, wedding date and wedding venue or venues.
+        - Wait for the magazine to contact you for more information.
+      note: The page is written to the couple ("your wedding story") and does not mention photographers. Stories may run online or in print. The inbox address is in the private contacts overlay.
+    - platform: email
+      account_required: false
+      steps:
+        - Email the same inbox one high-resolution photo of the couple facing the camera.
+        - Include the couple's names, the wedding date and the photographer's name.
+      note: For the print Wedding Scrapbook, a page of couple photos with names, wedding date and photographer. Addressed to married couples.
+  cite:
+    - source: submit
+      quote: please send us an email with your name, wedding date, and weddings venue(s)
+    - source: submit
+      quote: we will contact you as soon as possible for more information
+    - source: scrapbook
+      quote: To submit your couples photo (front facing the camera) please email a high resolution photo with your names, wedding date, and photographer’s name
+    - source: scrapbook
+      quote: Amelia Island Weddings is looking for married couples to share their wedding day in our popular Scrapbook section.
+
+package:
+  image_min:
+    value: unknown
+    checked: [ submit ]
+    note: The story route asks for no photos in the first email; the magazine follows up.
+  image_max:
+    value: unknown
+    checked: [ submit ]
+  resolution:
+    value: unknown
+    checked: [ submit, scrapbook ]
+    note: The Scrapbook route asks for one "high resolution photo" with no figures.
+  size:
+    value: unknown
+    checked: [ submit, scrapbook ]
+  orientation_mix:
+    value: unknown
+    checked: [ submit, scrapbook ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ submit, scrapbook ]
+  gallery_hosts:
+    value: unknown
+    checked: [ submit, scrapbook ]
+  vendor_credits:
+    value: unknown
+    checked: [ submit, scrapbook ]
+    note: The Scrapbook route asks for the photographer's name; the story route asks only for the venue or venues. Published stories name vendors in the text.
+  story:
+    value: unknown
+    checked: [ submit ]
+    note: Couples offer their story by email and the magazine follows up; published stories are written by staff writers (for example Julie Simmons) and quote the couple.
+  video_accepted:
+    value: unknown
+    checked: [ submit, scrapbook ]
+  other_requirements:
+    value:
+      - "Story route: the couple's name, wedding date and wedding venue or venues in the first email."
+      - "Scrapbook route: one couple photo facing the camera, with the couple's names, wedding date and photographer's name."
+    cite:
+      - source: submit
+        quote: please send us an email with your name, wedding date, and weddings venue(s)
+      - source: scrapbook
+        quote: To submit your couples photo (front facing the camera) please email a high resolution photo with your names, wedding date, and photographer’s name
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [ submit, scrapbook ]
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ submit ]
+    blogs:
+      value: unknown
+      checked: [ submit ]
+    social:
+      value: unknown
+      checked: [ submit ]
+  freshness_window_months:
+    value: unknown
+    checked: [ submit, scrapbook, issue_s26 ]
+    note: No rule is stated. The editor's letter congratulates couples married "in the last six months", and recent stories ran about a year after the wedding.
+  photographer_frequency:
+    value: unknown
+    checked: [ submit ]
+  submitter_roles:
+    value: [ couple ]
+    cite:
+      - source: submit
+        quote: If you would like to share your wedding story with our readers
+      - source: scrapbook
+        quote: Amelia Island Weddings is looking for married couples to share their wedding day in our popular Scrapbook section.
+    note: Both submission pages are addressed to couples; neither mentions photographers, planners or other vendors.
+
+rights:
+  image_usage:
+    value: unknown
+    checked: [ submit, scrapbook, issue_s26 ]
+    note: The masthead asserts the publisher's copyright over the magazine's editorial contents, including photographs, but no page states terms for submitted images.
+  credit_format:
+    value: The photographer is credited in the byline line as "Photography by" and the studio name.
+    cite:
+      - source: feature_peyton_luke
+        quote: Photography by Melissa Wright Photography
+      - source: feature_peyton_greg
+        quote: Photography by Brittany Powell Photography
+  couple_consent_required:
+    value: unknown
+    checked: [ submit, scrapbook ]
+  vendor_consent_required:
+    value: unknown
+    checked: [ submit, scrapbook ]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ submit, scrapbook, advertise ]
+  publication_fee:
+    value: unknown
+    checked: [ submit, scrapbook, advertise ]
+  priority_paid_tier:
+    value: unknown
+    checked: [ advertise ]
+    note: The advertise page sells ads to wedding businesses; nothing ties ads to editorial.
+  reach:
+    value: unknown
+    checked: [ advertise, contact, issue_s26 ]
+    note: The magazine is distributed free on and around Amelia Island; no circulation or audience figure is published.
+
+timing:
+  response_window:
+    value: unknown
+    checked: [ submit, scrapbook ]
+    note: The page says only that the magazine will contact the couple "as soon as possible".
+  publish_lead_days:
+    value: unknown
+    checked: [ submit ]
+  publishing_cycle:
+    value: The masthead says twice a year, Spring and Fall, but the archive shows one issue a year since 2023 (Spring 2023, 2024, 2025, then Summer 2026); the newest stories went online in July 2025 and July 2026.
+    cite:
+      - source: issue_s26
+        quote: Amelia Island Weddings Magazine is published twice a year in Spring and Fall.
+      - source: past_issues
+        quote: Amelia Island Weddings Summer 2026 Amelia Island Weddings Spring 2025 Amelia Island Weddings Spring 2024 Amelia Island Weddings Spring 2023
+      - source: feature_peyton_luke
+        quote: by Julie Simmons on July 31, 2026
+      - source: feature_peyton_greg
+        quote: by Julie Simmons on July 16, 2025
+
+people:
+  editors:
+    value:
+      - name: Deana Kelly
+        role: Editor
+      - name: Philip Kelly
+        role: Publishers
+    cite:
+      - source: issue_s26
+        quote: Philip Kelly Deana Kelly Publishers Deana Kelly Editor
+    note: The masthead lists Philip Kelly and Deana Kelly together as Publishers and Deana Kelly as Editor.
+
+insight:
+  secret_sauce:
+    - tip: A local connection helps; in the current issue, four of the five featured stories involve couples with connections to Amelia Island.
+      cite:
+        - source: issue_s26
+          quote: In this issue, four of the five featured wedding stories have connections to Amelia Island
+        - source: issue_s26
+          quote: These couples have used their local connections to create unforgettable destination weddings for their family and friends.
+    - tip: Stories cover the whole wedding weekend, from welcome parties to favorite local spots, not just the day itself.
+      cite:
+        - source: feature_peyton_luke
+          quote: Like so many weddings on Amelia Island, the celebrations started well before the wedding day.
+        - source: feature_peyton_luke
+          quote: introduced visitors to some of their favorite local spots
+        - source: feature_peyton_greg
+          quote: The nuptials kicked off with a welcome party on Thursday evening at Kraft Athletic Club.
+    - tip: The print issue's Wedding Scrapbook takes just one couple photo facing the camera, with names, wedding date and photographer.
+      cite:
+        - source: issue_s26
+          quote: WEDDING SCRAPBOOK A peek into the wedding albums of some recent brides and grooms
+        - source: scrapbook
+          quote: To submit your couples photo (front facing the camera) please email a high resolution photo with your names, wedding date, and photographer’s name
+  recent_features:
+    - source: feature_peyton_luke
+      published: 2026-07-31
+      location: US-FL:amelia-island
+      content_type: real_wedding
+      tags: [ florida, beach_coastal ]
+    - source: feature_peyton_greg
+      published: 2025-07-16
+      location: US-FL:amelia-island
+      content_type: real_wedding
+      tags: [ florida, church_cathedral, hotel_resort, beach_coastal ]
+    - source: feature_sarah_madison
+      published: 2025-07-16
+      location: US-FL:jacksonville
+      content_type: real_wedding
+      tags: [ florida, historic_manor_estate ]

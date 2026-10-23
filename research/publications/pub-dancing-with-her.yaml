@@ -1,0 +1,452 @@
+id: pub-dancing-with-her
+name: Dancing With Her
+url: https://dancingwithher.com
+kind: destination_international
+tier: secondary
+recheck_every_days: 30
+taste_summary: Relaxed, personal LGBTQ+ weddings and elopements told in the couple's own words, often intimate, DIY and playful, with suits, pronouns and family stories front and centre.
+notes: Submissions were open on 2026-10-23, but the outlet closes them from time to time to everyone except directory partners, so the route is rechecked monthly. The submission form (https://submit.dancingwithher.com) is drawn by JavaScript and its first step was read in a browser; later steps open only after details are entered and were not read. The contact page returned a bot-verification page and was not read. No real story has been published since 2026-08-12 (Real Stories listing read 2026-10-23); the newest posts are planning articles.
+
+sources:
+  guidelines:
+    url: https://dancingwithher.com/submit-a-story/
+    read: 2026-10-23
+    kind: guidelines
+    title: Submit a Story to Dancing With Her
+  about:
+    url: https://dancingwithher.com/about-dancing-with-her/
+    read: 2026-10-23
+    kind: about
+    title: About Dancing With Her
+  partnerships:
+    url: https://dancingwithher.com/partnerships/
+    read: 2026-10-23
+    kind: media_kit
+    title: Dancing With Her Partnerships
+  terms:
+    url: https://dancingwithher.com/terms-and-conditions/
+    read: 2026-10-23
+    kind: other
+    title: Terms and Conditions
+  real_stories:
+    url: https://dancingwithher.com/real-stories/
+    read: 2026-10-23
+    kind: other
+    title: Real Stories listing
+  interview:
+    url: https://hivelife.com/dancing-with-her/
+    read: 2026-10-23
+    kind: interview
+    title: Hive Life profile of the founders (published 2019-08-03)
+  feature_lilydale:
+    url: https://dancingwithher.com/cozy-lilydale-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: String Quartets, Souvlaki, and a Cozy Lilydale Wedding
+  feature_lyons:
+    url: https://dancingwithher.com/colorado-wedding-drink-donkeys/
+    read: 2026-10-23
+    kind: feature
+    title: Drink Donkeys, Champagne, and a Colorado Wedding
+  feature_yorktown:
+    url: https://dancingwithher.com/diy-indiana-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: Pizza, Playlists, and a DIY Indiana Wedding
+  feature_queenstown:
+    url: https://dancingwithher.com/queenstown-helicopter-elopement-remarkables/
+    read: 2026-10-23
+    kind: feature
+    title: A Helicopter Elopement in Queenstown's Remarkables
+  feature_brooklyn:
+    url: https://dancingwithher.com/brooklyn-brewery-queer-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: A Brooklyn Brewery Wedding with Books, Beer, and a Ring Bearing Dog
+  form:
+    url: https://submit.dancingwithher.com
+    read: 2026-10-23
+    kind: form
+    title: Behind the Love submission form (read in a browser)
+
+identity:
+  parent_company:
+    value: none
+    cite:
+      - source: partnerships
+        quote: We are proudly independent.
+      - source: about
+        quote: Dancing With Her isn’t a huge media company
+    note: Run by its two founders from Bendigo, Victoria, Australia.
+  sister_publications:
+    value:
+      - Dancing With Them
+    cite:
+      - source: form
+        quote: Where would you prefer your story to be published?
+      - source: form
+        quote: CONSIDER FOR EITHER PUBLICATION
+      - source: form
+        quote: DANCING WITH THEM
+    note: The shared submission form offers Dancing With Her, Dancing With Them, or either.
+  shared_inbox_with:
+    value: unknown
+    checked: [ guidelines ]
+    note: The submission form serves both Dancing With Her and Dancing With Them, which is not an outlet in this research.
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: guidelines
+        quote: We accept submissions from couples, lovers and wedding pros from around the world.
+      - source: guidelines
+        quote: We share weddings from around the globe; from Hong Kong to The Philippines, Europe to India.
+  basis:
+    value: unknown
+    checked: [ guidelines ]
+  destination_accepted:
+    value: unknown
+    checked: [ guidelines, real_stories, feature_queenstown, feature_lilydale ]
+    note: The Queenstown couple met there while travelling and went back to elope, but the feature says they were then living in New Zealand; no page states a rule.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: LBGTQ+ Weddings
+  elopement:
+    value: true
+    cite:
+      - source: form
+        quote: Elopement
+      - source: feature_queenstown
+    note: Elopement is one of the form's story types.
+  styled_shoot:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Styled Inspiration Shoots
+      - source: guidelines
+        quote: we won’t accept submissions that include models posing as a couple.
+    note: Styled shoots must feature a real couple. Engagements, family stories, love stories such as anniversaries and vow renewals, and editorial content are also accepted.
+  style_tags:
+    value: [ intimate_micro, playful_party, alternative_nontraditional, wedding_suit_pantsuit, mountain_alpine ]
+    cite:
+      - source: feature_lilydale
+      - source: feature_lyons
+      - source: feature_yorktown
+      - source: feature_queenstown
+      - source: feature_brooklyn
+  seasonality:
+    value: unknown
+    checked: [ guidelines ]
+
+routes:
+  value:
+    - platform: web_form
+      url: https://submit.dancingwithher.com
+      account_required: unknown
+      preferred: true
+      steps:
+        - Check the Submit a Story page says submissions are open; they are sometimes closed to everyone except directory partners.
+        - Open the online form from the Make a Submission button.
+        - Choose Dancing With Her, Dancing With Them or either, and say whether you are in the story or a vendor submitting it.
+        - Fill in the form with as much information as possible, then continue to the vendor credits.
+        - If there is no reply after three weeks, follow up by email.
+      note: Open on 2026-10-23; the page read "SUMBISSIONS ARE CURRENTLY OPEN" (sic). Submissions by Instagram or Facebook message are not accepted. The follow-up address is the general inbox, not a submissions inbox.
+  cite:
+    - source: guidelines
+      quote: SUMBISSIONS ARE CURRENTLY OPEN
+    - source: guidelines
+      quote: From time to time we close submissions, only leaving them open for the partners inside our directory, so that we can keep up.
+    - source: guidelines
+      quote: We only accept submissions that come to us via our online form.
+    - source: guidelines
+      quote: We don’t accept submissions via Instagram or Facebook messages.
+    - source: guidelines
+      quote: When you’re filling out our submission form, please leave us with as much information as possible.
+    - source: guidelines
+      quote: If you haven’t heard from us after three weeks, please follow up via email
+    - source: guidelines
+      quote: MAKE A SUBMISSION
+    - source: form
+      quote: A wedding vendor submitting a story
+    - source: form
+      quote: Continue to vendor credits
+
+package:
+  image_min:
+    value: unknown
+    checked: [ guidelines, form ]
+    note: The form's first step does not say; its later steps open only after details are entered, so they were not read.
+  image_max:
+    value: unknown
+    checked: [ guidelines, form ]
+    note: The form's first step does not say; its later steps open only after details are entered, so they were not read.
+  resolution:
+    value: unknown
+    checked: [ guidelines, form ]
+    note: The form's first step does not say; its later steps open only after details are entered, so they were not read.
+  size:
+    value: unknown
+    checked: [ guidelines, form ]
+    note: The form's first step does not say; its later steps open only after details are entered, so they were not read. Submitters are asked whether a story should be considered for print, digital or both, which is a placement choice, not a file size.
+  orientation_mix:
+    value: unknown
+    checked: [ guidelines, form ]
+    note: The form's first step does not say; its later steps open only after details are entered, so they were not read.
+  watermarks_allowed:
+    value: unknown
+    checked: [ guidelines, form ]
+    note: The form's first step does not say; its later steps open only after details are entered, so they were not read.
+  gallery_hosts:
+    value: unknown
+    checked:
+      - guidelines
+      - form
+    note: The form asks for a gallery link and an optional password without naming or refusing any host.
+  vendor_credits:
+    value: unknown
+    checked: [ guidelines, form ]
+    note: The form's first step does not say; its later steps open only after details are entered, so they were not read. Published features end with a credit list that starts with "Captured by" and the photographer.
+  story:
+    value: unknown
+    checked: [ guidelines, form ]
+    note: The form's first step does not say; its later steps open only after details are entered, so they were not read. Published features run as a Q&A in the couple's own words, with pronouns.
+  video_accepted:
+    value: unknown
+    checked: [ guidelines, form ]
+    note: The form's first step does not say; its later steps open only after details are entered, so they were not read.
+  other_requirements:
+    value:
+      - A styled shoot must feature a real couple; models posing as a couple are declined.
+      - Say whether the story should be considered for print, digital or both; the editors make the final decision.
+    cite:
+      - source: guidelines
+        quote: we won’t accept submissions that include models posing as a couple.
+      - source: guidelines
+        quote: We will ask you if you would like your submission to be considered for print, digital, or both
+      - source: guidelines
+        quote: However, we will make the final decision.
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_required
+      after_publication_days: 42
+    cite:
+      - source: terms
+        quote: for a period of six weeks from the date of publishing digitally to the blog
+      - source: terms
+        quote: a period of twelve weeks from the date of publishing in our print and digital magazine title/s.
+      - source: terms
+        quote: the submitter of the content and the photographer agree not to distribute the content to other publications
+    note: Six weeks (42 days) after the blog feature; twelve weeks (84 days) after publication in the print and digital magazine. Exclusivity during review is not stated.
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ guidelines, terms ]
+    blogs:
+      value: unknown
+      checked: [ guidelines, terms ]
+    social:
+      value: unknown
+      checked: [ guidelines, terms ]
+  freshness_window_months:
+    value: unknown
+    checked: [ guidelines, terms ]
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines ]
+    note: The guidelines say a submission may be declined when too many weddings from the same area have run; no per-photographer limit is stated.
+  submitter_roles:
+    value: [ couple, photographer, planner, vendor ]
+    cite:
+      - source: guidelines
+        quote: We accept submissions from couples, lovers and wedding pros from around the world.
+    note: '"Wedding pros" is read as photographers, planners and other vendors.'
+
+rights:
+  image_usage:
+    value: A perpetual, worldwide, royalty-free, transferable, sub-licensable license to use, adapt, reproduce and distribute submitted content in any media, including print, which becomes non-exclusive once the exclusivity period ends; it also covers the submitter's name, likeness and biography.
+    cite:
+      - source: terms
+        quote: you hereby grant us a perpetual, non-exclusive (after the content exclusivity agreement has been met), royalty-free, fully paid, transferable, sub-licensable, worldwide license
+      - source: terms
+        quote: to use, adapt, display, publicize, reproduce, reformat, prepare derivative works of, distribute, and otherwise fully exploit your content in any media formats
+      - source: terms
+        quote: The license includes the right to incorporate the content in digital or print media
+      - source: terms
+        quote: the right to use your name, likeness, and biography in connection with the publication and promotion of the content
+  credit_format:
+    value: Attribution to the copyright holder; features end with a vendor credit list starting "Captured by" and the photographer, and social posts always tag the photographer and the creative wedding pros involved.
+    cite:
+      - source: terms
+        quote: Content used on the site and in any publication will include attribution to the copyright holder.
+      - source: guidelines
+        quote: We will always tag the photographer, and any creative wedding pros who helped bring the story to life.
+      - source: feature_lilydale
+      - source: feature_queenstown
+  couple_consent_required:
+    value: unknown
+    checked: [ guidelines, terms, form ]
+    note: The guidelines say the editors gather the permissions they need after accepting a story, and the site footer says images, stories, pronouns and identities are used with permission, but no page says the submitter must have the couple's consent. The form's first step asks whether you are in the story or a vendor submitting it; its later steps were not read.
+  vendor_consent_required:
+    value: true
+    cite:
+      - source: terms
+        quote: not submit content that is copyrighted unless you are the owner of such rights or have permission from the owner to submit the material
+    note: The copyright owner's permission (usually the photographer's) when the submitter does not own the images; from the terms.
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ guidelines, partnerships, form ]
+    note: The form's first step does not say; its later steps open only after details are entered, so they were not read.
+  publication_fee:
+    value: unknown
+    checked: [ guidelines, partnerships, terms ]
+  priority_paid_tier:
+    value:
+      name: Dancing With Her partnership (directory listing)
+      price:
+        amount: 399
+        currency: AUD
+        note: Starting price per year on a 12-month listing, with monthly or quarterly payment plans. Currency inferred; the page shows only a dollar sign and the business is Australian.
+      note: Partners' stories are published within 1 to 2 weeks of everything being received, against a usual 6 to 8 weeks, and submissions stay open to directory partners when they close to everyone else. About 25% of applicants are accepted.
+    cite:
+      - source: partnerships
+        quote: $399 per year
+      - source: partnerships
+        quote: if you partner with us, we’ll get your story featured within 1-2 weeks of receiving everything that we need to put the story online.
+      - source: partnerships
+        quote: Usually, our turnaround time for publishing is between 6 and 8 weeks.
+      - source: partnerships
+        quote: we can offer you payment plans (monthly or quarterly) over your 12 month listing with us.
+      - source: partnerships
+        quote: we only accept about 25% of the businesses that apply to list with us.
+      - source: guidelines
+        quote: From time to time we close submissions, only leaving them open for the partners inside our directory, so that we can keep up.
+  reach:
+    value:
+      - metric: instagram_followers
+        value: 262000
+        as_of: 2026-10-23
+      - metric: facebook_followers
+        value: 32200
+        as_of: 2026-10-23
+    cite:
+      - source: partnerships
+        quote: 262,000 followers
+      - source: partnerships
+        quote: 32.2k followers
+    note: The partnerships page is undated; as_of is the date it was read. It also claims 1.3M monthly Pinterest impressions and 6k Pinterest followers, which fit none of the schema's metrics.
+
+timing:
+  response_window:
+    value:
+      days: 21
+      replies: all
+    cite:
+      - source: guidelines
+        quote: We endeavor to get back to everyone
+      - source: guidelines
+        quote: sometimes up to three weeks.
+    note: A typical upper end, not a promise; follow up after three weeks.
+  publish_lead_days:
+    value:
+      min: 14
+    cite:
+      - source: guidelines
+        quote: it could be anywhere between 2 weeks and 3+ months before it is featured.
+    note: The upper end is open ("3+ months"). The partnerships page gives the usual turnaround as 6 to 8 weeks, and 1 to 2 weeks for paying partners.
+  publishing_cycle:
+    value: Online and in print; around 20 weddings a year run in the print magazine. The five newest real stories went live between 2026-08-09 and 2026-08-12.
+    cite:
+      - source: about
+        quote: a publication, both in digital and in print
+      - source: guidelines
+        quote: We only publish around 20 weddings in our print magazine each year
+      - source: feature_lilydale
+      - source: feature_lyons
+      - source: feature_yorktown
+      - source: feature_queenstown
+      - source: feature_brooklyn
+    note: The Real Stories listing showed no newer real story on 2026-10-23.
+
+people:
+  editors:
+    value:
+      - name: Tara Baker
+        role: Founder
+      - name: Arlia Hassell
+        role: Founder
+    cite:
+      - source: about
+        quote: Founders, Tara Baker and Arlia Hassell
+    note: The same page later names them as Arlia and Tara Baker. The guidelines describe the team as three people.
+
+insight:
+  secret_sauce:
+    - tip: Check the queue before pitching; declines often come from a similar story already queued, too many weddings from the same area, or a style that does not fit.
+      cite:
+        - source: guidelines
+          quote: Sometimes it is because we already have something similar in the publishing queue
+        - source: guidelines
+          quote: other times it is because we have had too many weddings from your area or because the style doesn’t quite fit into our publication.
+    - tip: Tell the whole story, including the hard parts; the outlet shares the challenges as well as the good, including families who were not accepting and gender transitions.
+      cite:
+        - source: guidelines
+          quote: aren’t shy about sharing the good, the challenges and everything in between.
+        - source: interview
+          quote: We share stories of couples who have had families who aren’t accepting of their relationship.
+        - source: interview
+          quote: We also share stories of people who are going through a gender transition.
+    - tip: Have the couple ready to tell it in their own voice; stories are told through contributors' voices, and recent features run as a Q&A with the couple's pronouns.
+      cite:
+        - source: guidelines
+          quote: We tell stories though the voices of its contributors
+        - source: feature_lilydale
+        - source: feature_brooklyn
+    - tip: For print, offer something an issue lacks; each magazine is curated for diversity in sexuality, culture, religion, colours, style, budget and location.
+      cite:
+        - source: guidelines
+          quote: each magazine is curated to include diversity in sexuality, culture, religion, colors, style, budget, locations
+    - tip: Styled shoots need a real couple; ask the editors in advance if help finding an LGBTQ+ couple is needed.
+      cite:
+        - source: guidelines
+          quote: we won’t accept submissions that include models posing as a couple.
+        - source: guidelines
+          quote: If you need help sourcing an LGBTQ+ couple for your styled shoot, let us know in advance
+    - tip: A legal ceremony is not required; the founders said in 2019 they do not mind where the couple lives or whether marriage equality exists there.
+      cite:
+        - source: interview
+          quote: We don’t care where you live, if you’ve had a legal ceremony or whether marriage equality doesn’t exist in your country.
+  recent_features:
+    - source: feature_lilydale
+      published: 2026-08-12
+      location: AU
+      content_type: real_wedding
+      tags: [ intimate_micro, restaurant_private_dining, winter, international_other ]
+    - source: feature_lyons
+      published: 2026-08-12
+      location: US-CO
+      content_type: real_wedding
+      tags: [ mountain_alpine, playful_party, wedding_suit_pantsuit, mountain_west_us ]
+    - source: feature_yorktown
+      published: 2026-08-10
+      location: US-IN
+      content_type: real_wedding
+      tags: [ alternative_nontraditional, playful_party, midwest_us ]
+    - source: feature_queenstown
+      published: 2026-08-10
+      location: NZ
+      content_type: elopement
+      tags: [ mountain_alpine, intimate_micro, wedding_suit_pantsuit, colored_printed, international_other ]
+    - source: feature_brooklyn
+      published: 2026-08-09
+      location: US-NY
+      content_type: real_wedding
+      tags: [ restaurant_private_dining, intimate_micro, wedding_suit_pantsuit, northeast_us ]

@@ -1,0 +1,443 @@
+id: pub-the-wed
+name: THE WED
+url: https://thewed.com
+kind: destination_international
+tier: primary
+recheck_every_days: 90
+taste_summary: Bold, fashion-led luxury weddings abroad, mostly Italy and Spain, with couture and multiple looks, sculptural florals, historic villas and castles, and full couple Q&A stories.
+notes: The Submit Now button opens a form drawn by JavaScript; its fields were read from the page's own script file (source form), whose hashed file name changes with each site build, so re-read it through the submissions page. The contacts page lists only general and venue inboxes, hidden behind an email-protection script. Membership is by application and invitation; no price is published.
+
+sources:
+  guidelines:
+    url: https://thewed.com/submissions
+    read: 2026-10-23
+    kind: guidelines
+    title: Submissions
+  howto:
+    url: https://thewed.com/magazine/how-to-submit-your-wedding-to-the-wed
+    read: 2026-10-23
+    kind: guidelines
+    title: How to Submit Your Wedding & Get Featured on THE WED (by Xenia Lar, published 2026-10-12)
+  form:
+    url: https://thewed.com/submissions
+    read: 2026-10-23
+    kind: form
+    title: Submission form opened by the Submit Now button (read in a browser)
+  about:
+    url: https://thewed.com/about
+    read: 2026-10-23
+    kind: about
+    title: About
+  membership:
+    url: https://thewed.com/membership
+    read: 2026-10-23
+    kind: media_kit
+    title: Membership (audience figures)
+  contacts:
+    url: https://thewed.com/contacts
+    read: 2026-10-23
+    kind: other
+    title: Contact
+  terms:
+    url: https://thewed.com/terms-of-use
+    read: 2026-10-23
+    kind: other
+    title: Terms of Use
+  category:
+    url: https://thewed.com/category/real-weddings
+    read: 2026-10-23
+    kind: other
+    title: Real Weddings category page
+  feature_netta:
+    url: https://thewed.com/magazine/brittany-nettas-cinematic-lake-como-wedding-featuring-a-bespoke-danielle-frankel-gown
+    read: 2026-10-23
+    kind: feature
+    title: Brittany Netta's Cinematic Lake Como Wedding Featuring a Bespoke Danielle Frankel Gown
+  feature_rome:
+    url: https://thewed.com/magazine/vintage-inspired-couture-takes-center-stage-at-this-chicly-curated-castle-wedding-in-rome
+    read: 2026-10-23
+    kind: feature
+    title: Vintage-Inspired Couture Takes Center Stage at This Chicly Curated Castle Wedding in Rome
+  feature_aurelia:
+    url: https://thewed.com/magazine/from-roman-garden-romance-to-a-red-lit-nightclub-at-this-villa-aurelia-wedding
+    read: 2026-10-23
+    kind: feature
+    title: From Roman Garden Romance to a Red-Lit Nightclub at This Villa Aurelia Wedding
+  feature_menorca:
+    url: https://thewed.com/magazine/pastel-florals-golden-arches-and-a-dance-filled-night-at-this-menorca-quarry-wedding
+    read: 2026-10-23
+    kind: feature
+    title: Pastel Florals, Golden Arches & a Dance-Filled Night at This Menorca Quarry Wedding
+
+identity:
+  parent_company:
+    value: THEWED LLC
+    cite:
+      - source: terms
+        quote: operated by THEWED LLC, a limited liability company registered in the State of New York
+  sister_publications:
+    value: unknown
+    checked: [ about, terms, membership ]
+  shared_inbox_with:
+    value: unknown
+    checked: [ contacts, guidelines ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: guidelines
+        quote: sharing weddings, love stories and editorials crafted by leading visionaries around the world.
+      - source: about
+        quote: through a discerning, thought-provoking international lens.
+    note: No page sets a geographic limit; recent features are in Italy and Spain.
+  basis:
+    value: unknown
+    checked: [ guidelines, howto, form ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: feature_rome
+        quote: Creating a destination wedding in Rome required a team that could bring together different cultures
+      - source: feature_menorca
+        quote: there was really no question that it would be a destination wedding.
+    note: Inferred from published features; no page states that destination weddings are accepted. The Rome couple lived in Istanbul and France; the Menorca couple chose a destination wedding for their guests.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Share your wedding, editorial or love story
+      - source: form
+        quote: Real wedding
+  elopement:
+    value: unknown
+    checked: [ guidelines, howto, form, category ]
+  styled_shoot:
+    value: true
+    cite:
+      - source: form
+        quote: Editorial
+      - source: terms
+        quote: wedding photographs, venue and event imagery, styled shoot photography, and editorial imagery
+    note: The form's Submissions Type list offers Real wedding, Engagement, Love story, Editorial and Other; the terms list styled shoot photography among published work.
+  style_tags:
+    value: [ glamorous_luxe, fashion_forward_editorial, multiple_looks, italian_villa, castle_chateau, mediterranean_europe ]
+    cite:
+      - source: feature_netta
+      - source: feature_rome
+      - source: feature_aurelia
+      - source: feature_menorca
+  seasonality:
+    value: unknown
+    checked: [ guidelines, howto ]
+
+routes:
+  value:
+    - platform: web_form
+      url: https://thewed.com/submissions
+      account_required: false
+      preferred: true
+      steps:
+        - Coordinate with the photographer and planner before submitting.
+        - Open the online submission form from the submissions page.
+        - Fill in who is submitting, the gallery link, the submission type, the venue or location, a description and the vendor credits.
+        - Answer whether the wedding was previously published and whether anyone on the team is a THE WED member.
+        - Agree to the privacy policy or terms of use and send.
+        - Expect contact within 14 business days, and only if the submission is accepted.
+      note: The form shows no sign-in step. Submissions involving THE WED members get priority review.
+  cite:
+    - source: howto
+      quote: Your journey begins with our online submission form
+    - source: howto
+      quote: we just ask that you first coordinate with your photographer and planner before submitting
+    - source: form
+      quote: Has this wedding been previously published? *
+    - source: form
+      quote: Is anyone from the team a member of THE WED?
+    - source: guidelines
+      quote: only successful applicants will be contacted within 14 business days.
+    - source: form
+      quote: Submitted By *
+    - source: form
+      quote: Link to the Image Gallery *
+    - source: form
+      quote: Submissions Type *
+    - source: form
+      quote: Venue/Location *
+    - source: form
+      quote: Description *
+    - source: form
+      quote: Vendor Credits *
+    - source: form
+      quote: I agree with the Privacy Policy or Terms of Use
+
+package:
+  image_min:
+    value: 100
+    cite:
+      - source: howto
+        quote: Galleries should include a minimum of 100 images showcasing the full span of the wedding day or weekend as they unfolded
+  image_max:
+    value: unknown
+    checked: [ howto, form ]
+  resolution:
+    value: unknown
+    checked: [ howto, form ]
+    note: The guide asks only that images be high-resolution; no pixel or file-size figures are given.
+  size:
+    value: unknown
+    checked: [ howto, form ]
+    note: The guide asks for high-resolution images but does not say web or print.
+  orientation_mix:
+    value: unknown
+    checked: [ howto, form ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ howto, form ]
+  gallery_hosts:
+    value: any
+    cite:
+      - source: howto
+        quote: Provide a working link to your photo gallery with full access, including any necessary passwords or login details
+      - source: form
+        quote: Link to the Image Gallery *
+    note: No host is named or refused; the form takes a gallery link plus an optional gallery username and password.
+  vendor_credits:
+    value:
+      required: true
+      fields: [ business_name, website ]
+      note: Social links are also asked for; no platform is named.
+    cite:
+      - source: howto
+        quote: be sure to include the complete list of vendors with their correct names, websites and social links.
+      - source: form
+        quote: Vendor Credits *
+  story:
+    value:
+      required: true
+      questionnaire: true
+      note: The form needs a description of the event; after acceptance the editors interview the couple through a Q&A, which must be complete before the feature is scheduled.
+    cite:
+      - source: form
+        quote: Description *
+      - source: howto
+        quote: The next step is the couple’s Q&A, which plays an essential role in shaping the final feature.
+  video_accepted:
+    value: true
+    cite:
+      - source: form
+        quote: Link to the Video
+    note: The video link is optional.
+  other_requirements:
+    value:
+      - Images covering the full span of the day or weekend, from detail shots and wide captures to behind-the-scenes moments and couple portraits.
+      - Full gallery access, with any passwords or login details.
+      - The submitter's Instagram account.
+      - The venue or location.
+      - Say whether anyone on the team is a THE WED member, so the feature links to their directory profile.
+    cite:
+      - source: howto
+        quote: from strong detail shots to wide-angle captures, raw behind-the-scenes moments and couple portraits
+      - source: howto
+        quote: Provide a working link to your photo gallery with full access, including any necessary passwords or login details
+      - source: form
+        quote: Instagram *
+      - source: form
+        quote: Venue/Location *
+      - source: howto
+        quote: please highlight this in your submission form to ensure the feature connects with the member's Directory profile
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [ guidelines, howto, form, terms ]
+    note: Exclusivity periods are set in the Real Wedding Agreement sent after acceptance, which is not public.
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ howto, form ]
+      note: The form asks whether the wedding has been previously published but no page says how the answer is used.
+    blogs:
+      value: unknown
+      checked: [ howto, form ]
+    social:
+      value: unknown
+      checked: [ howto, form ]
+  freshness_window_months:
+    value: unknown
+    checked: [ guidelines, howto ]
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines, howto ]
+  submitter_roles:
+    value: [ photographer, planner, couple, vendor ]
+    cite:
+      - source: form
+        quote: Photographer
+      - source: form
+        quote: Planner
+      - source: howto
+        quote: regardless of whether it comes from a member, vendor, venue or couple.
+    note: The form's Submitted By list offers Photographer, Videographer, Couple, Planner and Other.
+
+rights:
+  image_usage:
+    value: Published under the permissions and licenses granted through the submission process; creators keep ownership. A Real Wedding Agreement signed after acceptance sets image usage, exclusivity periods and social sharing.
+    cite:
+      - source: terms
+        quote: THE WED publishes such works on the basis of permissions and licenses granted through the content submission process
+      - source: terms
+        quote: does not claim any ownership interest in third-party creative works.
+      - source: howto
+        quote: It outlines the key terms surrounding the feature, including image usage, exclusivity periods, social media sharing and other important details related to publication.
+  credit_format:
+    value: A credits list at the end of the feature naming each vendor by role, such as Photographer and Venue; the couple, venues and vendors are tagged on social channels.
+    cite:
+      - source: feature_rome
+        quote: "Photographer: Katarina Fedora"
+      - source: howto
+        quote: featured across our social channels, with the couple, venues and vendor all tagged accordingly.
+  couple_consent_required:
+    value: unknown
+    checked: [ howto, form, terms ]
+    note: The couple is interviewed after acceptance; no page asks for the couple's consent at submission.
+  vendor_consent_required:
+    value: true
+    cite:
+      - source: howto
+        quote: we just ask that you first coordinate with your photographer and planner before submitting, to ensure that permissions, credits, and details are all in order.
+    note: The photographer's and planner's permission, arranged before submitting.
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ guidelines, howto, membership, terms ]
+  publication_fee:
+    value: unknown
+    checked: [ guidelines, howto, membership, terms ]
+  priority_paid_tier:
+    value:
+      name: THE WED membership
+      note: Submissions involving a member get priority review, with the same editorial consideration; membership is by application and invitation, and no price is published.
+    cite:
+      - source: guidelines
+        quote: THE WED Members receive priority review.
+      - source: howto
+        quote: While priority review is given to submissions involving THE WED members, every project receives the same thoughtful consideration and attention.
+      - source: membership
+        quote: Successful applicants will receive an invitation to join THE WED and choose their membership package
+  reach:
+    value:
+      - metric: monthly_pageviews
+        value: 358000
+        as_of: 2026-01-31
+      - metric: monthly_visitors
+        value: 207000
+        as_of: 2026-01-31
+      - metric: instagram_followers
+        value: 390000
+        as_of: 2026-01-31
+    cite:
+      - source: membership
+        quote: Monthly Views 358K January 2026
+      - source: membership
+        quote: Monthly Users 207K January 2026
+      - source: membership
+        quote: Followers 390K January 2026
+    note: January 2026 figures, dated to the month's last day. The page credits Google Analytics and Instagram Insights.
+
+timing:
+  response_window:
+    value:
+      days: 18
+      replies: success_only
+    cite:
+      - source: guidelines
+        quote: only successful applicants will be contacted within 14 business days.
+      - source: howto
+        quote: please allow a minimum of 14 business days for your submission to go through the review process.
+    note: 14 business days, stored as 18 calendar days. The guide calls it a minimum, so treat it as the earliest reply, not a deadline.
+  publish_lead_days:
+    value: unknown
+    checked: [ howto ]
+    note: The guide warns of a waiting period after acceptance that depends partly on when the couple's Q&A answers arrive; no figure is given.
+  publishing_cycle:
+    value: Online magazine; four real weddings went live between 2026-10-11 and 2026-10-20.
+    cite:
+      - source: about
+        quote: THE WED is an online wedding magazine and directory pioneering the wedding landscape.
+      - source: feature_netta
+      - source: feature_rome
+      - source: feature_aurelia
+      - source: feature_menorca
+
+people:
+  editors:
+    value:
+      - name: Emma Westblade
+        role: Editor-in-Chief
+      - name: Kayla McFadden
+        role: Managing Editor
+      - name: Taylor Alber
+        role: Digital Content Editor
+      - name: Pauline Bronstein
+        role: Features Editor
+      - name: Xenia Lar
+        role: Features & Submission Editor
+    cite:
+      - source: about
+        quote: Emma Westblade, Editor-in-Chief Kayla McFadden, Managing Editor Taylor Alber, Digital Content Editor
+      - source: about
+        quote: Pauline Bronstein, Features Editor Xenia Lar, Features & Submission Editor
+
+insight:
+  secret_sauce:
+    - tip: Pitch boldness. The editors look for striking design, originality, a clear creative concept and weddings that push boundaries and tell a story.
+      cite:
+        - source: howto
+          quote: What do we look for when curating our features? Boldness.
+        - source: howto
+          quote: We love striking design choices, originality, clear creative concepts and weddings that push boundaries and tell a story.
+    - tip: Send complete details; the most thorough submissions review more smoothly and stand a better chance of being featured.
+      cite:
+        - source: howto
+          quote: The strongest submissions always include thoughtful and complete details.
+        - source: howto
+          quote: the greater the chance that your wedding will be featured on THE WED.
+    - tip: Flag any THE WED member on the vendor team; submissions involving members get priority review and the feature links to the member's directory profile.
+      cite:
+        - source: howto
+          quote: If you, your venue or someone on the vendor team are also a member of THE WED, please highlight this in your submission form
+        - source: howto
+          quote: While priority review is given to submissions involving THE WED members
+    - tip: Have the couple ready for the interview; the feature is scheduled only after their Q&A answers are in.
+      cite:
+        - source: howto
+          quote: As we need the completed answers before scheduling a wedding for publication, the timeline depends in part on when we receive them.
+    - tip: A decline is not final; the editors encourage vendors to keep submitting future projects.
+      cite:
+        - source: howto
+          quote: we encourage every vendor to continue to submit future projects that align with THE WED vision.
+  recent_features:
+    - source: feature_netta
+      published: 2026-10-20
+      location: IT
+      content_type: real_wedding
+      tags: [ lakefront, italian_villa, fashion_forward_editorial, glamorous_luxe, mediterranean_europe ]
+    - source: feature_rome
+      published: 2026-10-16
+      location: IT
+      content_type: real_wedding
+      tags: [ castle_chateau, vintage_heritage, romantic, multiple_looks, mediterranean_europe ]
+    - source: feature_aurelia
+      published: 2026-10-13
+      location: IT
+      content_type: real_wedding
+      tags: [ italian_villa, garden_botanical, playful_party, multiple_looks, mediterranean_europe ]
+    - source: feature_menorca
+      published: 2026-10-11
+      location: ES
+      content_type: real_wedding
+      tags: [ organic_textural, fashion_forward_editorial, multiple_looks, playful_party, mediterranean_europe ]

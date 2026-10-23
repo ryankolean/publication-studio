@@ -1,0 +1,433 @@
+id: pub-nearlywed
+name: Nearlywed
+url: https://nearlywed.com
+kind: regional_magazine
+tier: primary
+recheck_every_days: 90
+taste_summary: Statewide Michigan real weddings of every style and budget; online features are a gallery plus a full vendor list, and selected weddings get written features in the Spring and Fall print issues.
+notes: Online Real Weddings pages show the wedding date, not a publish date; their publish dates come from each page's own WordPress record (the JSON link in the page head), cited as wp_api. The site has no about page (the footer "About Us" is not a link). The digital magazine is an Issuu embed and its masthead was not read.
+
+sources:
+  form:
+    url: https://nearlywed.com/submit-your-wedding/
+    read: 2026-10-23
+    kind: form
+    title: Submit Your Wedding
+  real_weddings:
+    url: https://nearlywed.com/real-weddings/
+    read: 2026-10-23
+    kind: guidelines
+    title: Real Weddings (Be Featured in Nearlywed Magazine)
+  submissions_post:
+    url: https://nearlywed.com/professional/real-wedding-submissions-your-chance-to-be-featured-in-nearlywed/
+    read: 2026-10-23
+    kind: guidelines
+    title: "Real Wedding Submissions: Your Chance To Be Featured in Nearlywed! (2024-06-10)"
+  vendor_guide:
+    url: https://nearlywed.com/professional/how-to-get-featured-on-nearlywed-a-guide-for-vendors/
+    read: 2026-10-23
+    kind: media_kit
+    title: "How to Get Featured on Nearlywed: A Guide for Vendors (2024-02-26)"
+  advertise:
+    url: https://nearlywed.com/advertise/
+    read: 2026-10-23
+    kind: media_kit
+    title: Advertise
+  contact:
+    url: https://nearlywed.com/contact/
+    read: 2026-10-23
+    kind: about
+    title: Contact
+  magazine:
+    url: https://nearlywed.com/nearlywed-magazine/
+    read: 2026-10-23
+    kind: other
+    title: Nearlywed Magazine (Fall 2026 issue)
+  privacy:
+    url: https://nearlywed.com/privacy-policy/
+    read: 2026-10-23
+    kind: other
+    title: Privacy Policy
+  wgvu:
+    url: https://www.wgvunews.org/the-shelley-irwin-show/2023-11-16/nearlywed-officially-launches-this-week
+    read: 2026-10-23
+    kind: interview
+    title: WGVU, Nearlywed officially launches this week (2023-11-16)
+  fox17:
+    url: https://www.fox17online.com/morning-mix/start-planning-your-michigan-wedding-with-help-from-nearlywed
+    read: 2026-10-23
+    kind: interview
+    title: FOX 17 Morning Mix, Start planning your Michigan wedding with help from Nearlywed
+  wp_api:
+    url: https://nearlywed.com/wp-json/wp/v2/wedding?include=42976,42398,42402,42418&_fields=id,slug,date,modified
+    read: 2026-10-23
+    kind: other
+    title: WordPress records for four Real Weddings pages (publish dates)
+  feature_vanessa_yeng:
+    url: https://nearlywed.com/weddings/vanessa-yeng/
+    read: 2026-10-23
+    kind: feature
+    title: Vanessa & Yeng
+  feature_annie_isaac:
+    url: https://nearlywed.com/weddings/annie-isaac/
+    read: 2026-10-23
+    kind: feature
+    title: Annie & Isaac
+  feature_natalie_kyrell:
+    url: https://nearlywed.com/weddings/natalie-kyrell/
+    read: 2026-10-23
+    kind: feature
+    title: Natalie & Kyrell
+  feature_nina_thomas:
+    url: https://nearlywed.com/weddings/nina-thomas/
+    read: 2026-10-23
+    kind: feature
+    title: Nina & Thomas
+  feature_david_jack:
+    url: https://nearlywed.com/magazine/david-jack/
+    read: 2026-10-23
+    kind: feature
+    title: A Downtown Detroit Wedding Filled with Sparkling Moments
+
+identity:
+  parent_company:
+    value: unknown
+    checked: [ contact, privacy, advertise, vendor_guide ]
+    note: No company name is given. The pages name the publisher, Kelly Stroburg, and describe Nearlywed as the statewide rebrand of Grand Rapids Bride.
+  sister_publications:
+    value: unknown
+    checked: [ vendor_guide, fox17, advertise ]
+    note: Grand Rapids Bride is Nearlywed's former name, not a separate title ("From our humble beginnings as Grand Rapids Bride"); the Grand Rapids Wedding Affair in the menu is a bridal show.
+  shared_inbox_with:
+    value: unknown
+    checked: [ contact, form ]
+
+coverage:
+  regions:
+    value: [ US-MI ]
+    cite:
+      - source: real_weddings
+        quote: Each issue features real couples getting married throughout the state of Michigan.
+      - source: advertise
+        quote: Nearlywed is the only statewide resource for wedding planning in Michigan.
+      - source: submissions_post
+        quote: Real Weddings is a section of Nearlywed dedicated to showcasing real-life weddings from across the state of Michigan and beyond.
+    note: Statewide Michigan, by wedding location. Print issues feature weddings held in Michigan; the online section also takes weddings outside Michigan (the form's last region is "Outside Michigan"), see destination_accepted.
+  basis:
+    value: wedding_location
+    cite:
+      - source: real_weddings
+        quote: Each issue features real couples getting married throughout the state of Michigan.
+      - source: form
+        quote: Wedding location Mid Michigan Northern Michigan Southeast Michigan West Michigan Outside Michigan
+    note: The form asks where the wedding took place, by Michigan region, and never asks where the couple lives. No page says whether an outside-Michigan wedding needs a Michigan couple.
+  destination_accepted:
+    value: true
+    cite:
+      - source: form
+        quote: Wedding location Mid Michigan Northern Michigan Southeast Michigan West Michigan Outside Michigan
+      - source: submissions_post
+        quote: Real Weddings is a section of Nearlywed dedicated to showcasing real-life weddings from across the state of Michigan and beyond.
+      - source: feature_david_jack
+        quote: Jack grew up in Grosse Pointe Farms, and David grew up in Iowa, but the couple resides in Chicago.
+    note: Both directions appear. A Chicago couple's Detroit wedding ran as a print feature, and a wedding at a chateau in Provence is filed online under "Outside Michigan" (that page does not say where the couple lives).
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: form
+        quote: Both our print and digital publications feature real weddings with real couples.
+  elopement:
+    value: unknown
+    checked: [ form, real_weddings, submissions_post ]
+  styled_shoot:
+    value: true
+    cite:
+      - source: submissions_post
+        quote: The platform features a diverse array of real weddings, styled shoots, vendor spotlights, and industry insights
+    note: Styled shoots are published, but no page describes a submission route for them; the form covers real weddings only.
+  style_tags:
+    value: [ michigan, hotel_resort, backyard_private_home, castle_chateau ]
+    cite:
+      - source: feature_david_jack
+      - source: feature_annie_isaac
+      - source: feature_nina_thomas
+      - source: feature_vanessa_yeng
+      - source: feature_natalie_kyrell
+    note: Read from the venues in each feature's vendor list; the outlet says it features "weddings of all styles, sizes, and budgets".
+  seasonality:
+    value: unknown
+    checked: [ form, real_weddings, submissions_post ]
+
+routes:
+  value:
+    - platform: web_form
+      url: https://nearlywed.com/submit-your-wedding/
+      account_required: false
+      preferred: true
+      steps:
+        - Open the Submit Your Wedding form.
+        - Say who is submitting (couple, planner, photographer or other) and give the wedding date, your email, both newlyweds' names and a newlywed email.
+        - Pick the wedding location (Mid, Northern, Southeast or West Michigan, or Outside Michigan).
+        - Give the photographer's name and email, the wedding gallery link and any gallery download PIN; add planner, videographer and video link if there are any.
+        - Fill in the vendor list by category and submit.
+      note: One form serves print and online; the editors decide where a wedding runs and pick the images from the linked gallery.
+  cite:
+    - source: form
+      quote: Submit yours by filling out the information & vendor list below.
+    - source: submissions_post
+      quote: Couples and vendors can submit weddings for consideration by filling out a submission form
+    - source: real_weddings
+      quote: Couples have the chance to be featured online in our Real Weddings section of the website or in the printed issue.
+    - source: form
+      quote: Who is submitting this wedding? * Couple Planner Photographer Other
+    - source: form
+      quote: Submitter's Email *
+    - source: form
+      quote: Wedding location Mid Michigan Northern Michigan Southeast Michigan West Michigan Outside Michigan
+    - source: form
+      quote: Photographer * Photographer Email * Wedding Gallery Link *
+    - source: form
+      quote: Wedding Planner Wedding planner email Videographer Wedding video link
+
+package:
+  image_min:
+    value: unknown
+    checked: [ form, submissions_post ]
+    note: No count is asked; the form takes a gallery link and the editors select the images from it.
+  image_max:
+    value: unknown
+    checked: [ form, submissions_post ]
+  resolution:
+    value: unknown
+    checked: [ form, submissions_post ]
+  size:
+    value: unknown
+    checked: [ form, submissions_post ]
+  orientation_mix:
+    value: unknown
+    checked: [ form, submissions_post ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ form, submissions_post ]
+  gallery_hosts:
+    value: unknown
+    checked: [ form, submissions_post ]
+    note: The form asks for a "Wedding Gallery Link" (required) and an optional "Gallery Download PIN" and names no host, allowed or refused.
+  vendor_credits:
+    value:
+      required: true
+      fields: [ role, business_name, email ]
+      note: Vendors are listed by role and business name; only the photographer (name and email) is a starred field, and the planner email is optional.
+    cite:
+      - source: form
+        quote: Submit yours by filling out the information & vendor list below.
+      - source: form
+        quote: Photographer * Photographer Email * Wedding Gallery Link *
+  story:
+    value: unknown
+    checked: [ form, submissions_post ]
+    note: The form has no story field, only "Any Other Details or Vendors to Share?". Online features are a gallery and vendor list; print features are written by staff writers from interviews with the couple.
+  video_accepted:
+    value: true
+    cite:
+      - source: form
+        quote: Videographer Wedding video link
+  other_requirements:
+    value:
+      - Wedding date.
+      - Both newlyweds' first and last names and a newlywed email.
+      - The wedding location by Michigan region, or Outside Michigan.
+      - The gallery download PIN when the gallery needs one.
+    cite:
+      - source: form
+        quote: Wedding Date *
+      - source: form
+        quote: Newlywed No. 1 - first/last name * Newlywed No. 2 - first/last name * Newlywed Email *
+      - source: form
+        quote: Wedding location Mid Michigan Northern Michigan Southeast Michigan West Michigan Outside Michigan
+      - source: form
+        quote: Gallery Download PIN
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [ form, submissions_post, real_weddings ]
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ form, submissions_post ]
+    blogs:
+      value: unknown
+      checked: [ form, submissions_post ]
+    social:
+      value: unknown
+      checked: [ form, submissions_post ]
+  freshness_window_months:
+    value: unknown
+    checked: [ form, submissions_post, real_weddings ]
+    note: No limit is stated. The June 2026 online batch carried 2025 weddings, and the Detroit print feature (published 2026-06-22) was a September 2024 wedding.
+  photographer_frequency:
+    value: unknown
+    checked: [ form, submissions_post ]
+  submitter_roles:
+    value: [ couple, planner, photographer, vendor ]
+    cite:
+      - source: form
+        quote: Who is submitting this wedding? * Couple Planner Photographer Other
+      - source: form
+        quote: Whether a recently married couple or a vendor looking to showcase their work, we want to hear from you!
+      - source: submissions_post
+        quote: Couples and vendors can submit weddings for consideration by filling out a submission form
+    note: The form also offers "Other".
+
+rights:
+  image_usage:
+    value: Selected images may appear in the print and digital magazine, on the website, in blog posts, in email and on Nearlywed's social media.
+    cite:
+      - source: submissions_post
+        quote: your photos may be selected for use in any of our published website content
+      - source: submissions_post
+        quote: the images can then also be used on social media or in Nearlywed’s blog
+      - source: submissions_post
+        quote: there are so many avenues for exposure through the Real Weddings submissions, including in email blasts, through the website, in blog posts, on social media
+      - source: real_weddings
+        quote: Couples have the chance to be featured online in our Real Weddings section of the website or in the printed issue.
+  credit_format:
+    value: Online features list the photographer by role and business name in the full vendor list; print features carry "Photography by" and the studio; blog images credit the photographer in the caption with a link to the gallery and vendor list.
+    cite:
+      - source: feature_vanessa_yeng
+        quote: FUll vendor list Photographer Shoua Lor Photography
+      - source: feature_david_jack
+        quote: By Angela Flynn | Photography by Lydia Charles Photography
+      - source: submissions_post
+        quote: the photographer is credited in the caption with a link to the full gallery and vendor list
+  couple_consent_required:
+    value: unknown
+    checked: [ form, submissions_post ]
+  vendor_consent_required:
+    value: unknown
+    checked: [ form, submissions_post ]
+    note: A couple or vendor may submit the photographer's gallery; no page says the photographer must agree.
+
+economics:
+  submission_fee:
+    value: none
+    cite:
+      - source: submissions_post
+        quote: The best part about submitting to Real Weddings is that its free
+  publication_fee:
+    value: none
+    cite:
+      - source: submissions_post
+        quote: to showcase your talent, creativity, and expertise to a wide audience of engaged couples and fellow vendors…for free!
+      - source: submissions_post
+        quote: all the vendors that helped make that celebration come to life are listed and receive free advertising
+  priority_paid_tier:
+    value: unknown
+    checked: [ advertise, vendor_guide, submissions_post ]
+    note: Paid directory listings (Standard 50 and Featured 100 dollars a month, plus a free listing) and ad packages exist; no page ties them to review of submissions. Listed vendors are linked from the Real Weddings pages they appear in.
+  reach:
+    value:
+      - metric: print_circulation
+        value: 15000
+        as_of: 2024-02-26
+    cite:
+      - source: vendor_guide
+        quote: Nearlywed’s bi-annual (Spring and Fall) print magazine is published in a quantity of 15,000 hard copies
+    note: A print run, stated in a February 2024 vendor guide. Print copies go out through channels in Michigan and Chicagoland.
+
+timing:
+  response_window:
+    value: unknown
+    checked: [ form, submissions_post, real_weddings ]
+  publish_lead_days:
+    value: unknown
+    checked: [ form, submissions_post ]
+  publishing_cycle:
+    value: Print twice a year, Spring and Fall (the Fall 2026 issue runs 190 pages); online Real Weddings go up in batches, four of them between 2026-06-28 and 2026-06-30.
+    cite:
+      - source: vendor_guide
+        quote: Nearlywed’s bi-annual (Spring and Fall) print magazine is published in a quantity of 15,000 hard copies
+      - source: magazine
+        quote: Nearlywed Magazine Fall 2026
+      - source: magazine
+        quote: Our fall issue is here! Get 190 pages of wedding planning delivered to your door.
+      - source: wp_api
+        quote: 2026-06-30T08:00:56
+      - source: wp_api
+        quote: 2026-06-29T20:00:30
+      - source: wp_api
+        quote: 2026-06-29T08:00:38
+      - source: wp_api
+        quote: 2026-06-28T20:00:04
+
+people:
+  editors:
+    value:
+      - name: Rebecca Voigt
+        role: editor
+      - name: Kelly Stroburg
+        role: Publisher
+    cite:
+      - source: submissions_post
+        quote: If you have questions about the submission process, please reach out to our editor, Rebecca Voigt
+      - source: wgvu
+        quote: We talk to Publisher Kelly Stroburg about the growing wedding industry in Michigan.
+    note: The editor credit is from June 2024; Rebecca Voigt also bylined the 2026-06-22 feature post. The vendor guide spells the publisher "Kelly Stroberg".
+
+insight:
+  secret_sauce:
+    - tip: Link the photographer's gallery with its download PIN; the editors pick the images from it.
+      cite:
+        - source: submissions_post
+          quote: Additionally, they provide a link to their wedding photographer’s gallery, which our editorial team will review to select images
+        - source: form
+          quote: Gallery Download PIN
+    - tip: Fill in every vendor; every vendor is listed on the feature and gets free advertising from it.
+      cite:
+        - source: submissions_post
+          quote: all the vendors that helped make that celebration come to life are listed and receive free advertising
+    - tip: Weddings that miss print can still run online, in email, on the blog and on social.
+      cite:
+        - source: submissions_post
+          quote: Not all weddings will be selected for a magazine feature, but this does not mean your wedding and vendors are not being seen!
+        - source: submissions_post
+          quote: there are so many avenues for exposure through the Real Weddings submissions, including in email blasts, through the website, in blog posts, on social media
+    - tip: Fit the house look; the editors select weddings against the platform's aesthetic and editorial guidelines.
+      cite:
+        - source: submissions_post
+          quote: selects weddings that align with the platform’s aesthetic and editorial guidelines for feature consideration
+    - tip: An older wedding is not ruled out; a September 2024 wedding was published as a feature on 2026-06-22.
+      cite:
+        - source: feature_david_jack
+          quote: who married at the Shinola Hotel in downtown Detroit on September 7, 2024
+        - source: feature_david_jack
+          quote: "Published On: June 22, 2026"
+  recent_features:
+    - source: feature_vanessa_yeng
+      published: 2026-06-30
+      location: US-MI
+      content_type: real_wedding
+      tags: [ michigan ]
+    - source: feature_annie_isaac
+      published: 2026-06-29
+      location: US-MI
+      content_type: real_wedding
+      tags: [ michigan, backyard_private_home ]
+    - source: feature_natalie_kyrell
+      published: 2026-06-29
+      location: US-MI
+      content_type: real_wedding
+      tags: [ michigan ]
+    - source: feature_nina_thomas
+      published: 2026-06-28
+      location: FR
+      content_type: real_wedding
+      tags: [ castle_chateau, mediterranean_europe ]
+    - source: feature_david_jack
+      published: 2026-06-22
+      location: US-MI:detroit
+      content_type: real_wedding
+      tags: [ michigan, hotel_resort, wedding_suit_pantsuit, multiple_looks ]
