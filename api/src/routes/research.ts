@@ -20,12 +20,14 @@ import { parseContacts } from "../domain/research/contacts.js";
 import type { Contacts } from "../domain/research/contacts.js";
 import { conflictsWith, diffResearch } from "../domain/research/diff.js";
 import type { FieldChange } from "../domain/research/diff.js";
+import { applyEdits } from "../domain/research/edits.js";
 import { projectPublication } from "../domain/research/project.js";
 import { parseResearchVocab, validatePublicationFile } from "../domain/research/schema.js";
 import type { PublicationFile } from "../domain/research/schema.js";
 import { VOCAB_KINDS } from "../domain/research/store.js";
 import type { RevisionStatus } from "../domain/research/store.js";
 import { loadPublication } from "./publications.js";
+import { loadCorrections } from "./research-projection.js";
 import { loadVocab, nowIso, today } from "./research-vocab.js";
 
 export interface ResearchPayload {
@@ -224,7 +226,9 @@ researchRoutes.post("/revisions/:id/approve", async (c) => {
   }
 
   const payload = JSON.parse(row.payload_json) as ResearchPayload;
-  const { columns, tags } = projectPublication(payload.file, payload.contacts);
+  // Her corrections stay in force over the newer research; the tags come from the research itself.
+  const { columns } = projectPublication(applyEdits(payload.file, await loadCorrections(db, row.publication_id)), payload.contacts);
+  const { tags } = projectPublication(payload.file, payload.contacts);
   const user = c.get("user").id;
   const at = nowIso();
   const body: unknown = await c.req.json().catch(() => null);

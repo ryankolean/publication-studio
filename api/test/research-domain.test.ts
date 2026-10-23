@@ -263,3 +263,24 @@ describe("validating a correction to one fact", () => {
     expect(check("content.real_wedding.value", true)).toMatchObject({ ok: false });
   });
 });
+
+describe("applying the photographer's corrections over the research", () => {
+  it("replaces each corrected fact and leaves the rest, without touching the original", async () => {
+    const { applyEdits } = await import("../src/domain/research/edits.js");
+    const original = fixture();
+    const corrected = applyEdits(original, [
+      { field: "timing.response_window", value: { days: 30, replies: "all" } },
+      { field: "rules.prior_exposure.social", value: "disqualifies" },
+    ]);
+    expect(corrected.timing.response_window).toEqual({ known: true, value: { days: 30, replies: "all" }, cite: [], note: "Corrected by the photographer." });
+    expect(corrected.rules.prior_exposure.social).toMatchObject({ known: true, value: "disqualifies" });
+    expect(corrected.package).toEqual(original.package);
+    expect(original.timing.response_window).toMatchObject({ value: { days: 42 } });
+    expect(projectPublication(corrected, null).columns.typical_response_days).toBe(30);
+  });
+
+  it("ignores a correction whose field the research no longer has", async () => {
+    const { applyEdits } = await import("../src/domain/research/edits.js");
+    expect(applyEdits(fixture(), [{ field: "rules.gone_rule", value: 1 }])).toEqual(fixture());
+  });
+});

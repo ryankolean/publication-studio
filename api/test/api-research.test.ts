@@ -313,3 +313,48 @@ describe("the photographer's corrections and tags", () => {
   });
 });
 
+
+describe("corrections take effect", () => {
+  const view = async (id: string) =>
+    ((await (await send("GET", `/publications/${id}`, partner)).json()) as Record<string, any>);
+
+  it("changes what the app uses, and removing it restores the research", async () => {
+    await loadVocab();
+    await approve(await proposeOk(exampleFile()));
+    expect((await view("pub-example-weddings"))["typicalResponseDays"]).toBe(42);
+
+    await send("PUT", "/publications/pub-example-weddings/edits/timing.response_window", partner, { value: { days: 30, replies: "all" }, note: "Editor told me" });
+    const corrected = await view("pub-example-weddings");
+    expect(corrected["typicalResponseDays"]).toBe(30);
+    expect(corrected["responseWindowNote"]).toBeNull();
+    expect(corrected["corrections"]).toEqual([{ field: "timing.response_window", value: { days: 30, replies: "all" }, note: "Editor told me" }]);
+
+    await send("DELETE", "/publications/pub-example-weddings/edits/timing.response_window", partner);
+    expect(await view("pub-example-weddings")).toMatchObject({ typicalResponseDays: 42, corrections: [] });
+  });
+
+  it("keeps a correction in force when newer research is approved", async () => {
+    await loadVocab();
+    await approve(await proposeOk(exampleFile()));
+    await send("PUT", "/publications/pub-example-weddings/edits/timing.response_window", partner, { value: { days: 30, replies: "all" } });
+    const newer = exampleFile();
+    newer["timing"].response_window.value.days = 56;
+    await approve(await proposeOk(newer));
+    expect((await view("pub-example-weddings"))["typicalResponseDays"]).toBe(30);
+  });
+
+  it("holds a correction to an outlet with no research yet until its research is approved", async () => {
+    await loadVocab();
+    expect((await send("PUT", "/publications/pub-brides/edits/timing.response_window", partner, { value: { days: 45, replies: "all" } })).status).toBe(200);
+    expect((await view("pub-brides"))["typicalResponseDays"]).toBe(60);
+    await approve(await proposeOk(outletFile("pub-brides")));
+    expect((await view("pub-brides"))["typicalResponseDays"]).toBe(45);
+  });
+
+  it("leaves style tags to the tag buttons", async () => {
+    await loadVocab();
+    await approve(await proposeOk(exampleFile()));
+    const res = await send("PUT", "/publications/pub-example-weddings/edits/content.style_tags", partner, { value: ["romantic"] });
+    expect(res.status).toBe(422);
+  });
+});

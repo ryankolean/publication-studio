@@ -13,7 +13,7 @@
 
 import type { EarnedOrPaid, ExclusivityPolicy, PublicationTier, SubmissionMethod } from "../publication.js";
 import type { Contacts } from "./contacts.js";
-import type { Cite, Fact, PublicationFile } from "./schema.js";
+import type { Fact, PublicationFile } from "./schema.js";
 
 export interface PublicationColumns {
   id: string;
@@ -116,8 +116,8 @@ export function projectPublication(file: PublicationFile, contacts: Contacts | n
       exclusivity_policy: known(file.rules.exclusivity)?.policy ?? "unknown",
       counts_own_blog_as_published: blogs === undefined ? null : blogs === "disqualifies" ? 1 : 0,
       typical_response_days: window.known ? window.value.days : null,
-      // A known fact always has at least one cite.
-      response_window_note: window.known ? (window.cite[0] as Cite).quote : null,
+      // A corrected fact carries no cite, and so no wording of the outlet's own.
+      response_window_note: window.known ? (window.cite[0]?.quote ?? null) : null,
       earned_or_paid: earnedOrPaid(file),
       taste_notes: file.taste_summary,
       last_verified: Object.values(file.sources)
