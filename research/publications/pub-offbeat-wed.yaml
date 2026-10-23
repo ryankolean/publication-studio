@@ -1,0 +1,442 @@
+id: pub-offbeat-wed
+name: Offbeat Wed
+url: https://offbeatwed.com
+kind: blog
+tier: secondary
+recheck_every_days: 90
+taste_summary: Identity-forward, nontraditional weddings (queer, polyamorous, BIPOC, neurodivergent, goth) told in the couple's own voice; since the 2026 pivot most new real weddings showcase its paid vendor members' work.
+notes: Offbeat Wed (formerly Offbeat Bride) pivoted in 2026 from a couple-facing blog to a vendor-membership consultancy, and most new posts are now for vendors. The vendor submission instructions sit behind the member login and were not read, so package facts come from the public couple form. Feature publish dates come from each page's published-time metadata; the pages do not print a date.
+
+sources:
+  guidelines:
+    url: https://offbeatwed.com/submissions/
+    read: 2026-10-23
+    kind: guidelines
+    title: Offbeat Wed Submissions
+  reader_form:
+    url: https://offbeatwed.com/submissions/yourwedding/
+    read: 2026-10-23
+    kind: form
+    title: Submit your wedding to Offbeat Wed (couples)
+  vendor_form:
+    url: https://offbeatwed.com/submissions/photographers/
+    read: 2026-10-23
+    kind: form
+    title: Vendor submissions (member login wall)
+  join:
+    url: https://offbeatwed.com/join/
+    read: 2026-10-23
+    kind: media_kit
+    title: Become an Offbeat Wed Vendor Member
+  about:
+    url: https://offbeatwed.com/about/
+    read: 2026-10-23
+    kind: about
+    title: About Offbeat Wed
+  contact:
+    url: https://offbeatwed.com/contact/
+    read: 2026-10-23
+    kind: about
+    title: Contact Offbeat Wed
+  pivot:
+    url: https://offbeatwed.com/b2b/
+    read: 2026-10-23
+    kind: other
+    title: Offbeat Wed has pivoted
+  feature_salem:
+    url: https://offbeatwed.com/666-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: "Fangs and a faulty hearse: a 666 wedding with a split tongue"
+  feature_brooklyn:
+    url: https://offbeatwed.com/throuple-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: A queer throuple wedding in Brooklyn
+  feature_berkeley:
+    url: https://offbeatwed.com/second-line-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: "Geaux stupid: a New Orleans second line wedding in the Berkeley redwoods"
+  feature_bellingham:
+    url: https://offbeatwed.com/bellingham-pride-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: A colorful queer wedding at Bellingham Pride (planned in only 3 WEEKS!)
+
+identity:
+  parent_company:
+    value: Offbeat Empire LLC
+    cite:
+      - source: guidelines
+        quote: Copyright © 2007 – 2026 Offbeat Empire LLC.
+  sister_publications:
+    value: unknown
+    checked: [ about, pivot ]
+    note: Ariel Meadow Stallings is described as publisher of all the Offbeat Empire web properties, but no other title is named.
+  shared_inbox_with:
+    value: unknown
+    checked: [ contact, guidelines ]
+
+coverage:
+  regions:
+    value: unknown
+    checked:
+      - guidelines
+      - reader_form
+    note: No page states a geographic limit; the four newest real weddings are all in the US.
+  basis:
+    value: unknown
+    checked: [ guidelines, reader_form ]
+  destination_accepted:
+    value: unknown
+    checked: [ guidelines, reader_form, feature_salem, feature_brooklyn, feature_berkeley, feature_bellingham ]
+    note: None of the four newest real weddings shows a couple traveling to marry.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: we do feature real wedding stories featuring the work of our members
+      - source: reader_form
+        quote: Submit your wedding for publication consideration
+  elopement:
+    value: unknown
+    checked: [ guidelines, reader_form ]
+  styled_shoot:
+    value: true
+    cite:
+      - source: guidelines
+        quote: If you’re a member of our vendor community, feel free to submit your client’s wedding, styled shoot, or a guestpost.
+    note: Styled shoots come only through the paid vendor-member route.
+  style_tags:
+    value: [ alternative_nontraditional, bold_color_maximalist, playful_party, culturally_rooted, moody_dramatic, colored_printed ]
+    cite:
+      - source: feature_salem
+      - source: feature_brooklyn
+      - source: feature_berkeley
+      - source: feature_bellingham
+  seasonality:
+    value: unknown
+    checked: [ guidelines, reader_form ]
+
+routes:
+  value:
+    - platform: web_form
+      url: https://offbeatwed.com/submissions/yourwedding/
+      account_required: false
+      steps:
+        - The couple gets the photographer's permission to submit the photos.
+        - The couple gives names and pronouns, the wedding date, the venue and a description of the wedding in seven words or less.
+        - The couple links their 50 favorite photos (no wider than 1080 pixels) on Dropbox, Google Drive or similar, and names the photographer with their website or Instagram.
+        - The couple answers the story questions and lists every vendor with business name, website and Instagram.
+        - Submit; the couple is emailed only if the profile is published.
+      note: For couples only; vendors are told not to use this form. A photographer can ask a client couple to submit through it.
+    - platform: portal
+      url: https://offbeatwed.com/submissions/photographers/
+      account_required: true
+      steps:
+        - Join the paid vendor membership.
+        - Log in to the member dashboard and open its Submissions page.
+        - Submit the client's wedding, styled shoot or guest post as the member instructions describe.
+      note: Open only to paid vendor members, recorded under economics.priority_paid_tier. The member instructions sit behind the login and were not read. A featured member's directory listing is crosslinked from the post.
+  cite:
+    - source: guidelines
+      quote: Fill out the form with a few details, and share a link to your pictures
+    - source: reader_form
+      quote: VENDORS, THIS FORM IS NOT FOR YOU.
+    - source: reader_form
+      quote: This is for couples submitting their wedding stories.
+    - source: guidelines
+      quote: We only accept submissions from our vendor members .
+    - source: guidelines
+      quote: If you’re a member of our vendor community, feel free to submit your client’s wedding, styled shoot, or a guestpost.
+    - source: vendor_form
+      quote: You must be logged in to view your dashboard.
+    - source: guidelines
+      quote: When you’re featured on the blog, your vendor listing will be crosslinked!
+
+package:
+  image_min:
+    value: unknown
+    checked: [ reader_form ]
+    note: The couple form asks for "your favorite 50" photos and states no minimum.
+  image_max:
+    value: 50
+    cite:
+      - source: reader_form
+        quote: Give us your favorite 50 photos!
+    note: From the couple form; the vendor-member instructions were not read.
+  resolution:
+    value:
+      max_width_px: 1080
+    cite:
+      - source: reader_form
+        quote: Photos should be sized at no wider than 1080 pixels.
+  size:
+    value: unknown
+    checked: [ reader_form ]
+    note: Only a pixel limit is given; it is recorded under resolution.
+  orientation_mix:
+    value: unknown
+    checked: [ reader_form, guidelines ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ reader_form, guidelines ]
+  gallery_hosts:
+    value: [ dropbox, google_drive, pic_time, pixieset, smugmug, shootproof ]
+    cite:
+      - source: reader_form
+        quote: Give us a link to Dropbox, Google Drive, etc. where we can download them.
+      - source: reader_form
+        quote: If you hired a photographer, they can likely give you a link+password that you can share with us.
+    note: Dropbox and Google Drive are named; the others are read from "etc.", and a photographer's password-protected gallery link is welcome.
+  vendor_credits:
+    value:
+      required: true
+      fields: [ business_name, website, instagram ]
+    cite:
+      - source: reader_form
+        quote: Give us a list of all the vendors who made it all happen
+      - source: reader_form
+        quote: their business name, as well as their website. Give us their Instagram account too if they have one!
+  story:
+    value:
+      required: true
+      questionnaire: true
+      note: The couple form asks about the wedding journey, the ceremony and vows, the reception and lessons learned; profiles are edited for length and clarity.
+    cite:
+      - source: reader_form
+        quote: Tell us about everything that led up to the big day.
+      - source: reader_form
+        quote: Tell us about your ceremony and your vows
+      - source: reader_form
+        quote: Profiles are often edited for length and clarity.
+  video_accepted:
+    value: unknown
+    checked: [ reader_form ]
+  other_requirements:
+    value:
+      - The wedding described in seven words or less.
+      - The venue named, with its website, not only the city and state.
+      - The primary photographer's business name and website or Instagram.
+    cite:
+      - source: reader_form
+        quote: Your wedding in 7 words or less
+      - source: reader_form
+        quote: Be specific – not just city and state, but also the name of the venue.
+      - source: reader_form
+        quote: Tell us the URL for the photographer’s website and/or Instagram account.
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_required
+      during_review: false
+      after_publication_days: 90
+    cite:
+      - source: reader_form
+        quote: Note that we do request three months of editorial exclusivity after publication.
+      - source: reader_form
+        quote: Of course you can share your wedding story with whoever you want
+  prior_exposure:
+    publications:
+      value: disqualifies
+      cite:
+        - source: reader_form
+          quote: we like to respect other bloggers by not reproducing weddings they’ve posted.
+        - source: reader_form
+          quote: If we decide to feature your wedding, we’ll email you to check that it hasn’t already appeared elsewhere.
+    blogs:
+      value: unknown
+      checked: [ reader_form, guidelines ]
+    social:
+      value: unknown
+      checked: [ reader_form, guidelines ]
+  freshness_window_months:
+    value: unknown
+    checked: [ reader_form, guidelines ]
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines ]
+  submitter_roles:
+    value: [ couple, photographer, vendor ]
+    cite:
+      - source: reader_form
+        quote: This is for couples submitting their wedding stories.
+      - source: guidelines
+        quote: We only accept submissions from our vendor members .
+    note: Photographers and other vendors submit only as paid members, through the photographers' submission page.
+
+rights:
+  image_usage:
+    value: Publication on Offbeat Wed and all associated media properties, in perpetuity; written material may be edited for length, tone and clarity.
+    cite:
+      - source: guidelines
+        quote: You grant your consent to let us publish your material on Offbeat Wed and all associated media properties, in perpetuity.
+      - source: guidelines
+        quote: You grant your consent to let us edit written material for length, tone, and clarity.
+  credit_format:
+    value: The photographer is attributed and linked, often in a "Photos by" caption; member vendors also get a Featured Wedding Vendors block linking to their directory listings.
+    cite:
+      - source: reader_form
+        quote: We need to make sure photographers are always attributed and linked!
+      - source: feature_bellingham
+        quote: Photos by Alexis Gurr + Katrina Gurr of A+K Photography
+      - source: feature_berkeley
+        quote: This page features vendors from our curated Offbeat Wed Vendor Directory .
+  couple_consent_required:
+    value: unknown
+    checked: [ guidelines, reader_form ]
+  vendor_consent_required:
+    value: true
+    cite:
+      - source: reader_form
+        quote: Please make sure you get your photographer’s permission before submitting to our site.
+      - source: reader_form
+        quote: you confirm that you’ve secured permission from your photographer to submit your photos for publication.
+    note: On the couple route the couple must confirm the photographer's permission; nothing asks for other vendors' consent.
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ guidelines, reader_form, join ]
+    note: The vendor route needs a paid membership (see priority_paid_tier); no page says the couple form is free.
+  publication_fee:
+    value: unknown
+    checked: [ guidelines, contact, join ]
+    note: The contact page refuses sponsored posts and paid links, and points vendors seeking placement to the paid membership.
+  priority_paid_tier:
+    value:
+      name: Offbeat Wed vendor membership (Consulting + Concierge Listing tier)
+      price:
+        amount: 700
+        currency: USD
+        note: Per year, the lowest tier open to new members; the 250-a-year Legacy tier is closed to new purchase, and Mentorship + Premiere Listing is 2,000 a year.
+      note: Required for the vendor submission route. Members are eligible for blog features and exclusive submission calls; the Mentorship tier adds priority editorial amplification.
+    cite:
+      - source: guidelines
+        quote: We only accept submissions from our vendor members .
+      - source: join
+        quote: Tier 2 · $700/year
+      - source: join
+        quote: Tier 1 · $250/YEAR
+      - source: join
+        quote: This level is not available for new purchase
+      - source: join
+        quote: Tier 3 · $2,000/year
+      - source: join
+        quote: priority editorial amplification and media referral
+      - source: join
+        quote: Vendor members are eligible for exclusive opportunities beyond the directory, including blog features , social media spotlights , and exclusive submission calls.
+  reach:
+    value:
+      - metric: monthly_pageviews
+        value: 60000
+        as_of: 2026-10-23
+      - metric: monthly_visitors
+        value: 50000
+        as_of: 2026-10-23
+      - metric: facebook_followers
+        value: 130000
+        as_of: 2026-10-23
+      - metric: instagram_followers
+        value: 32000
+        as_of: 2026-10-23
+    cite:
+      - source: join
+        quote: which gets 60k monthly pageviews from search-driven, intent-based consumer traffic
+      - source: about
+        quote: 50k couples a month still browse our deep archives of wedding advice
+      - source: join
+        quote: "We regularly feature our vendors on our social media pages : 150k Pinterest, 130k Facebook, 32k Insta, 6k Threads"
+    note: The pages are undated, so as_of is the read date. The social counts do not name their measure and are read as followers; Pinterest and Threads fit no schema metric.
+
+timing:
+  response_window:
+    value: unknown
+    checked: [ reader_form, guidelines ]
+    note: Couples are emailed only when a profile is published; no review time is given.
+  publish_lead_days:
+    value: unknown
+    checked: [ reader_form ]
+    note: The couple form warns it can be several months from acceptance to publication.
+  publishing_cycle:
+    value: Online; since the 2026 pivot most new posts are for wedding vendors, while real weddings continue and feature members' work. Four real weddings ran between 2026-06-02 and 2026-10-02.
+    cite:
+      - source: pivot
+        quote: Offbeat Wed is dropping its ad-supported, couple-facing model after nearly two decades and rebuilding around vendor memberships and consulting work.
+      - source: about
+        quote: these days most of our new articles are for wedding pros
+      - source: pivot
+        quote: Yes, I’ll still be featuring Real Weddings , because I love featuring the gorgeous work of my vendor clients !
+      - source: feature_salem
+      - source: feature_brooklyn
+      - source: feature_berkeley
+      - source: feature_bellingham
+
+people:
+  editors:
+    value:
+      - name: Ariel Meadow Stallings
+        role: founder and publisher
+    cite:
+      - source: about
+        quote: I’m Ariel Meadow Stallings, the founder and publisher of Offbeat Wed
+
+insight:
+  secret_sauce:
+    - tip: Center people mainstream wedding media ignores; diversity is the stated top editorial priority.
+      cite:
+        - source: guidelines
+          quote: we always prioritize submissions featuring folks marginalized by mainstream wedding media
+        - source: about
+          quote: our highest editorial priority is diversity
+    - tip: Membership is the practical path for a photographer; three of the four newest real weddings carry a member's directory listing.
+      cite:
+        - source: pivot
+          quote: because I love featuring the gorgeous work of my vendor clients
+        - source: feature_salem
+          quote: This page features vendors from our curated Offbeat Wed Vendor Directory .
+        - source: feature_berkeley
+          quote: This page features vendors from our curated Offbeat Wed Vendor Directory .
+        - source: feature_bellingham
+          quote: This page features vendors from our curated Offbeat Wed Vendor Directory .
+    - tip: Write a short, vivid hook; the seven-word description often becomes the headline.
+      cite:
+        - source: reader_form
+          quote: We’ll likely work this into the title of your profile!
+    - tip: Include the vows and the couple's own words; features are built from their answers.
+      cite:
+        - source: reader_form
+          quote: we (and our readers) would LOVE to read your vows and be inspired
+    - tip: Offbeat means intentional, not strange; a traditional-looking wedding qualifies when the couple or their choices break the default.
+      cite:
+        - source: about
+          quote: There is no weirdness threshold
+        - source: about
+          quote: Intentionality is the whole game.
+        - source: about
+          quote: It might also mean a completely traditional-looking wedding where the radical part is that there are two grooms
+  recent_features:
+    - source: feature_salem
+      published: 2026-10-02
+      location: US-MA
+      content_type: real_wedding
+      tags: [ alternative_nontraditional, moody_dramatic, intimate_micro, colored_printed ]
+    - source: feature_brooklyn
+      published: 2026-09-02
+      location: US-NY
+      content_type: real_wedding
+      tags: [ alternative_nontraditional, garden_botanical, playful_party ]
+    - source: feature_berkeley
+      published: 2026-08-13
+      location: US-CA
+      content_type: real_wedding
+      tags: [ forest_woodland, garden_botanical, culturally_rooted, playful_party ]
+    - source: feature_bellingham
+      published: 2026-06-02
+      location: US-WA
+      content_type: real_wedding
+      tags: [ bold_color_maximalist, playful_party, alternative_nontraditional ]

@@ -1,0 +1,333 @@
+id: pub-wedding-chicks
+name: Wedding Chicks
+url: https://www.weddingchicks.com
+kind: blog
+tier: primary
+recheck_every_days: 90
+taste_summary: High-volume daily real weddings and styled shoots, bright and airy, with unique decor, fashion and sentimental details.
+notes: weddingchicks.com answers plain fetches with a bot challenge; every page below was read in a browser on 2026-10-23. The older help center on planning.weddingchicks.com and the live submit page disagree on replies; the submit page is recorded as current.
+
+sources:
+  submit:
+    url: https://www.weddingchicks.com/submit/
+    read: 2026-10-23
+    kind: form
+    title: Submit A Feature
+  help_submit:
+    url: https://planning.weddingchicks.com/help.php?id=107&section=5&tab=17
+    read: 2026-10-23
+    kind: guidelines
+    title: How do I submit to be featured?
+  help_styled:
+    url: https://planning.weddingchicks.com/help.php?id=109&tab=17&section=5
+    read: 2026-10-23
+    kind: guidelines
+    title: Are you accepting styled shoots?
+  help_vendor:
+    url: https://planning.weddingchicks.com/help.php?id=110&tab=17&section=5
+    read: 2026-10-23
+    kind: guidelines
+    title: Do I have to be a Wedding Chicks vendor to be featured?
+  help_tips:
+    url: https://planning.weddingchicks.com/help.php?id=111&tab=17&section=5
+    read: 2026-10-23
+    kind: guidelines
+    title: Tips for getting featured
+  feature_phuket:
+    url: https://www.weddingchicks.com/real-weddings/maylina-and-jays-oceanfront-wedding-at-sri-panwa-phuket/
+    read: 2026-10-23
+    kind: feature
+  feature_palm_beach:
+    url: https://www.weddingchicks.com/real-weddings/florida-formal-wedding-in-palm-beach/
+    read: 2026-10-23
+    kind: feature
+  feature_lakeside:
+    url: https://www.weddingchicks.com/real-weddings/nostalgic-backyard-wedding-with-luxe-romantic-mood-2/
+    read: 2026-10-23
+    kind: feature
+  feature_ranch:
+    url: https://www.weddingchicks.com/real-weddings/hummingbird-nest-ranch-wedding-mariachi-banda-traditions/
+    read: 2026-10-23
+    kind: feature
+  feature_mountain:
+    url: https://www.weddingchicks.com/real-weddings/two-grooms-wed-in-chic-western-mountain-wedding/
+    read: 2026-10-23
+    kind: feature
+
+identity:
+  parent_company:
+    value: unknown
+    checked: [ submit, help_submit ]
+  sister_publications:
+    value: unknown
+    checked: [ submit ]
+  shared_inbox_with:
+    value: unknown
+    checked: [ submit, help_submit ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: feature_phuket
+      - source: feature_palm_beach
+    note: Inferred from published features in Thailand and the US; no page states a coverage policy.
+  basis:
+    value: unknown
+    checked: [ submit, help_submit ]
+  destination_accepted:
+    value: unknown
+    checked: [ submit, help_styled, feature_phuket ]
+    note: Recent features include a wedding in Phuket, but no page says whether the couple traveled or states a policy.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: help_styled
+        quote: Including real weddings, styled shoots, bridal showers, bachelorette parties, engagement sessions, and DIY projects.
+  elopement:
+    value: true
+    cite:
+      - source: help_styled
+        quote: Yes, we are always looking to feature any wedding related event.
+    note: Elopements are not named; they fall under "any wedding related event".
+  styled_shoot:
+    value: true
+    cite:
+      - source: help_styled
+        quote: Including real weddings, styled shoots, bridal showers, bachelorette parties, engagement sessions, and DIY projects.
+  style_tags:
+    value: [ island_tropical, hotel_resort, playful_party, lakefront, backyard_private_home, romantic, farm_ranch_countryside, culturally_rooted, mountain_alpine ]
+    cite:
+      - source: feature_phuket
+      - source: feature_palm_beach
+      - source: feature_lakeside
+      - source: feature_ranch
+      - source: feature_mountain
+    note: From the features' headlines and settings.
+  seasonality:
+    value:
+      - wants: [ holiday_season ]
+        note: Holiday-themed or time-sensitive features must arrive at least a month ahead.
+    cite:
+      - source: help_tips
+        quote: When submitting holiday themed or time sensitive features, please submit at least one month ahead.
+
+routes:
+  value:
+    - platform: web_form
+      url: https://www.weddingchicks.com/submit/
+      account_required: false
+      preferred: true
+      steps:
+        - Open the submit page; the form is public.
+        - Enter your name and email, both partners' names, the wedding date and the location.
+        - Upload your best 40 to 60 images (JPG or PNG, about 2MB each at most) and add any YouTube or Vimeo link.
+        - Credit every vendor, including yourself with your links and Instagram handle.
+        - Add a suggested post title and the story, confirm you have permission to submit, and send.
+  cite:
+    - source: submit
+      quote: Drag & Drop Your Best 40 - 60 Images
+    - source: submit
+      quote: "Suggested Image Size: MAX 2MB"
+    - source: submit
+      quote: Please ensure every vendor is credited.
+    - source: submit
+      quote: I confirm that I have permission to submit these photos and content for feature.
+
+package:
+  image_min:
+    value: 40
+    cite:
+      - source: submit
+        quote: Drag & Drop Your Best 40 - 60 Images
+  image_max:
+    value: 60
+    cite:
+      - source: submit
+        quote: Drag & Drop Your Best 40 - 60 Images
+  resolution:
+    value:
+      max_file_mb: 2
+      note: A suggested maximum.
+    cite:
+      - source: submit
+        quote: "Suggested Image Size: MAX 2MB"
+  size:
+    value: unknown
+    checked: [ submit ]
+    note: Only a 2MB suggested maximum is stated, alongside a request for high-resolution photography.
+  orientation_mix:
+    value: A mix of vertical and horizontal images.
+    cite:
+      - source: help_tips
+        quote: Include vertical and horizontal images, we need a mix of both to create our feature layout.
+  watermarks_allowed:
+    value: unknown
+    checked: [ submit, help_tips ]
+  gallery_hosts:
+    value: [ direct_upload ]
+    cite:
+      - source: submit
+        quote: Or browse your local files (JPG, PNG)
+  vendor_credits:
+    value:
+      required: true
+      note: Every vendor, including the submitter with links and Instagram handle.
+    cite:
+      - source: submit
+        quote: Please ensure every vendor is credited.
+      - source: submit
+        quote: make sure to add your links and Instagram handle so you get proper credit.
+  story:
+    value:
+      required: true
+      note: A required story field and a required suggested post title.
+    cite:
+      - source: submit
+        quote: STORY ABOUT THE WEDDING / SHOOT
+      - source: submit
+        quote: SUGGESTED POST TITLE
+  video_accepted:
+    value: true
+    cite:
+      - source: submit
+        quote: LINK TO YOUTUBE OR VIMEO
+  other_requirements:
+    value:
+      - Both partners' names, the wedding date and the location or city.
+      - A suggested post title.
+    cite:
+      - source: submit
+        quote: NAME OF PARTNER ONE
+      - source: submit
+        quote: WEDDING DATE
+      - source: submit
+        quote: LOCATION / CITY
+      - source: submit
+        quote: SUGGESTED POST TITLE
+
+rules:
+  exclusivity:
+    value: unknown
+    checked: [ submit, help_submit, help_tips ]
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ submit, help_tips ]
+    blogs:
+      value: unknown
+      checked: [ submit, help_tips ]
+    social:
+      value: unknown
+      checked: [ submit, help_tips ]
+  freshness_window_months:
+    value: unknown
+    checked: [ submit, help_tips ]
+  photographer_frequency:
+    value: unknown
+    checked: [ submit, help_tips ]
+  submitter_roles:
+    value: unknown
+    checked: [ submit, help_vendor ]
+    note: The form asks only for the submitter's name and email; Wedding Chicks vendor status is not required.
+
+rights:
+  image_usage:
+    value: unknown
+    checked: [ submit ]
+    note: Submitting confirms the right to share the images, but no usage terms are stated.
+  credit_format:
+    value: unknown
+    checked: [ submit ]
+  couple_consent_required:
+    value: unknown
+    checked: [ submit ]
+    note: The submitter confirms having permission, without saying whose.
+  vendor_consent_required:
+    value: unknown
+    checked: [ submit ]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ submit, help_vendor ]
+  publication_fee:
+    value: unknown
+    checked: [ submit, help_vendor ]
+  priority_paid_tier:
+    value: unknown
+    checked: [ help_vendor ]
+    note: Listed Wedding Chicks vendors get priority review, but no page read says whether a listing costs money.
+  reach:
+    value: unknown
+    checked: [ submit ]
+
+timing:
+  response_window:
+    value:
+      days: 21
+      replies: success_only
+    cite:
+      - source: submit
+        quote: We typically respond within 2-3 weeks if your submission is selected for a feature.
+    note: The older help center says every submission gets a reply within 5 business days; the live submit page is recorded.
+  publish_lead_days:
+    value: unknown
+    checked: [ submit, help_submit ]
+  publishing_cycle:
+    value: Online daily; five real weddings went live between 2026-10-21 and 2026-10-23.
+    cite:
+      - source: feature_phuket
+      - source: feature_palm_beach
+      - source: feature_lakeside
+      - source: feature_ranch
+      - source: feature_mountain
+
+people:
+  editors:
+    value: unknown
+    checked: [ submit ]
+
+insight:
+  secret_sauce:
+    - tip: Fill out every field and include every vendor credit, correctly.
+      cite:
+        - source: help_tips
+          quote: Fill out the submission form completely, be mindful to include all correct vendor credits
+    - tip: Send bright, airy, sharp photography.
+      cite:
+        - source: submit
+          quote: We look for bright, airy, and sharp visuals.
+    - tip: Lead with unique decor, fashion choices or sentimental moments.
+      cite:
+        - source: submit
+          quote: Feature unique decor, fashion choices, or sentimental moments that make the day special.
+    - tip: Listed Wedding Chicks vendors get priority review.
+      cite:
+        - source: help_vendor
+          quote: Wedding Chicks vendors do receive priority submission review.
+  recent_features:
+    - source: feature_phuket
+      published: 2026-10-23
+      location: TH
+      content_type: real_wedding
+      tags: [ island_tropical, hotel_resort ]
+    - source: feature_palm_beach
+      published: 2026-10-23
+      location: US-FL:palm-beach
+      content_type: real_wedding
+      tags: [ playful_party ]
+    - source: feature_lakeside
+      published: 2026-10-22
+      content_type: real_wedding
+      tags: [ lakefront, backyard_private_home, romantic ]
+    - source: feature_ranch
+      published: 2026-10-22
+      content_type: real_wedding
+      tags: [ farm_ranch_countryside, culturally_rooted ]
+    - source: feature_mountain
+      published: 2026-10-21
+      content_type: real_wedding
+      tags: [ mountain_alpine ]

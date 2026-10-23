@@ -1,0 +1,471 @@
+id: pub-munaluchi-bridal
+name: Munaluchi Bride
+url: https://www.munaluchibridal.com
+kind: national_magazine
+tier: secondary
+recheck_every_days: 60
+taste_summary: Multicultural, couture-minded weddings that center heritage traditions and cultural attire, shot with editorial polish; real weddings get first call for the print issues.
+notes: The public Submissions Portal was closed on 2026-10-23 (reopening early 2027), so the form itself could not be read. The nav Advertise link (https://www.munaluchibridal.com/?page_id=3061) and /advertise/ returned 404, and no media kit was found. The Coterie membership page draws its text with JavaScript; its prices were read from the data embedded in the page and need a browser check.
+
+sources:
+  guidelines:
+    url: https://www.munaluchibridal.com/submissions/
+    read: 2026-10-23
+    kind: guidelines
+    title: Get Featured (Munaluchi Submissions Process)
+  about:
+    url: https://www.munaluchibridal.com/about/
+    read: 2026-10-23
+    kind: about
+    title: About Munaluchi Bride
+  contact:
+    url: https://www.munaluchibridal.com/contact/
+    read: 2026-10-23
+    kind: about
+    title: Contact
+  terms:
+    url: https://www.munaluchibridal.com/terms-and-conditions/
+    read: 2026-10-23
+    kind: other
+    title: Terms and Conditions
+  coterie:
+    url: https://hub.munaluchibridal.com/join-the-coterie
+    read: 2026-10-23
+    kind: other
+    title: How to join the Munaluchi Coterie (vendor membership)
+  feature_dallas:
+    url: https://www.munaluchibridal.com/rayshon-yannick-hillside-estate-wedding-dallas/
+    read: 2026-10-23
+    kind: feature
+    title: "A Dallas Wedding Worth Waiting For: Rayshon & Yannick"
+  feature_ghana:
+    url: https://www.munaluchibridal.com/arian-simone-benjamin-mougarbel-royal-wedding-ghana/
+    read: 2026-10-23
+    kind: feature
+    title: "Crowned in Love: Arian Simone and Benjamin Mougarbel's Royal Wedding in Ghana"
+  feature_arusha:
+    url: https://www.munaluchibridal.com/mandela-and-judys-chagga-cultural-wedding-in-arusha-tanzania/
+    read: 2026-10-23
+    kind: feature
+    title: Mandela and Judy's Chagga Cultural Wedding in Arusha, Tanzania
+  feature_new_branch:
+    url: https://www.munaluchibridal.com/adrian-onicka-griffin-italian-renaissance-wedding-new-branch-farms-virginia/
+    read: 2026-10-23
+    kind: feature
+    title: Adrian & Onicka Griffin's Italian Renaissance Wedding at New Branch Farms
+
+identity:
+  parent_company:
+    value: Muna Media Group
+    cite:
+      - source: guidelines
+        quote: © 2026 Muna Media Group
+    note: The site footer names Muna Media Group; the Coterie page calls the Coterie a division of MunaLuchi LLC.
+  sister_publications:
+    value: unknown
+    checked: [ about, contact ]
+    note: The about page names sister companies MunaMommy and Coterie Retreat (a conference) but does not call either a publication.
+  shared_inbox_with:
+    value: unknown
+    checked: [ contact, guidelines ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: about
+        quote: we showcase the world’s most inspiring multicultural weddings
+      - source: feature_dallas
+      - source: feature_ghana
+      - source: feature_arusha
+      - source: feature_new_branch
+    note: No page sets a geographic limit; the four newest real weddings are in Texas, Ghana, Tanzania and Virginia.
+  basis:
+    value: unknown
+    checked: [ guidelines, about ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: feature_arusha
+        quote: their day honored nearly two decades of life lived abroad
+      - source: feature_ghana
+        quote: Destination Weddings
+    note: Inferred from published features; no page states that destination weddings are accepted. The Arusha couple came home after nearly two decades abroad, and the Ghana feature is filed under the site's Destination Weddings category.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: We spotlight weddings, engagements, proposals, and styled shoots
+  elopement:
+    value: unknown
+    checked: [ guidelines, about ]
+  styled_shoot:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Styled shoots and engagements are accepted across our platforms, but real weddings get primary consideration for print.
+  style_tags:
+    value: [ culturally_rooted, cultural_attire, multiple_looks, glamorous_luxe, classic_timeless, fashion_forward_editorial ]
+    cite:
+      - source: feature_dallas
+      - source: feature_ghana
+      - source: feature_arusha
+      - source: feature_new_branch
+      - source: guidelines
+        quote: Portraits with editorial polish
+  seasonality:
+    value: unknown
+    checked: [ guidelines ]
+    note: Print features open through periodic Calls for Submissions tied to upcoming issues; no season is asked for.
+
+routes:
+  value:
+    - platform: web_form
+      url: https://www.munaluchibridal.com/submissions/
+      account_required: unknown
+      preferred: true
+      steps:
+        - Join the mailing list to hear when the next submission window opens.
+        - While the Submissions Portal is open, complete the submission form and share the gallery link.
+        - Include the curated images, full vendor credits and the couple's story.
+        - Say whether you are a Coterie member or whether a member worked on the wedding.
+        - Keep the Submissions ID number from the confirmation email to track the submission.
+      note: Closed on 2026-10-23 and due to reopen early 2027; when open, the portal runs monthly for a short window. Every submission is reviewed for print first, then online. The form was not visible to read.
+    - platform: portal
+      account_required: true
+      steps:
+        - Apply for and join The Coterie, the paid vendor membership.
+        - Submit the wedding through the Coterie Member Portal.
+        - Expect a reply in about three weeks.
+      note: Open only to paid Coterie members, and it stays open while the public portal is closed. The membership is recorded under economics.priority_paid_tier.
+  cite:
+    - source: guidelines
+      quote: To be considered, complete the submission form below and share your gallery.
+    - source: guidelines
+      quote: Our Submissions Portal is open monthly for a short window.
+    - source: guidelines
+      quote: Our Submissions Portal is currently closed and will reopen early 2027.
+    - source: guidelines
+      quote: Coterie Members, you still have access to submit your work via your Member Portal.
+    - source: guidelines
+      quote: join our mailing list to be the first to receive our next Call for Submissions.
+    - source: guidelines
+      quote: you’ll receive an email that includes a Submissions ID number
+    - source: guidelines
+      quote: All submissions are reviewed for print first, then online
+    - source: guidelines
+      quote: Make sure to indicate if you are a member or if a member worked on your wedding
+
+package:
+  image_min:
+    value: 75
+    cite:
+      - source: guidelines
+        quote: "Weddings + Styled Shoots: 75–100 curated images"
+    note: Engagement sessions take 25 to 50 images.
+  image_max:
+    value: 100
+    cite:
+      - source: guidelines
+        quote: "Weddings + Styled Shoots: 75–100 curated images"
+  resolution:
+    value:
+      min_width_px: 1200
+      note: 72 dpi for online review; weddings chosen for print are asked for 8 x 12 inch files at 300 dpi.
+    cite:
+      - source: guidelines
+        quote: "Image specs: minimum 1200px wide, 72 dpi"
+      - source: guidelines
+        quote: We’ll request hi-res images (8×12″, 300 dpi)
+  size:
+    value: web
+    cite:
+      - source: guidelines
+        quote: No less than 1200px width, 72 dpi (for digital). For print features, we’ll request hi-res files
+    note: Submit digital files; print files are requested only after a wedding is selected for print.
+  orientation_mix:
+    value: A mix of vertical and horizontal images.
+    cite:
+      - source: guidelines
+        quote: A smart mix of verticals + horizontals
+  watermarks_allowed:
+    value: false
+    cite:
+      - source: guidelines
+        quote: Watermarks? Never.
+  gallery_hosts:
+    value: unknown
+    checked: [ guidelines ]
+    note: No host is named; the gallery must download without passwords or accounts.
+  vendor_credits:
+    value:
+      required: true
+      fields: [ role, business_name, website, instagram ]
+      note: Website and/or Instagram handle for each vendor.
+    cite:
+      - source: guidelines
+        quote: "We require full vendor credits: names, roles, and websites urls and/or Instagram handles."
+  story:
+    value:
+      required: true
+      questionnaire: true
+      note: A story goes in with the submission; the questionnaire is emailed only after acceptance.
+    cite:
+      - source: guidelines
+        quote: Just share your gallery, credits, and story and we’ll take it from there.
+      - source: guidelines
+        quote: Every accepted submission requires a questionnaire + full vendor credits.
+      - source: guidelines
+        quote: If your submissions is accepted, we’ll email the questionnaire to you.
+  video_accepted:
+    value: unknown
+    checked: [ guidelines ]
+  other_requirements:
+    value:
+      - A gallery the editors can download without passwords or accounts.
+      - Vendor permission, especially when the couple submits.
+      - One consistent editing style, without special effects or heavy filters.
+      - Engagement sessions are published only before the wedding has taken place.
+    cite:
+      - source: guidelines
+        quote: If we can’t download your gallery easily (passwords missing, accounts required)
+      - source: guidelines
+        quote: Vendor permissions given (this is important if you are a couple submitting your event)
+      - source: guidelines
+        quote: Photo galleries with multiple editing styles
+      - source: guidelines
+        quote: Special effects and heavy filters
+      - source: guidelines
+        quote: For Engagement Sessions, we will publish if the wedding has not taken place yet.
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_required
+    cite:
+      - source: guidelines
+        quote: Do submissions need to be exclusive (not published elsewhere)?
+      - source: guidelines
+        quote: Yes. We only consider events that haven’t been featured in other publications (print or online), or heavily on social media.
+  prior_exposure:
+    publications:
+      value: disqualifies
+      cite:
+        - source: guidelines
+          quote: If your event was previously published in another magazine or on another website, it will not be considered for print or online.
+    blogs:
+      value: disqualifies
+      cite:
+        - source: guidelines
+          quote: If your event was previously published in another magazine or on another website, it will not be considered for print or online.
+      note: The rule covers any other website; no page carves out a vendor's own blog.
+    social:
+      value: sneak_peeks_only
+      cite:
+        - source: guidelines
+          quote: Submissions that have been featured elsewhere or heavily on social media
+      note: Only weddings shown heavily on social media are passed over; no page defines heavily.
+  freshness_window_months:
+    value: 12
+    cite:
+      - source: guidelines
+        quote: For Weddings, the wedding date must be less than 12 months from the time you submit.
+    note: The New Branch Farms feature (published May 2026) was of an August 2024 wedding.
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines ]
+  submitter_roles:
+    value: [ couple, photographer, planner, vendor ]
+    cite:
+      - source: guidelines
+        quote: Whether you’re the couple or a you’re a part of the vendor team (photographer, planner, designer, etc.), you’re welcome to submit.
+
+rights:
+  image_usage:
+    value: A worldwide, royalty-free license to use, reproduce and display submitted content across Munaluchi's media channels, with credit when practicable; possible partner publication features, with notice first; most web features later run on Instagram.
+    cite:
+      - source: terms
+        quote: you grant Munaluchi a worldwide, royalty-free license to use, reproduce, and display your content (with credit when practicable) across our media channels.
+      - source: guidelines
+        quote: By submitting, you agree to our Terms & Conditions, including possible partner publication features (you’ll always be notified first.)
+      - source: guidelines
+        quote: most events featured on our website will eventually be featured on social.
+  credit_format:
+    value: A Wedding team list credits each vendor by role, name and Instagram handle, with do-follow links; Instagram captions may not list every vendor, and caption mentions are guaranteed only to advertisers.
+    cite:
+      - source: guidelines
+        quote: Our website links are do-follow , giving each professional credit with some SEO power.
+      - source: guidelines
+        quote: We may not list every single vendor that worked the weddings in the IG caption
+      - source: guidelines
+        quote: We only guarantee Instagram mentions in captions for our advertisers.
+      - source: feature_dallas
+        quote: "Photography: Stanlo Photography | @stanlophotography"
+  couple_consent_required:
+    value: unknown
+    checked: [ guidelines, terms ]
+  vendor_consent_required:
+    value: true
+    cite:
+      - source: guidelines
+        quote: Just be sure you have permission from any vendors involved, and complete all required credits.
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ guidelines, terms, contact ]
+  publication_fee:
+    value: unknown
+    checked: [ guidelines, terms, coterie ]
+    note: The Coterie's higher tiers promise guaranteed quarterly Instagram features, not editorial features.
+  priority_paid_tier:
+    value:
+      name: The Coterie (MunaCoterie membership)
+      price:
+        amount: 69
+        currency: USD
+        note: Per month, the starting price of the lowest (Connect) tier; Elevate starts at 99 and Scale at 199.
+      note: Members hear back in about three weeks instead of 8 to 12, and keep a Member Portal route while the public portal is closed. Membership is by application.
+    cite:
+      - source: guidelines
+        quote: "Expedited submissions: For MunaCoterie Members, you’ll hear back within 3 weeks"
+      - source: guidelines
+        quote: Coterie Members, you still have access to submit your work via your Member Portal.
+      - source: coterie
+        quote: Starts at $69/month
+      - source: coterie
+        quote: Starts at $99/month
+      - source: coterie
+        quote: Starts at $199/month
+      - source: coterie
+        quote: Fill out the application form
+  reach:
+    value: unknown
+    checked: [ about, contact, guidelines ]
+    note: The Advertise page returned 404 and no media kit was found; the about and submissions pages give no audience figures.
+
+timing:
+  response_window:
+    value:
+      days: 84
+      replies: success_only
+    cite:
+      - source: guidelines
+        quote: "Submissions decisions: Our general response time is 8–12 weeks"
+      - source: guidelines
+        quote: "Online submissions: up to 8 weeks"
+      - source: guidelines
+        quote: Typically, we will only reach out to you if we have accepted your submission.
+    note: The process section says 8 to 12 weeks and the FAQ says up to 8 weeks; stored as 12 weeks. Coterie members hear back in about three weeks; print decisions take two to three months.
+  publish_lead_days:
+    value: unknown
+    checked: [ guidelines ]
+    note: Print selections are told the publication date once it is finalized.
+  publishing_cycle:
+    value: Online features plus a print magazine three times a year (the feature-page bio says quarterly); four real-wedding features ran between 2026-05-08 and 2026-10-07.
+    cite:
+      - source: guidelines
+        quote: Our print magazine is produced 3 times a year and available for purchase in the MunaShop.
+      - source: feature_dallas
+        quote: Our stylish and chic print publication is released quarterly in major bookstores across the US and internationally.
+      - source: feature_new_branch
+      - source: feature_arusha
+      - source: feature_ghana
+
+people:
+  editors:
+    value:
+      - name: Jackie Nwobu
+        role: Co-Founder/CEO
+      - name: Lily Taylor
+        role: Editor
+      - name: Linda Wallentine
+        role: Associate Editor
+      - name: Marie Deborah Smith
+        role: Freelance Fashion Editor
+      - name: Dana Miller
+        role: Freelance Editor
+    cite:
+      - source: about
+        quote: Jackie Nwobu Co-Founder/CEO
+      - source: about
+        quote: Lily Taylor Editor
+      - source: about
+        quote: Linda Wallentine Associate Editor
+      - source: about
+        quote: Marie Deborah Smith Freelance Fashion Editor
+      - source: about
+        quote: Dana Miller Freelance Editor
+
+insight:
+  secret_sauce:
+    - tip: Send 75 to 100 of the strongest images in one consistent editing style; overstuffed galleries, heavy filters and a flood of dance-floor shots are passed over.
+      cite:
+        - source: guidelines
+          quote: Overstuffed galleries (curation is everything)
+        - source: guidelines
+          quote: Dance floor overload (a few, not a flood)
+        - source: guidelines
+          quote: Photo galleries with multiple editing styles
+    - tip: Lead with the love story; the editors name a compelling story and meaningful details first, and say budget does not matter.
+      cite:
+        - source: guidelines
+          quote: A compelling love story + meaningful details
+        - source: guidelines
+          quote: Your wedding does not need to be of a million dollar budget to get featured.
+    - tip: Include editorial portraits, couture fashion and beauty details, and clean detail shots of the bouquet, cake, stationery and tables.
+      cite:
+        - source: guidelines
+          quote: We’re drawn to images that feel cinematic, chic, and intimate.
+        - source: guidelines
+          quote: Couture fashion and beauty details
+        - source: guidelines
+          quote: Clean compositions of bouquets, cakes, stationery, and tablescapes
+    - tip: Make sure the gallery downloads without passwords or accounts; locked or broken galleries go to the back of the queue or are rejected.
+      cite:
+        - source: guidelines
+          quote: If your gallery link is broken, locked behind password/account walls, or images can’t be downloaded, we’ll have to push your submission in the queue
+    - tip: Show the cultural traditions and heritage attire; every recent real wedding centers them.
+      cite:
+        - source: about
+          quote: we showcase the world’s most inspiring multicultural weddings
+        - source: feature_dallas
+        - source: feature_ghana
+        - source: feature_arusha
+    - tip: Coterie ties show up in recent features; three of the four newest real weddings name a Coterie member on the vendor team, and the guidelines ask submitters to flag one.
+      cite:
+        - source: guidelines
+          quote: Make sure to indicate if you are a member or if a member worked on your wedding
+        - source: feature_dallas
+          quote: View his Coterie profile here
+        - source: feature_arusha
+          quote: Coterie Member Doreen Fitzpatrick of Sassyfly Luxury Events
+        - source: feature_new_branch
+          quote: a member of the Munaluchi Coterie
+    - tip: For print, submit during an open Call for Submissions to hear back sooner.
+      cite:
+        - source: guidelines
+          quote: If you submit your event during an open Call for Submissions , you can expect a response quicker.
+  recent_features:
+    - source: feature_dallas
+      published: 2026-10-07
+      location: US-TX
+      content_type: real_wedding
+      tags: [ culturally_rooted, cultural_attire, multiple_looks, couture_designer, classic_timeless ]
+    - source: feature_ghana
+      published: 2026-06-15
+      content_type: real_wedding
+      tags: [ castle_chateau, culturally_rooted, cultural_attire, multiple_looks, glamorous_luxe ]
+      location: GH
+    - source: feature_arusha
+      published: 2026-05-27
+      location: TZ
+      content_type: real_wedding
+      tags: [ culturally_rooted, classic_timeless ]
+    - source: feature_new_branch
+      published: 2026-05-08
+      location: US-VA
+      content_type: real_wedding
+      tags: [ historic_manor_estate, farm_ranch_countryside, glamorous_luxe ]

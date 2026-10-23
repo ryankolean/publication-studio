@@ -1,0 +1,399 @@
+id: pub-equally-wed
+name: Equally Wed
+url: https://equallywed.com
+kind: blog
+tier: secondary
+recheck_every_days: 90
+taste_summary: LGBTQ+ weddings and elopements told through the couple's own words, often intimate, outdoors and far from home, with the journey to a legal marriage at the center.
+notes: The site invites "your LGBTQ+ wedding" and styled shoots must use real LGBTQ+ people, so this outlet only fits LGBTQ+ couples. The submission forms sit behind a Submittable account login and were not viewed; package facts come from the guidelines on the public Submittable listing. Feature publish dates come from each page's published-time metadata; the pages do not print a date. The media kit is sent only by email request.
+
+sources:
+  guidelines:
+    url: https://equallywed.com/submissions/
+    read: 2026-10-23
+    kind: guidelines
+    title: Submit your LGBTQ+ wedding to Equally Wed
+  submittable:
+    url: https://equallywed.submittable.com/submit
+    read: 2026-10-23
+    kind: guidelines
+    title: Equally Wed Submission Manager (public Submittable listing)
+  about:
+    url: https://equallywed.com/about-equally-wed/
+    read: 2026-10-23
+    kind: about
+    title: About Equally Wed
+  advertising:
+    url: https://equallywed.com/advertising-and-sales/
+    read: 2026-10-23
+    kind: media_kit
+    title: Advertise with Equally Wed
+  directory:
+    url: https://equallywed.com/become-a-preferred-local-vendor-today/
+    read: 2026-10-23
+    kind: other
+    title: Join the Equally Wed Directory (preferred vendor pricing)
+  feature_queenstown:
+    url: https://equallywed.com/snowy-new-zealand-elopement-at-the-remarkables/
+    read: 2026-10-23
+    kind: feature
+    title: Erika and Irish's Snowy New Zealand Elopement at the Remarkables
+  feature_perast:
+    url: https://equallywed.com/jake-and-joris-montenegro-wedding-two-grooms-two-barongs-and-the-bay-of-kotor/
+    read: 2026-10-23
+    kind: feature
+    title: "Jake and Jori's Montenegro Wedding: Two Grooms, Two Barongs and the Bay of Kotor"
+  feature_boulder:
+    url: https://equallywed.com/a-colorful-outdoor-wedding-at-halfway-house-in-boulder-colorado/
+    read: 2026-10-23
+    kind: feature
+    title: A colorful outdoor wedding at Halfway House in Boulder, Colorado
+  feature_yachats:
+    url: https://equallywed.com/these-two-brides-followed-their-private-vow-exchange-with-a-coastal-winter-diy-wedding-in-yachats-oregon/
+    read: 2026-10-23
+    kind: feature
+    title: These two brides followed their private vow exchange with a coastal winter DIY wedding in Yachats, Oregon
+  feature_stoller:
+    url: https://equallywed.com/burgundy-suits-and-a-corvette-arrival-inside-a-vibrant-oregon-queer-wedding/
+    read: 2026-10-23
+    kind: feature
+    title: "Burgundy Suits and A Corvette Arrival: Inside a Vibrant Oregon Queer Wedding"
+
+identity:
+  parent_company:
+    value: Palladino Publishing, LLC
+    cite:
+      - source: about
+        quote: Equallywed.com is published by Palladino Publishing, LLC.
+  sister_publications:
+    value: unknown
+    checked: [ about, advertising ]
+    note: Equally Wed Pro is the company's education platform for wedding professionals, not a separate title.
+  shared_inbox_with:
+    value: unknown
+    checked: [ guidelines, submittable, about ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: about
+        quote: Equally Wed’s focus on weddings offers a closer look into Real Weddings around the world
+      - source: feature_queenstown
+      - source: feature_perast
+      - source: feature_boulder
+      - source: feature_yachats
+      - source: feature_stoller
+    note: No page sets a geographic limit; the five newest real weddings are in New Zealand, Montenegro, Colorado and Oregon.
+  basis:
+    value: unknown
+    checked: [ guidelines, submittable ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: feature_perast
+        quote: The two grooms, originally from the Philippines and now based in Dublin, Ireland
+      - source: feature_queenstown
+        quote: built a life in Dubai and traveled thousands of miles to stand, finally and legally, as wives
+    note: Inferred from published features; no page states that destination weddings are accepted. Both couples traveled from their home countries to marry, and the Montenegro feature is filed under the site's Destination Weddings category.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: submittable
+        quote: When submitting a Real Wedding to Equally Wed, please follow these guidelines to increase the likelihood of it being chosen for an editorial feature
+  elopement:
+    value: true
+    cite:
+      - source: feature_queenstown
+    note: Inferred from published features; no page states that elopements are accepted. The newest real-wedding feature is headlined as an elopement.
+  styled_shoot:
+    value: true
+    cite:
+      - source: submittable
+        quote: Equally Wed is highly selective on styled shoots. Styled shoots must be of real LGBTQ+ people, not straight models.
+  style_tags:
+    value: [ intimate_micro, mountain_alpine, organic_textural, wedding_suit_pantsuit, culturally_rooted, beach_coastal, vineyard_winery ]
+    cite:
+      - source: feature_queenstown
+      - source: feature_perast
+      - source: feature_boulder
+      - source: feature_yachats
+      - source: feature_stoller
+  seasonality:
+    value: unknown
+    checked: [ guidelines, submittable ]
+
+routes:
+  value:
+    - platform: portal
+      url: https://equallywed.submittable.com/submit
+      account_required: true
+      preferred: true
+      steps:
+        - Open the Equally Wed Submission Manager on Submittable.
+        - Choose the Real Wedding Submissions form (or Engagement Submissions, Styled Shoots or Expert Advice).
+        - Sign in to a Submittable account.
+        - Fill in the full wedding questionnaire with the couple's and vendors' answers.
+        - Add at least 15 professional images covering the whole day, mostly horizontal and in color.
+        - Submit.
+      note: Every Submit link on the public listing redirects to the Submittable account login, so the forms were not viewed. Couples submit through the same forms.
+  cite:
+    - source: submittable
+      quote: Please use one of our submission forms below to submit to Equally Wed.
+    - source: guidelines
+      quote: Please click the button below to submit weddings, engagements, styled shoots, expert advice, etc. to us!
+    - source: submittable
+      quote: For couples and marriers wishing to submit, you can do so through the forms below as well.
+
+package:
+  image_min:
+    value: 15
+    cite:
+      - source: submittable
+        quote: "Minimum images: 15"
+    note: Engagement submissions need at least 20.
+  image_max:
+    value: unknown
+    checked: [ submittable ]
+  resolution:
+    value: unknown
+    checked: [ submittable ]
+    note: Only the engagement guidelines give a size (1 MB or larger preferred); the real-wedding guidelines give none.
+  size:
+    value: unknown
+    checked: [ submittable ]
+  orientation_mix:
+    value: Mostly horizontal images, in color.
+    cite:
+      - source: submittable
+        quote: Most images should be horizontal and in color.
+  watermarks_allowed:
+    value: false
+    cite:
+      - source: submittable
+        quote: No watermarks or graphics permitted on images.
+  gallery_hosts:
+    value: unknown
+    checked: [ submittable ]
+    note: The forms are behind the Submittable login; no gallery host is named on the public listing.
+  vendor_credits:
+    value: unknown
+    checked: [ submittable ]
+    note: The guidelines ask submitters to gather the information requested from the couple and the other vendors, and the engagement guidelines ask for accurate websites and Instagram handles; the real-wedding form itself was not viewed.
+  story:
+    value:
+      required: true
+      questionnaire: true
+      note: The story comes from a wedding questionnaire inside the form.
+    cite:
+      - source: submittable
+        quote: Ask your couples and other vendors for all the information we request. Please do not submit incomplete wedding questionnaires.
+  video_accepted:
+    value: unknown
+    checked: [ submittable ]
+  other_requirements:
+    value:
+      - Weddings from 2020 or later.
+      - No weddings held at plantations.
+      - Professional photos covering the whole event, from getting ready and details through the ceremony and reception, with more details than guests.
+    cite:
+      - source: submittable
+        quote: We do not accept weddings earlier than 2020.
+      - source: submittable
+        quote: We do not publish weddings at plantations.
+      - source: submittable
+        quote: Submit a variety of professional photos showcasing the entire event
+      - source: submittable
+        quote: More details, less wedding guests.
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_required
+      during_review: true
+      after_publication_days: 365
+    cite:
+      - source: submittable
+        quote: Ensure that this wedding has never been published anywhere but the photographer's personal blog or submitted to any other wedding blogs or magazines.
+      - source: submittable
+        quote: Equally Wed and Palladino Publishing LLC reserve exclusivity for 1 year after publication.
+  prior_exposure:
+    publications:
+      value: disqualifies
+      cite:
+        - source: submittable
+          quote: Ensure that this wedding has never been published anywhere but the photographer's personal blog or submitted to any other wedding blogs or magazines.
+    blogs:
+      value: allowed
+      cite:
+        - source: submittable
+          quote: Ensure that this wedding has never been published anywhere but the photographer's personal blog
+      note: Only the photographer's personal blog; other wedding blogs disqualify.
+    social:
+      value: unknown
+      checked: [ submittable, guidelines ]
+  freshness_window_months:
+    value: unknown
+    checked: [ submittable ]
+    note: There is no rolling window; weddings before 2020 are not accepted.
+  photographer_frequency:
+    value: unknown
+    checked: [ submittable ]
+  submitter_roles:
+    value: [ couple, photographer, vendor ]
+    cite:
+      - source: submittable
+        quote: For couples and marriers wishing to submit, you can do so through the forms below as well.
+      - source: submittable
+        quote: Ask your couples and other vendors for all the information we request.
+    note: The guidelines address vendors submitting their couples' weddings, which covers photographers.
+
+rights:
+  image_usage:
+    value: Worldwide use without time limitation by Palladino Publishing and its affiliates, partners and licensees, in any medium, including magazines, promotional merchandise and marketing, with the submitter's name and city/state.
+    cite:
+      - source: submittable
+        quote: you grant Palladino Publishing, LLC, its affiliates, partners and licensees worldwide use of the material without time limitation
+      - source: submittable
+        quote: We may modify, reproduce and distribute your material in any medium and in any manner or appropriate place
+      - source: submittable
+        quote: including but not limited to magazines, promotional merchandise, and marketing and other related materials
+      - source: submittable
+        quote: the right to include your name and city/state in connection with any such use
+  credit_format:
+    value: A closing vendor list headed "Featured LGBTQ+ Inclusive and Queer Affirming Wedding Vendors", each vendor by role and business name, such as "Photographer:" and the studio name.
+    cite:
+      - source: feature_boulder
+        quote: Featured LGBTQ+ Inclusive and Queer Affirming Wedding Vendors
+      - source: feature_boulder
+        quote: "Photographer: Claire Katan Creative LLC"
+      - source: feature_stoller
+        quote: "Photographer: Indwell Weddings"
+  couple_consent_required:
+    value: unknown
+    checked: [ submittable ]
+  vendor_consent_required:
+    value: unknown
+    checked: [ submittable ]
+    note: A submitter who is not the photographer must hold the rights to the images, ideally the photographer's written permission; nothing asks for other vendors' consent.
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ submittable, guidelines ]
+    note: The Submittable listing shows no fee beside any form, which is where Submittable shows a submission fee, but no page says submissions are free.
+  publication_fee:
+    value: unknown
+    checked: [ guidelines, directory, advertising ]
+    note: The Platinum listing includes a sponsored post about the vendor's business; nothing ties payment to a wedding feature.
+  priority_paid_tier:
+    value:
+      name: Preferred vendor directory listing (Sterling Silver, with Equally Wed Pro membership)
+      price:
+        amount: 299
+        currency: USD
+        note: Per year, or 33.97 per month; the lowest tier with real-wedding priority. 14kt Gold (499 a year) adds engagement priority and Platinum (1999 a year) adds styled-shoot priority.
+      note: The listing gives "submission priority status"; no page says what the priority changes. Styled shoots are accepted more readily from preferred vendors.
+    cite:
+      - source: directory
+        quote: $299 /year or $33.97 /month
+      - source: directory
+        quote: Real wedding submission priority status
+      - source: directory
+        quote: $499 /year or $49.97 /month
+      - source: directory
+        quote: Real wedding and engagement submission priority status
+      - source: directory
+        quote: $1999 /year or $183.97 /month
+      - source: directory
+        quote: Real wedding, engagement and styled-shoot submission priority status
+      - source: submittable
+        quote: We accept styled shoots more readily from our preferred vendors who are already part of the Equally Wed family.
+      - source: directory
+        quote: Our most affordable listing with Equally Wed Pro membership.
+  reach:
+    value: unknown
+    checked: [ advertising, about ]
+    note: The advertise page claims the most web traffic of any LGBTQ+ wedding site (citing Similar Web and Semrush) but gives no figure; the media kit is sent only on request.
+
+timing:
+  response_window:
+    value: unknown
+    checked: [ submittable, guidelines ]
+  publish_lead_days:
+    value: unknown
+    checked: [ submittable ]
+  publishing_cycle:
+    value: Online, with new content daily; five real-wedding features ran between 2026-08-12 and 2026-10-03.
+    cite:
+      - source: about
+        quote: Equally Wed publishes new content daily.
+      - source: feature_queenstown
+      - source: feature_perast
+      - source: feature_boulder
+      - source: feature_yachats
+      - source: feature_stoller
+
+people:
+  editors:
+    value:
+      - name: Kirsten Palladino
+        role: Founder & Editorial Director
+      - name: Maria “Mo” Palladino
+        role: Founder & Creative Director
+    cite:
+      - source: about
+        quote: Founder & Editorial Director Kirsten Palladino
+      - source: about
+        quote: Founder & Creative Director Maria “Mo” Palladino
+
+insight:
+  secret_sauce:
+    - tip: Send the questionnaire complete, with every answer gathered from the couple and the vendors; the editors will not chase missing details.
+      cite:
+        - source: submittable
+          quote: We receive hundreds of submissions and we cannot follow up with your couples on your behalf.
+    - tip: Cover the whole day, from getting ready and details to the ceremony and the reception, and favor details over guest shots.
+      cite:
+        - source: submittable
+          quote: More details, less wedding guests.
+    - tip: Get the couple to answer in their own words; recent features are built around their quotes on the love story, the proposal and advice for vendors serving LGBTQ+ couples.
+      cite:
+        - source: feature_boulder
+          quote: Advice for Vendors and Venues
+        - source: feature_queenstown
+          quote: The newlyweds offer this advice to vendors and wedding professionals working with the LGBTQ+ community
+    - tip: For styled shoots, cast real LGBTQ+ people and show ideas the real-wedding section lacks; preferred vendors get styled shoots accepted more readily.
+      cite:
+        - source: submittable
+          quote: We're looking for inspiration that our couples might not see in our Real Weddings section.
+        - source: submittable
+          quote: We accept styled shoots more readily from our preferred vendors who are already part of the Equally Wed family.
+  recent_features:
+    - source: feature_queenstown
+      published: 2026-10-03
+      location: NZ
+      content_type: elopement
+      tags: [ mountain_alpine, intimate_micro, wedding_suit_pantsuit ]
+    - source: feature_perast
+      published: 2026-09-28
+      location: ME
+      content_type: real_wedding
+      tags: [ culturally_rooted, cultural_attire, intimate_micro, mediterranean_europe ]
+    - source: feature_boulder
+      published: 2026-09-02
+      location: US-CO
+      content_type: real_wedding
+      tags: [ mountain_alpine, whimsical, intimate_micro ]
+    - source: feature_yachats
+      published: 2026-08-24
+      location: US-OR
+      content_type: real_wedding
+      tags: [ beach_coastal, intimate_micro, organic_textural ]
+    - source: feature_stoller
+      published: 2026-08-12
+      location: US-OR
+      content_type: real_wedding
+      tags: [ vineyard_winery, organic_textural, wedding_suit_pantsuit ]

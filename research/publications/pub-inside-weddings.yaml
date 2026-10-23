@@ -1,0 +1,385 @@
+id: pub-inside-weddings
+name: Inside Weddings
+url: https://www.insideweddings.com
+kind: national_magazine
+tier: secondary
+recheck_every_days: 90
+taste_summary: Upscale, decor-led real weddings with full vendor lists; recent features are ballroom, country club, tented and garden celebrations with lavish florals, mostly in the US.
+notes: Feature pages show no publication date, and the weddings sitemap carries update dates, not publish dates, so recent_features is empty; the features stay cited for style tags. The terms of use are drawn by a third-party script and fetch empty without a browser; they were read in a headless browser render. Media kit facts come from the 2025 PDF media kit linked from the advertise page.
+
+sources:
+  submit:
+    url: https://www.insideweddings.com/wedding/submit/
+    read: 2026-10-23
+    kind: form
+    title: Submit Your Wedding
+  about:
+    url: https://www.insideweddings.com/about/
+    read: 2026-10-23
+    kind: about
+    title: About Inside Weddings
+  contact:
+    url: https://www.insideweddings.com/contact/
+    read: 2026-10-23
+    kind: other
+    title: Contact Us (web form)
+  advertise:
+    url: https://www.insideweddings.com/advertise/
+    read: 2026-10-23
+    kind: media_kit
+    title: Advertise With Us
+  kit:
+    url: https://api.insideweddings.com/documents/1/IW_2025_MediaKit-WS.pdf
+    read: 2026-10-23
+    kind: media_kit
+    title: 2025 media kit (PDF)
+  terms:
+    url: https://www.insideweddings.com/terms-of-use/
+    read: 2026-10-23
+    kind: other
+    title: Terms of Use (last updated 10/24/2023; drawn by a script, read in a browser render)
+  memberships:
+    url: https://www.insideweddings.com/work-with-us/
+    read: 2026-10-23
+    kind: other
+    title: Are You a Wedding Professional? (business memberships)
+  weddings_index:
+    url: https://www.insideweddings.com/weddings/search/category/event_type/real_wedding
+    read: 2026-10-23
+    kind: other
+    title: Real Weddings index
+  feature_mission_hills:
+    url: https://www.insideweddings.com/weddings/ballroom-garden-wedding-swans-peacocks/56376/
+    read: 2026-10-23
+    kind: feature
+    title: An Enchanting Ballroom Garden Wedding Complete with Swans & Peacocks
+  feature_detroit:
+    url: https://www.insideweddings.com/weddings/dark-moody-romantic-wedding-detroit/53710/
+    read: 2026-10-23
+    kind: feature
+    title: A Dark, Moody & Romantic Real Wedding in Detroit, Michigan
+  feature_middleburg:
+    url: https://www.insideweddings.com/weddings/whimsical-garden-tent-wedding-virginia/54066/
+    read: 2026-10-23
+    kind: feature
+    title: A Whimsical, Floral Garden Wedding in a Custom Greenhouse Tent in Virginia
+  feature_kingston:
+    url: https://www.insideweddings.com/weddings/elegant-neutral-destination-wedding-jamaica/55072/
+    read: 2026-10-23
+    kind: feature
+    title: An Elegant Neutral Destination Wedding at a Family Estate in Jamaica
+  feature_austin:
+    url: https://www.insideweddings.com/weddings/white-green-tent-wedding-austin-texas/56229/
+    read: 2026-10-23
+    kind: feature
+    title: A Timeless, Luxury Tented White-and-Green Wedding in Austin, Texas
+
+identity:
+  parent_company:
+    value: Belle Media
+    cite:
+      - source: about
+        quote: Published by Belle Media, Inside Weddings provides readers with a rich source of inspirational and aspirational images and ideas.
+  sister_publications:
+    value: unknown
+    checked: [ about, advertise, kit ]
+  shared_inbox_with:
+    value: unknown
+    checked: [ submit, contact ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: feature_mission_hills
+      - source: feature_detroit
+      - source: feature_middleburg
+      - source: feature_kingston
+      - source: feature_austin
+    note: Inferred from published features; no page states a geographic limit. Recent features are in California, Michigan, Virginia, Texas and Jamaica, and the form's wedding-country list offers every country.
+  basis:
+    value: unknown
+    checked: [ submit ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: feature_kingston
+        quote: An Elegant Neutral Destination Wedding at a Family Estate in Jamaica
+    note: Inferred from published features; no page states that destination weddings are accepted. The Jamaica feature calls itself a destination wedding.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: submit
+        quote: We feature weddings, rehearsal dinners, bridal showers, and other wedding-related events.
+  elopement:
+    value: unknown
+    checked: [ submit, weddings_index ]
+  styled_shoot:
+    value: unknown
+    checked: [ submit, about ]
+    note: The about page warns that Inside Weddings does not solicit styled shoots (an anti-impersonation notice); the submission page does not say whether styled shoots are accepted.
+  style_tags:
+    value: [ glamorous_luxe, romantic, classic_timeless, garden_botanical, ballroom_grand_hall ]
+    cite:
+      - source: feature_mission_hills
+      - source: feature_detroit
+      - source: feature_middleburg
+      - source: feature_kingston
+      - source: feature_austin
+  seasonality:
+    value: unknown
+    checked: [ submit, kit ]
+
+routes:
+  value:
+    - platform: web_form
+      url: https://www.insideweddings.com/wedding/submit/
+      account_required: false
+      preferred: true
+      steps:
+        - Open the Submit Your Wedding form and fill out every field.
+        - Give a link to 50 to 100 photos showing the style of the wedding and the detail and decoration of the ceremony and reception.
+        - Confirm the couple is aware of the submission and its terms.
+        - Confirm the wedding has not been submitted to or accepted by another print publication or a commercial blog.
+        - Note a preference for print or web, if there is one.
+      note: The form sits on a public page with no sign-in step. The about page says submissions are accepted only through this form.
+  cite:
+    - source: about
+      quote: "Legitimate submissions are accepted only through our official channels:"
+    - source: submit
+      quote: Please fill out all fields on the submission form to provide us with a sense of the overall event.
+    - source: submit
+      quote: Please provide us with 50-100 photos that reflect the style of the wedding
+    - source: submit
+      quote: the detail and decoration elements of both the ceremony and reception.
+    - source: submit
+      quote: "Please confirm that the couple is aware that:"
+    - source: submit
+      quote: has not been submitted or accepted for print by another print publication.
+    - source: submit
+      quote: has not been submitted or accepted for a feature on a commercial blog.
+    - source: submit
+      quote: if you have a preference for one over the other, please note it in the submission.
+
+package:
+  image_min:
+    value: 50
+    cite:
+      - source: submit
+        quote: Please provide us with 50-100 photos
+  image_max:
+    value: 100
+    cite:
+      - source: submit
+        quote: Please provide us with 50-100 photos
+  resolution:
+    value: unknown
+    checked: [ submit ]
+  size:
+    value: unknown
+    checked: [ submit ]
+    note: The page says celebrations are considered for print and the web; that is placement, not file size.
+  orientation_mix:
+    value: unknown
+    checked: [ submit ]
+  watermarks_allowed:
+    value: unknown
+    checked: [ submit ]
+  gallery_hosts:
+    value: unknown
+    checked: [ submit ]
+    note: The Media Upload section takes a single link; no host is named or refused.
+  vendor_credits:
+    value:
+      required: true
+    cite:
+      - source: submit
+        quote: Please include a list of vendors, as well as any details that make this wedding unique.
+    note: The quote is the placeholder text of the form's wedding details box.
+  story:
+    value: unknown
+    checked: [ submit ]
+    note: The form has a details box for the vendor list and what makes the wedding unique; it asks for no written story or questionnaire.
+  video_accepted:
+    value: unknown
+    checked: [ submit ]
+  other_requirements:
+    value:
+      - Photos focus mainly on the decor, details and venues, with a limited number of couple shots.
+      - The couple must know that a published wedding includes their first and last names and photos of them.
+      - If selected, the couple will be asked for cost information about the event, used for research only.
+      - The couple must know that photo layouts are not released before publication.
+    cite:
+      - source: submit
+        quote: photos that focus mainly on the décor, details, and venue(s) of the event
+      - source: submit
+        quote: couple shots should be included, but limited in number.
+      - source: submit
+        quote: publication of a real wedding includes the couple's first and last names, and photos of the couple.
+      - source: submit
+        quote: if their wedding is selected, they will be asked to provide cost information relating to the event that will be used for research purposes only.
+      - source: submit
+        quote: we are unable to release photo layouts prior to publication.
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_required
+      during_review: true
+    cite:
+      - source: submit
+        quote: has not been submitted or accepted for print by another print publication.
+      - source: submit
+        quote: has not been submitted or accepted for a feature on a commercial blog.
+    note: The submitter confirms the wedding has not been submitted to another print publication or for a commercial blog feature. No period after publication is stated.
+  prior_exposure:
+    publications:
+      value: disqualifies
+      cite:
+        - source: submit
+          quote: has not been submitted or accepted for print by another print publication.
+        - source: submit
+          quote: has not been submitted or accepted for a feature on a commercial blog.
+      note: Covers other print publications and commercial blogs, including weddings only submitted there.
+    blogs:
+      value: unknown
+      checked: [ submit ]
+      note: The form rules out commercial blogs; it does not say whether the photographer's own blog counts.
+    social:
+      value: unknown
+      checked: [ submit ]
+  freshness_window_months:
+    value: unknown
+    checked:
+      - submit
+  photographer_frequency:
+    value: unknown
+    checked: [ submit ]
+  submitter_roles:
+    value: [ couple, photographer, planner, vendor ]
+    cite:
+      - source: submit
+        quote: Getting in Touch with You Bride Groom Parent Photographer Wedding Planner Floral Designer Other
+    note: The form's sender choices are Bride, Groom, Parent, Photographer, Wedding Planner, Floral Designer and Other. Vendor is read from Floral Designer; parents have no role code here.
+
+rights:
+  image_usage:
+    value: unknown
+    checked: [ submit, about, terms ]
+    note: The terms of use cover use of the website and name no license for submitted weddings or photos.
+  credit_format:
+    value: The photographer is named under the headline as "Photographed by" and the studio name, each image is captioned "Photo:" and the studio name, and every vendor is listed by category under Wedding Resources.
+    cite:
+      - source: feature_mission_hills
+        quote: "Photographed by: Michael Anthony Photography"
+      - source: feature_mission_hills
+        quote: "Photo: Michael Anthony Photography"
+      - source: feature_mission_hills
+        quote: Wedding Resources
+  couple_consent_required:
+    value: unknown
+    checked:
+      - submit
+    note: The submitter confirms the couple is aware of the submission; consent is not asked for.
+  vendor_consent_required:
+    value: unknown
+    checked: [ submit ]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ submit, memberships ]
+  publication_fee:
+    value: unknown
+    checked: [ submit, advertise, kit ]
+    note: The media kit sells "Sponsored Galleries & Real Weddings" as an advertising product; nothing ties a fee to the editorial submission route.
+  priority_paid_tier:
+    value:
+      name: Editors Circle business membership
+      price:
+        amount: 400
+        currency: USD
+        note: Starting price per month.
+      note: The top business membership lists Priority Editorial Submissions among its features; the page does not say what priority means.
+    cite:
+      - source: memberships
+        quote: Editors Circle starting at $ 400 / month
+      - source: memberships
+        quote: + Priority Editorial Submissions
+  reach:
+    value:
+      - metric: monthly_visitors
+        value: 78000
+        as_of: 2024-12-31
+      - metric: instagram_followers
+        value: 445000
+        as_of: 2025-01-01
+      - metric: facebook_followers
+        value: 535000
+        as_of: 2025-01-01
+      - metric: print_circulation
+        value: 200000
+        as_of: 2025-01-01
+    cite:
+      - source: kit
+        quote: "Avg Monthly Active Visitors : 78,000*"
+      - source: kit
+        quote: Instagram 445,000+
+      - source: kit
+        quote: Facebook 535,000+
+      - source: kit
+        quote: DISTRIBUTION TOTAL PER ISSUE 200,000
+    note: The visitor figure is footnoted 2024, so as_of is that year's end. The other figures come from the 2025 media kit, which gives no month, so as_of is the start of 2025. Print is a per-issue distribution figure, not audited paid circulation.
+
+timing:
+  response_window:
+    value: unknown
+    checked: [ submit, about ]
+  publish_lead_days:
+    value: unknown
+    checked: [ submit ]
+  publishing_cycle:
+    value: Quarterly print magazine; the website is continually updated, and recent web features first ran in a print issue.
+    cite:
+      - source: about
+        quote: The magazine is published quarterly and distributed throughout the U.S. and select international markets.
+      - source: about
+        quote: an interactive website that's continually updated
+      - source: feature_mission_hills
+        quote: This real wedding was originally published as a cover story in the Summer 2026 issue of Inside Weddings magazine.
+      - source: feature_austin
+        quote: This real wedding was originally published in the Spring 2026 expanded-digital issue of Inside Weddings magazine.
+
+people:
+  editors:
+    value: unknown
+    checked: [ about, contact, feature_mission_hills, feature_detroit ]
+    note: Recent features carry the bylines Nicole Palacios and Kelcy Christy with no titles; the about page mentions an Editor-in-Chief without a name.
+
+insight:
+  secret_sauce:
+    - tip: Build the selection around decor, details and the venues, and keep couple portraits to a few.
+      cite:
+        - source: submit
+          quote: photos that focus mainly on the décor, details, and venue(s) of the event
+        - source: submit
+          quote: couple shots should be included, but limited in number.
+    - tip: Complete every field; the editors judge the whole event from the form.
+      cite:
+        - source: submit
+          quote: Please fill out all fields on the submission form to provide us with a sense of the overall event.
+    - tip: Aim at the upscale market; half of each issue is upscale real weddings with every vendor credited.
+      cite:
+        - source: about
+          quote: devotes half of its pages to showcasing the upscale weddings of real couples.
+        - source: about
+          quote: provide readers with all vendor information to help brides plan their own wedding.
+    - tip: Prepare the couple for a cost survey; the media kit says the featured couples' financial survey is required for publication.
+      cite:
+        - source: kit
+          quote: "Source: Featured couples financial survey required for publication."
+        - source: submit
+          quote: if their wedding is selected, they will be asked to provide cost information relating to the event that will be used for research purposes only.
+  recent_features: []

@@ -1,0 +1,341 @@
+id: pub-the-knot
+name: The Knot
+url: https://www.theknot.com
+kind: national_magazine
+tier: primary
+recheck_every_days: 90
+taste_summary: Personal, relatable real weddings from every season, built around details the editors have not seen before; domestic weddings first.
+notes: theknot.com answers plain fetches with an Access Denied page; every page below was read in a browser on 2026-10-23. Album pages show no publish date, so recent_features is empty; the style tags come from the albums' setting and theme labels.
+
+sources:
+  guide:
+    url: https://www.theknot.com/content/submit-wedding-to-the-knot
+    read: 2026-10-23
+    kind: guidelines
+    title: The Knot Real Wedding Submission Guide & Tips for How to Get Selected
+  albums:
+    url: https://www.theknot.com/real-weddings/albums
+    read: 2026-10-23
+    kind: other
+    title: Real wedding albums
+  feature_grand_del_mar:
+    url: https://www.theknot.com/real-weddings/grand-del-mar-california-2026-connie-and-brian-album
+    read: 2026-10-23
+    kind: feature
+  feature_lake_como:
+    url: https://www.theknot.com/real-weddings/lake-como-2026-nastassja-and-daniel-album
+    read: 2026-10-23
+    kind: feature
+  feature_new_york:
+    url: https://www.theknot.com/real-weddings/new-york-2026-lena-and-kuei-album
+    read: 2026-10-23
+    kind: feature
+  feature_cape_may:
+    url: https://www.theknot.com/real-weddings/cape-may-new-jersey-2026-avery-and-john-album
+    read: 2026-10-23
+    kind: feature
+  feature_yountville:
+    url: https://www.theknot.com/real-weddings/yountville-california-2026-kristin-and-zach-album
+    read: 2026-10-23
+    kind: feature
+
+identity:
+  parent_company:
+    value: XO Group Inc
+    cite:
+      - source: guide
+        quote: ©1997-2026 XO Group Inc
+    note: The copyright holder in the site footer.
+  sister_publications:
+    value: unknown
+    checked: [ guide ]
+  shared_inbox_with:
+    value: unknown
+    checked: [ guide ]
+
+coverage:
+  regions:
+    value: [ US ]
+    cite:
+      - source: guide
+        quote: The Knot is a national publication, and we love to see celebrations from wedding venues all over.
+      - source: guide
+        quote: The team is currently prioritizing domestic weddings, though we are open to unique exceptions.
+  basis:
+    value: unknown
+    checked:
+      - guide
+  destination_accepted:
+    value: unknown
+    checked:
+      - guide
+    note: Weddings outside the US are unique exceptions; destination weddings are not mentioned.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guide
+        quote: We want your Real Weddings.
+  elopement:
+    value: unknown
+    checked: [ guide ]
+  styled_shoot:
+    value: false
+    cite:
+      - source: guide
+        quote: which means we don't accept styled shoots.
+  style_tags:
+    value: [ hotel_resort, restaurant_private_dining, garden_botanical, farm_ranch_countryside, vineyard_winery, glamorous_luxe, romantic, vintage_heritage ]
+    cite:
+      - source: feature_grand_del_mar
+      - source: feature_lake_como
+      - source: feature_new_york
+      - source: feature_cape_may
+      - source: feature_yountville
+    note: From each album's setting, style and theme labels (Hotel, Restaurant, Garden, Farm & Ranch, Vineyard & Winery, Luxury, Romantic, Vintage).
+  seasonality:
+    value: none
+    cite:
+      - source: guide
+        quote: We run beautiful celebrations from all four seasons.
+
+routes:
+  value:
+    - platform: two_bright_lights
+      url: https://www.twobrightlights.com
+      account_required: true
+      preferred: true
+      steps:
+        - Log in or sign up for free on Two Bright Lights.
+        - Open Albums and choose Create Album.
+        - If you are not the photographer, request the photographer's permission in Two Bright Lights and wait for it.
+        - Categorize the album, enter the event details and the album story, and add every vendor.
+        - Add descriptive tags such as photography style, setting, religion and season.
+        - Add at least 80 images and check each one you want sent.
+        - Choose Exclusive Submission when prompted, select TheKnot.com, and submit.
+        - If the editors are interested, send the couple's questionnaire back within three weeks.
+  cite:
+    - source: guide
+      quote: Currently, the team uses a platform called Two Bright Lights to receive and review all wedding submissions.
+    - source: guide
+      quote: "Log in or sign up for free on twobrightlights.com."
+    - source: guide
+      quote: You won't be able to move forward with your submission until you have the photographer's permission.
+    - source: guide
+      quote: you'll need to select "Exclusive Submission" when the pop-up box prompts you.
+    - source: guide
+      quote: "For digital submissions, click *TheKnot.com."
+    - source: guide
+      quote: within three weeks of notification
+
+package:
+  image_min:
+    value: 80
+    cite:
+      - source: guide
+        quote: The Knot Editors would like you to add at least 80 images from the event to upload
+  image_max:
+    value: 2000
+    cite:
+      - source: guide
+        quote: but you can upload up to 2,000.
+    note: The Two Bright Lights upload cap. 100 to 150 images is ideal, and the editors curate about 30 to 40.
+  resolution:
+    value:
+      note: Two Bright Lights suggests high-resolution 5 MB JPEGs at least "2,00" pixels wide (as printed; probably 2,000).
+    cite:
+      - source: guide
+        quote: high-resolution images of 5 MB in JPEG format that have a minimum size of 2,00 pixels wide
+  size:
+    value: unknown
+    checked: [ guide ]
+    note: The guide asks for high-resolution files but never says web or print.
+  orientation_mix:
+    value: A mix of horizontal and vertical photos, with variety in scale.
+    cite:
+      - source: guide
+        quote: include a mix of horizontal and vertical photos, along with scale variety, no matter the photography style
+  watermarks_allowed:
+    value: unknown
+    checked: [ guide ]
+  gallery_hosts:
+    value:
+      - direct_upload
+      - dropbox
+      - shootproof
+      - smugmug
+      - google_drive
+      - pic_time
+      - pixieset
+    cite:
+      - source: guide
+        quote: You can upload them directly from your computer or other image-housing platforms such as Dropbox, ShootProof, SmugMug and Zenfolio.
+    note: Images go into Two Bright Lights from a computer or an image-housing platform. Dropbox, ShootProof, SmugMug and Zenfolio are named; the others are read from "such as".
+  vendor_credits:
+    value:
+      required: true
+      note: Every vendor involved in the event.
+    cite:
+      - source: guide
+        quote: Please enter all vendors involved in the event.
+  story:
+    value:
+      required: true
+      questionnaire: true
+      note: Two Bright Lights asks for the album story; if the editors are interested, the couple completes The Knot's questionnaire.
+    cite:
+      - source: guide
+        quote: TBL will prompt you to enter a variety of information like the celebration's location, the album story and more.
+      - source: guide
+        quote: a couple's questionnaire must be completed in order for The Knot to accept a Real Wedding submission
+  video_accepted:
+    value: unknown
+    checked: [ guide ]
+  other_requirements:
+    value:
+      - Several shots of design details and candid shots of the couple.
+      - The wedding must already have taken place.
+    cite:
+      - source: guide
+        quote: Please add multiple shots of design details
+      - source: guide
+        quote: don't forget to include candid shots of the couple
+      - source: guide
+        quote: we don't accept submissions before the event takes place.
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_required
+      during_review: true
+      after_publication_days: 90
+    cite:
+      - source: guide
+        quote: Yes, we require exclusivity of the wedding for three months.
+      - source: guide
+        quote: which starts after the event is live on our site.
+      - source: guide
+        quote: you'll need to select "Exclusive Submission" when the pop-up box prompts you.
+    note: Three months stored as 90 days. It covers offering the photos and story to other publications and social media brands.
+  prior_exposure:
+    publications:
+      value: disqualifies
+      cite:
+        - source: guide
+          quote: we don't accept celebrations that have—or will be—published in another magazine or on a blog.
+    blogs:
+      value: allowed
+      cite:
+        - source: guide
+          quote: it's okay for the wedding pros who produced the event to blog about it and post it on their own social media accounts.
+      note: The vendors' own blogs only; a feature on someone else's blog disqualifies.
+    social:
+      value: allowed
+      cite:
+        - source: guide
+          quote: it's okay for the wedding pros who produced the event to blog about it and post it on their own social media accounts.
+      note: The vendors' own accounts; offering the story to social media brands is barred for three months after publication.
+  freshness_window_months:
+    value: 12
+    cite:
+      - source: guide
+        quote: we ask that you don't submit an event older than one year from the day you're submitting.
+  photographer_frequency:
+    value: unknown
+    checked: [ guide ]
+    note: The guide welcomes many submissions at once but says nothing about how often one photographer is featured.
+  submitter_roles:
+    value: [ photographer, planner, vendor ]
+    cite:
+      - source: guide
+        quote: photographers take the lead on submitting weddings to The Knot for consideration
+      - source: guide
+        quote: Newlyweds can't submit their wedding independent of a wedding pro.
+    note: Couples only through one of their vendors; anyone but the photographer needs the photographer's permission.
+
+rights:
+  image_usage:
+    value: unknown
+    checked: [ guide ]
+  credit_format:
+    value: unknown
+    checked: [ guide ]
+  couple_consent_required:
+    value: unknown
+    checked:
+      - guide
+    note: The couple completes a questionnaire; consent is not asked for.
+  vendor_consent_required:
+    value: true
+    cite:
+      - source: guide
+        quote: they'll need the photographer's permission.
+    note: The photographer's permission, when someone else submits.
+
+economics:
+  submission_fee:
+    value: none
+    cite:
+      - source: guide
+        quote: No, submissions are free and are welcome from everyone
+  publication_fee:
+    value: unknown
+    checked: [ guide ]
+  priority_paid_tier:
+    value: unknown
+    checked: [ guide ]
+    note: Submissions from vendors listed on The Knot Vendor Marketplace are prioritized, but no page read says whether a listing costs money.
+  reach:
+    value: unknown
+    checked: [ guide ]
+
+timing:
+  response_window:
+    value:
+      days: 90
+      replies: all
+    cite:
+      - source: guide
+        quote: Submissions will be reviewed within 90 days, and we aim to either select or release the album submission within that time period.
+      - source: guide
+        quote: You'll be notified through the Two Bright Lights interface of updates.
+  publish_lead_days:
+    value: unknown
+    checked: [ guide ]
+  publishing_cycle:
+    value: unknown
+    checked: [ guide, albums ]
+    note: Album pages show no publish dates.
+
+people:
+  editors:
+    value: unknown
+    checked: [ guide ]
+    note: The guide is bylined only as The Knot Editors.
+
+insight:
+  secret_sauce:
+    - tip: Have the photographer, venue and planner listed on The Knot Vendor Marketplace; their submissions are prioritized.
+      cite:
+        - source: guide
+          quote: we're prioritizing submissions from photographers, venues and planners with business listings on The Knot Vendor Marketplace
+    - tip: Open with an environmental shot or a couple portrait; that is how the editors start an album.
+      cite:
+        - source: guide
+          quote: We typically start The Knot Real Weddings albums with an environmental shot or a couple portrait
+    - tip: Show what made the wedding personal; the editors want details they have not seen before.
+      cite:
+        - source: guide
+          quote: We're most inspired by details we haven't seen before that tell a couple's story.
+    - tip: Send 100 to 150 images covering the whole weekend; the editors curate about 30 to 40.
+      cite:
+        - source: guide
+          quote: While we tend to curate a final album of about 30 to 40 photos
+        - source: guide
+          quote: 100–150 is most ideal
+    - tip: Credit the whole vendor team; couples hire about 13 vendors on average.
+      cite:
+        - source: guide
+          quote: couples hire an average of 13 different vendors
+  recent_features: []

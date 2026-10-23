@@ -1,0 +1,457 @@
+id: pub-style-me-pretty
+name: Style Me Pretty
+url: https://www.stylemepretty.com
+kind: blog
+tier: dream
+recheck_every_days: 90
+taste_summary: Pretty, fresh, clean and classic with a twist; airy, film-like editorial images with details styled against clean backdrops. Recent features lean classic coastal and garden weddings in blue and white.
+notes: The Submissions Dashboard sits behind an account login and was not viewed; package facts come from the public submissions page and the 2021 tips article linked from it as Frequently Asked Submission Questions. The Little Black Book page was read in a browser. The 2015 "SMP Submission Advice with Abby Larson" post holds only an embedded interview video from The Photo Report and is not used.
+
+sources:
+  guidelines:
+    url: https://www.stylemepretty.com/submissions
+    read: 2026-10-23
+    kind: guidelines
+    title: Submissions
+  faq:
+    url: https://www.stylemepretty.com/real-wedding-submissions
+    read: 2026-10-23
+    kind: guidelines
+    title: How to Make Your Submission Sail to the Top of SMP's Front Page (2021-09-09)
+  about:
+    url: https://www.stylemepretty.com/all-about-style-me-pretty/
+    read: 2026-10-23
+    kind: about
+    title: All About Style Me Pretty
+  contact:
+    url: https://www.stylemepretty.com/contact/
+    read: 2026-10-23
+    kind: about
+    title: Contact
+  advertise:
+    url: https://www.stylemepretty.com/advertising/home
+    read: 2026-10-23
+    kind: media_kit
+    title: Advertising
+  terms:
+    url: https://www.stylemepretty.com/terms-of-service
+    read: 2026-10-23
+    kind: other
+    title: Terms of Use
+  lbb:
+    url: https://www.stylemepretty.com/vendors/little-black-book
+    read: 2026-10-23
+    kind: other
+    title: Little Black Book (vendor plans, read in a browser)
+  feature_oahu:
+    url: https://www.stylemepretty.com/2026/10/23/an-oahu-planners-dream-wedding-beneath-the-koolau-mountains/
+    read: 2026-10-23
+    kind: feature
+    title: An Oʻahu Planner's Dream Wedding Beneath the Koʻolau Mountains
+  feature_narragansett:
+    url: https://www.stylemepretty.com/2026/10/22/coastal-blue-and-white-wedding-overlooking-narragansett-bay/
+    read: 2026-10-23
+    kind: feature
+    title: Coastal Blue and White Wedding Overlooking Narragansett Bay
+  feature_winterthur:
+    url: https://www.stylemepretty.com/2026/10/22/a-european-inspired-al-fresco-celebration-at-winterthur-gardens-planned-in-just-three-weeks/
+    read: 2026-10-23
+    kind: feature
+    title: A European Inspired Al Fresco Celebration at Winterthur Gardens Planned in Just Three Weeks
+  feature_rehoboth:
+    url: https://www.stylemepretty.com/2026/10/22/a-nancy-meyers-inspired-coastal-wedding-overlooking-rehoboth-bay/
+    read: 2026-10-23
+    kind: feature
+    title: A Nancy Meyers Inspired Coastal Wedding Overlooking Rehoboth Bay
+  feature_los_cabos:
+    url: https://www.stylemepretty.com/2026/10/21/a-timeless-blue-and-white-montage-los-cabos-wedding-with-a-hand-painted-dance-floor/
+    read: 2026-10-23
+    kind: feature
+    title: A Timeless Blue and White Montage Los Cabos Wedding With a Hand-Painted Dance Floor
+
+identity:
+  parent_company:
+    value: SMPretty, Inc.
+    cite:
+      - source: terms
+        quote: SMPretty, Inc. (collectively, "SMPretty", "Company", "we" or "us" or "our") is a lifestyle website
+      - source: about
+        quote: © 2026 SMPretty Inc. All Rights Reserved.
+    note: The operating company named in the terms and footer; no separate parent or media group is named.
+  sister_publications:
+    value: unknown
+    checked: [ about, advertise ]
+    note: The about page presents Style Me Pretty Living as the after-the-wedding side of the same site, not a separate title.
+  shared_inbox_with:
+    value: unknown
+    checked: [ contact, guidelines ]
+
+coverage:
+  regions:
+    value: [ WORLD ]
+    cite:
+      - source: guidelines
+        quote: This allows us to ensure that we are covering all areas of the US and beyond.
+    note: Recent features are in Hawaii, Rhode Island, Delaware and Mexico.
+  basis:
+    value: unknown
+    checked: [ guidelines, faq ]
+  destination_accepted:
+    value: true
+    cite:
+      - source: feature_los_cabos
+        quote: From the moment we got engaged, we knew we wanted a destination wedding.
+      - source: feature_los_cabos
+        quote: we made long distance work between Naples, Florida and New York City.
+    note: Inferred from published features; no page states that destination weddings are accepted. The Los Cabos couple lived in Florida and New York and chose Cabo as their destination.
+
+content:
+  real_wedding:
+    value: true
+    cite:
+      - source: guidelines
+        quote: What to Include in Your Wedding Submission
+      - source: faq
+        quote: With over 500 submissions per week from vendors and couples alike, hoping to see their work or wedding grace the pages of SMP
+  elopement:
+    value: unknown
+    checked: [ guidelines, faq, feature_oahu, feature_narragansett, feature_winterthur, feature_rehoboth ]
+    note: No page mentions elopements and none of the recent features is one.
+  styled_shoot:
+    value: true
+    cite:
+      - source: faq
+        quote: Use real couples in your styled shoots
+      - source: faq
+        quote: please submit weddings and styled shoots that feature BIPOC couples for consideration to SMP
+  style_tags:
+    value: [ classic_timeless, garden_botanical, beach_coastal, romantic, historic_manor_estate, country_club ]
+    cite:
+      - source: feature_oahu
+      - source: feature_narragansett
+      - source: feature_winterthur
+      - source: feature_rehoboth
+  seasonality:
+    value: unknown
+    checked: [ guidelines, faq ]
+
+routes:
+  value:
+    - platform: portal
+      url: https://www.stylemepretty.com/submissions
+      account_required: true
+      preferred: true
+      steps:
+        - Create a Style Me Pretty account and sign in.
+        - Open the Submissions Dashboard.
+        - Put the city and state in the submission title.
+        - Upload the images, and any video.
+        - Write the description, answering as many of the writing prompts as possible.
+        - List every vendor, with website links and social handles.
+        - Submit.
+      note: The dashboard is behind the login and was not viewed. The cinematographer guidance mentions attaching images to an email, but no page gives an address for submissions; the contact page lists only a help inbox for submission questions.
+  cite:
+    - source: contact
+      quote: After you have created an account and are ready to submit, head over here
+    - source: guidelines
+      quote: Go to Submissions Dashboard
+    - source: guidelines
+      quote: It gives you a space for your images, a place to upload videos, an area for a description and a vendor credit spot.
+    - source: faq
+      quote: Please do your best to properly respond to as many of the writing prompts provided in the submission as you can
+
+package:
+  image_min:
+    value: 80
+    cite:
+      - source: guidelines
+        quote: 80-150 images that you feel best highlight the wedding.
+    note: The 2021 tips article says 80-120 is ideal.
+  image_max:
+    value: 150
+    cite:
+      - source: guidelines
+        quote: 80-150 images that you feel best highlight the wedding.
+    note: The 2021 tips article says 80-120 is ideal.
+  resolution:
+    value:
+      min_width_px: 900
+      max_file_mb: 5
+    cite:
+      - source: guidelines
+        quote: We need individual images at least 900 pixels wide and no more than 5MB each, to accommodate our blog width.
+  size:
+    value: unknown
+    checked: [ guidelines, faq ]
+    note: Only pixel and file-size limits are given (at least 900 px wide, at most 5MB); no page says web or print size.
+  orientation_mix:
+    value: Mostly vertical, with about 10% horizontal.
+    cite:
+      - source: guidelines
+        quote: Vertical imagery is best, with about 10% horizontal.
+      - source: faq
+        quote: the majority of your gallery should be vertical imagery, with about 10% horizontal!
+  watermarks_allowed:
+    value: unknown
+    checked: [ guidelines, faq ]
+  gallery_hosts:
+    value: [ direct_upload ]
+    cite:
+      - source: guidelines
+        quote: It gives you a space for your images, a place to upload videos, an area for a description and a vendor credit spot.
+      - source: faq
+        quote: Upload a full gallery of images
+  vendor_credits:
+    value:
+      required: true
+      fields: [ business_name, website ]
+      note: A photography credit is mandatory, and a credit left out cannot be added later. Social handles are asked for everyone involved, including dress and fashion designers.
+    cite:
+      - source: guidelines
+        quote: Please list ALL applicable vendors. We must have a photography credit to consider a wedding for publication.
+      - source: guidelines
+        quote: If a vendor is not credited up front, we will be unable to go back and add the credit.
+      - source: guidelines
+        quote: The more urls we can get, the better.
+      - source: guidelines
+        quote: Social Handles for Everyone Involved
+  story:
+    value:
+      required: true
+      questionnaire: true
+      note: Ideally written by the couple; words from the planner, designer or photographer also work. The form provides writing prompts.
+    cite:
+      - source: faq
+        quote: a detailed description of the day (see tip #3), and a full list of vendor credits
+      - source: faq
+        quote: Ideally, we like to have the write-up come from the couple, but that's not an absolute
+      - source: faq
+        quote: Please do your best to properly respond to as many of the writing prompts provided in the submission as you can
+  video_accepted:
+    value: true
+    cite:
+      - source: faq
+        quote: Please be sure that your video is in either Youtube or Vimeo format and the sharing settings are set public.
+      - source: guidelines
+        quote: We like videos that are under 3 minutes, ideally in the 2 minute time frame.
+  other_requirements:
+    value:
+      - The city and state in the submission title.
+      - The submitter's company name and name, the date and location of the event, and the couple's names.
+      - Mostly color images, with only a small select group in black and white.
+      - Flat lays in the gallery.
+      - Video as a public YouTube or Vimeo link, ideally about two minutes and under three.
+      - From cinematographers, a 15-second clip for social media is welcome.
+    cite:
+      - source: guidelines
+        quote: Include a city + state in the title of your submission.
+      - source: guidelines
+        quote: Your Company Name / Your Name / Date and Location of the Event / Couple's names
+      - source: guidelines
+        quote: We love color photos as they look best on our blog.
+      - source: guidelines
+        quote: feel free to include a very select group of black and white imagery as well.
+      - source: faq
+        quote: It’s super easy to forget about flat lays - but they provide the perfect amount of breathing room in every gallery
+      - source: faq
+        quote: Please be sure that your video is in either Youtube or Vimeo format and the sharing settings are set public.
+      - source: guidelines
+        quote: It would be AWESOME (I repeat AWESOME) if we also had a 15 second video to push around social.
+
+rules:
+  exclusivity:
+    value:
+      policy: exclusive_preferred
+    cite:
+      - source: guidelines
+        quote: SMP still prefers unique, unpublished content for a front page feature.
+      - source: guidelines
+        quote: We have made exceptions to that in the past but right now, we do so on a case by case basis.
+    note: The rule is for the front page; SMP's local blogs do not hold the same level of exclusivity.
+  prior_exposure:
+    publications:
+      value: unknown
+      checked: [ guidelines, faq ]
+      note: Unpublished content is preferred for the front page, with exceptions case by case; no page says prior publication disqualifies.
+    blogs:
+      value: allowed
+      cite:
+        - source: guidelines
+          quote: We really aren’t that concerned about you publishing it on your blog prior to it going up on Style Me Pretty.
+    social:
+      value: unknown
+      checked: [ guidelines, faq ]
+  freshness_window_months:
+    value: unknown
+    checked: [ guidelines, faq ]
+  photographer_frequency:
+    value: unknown
+    checked: [ guidelines, faq ]
+  submitter_roles:
+    value: [ photographer, planner, vendor, couple ]
+    cite:
+      - source: faq
+        quote: With over 500 submissions per week from vendors and couples alike, hoping to see their work or wedding grace the pages of SMP
+    note: Photographers and planners are read as vendors.
+
+rights:
+  image_usage:
+    value: Non-exclusive, royalty-free, transferable, sublicensable, worldwide license to use, display, reproduce, adapt, modify, re-arrange and distribute submitted content in any media; it ends when the content is removed, except where already sublicensed, and SMP claims no ownership.
+    cite:
+      - source: terms
+        quote: a non-exclusive, royalty-free, transferable, sublicensable, worldwide license to use, display, reproduce, adapt, modify (e.g., re-format), re-arrange, and distribute your User Content
+      - source: terms
+        quote: through any manner, mode of delivery, or media now known or developed in the future
+      - source: terms
+        quote: This license will terminate at the time you remove your User Content from the SMPretty Website
+      - source: terms
+        quote: which license shall continue in perpetuity
+      - source: terms
+        quote: SMPretty does not claim any ownership rights in the text, files, images, photos, video
+    note: The terms cover all user content on the site, not editorial features in particular.
+  credit_format:
+    value: Photographer attribution where possible; features close with a Meet The Vendors block (role, business name, profile and website links) and an Other Vendors list written as role and business name.
+    cite:
+      - source: terms
+        quote: Where possible, photographs used on the SMPretty Website and in any SMPretty publication will include attribution to the photographer and/or copyright holder.
+      - source: feature_oahu
+        quote: Photography Maricarmen Maffioli Profile Website
+      - source: feature_oahu
+        quote: "Floral Design: La Flor Events"
+  couple_consent_required:
+    value: unknown
+    checked: [ terms, guidelines, faq ]
+    note: The terms require only that the submitter owns the content or has the right to publish it.
+  vendor_consent_required:
+    value: unknown
+    checked: [ terms, guidelines, faq ]
+
+economics:
+  submission_fee:
+    value: unknown
+    checked: [ guidelines, contact, faq ]
+    note: An account is needed to submit; no page states a price for it or says it is free.
+  publication_fee:
+    value: unknown
+    checked: [ guidelines, faq, advertise ]
+    note: The advertise page sells sponsored content to brands; no page ties payment to real-wedding features.
+  priority_paid_tier:
+    value:
+      name: Little Black Book Pro
+      price:
+        amount: 1500
+        currency: USD
+        note: Per year, billed annually, 12-month commitment.
+      note: Priority Editorial Consideration is listed for the Pro tier; the plan comparison shows one tier at a time, so the other tiers (99 to 5,000 USD a year) were not checked for it.
+    cite:
+      - source: lbb
+        quote: Priority Editorial Consideration
+      - source: lbb
+        quote: $1,500/year
+      - source: lbb
+        quote: A 12-Month Commitment
+  reach:
+    value: unknown
+    checked: [ advertise, about ]
+    note: The advertise page claims 11+ million social media followers (combined), 55+ million average weekly impressions and 3.2+ million unique web users over 12 months; none fits the schema's metrics.
+
+timing:
+  response_window:
+    value: unknown
+    checked: [ guidelines, faq ]
+  publish_lead_days:
+    value: unknown
+    checked: [ guidelines, faq ]
+    note: Complete submissions are promised a fast turnaround; no figure is given.
+  publishing_cycle:
+    value: Online, several real weddings a day; four went live on 2026-10-22 and 2026-10-23.
+    cite:
+      - source: feature_oahu
+      - source: feature_narragansett
+      - source: feature_winterthur
+      - source: feature_rehoboth
+
+people:
+  editors:
+    value:
+      - name: Abby Larson
+        role: Founder
+    cite:
+      - source: faq
+        quote: Abby Larson, Founder of Style Me Pretty
+
+insight:
+  secret_sauce:
+    - tip: Fill in every part of the submission tool (images, video, description, vendor credits); ready-to-go submissions move fast, while ones that need chasing wait.
+      cite:
+        - source: guidelines
+          quote: The longer it takes us to chase down information, the more likely we are to put it on the back burner
+        - source: guidelines
+          quote: And those that are ready to go, will have an enormously fast turn around time!
+    - tip: Match the house look; the editors favor airy, film-like, magazine-style images with details styled against clean, simple backdrops.
+      cite:
+        - source: faq
+          quote: We love those gorgeous, film-focused, airy, editorial-driven photographs.
+        - source: guidelines
+          quote: Where the details are set against a simple, clean backdrop and have been thoughtfully styled.
+    - tip: Cover the bride, fashion, wedding party, groom, flowers, decor, favors and invitations, and keep dancing shots few.
+      cite:
+        - source: guidelines
+          quote: We need images that show the bride, her fashions, the maids, the groom, the flowers, centerpieces, decor elements, favors, invitations, etc.
+        - source: guidelines
+          quote: WE DO NOT WANT too many images of the guests dancing or smoking cigars
+    - tip: Lead with what is new; the editors ask for fresh takes on old styles, indoor weddings and weddings that reflect their city.
+      cite:
+        - source: guidelines
+          quote: new approaches to old styles (i.e. show us an awesome new way to approach a barn wedding), indoor affairs
+        - source: guidelines
+          quote: If there is a unique angle, it will definitely catch our attention.
+    - tip: Representation counts; SMP asks for BIPOC and same-sex weddings, and diversity or a touching story can carry a wedding that is weaker elsewhere.
+      cite:
+        - source: faq
+          quote: we are always looking for same sex weddings to publish as well.
+        - source: faq
+          quote: it has an element of diversity or a very touching story - then we will absolutely do our very best to make it work!
+    - tip: Ask for the needs list; some regions are under-covered.
+      cite:
+        - source: guidelines
+          quote: We are often lacking content from certain areas and if you reach out, we’ll be happy to share our needs list.
+    - tip: Odds are long; 400 to 600 weddings arrive each week and about 2-3% reach the front page.
+      cite:
+        - source: guidelines
+          quote: SMP receives between 400-600 weddings each week.
+        - source: faq
+          quote: our editorial team carefully selects a mere 2-3% for publication on the Front Page.
+    - tip: Give the permalink of your own blog post so the feature can link it on the same day.
+      cite:
+        - source: guidelines
+          quote: provide the permalink to which it will go live on the same day that we are publishing it.
+    - tip: Stay gracious after a decline; the editors remember who was kind and who was not.
+      cite:
+        - source: guidelines
+          quote: we remember those that are gracious, kind and fun to work with
+    - tip: Recent features are built from the form's writing prompts (Design / Vibe / Vision, Proposal Story, the fashion, food, florals, cake and special details), so full answers become the article.
+      cite:
+        - source: feature_oahu
+        - source: feature_rehoboth
+  recent_features:
+    - source: feature_oahu
+      published: 2026-10-23
+      location: US-HI
+      content_type: real_wedding
+      tags: [ garden_botanical, island_tropical, romantic ]
+    - source: feature_narragansett
+      published: 2026-10-22
+      location: US-RI
+      content_type: real_wedding
+      tags: [ beach_coastal, hotel_resort, classic_timeless, ball_gown ]
+    - source: feature_winterthur
+      published: 2026-10-22
+      location: US-DE
+      content_type: real_wedding
+      tags: [ garden_botanical, historic_manor_estate, intimate_micro, classic_timeless ]
+    - source: feature_rehoboth
+      published: 2026-10-22
+      location: US-DE
+      content_type: real_wedding
+      tags: [ beach_coastal, country_club, classic_timeless, a_line_classic ]

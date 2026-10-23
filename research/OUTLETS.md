@@ -30,15 +30,15 @@ do run often in the national and destination outlets.
 | id | Outlet | Submission page | Note |
 |---|---|---|---|
 | pub-the-knot | The Knot | https://www.theknot.com/submit-your-wedding | Two Bright Lights route; blocks plain fetches, read in a browser |
-| pub-style-me-pretty | Style Me Pretty | https://www.stylemepretty.com/submissions | Free account needed |
+| pub-style-me-pretty | Style Me Pretty | https://www.stylemepretty.com/submissions | Account needed; paid Pro tier gets priority |
 | pub-green-wedding-shoes | Green Wedding Shoes | https://greenweddingshoes.com/submit-a-wedding/ | |
-| pub-junebug-weddings | Junebug Weddings | https://junebugweddings.com/submission-guidelines | Blocks plain fetches, read in a browser |
-| pub-wedding-chicks | Wedding Chicks | https://www.weddingchicks.com/submit/ | |
+| pub-junebug-weddings | Junebug Weddings | https://junebugweddings.com/submission-guidelines | Only paid directory vendors may submit (25 to 150 USD a month); read in a browser |
+| pub-wedding-chicks | Wedding Chicks | https://www.weddingchicks.com/submit/ | Blocks plain fetches, read in a browser |
 | pub-100-layer-cake | 100 Layer Cake | https://www.100layercake.com/submissions/ | Members reviewed first |
 | pub-inside-weddings | Inside Weddings | https://www.insideweddings.com/wedding/submit/ | Print |
 | pub-grace-ormonde-wedding-style | Grace Ormonde Wedding Style | https://www.weddingstylemagazine.com/photographer-submissions/ | Print |
-| pub-ruffled | Ruffled | https://www.ruffledblog.com/submit-a-wedding/ | Slowing: newest feature 2026-02-04 |
-| pub-munaluchi-bridal | Munaluchi Bridal | https://www.munaluchibridal.com/submissions/ | |
+| pub-ruffled | Ruffled | https://www.ruffledblog.com/submit-a-wedding/ | Paused: nothing new since 2026-02-04 |
+| pub-munaluchi-bridal | Munaluchi Bridal | https://www.munaluchibridal.com/submissions/ | Public portal closed until early 2027, then short monthly windows |
 | pub-equally-wed | Equally Wed | https://equallywed.com/submissions/ | |
 | pub-offbeat-wed | Offbeat Wed | https://offbeatwed.com/submissions/ | Vendor route needs a paid membership |
 | pub-bridal-guide | Bridal Guide | https://bridalguide.com/contact-us/ | |
