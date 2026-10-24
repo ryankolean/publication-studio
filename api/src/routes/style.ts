@@ -5,16 +5,17 @@ import type { AppContext } from "../middleware/auth.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { fail } from "../errors.js";
 import type { D1Database } from "../env.js";
-import { lookTags, planSuggestions, regionTags, seasonTags, validatePastFeature, validateSuggestions } from "../domain/style.js";
+import { regionTagsForLocation } from "../domain/geo.js";
+import { lookTags, planSuggestions, seasonTags, validatePastFeature, validateSuggestions } from "../domain/style.js";
 import type { EventTagRow, EventTagSource, PastFeatureInput } from "../domain/style.js";
 import { TAG_CATEGORY_ORDER } from "../domain/tags.js";
 import type { TagCategory } from "../domain/tags.js";
+import { loadGeo } from "./match-context.js";
 
 interface EventRow {
   id: string;
   event_date: string;
-  state: string | null;
-  country: string | null;
+  location_code: string | null;
 }
 
 const nowIso = () => new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
@@ -26,12 +27,12 @@ async function loadVocabulary(db: D1Database): Promise<Array<{ id: string; categ
   return results;
 }
 
-/** What the wedding's date and state suggest, each with the line the screen shows. */
+/** What the wedding's date and place suggest, each with the line the screen shows. */
 async function derivedFor(db: D1Database, event: EventRow): Promise<Array<{ tag: string; reason: string }>> {
-  const geo = await db.prepare("SELECT json FROM research_vocab WHERE kind = 'geo'").first<{ json: string }>();
+  const geo = await loadGeo(db);
   return [
     ...seasonTags(event.event_date).map((tag) => ({ tag, reason: "From the wedding date." })),
-    ...regionTags(event.state, event.country, geo === null ? null : JSON.parse(geo.json)).map((tag) => ({
+    ...(geo === null ? [] : regionTagsForLocation(event.location_code, geo)).map((tag) => ({
       tag,
       reason: "From where the wedding was.",
     })),
@@ -53,7 +54,7 @@ async function lookView(db: D1Database, event: EventRow) {
 }
 
 async function loadEvent(db: D1Database, id: string): Promise<EventRow | null> {
-  return db.prepare("SELECT id, event_date, state, country FROM events WHERE id = ?").bind(id).first<EventRow>();
+  return db.prepare("SELECT id, event_date, location_code FROM events WHERE id = ?").bind(id).first<EventRow>();
 }
 
 interface FeatureRow {

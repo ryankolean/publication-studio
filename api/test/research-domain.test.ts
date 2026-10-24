@@ -106,6 +106,7 @@ describe("projecting research onto the publication columns", () => {
       earned_or_paid: "earned",
       taste_notes: "Light-filled lakeside and garden weddings with full vendor detail.",
       last_verified: "2026-10-21",
+      match_json: expect.any(String),
     });
     expect(projected.tags).toEqual(["lakefront", "garden_botanical", "romantic"]);
   });

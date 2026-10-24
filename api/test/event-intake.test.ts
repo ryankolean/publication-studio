@@ -156,33 +156,20 @@ describe("destination flag", () => {
   });
 });
 
-describe("prior exposure", () => {
-  it("defaults to nothing published anywhere", () => {
-    expect(ok(minimal).priorExposure).toEqual({ ownBlog: false, igPosted: false, priorPubs: [] });
+describe("place and kind of wedding", () => {
+  it("defaults to no place and a real wedding", () => {
+    expect(ok(minimal)).toMatchObject({ locationCode: null, contentType: "real_wedding" });
   });
 
-  it("reads the three documented fields", () => {
-    const value = ok({
-      ...minimal,
-      priorExposure: { ownBlog: true, igPosted: false, priorPubs: ["Style Me Pretty"] },
-    });
-    expect(value.priorExposure).toEqual({
-      ownBlog: true,
-      igPosted: false,
-      priorPubs: ["Style Me Pretty"],
+  it("keeps a place code for the route to check, and an elopement or styled shoot", () => {
+    expect(ok({ ...minimal, locationCode: " US-FL:florida-keys ", contentType: "elopement" })).toMatchObject({
+      locationCode: "US-FL:florida-keys",
+      contentType: "elopement",
     });
   });
 
-  it("rejects a non-boolean flag", () => {
-    expect(errorFields({ ...minimal, priorExposure: { ownBlog: "yes" } })).toContain(
-      "priorExposure.ownBlog",
-    );
-  });
-
-  it("rejects a non-array prior publication list", () => {
-    expect(errorFields({ ...minimal, priorExposure: { priorPubs: "SMP" } })).toContain(
-      "priorExposure.priorPubs",
-    );
+  it("rejects a kind of wedding it does not know", () => {
+    expect(errorFields({ ...minimal, contentType: "party" })).toContain("contentType");
   });
 });
 

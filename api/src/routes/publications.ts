@@ -6,6 +6,7 @@ import { fail } from "../errors.js";
 import { parsePublicationSpec } from "../domain/publication-spec.js";
 import type { PublicationSpec } from "../domain/publication-spec.js";
 import { TAG_CATEGORY_ORDER } from "../domain/tags.js";
+import type { MatchProfile } from "../domain/match.js";
 import type { D1Database } from "../env.js";
 import { applyEdits } from "../domain/research/edits.js";
 import type { Correction } from "../domain/research/edits.js";
@@ -38,6 +39,7 @@ interface PublicationRow {
   taste_notes: string | null;
   last_verified: string;
   active: number;
+  match_json: string | null;
 }
 
 export interface PublicationView {
@@ -62,6 +64,8 @@ export interface PublicationView {
   tags: string[];
   /** The photographer's corrections to the research, already applied to the fields above. */
   corrections: Array<{ field: string; value: unknown; note: string | null }>;
+  /** The matcher's facts (SUMMIT-336); null until research is approved. */
+  matchProfile: MatchProfile | null;
 }
 
 type CorrectionView = PublicationView["corrections"][number];
@@ -97,6 +101,7 @@ function toView(row: PublicationRow, tags: string[], corrections: CorrectionView
     active: row.active === 1,
     tags,
     corrections,
+    matchProfile: row.match_json === null ? null : (JSON.parse(row.match_json) as MatchProfile),
   };
 }
 
