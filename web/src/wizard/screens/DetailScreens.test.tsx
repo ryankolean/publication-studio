@@ -52,6 +52,9 @@ describe("[wedding] a new wedding", () => {
     await userEvent.type(screen.getByLabelText("Wedding date"), "2026-06-14");
     await userEvent.type(screen.getByLabelText("Venue"), "The Barn");
     await userEvent.click(screen.getByLabelText("Reads as a destination wedding"));
+    await screen.findByRole("option", { name: /Florida Keys, Florida/ });
+    await userEvent.selectOptions(screen.getByLabelText("Where it was, for matching outlets"), "US-FL:florida-keys");
+    await userEvent.click(screen.getByRole("radio", { name: "Elopement" }));
     await userEvent.click(continueButton());
 
     await waitFor(() =>
@@ -63,6 +66,8 @@ describe("[wedding] a new wedding", () => {
         state: null,
         country: null,
         isDestination: true,
+        locationCode: "US-FL:florida-keys",
+        contentType: "elopement",
       }),
     );
     await waitFor(() => expect(location(screen)).toBe("/wizard/w7/permissions"));
@@ -105,7 +110,7 @@ describe("[wedding] an existing wedding", () => {
       venueName: "The Mill",
       // Fields this screen does not show still travel, so the full-replace PATCH keeps them.
       heroPicks: "The veil shot",
-      priorExposure: { ownBlog: true, igPosted: false, priorPubs: [] },
+      locationCode: "US-MI:detroit",
       vendorCredits: [{ role: "Florist", businessName: "Stems", website: null, instagram: "stems" }],
     });
     expect(body).not.toHaveProperty("galleryUrl");
@@ -186,6 +191,34 @@ describe("[permissions]", () => {
       nameDisplay: null,
       consentNotes: "No photos of the flower girl",
     });
+    await waitFor(() => expect(location(screen)).toBe("/wizard/w1/story"));
+  });
+
+  it("records where the wedding was already shared, with who, and shows what was stored", async () => {
+    serve(api, {
+      "/events/w1/walkthrough": walkthrough(wizardAt("permissions")),
+      "/events/w1": storedEvent(),
+      "/events/w1/exposures": { exposures: [{ channel: "own_blog", detail: null }] },
+    });
+    renderWizard(api, "/wizard/w1/permissions");
+    expect(await screen.findByRole("checkbox", { name: "On my blog" })).toBeChecked();
+
+    api.patch.mockResolvedValueOnce(storedEvent());
+    api.put.mockResolvedValueOnce({ exposures: [] });
+    await userEvent.click(screen.getByRole("checkbox", { name: "By the couple on social media" }));
+    await userEvent.click(screen.getByRole("checkbox", { name: "By a vendor on social media" }));
+    await userEvent.type(screen.getByLabelText("Which vendor"), "The florist");
+    await userEvent.click(continueButton());
+
+    await waitFor(() =>
+      expect(api.put).toHaveBeenCalledWith("/events/w1/exposures", {
+        exposures: [
+          { channel: "own_blog", detail: null },
+          { channel: "couple_social", detail: null },
+          { channel: "vendor_social", detail: "The florist" },
+        ],
+      }),
+    );
     await waitFor(() => expect(location(screen)).toBe("/wizard/w1/story"));
   });
 

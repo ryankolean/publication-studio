@@ -136,9 +136,11 @@ describe("hard filters: content, sharing and history", () => {
     expect(match(known({ content: { real_wedding: true, elopement: false, styled_shoot: null } }), { contentType: "elopement" }).excluded).toEqual([
       "Does not publish elopements.",
     ]);
-    expect(match(known({ content: { real_wedding: true, elopement: false, styled_shoot: null } }), { contentType: "styled_shoot" }).checks).toEqual([
-      "Does not say whether it publishes styled shoots.",
-    ]);
+    expect(match(known({ content: { real_wedding: true, elopement: false, styled_shoot: null } }), { contentType: "styled_shoot" })).toMatchObject({
+      group: "check",
+      excluded: [],
+      checks: ["Does not say whether it publishes styled shoots."],
+    });
   });
 
   it("excludes on sharing it disqualifies, and names who shared it", () => {

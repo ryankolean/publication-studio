@@ -29,6 +29,7 @@ export const GUIDE: Record<StepId, StepGuide> = {
       "Type the couple's names as they should appear in print.",
       "Pick the wedding date.",
       "Add the venue and the city, state and country.",
+      'Under "Where it was, for matching outlets", pick the state, or the area if it is listed, or the country. Then pick what kind of wedding it was.',
       'Press "Continue".',
     ],
     next: "Next up: your gallery and the couple's permission.",
@@ -40,6 +41,7 @@ export const GUIDE: Record<StepId, StepGuide> = {
       "Paste the gallery link. It stays private and is never shown again.",
       'Answer "Were you the lead photographer under your own contract?"',
       'Answer "Has the couple agreed to a submission?" If they set limits, such as first names only, write them in. They follow the wedding onto every checklist.',
+      'Under "Has any of it been shared yet?", tick every place, including the couple\'s and the vendors\' own posts.',
       'Press "Continue".',
     ],
     note: "If you were the second shooter, that is fine. The wedding stays on hold here and nothing more is needed from you for now.",
@@ -68,13 +70,14 @@ export const GUIDE: Record<StepId, StepGuide> = {
   },
   outlet: {
     title: "Choose an outlet",
-    lead: "One outlet considers a wedding at a time, which is what most of them expect. Start with the one you would love most.",
+    lead: "One outlet considers a wedding at a time, which is what most of them expect. The outlets that suit this wedding come first, with the reasons.",
     todo: [
-      "Read the cards. Each shows what the outlet asks for and any warnings, such as exclusivity or a fee.",
+      'Start with "Best fits". Each card says how well it matches, why, and any warnings, such as exclusivity or a fee.',
+      'Outlets under "Check first" have a question their published rules do not answer. Check it before you choose one.',
       "Tap the one you want.",
       'Press "Continue".',
     ],
-    note: "If the wedding is on hold, this screen says why and where to fix it.",
+    note: "Outlets that cannot take this wedding are listed at the bottom with the reason. If the wedding is on hold, this screen says why and where to fix it.",
     next: "Next up: picking the photos.",
   },
   photos: {

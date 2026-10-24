@@ -67,6 +67,15 @@ operator with `npm run style:suggest --workspace @publication-studio/api --
 --remote --file ../publication-studio-private/style/<wedding>.yaml` (format in
 `api/scripts/suggest-tags.ts`); the photographer keeps or turns down each one.
 
+The Outlet step ranks every outlet for the wedding (SUMMIT-336): outlets a
+known fact rules out (where they cover, content type, earlier sharing, an
+earlier answer, freshness, frequency) are listed apart with the reason; an
+unknown fact becomes a question under "Check first", never a no; the rest are
+scored out of 100 on style, her history with the outlet, reach, fees, local
+focus and season. `npm run match:report --workspace @publication-studio/api --
+--date YYYY-MM-DD --location <geo code>` ranks the research files for a
+wedding without the app.
+
 ## Users
 
 There is no signup. A user row is created only by an operator with database
