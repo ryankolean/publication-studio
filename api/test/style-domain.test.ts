@@ -7,7 +7,6 @@ import { parse } from "yaml";
 import {
   lookTags,
   planSuggestions,
-  regionTags,
   seasonTags,
   validatePastFeature,
   validateSuggestions,
@@ -16,7 +15,6 @@ import type { EventTagRow } from "../src/domain/style.js";
 import type { TagCategory } from "../src/domain/tags.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const GEO = parse(readFileSync(join(here, "../../research/vocab/geo.yaml"), "utf8"));
 const TAGS = parse(readFileSync(join(here, "../../research/vocab/tags.yaml"), "utf8")) as Record<TagCategory, string[]>;
 const VOCABULARY = Object.entries(TAGS).flatMap(([category, ids]) =>
   ids.map((id) => ({ id, category: category as TagCategory })),
@@ -44,36 +42,6 @@ describe("seasonTags", () => {
   it("only ever suggests vocabulary tags", () => {
     for (let month = 1; month <= 12; month++) {
       for (const tag of seasonTags(`2026-${String(month).padStart(2, "0")}-01`)) expect(TAGS.season).toContain(tag);
-    }
-  });
-});
-
-describe("regionTags", () => {
-  it("names Michigan and its region from the code or the name", () => {
-    expect(regionTags("MI", "USA", GEO)).toEqual(["michigan", "midwest_us"]);
-    expect(regionTags("michigan", null, GEO)).toEqual(["michigan", "midwest_us"]);
-    expect(regionTags(" Mi ", "United States", GEO)).toEqual(["michigan", "midwest_us"]);
-  });
-
-  it("gives a state the vocabulary does not name only its region", () => {
-    expect(regionTags("TX", "US", GEO)).toEqual(["south_central_us"]);
-    expect(regionTags("Florida", "U.S.", GEO)).toEqual(["florida", "southeast_us"]);
-  });
-
-  it("gives California its own tag even though no US region lists it", () => {
-    expect(regionTags("CA", null, GEO)).toEqual(["california"]);
-  });
-
-  it("leaves weddings outside the US, unknown states and a missing vocabulary alone", () => {
-    expect(regionTags("Tuscany", "Italy", GEO)).toEqual([]);
-    expect(regionTags("ZZ", "USA", GEO)).toEqual([]);
-    expect(regionTags(null, "USA", GEO)).toEqual([]);
-    expect(regionTags("MI", "USA", null)).toEqual([]);
-  });
-
-  it("only ever suggests vocabulary tags", () => {
-    for (const code of Object.keys(GEO.states as Record<string, string>)) {
-      for (const tag of regionTags(code.slice(3), "USA", GEO)) expect(TAGS.region).toContain(tag);
     }
   });
 });

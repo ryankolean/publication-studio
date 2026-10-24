@@ -11,6 +11,7 @@
  *     unverified -- the state that blocks packaging.
  */
 
+import { CONTENT_TYPES } from "./research/schema.js";
 import { CONSENT_STATUSES, RIGHTS_STATUSES } from "./rights-gate.js";
 import type { ConsentStatus, RightsStatus } from "./rights-gate.js";
 
@@ -19,12 +20,6 @@ export interface VendorCreditInput {
   businessName: string;
   website: string | null;
   instagram: string | null;
-}
-
-export interface PriorExposure {
-  ownBlog: boolean;
-  igPosted: boolean;
-  priorPubs: string[];
 }
 
 export interface EventIntake {
@@ -45,7 +40,9 @@ export interface EventIntake {
   heroPicks: string | null;
   videoUrl: string | null;
   targetOutletNotes: string | null;
-  priorExposure: PriorExposure;
+  /** A geo.yaml place code; the route checks it against the stored vocabulary. */
+  locationCode: string | null;
+  contentType: (typeof CONTENT_TYPES)[number];
   vendorCredits: VendorCreditInput[];
 }
 
@@ -152,38 +149,6 @@ class Collector {
   }
 }
 
-function readPriorExposure(source: Record<string, unknown>, errors: Collector): PriorExposure {
-  const fallback: PriorExposure = { ownBlog: false, igPosted: false, priorPubs: [] };
-  const value = source["priorExposure"];
-  if (value === undefined || value === null) return fallback;
-  if (!isObject(value)) {
-    errors.add("priorExposure", "Expected an object.");
-    return fallback;
-  }
-
-  const readFlag = (field: "ownBlog" | "igPosted"): boolean => {
-    const flag = value[field];
-    if (flag === undefined || flag === null) return false;
-    if (typeof flag !== "boolean") {
-      errors.add(`priorExposure.${field}`, "Expected true or false.");
-      return false;
-    }
-    return flag;
-  };
-
-  let priorPubs: string[] = [];
-  const rawPubs = value["priorPubs"];
-  if (rawPubs !== undefined && rawPubs !== null) {
-    if (!Array.isArray(rawPubs) || rawPubs.some((entry) => typeof entry !== "string")) {
-      errors.add("priorExposure.priorPubs", "Expected a list of publication names.");
-    } else {
-      priorPubs = (rawPubs as string[]).map((p) => p.trim()).filter((p) => p.length > 0);
-    }
-  }
-
-  return { ownBlog: readFlag("ownBlog"), igPosted: readFlag("igPosted"), priorPubs };
-}
-
 function readVendorCredits(
   source: Record<string, unknown>,
   errors: Collector,
@@ -263,7 +228,8 @@ export function validateEventIntake(input: unknown): IntakeResult {
     heroPicks: errors.optionalText(input, "heroPicks"),
     videoUrl: errors.optionalUrl(input, "videoUrl"),
     targetOutletNotes: errors.optionalText(input, "targetOutletNotes"),
-    priorExposure: readPriorExposure(input, errors),
+    locationCode: errors.optionalText(input, "locationCode"),
+    contentType: errors.enumValue(input, "contentType", CONTENT_TYPES, "real_wedding"),
     vendorCredits: readVendorCredits(input, errors),
   };
 

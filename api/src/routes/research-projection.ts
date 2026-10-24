@@ -17,7 +17,7 @@ export function updateColumns(db: D1Database, columns: PublicationColumns, at: s
     .prepare(
       `UPDATE publications SET name = ?, tier = ?, kind = ?, method = ?, submission_url = ?, contact_email = ?,
          spec_json = ?, exclusivity_policy = ?, counts_own_blog_as_published = ?, typical_response_days = ?,
-         response_window_note = ?, earned_or_paid = ?, taste_notes = ?, last_verified = ?, updated_at = ?
+         response_window_note = ?, earned_or_paid = ?, taste_notes = ?, last_verified = ?, match_json = ?, updated_at = ?
        WHERE id = ?`,
     )
     .bind(
@@ -35,6 +35,7 @@ export function updateColumns(db: D1Database, columns: PublicationColumns, at: s
       columns.earned_or_paid,
       columns.taste_notes,
       columns.last_verified,
+      columns.match_json,
       at,
       columns.id,
     );

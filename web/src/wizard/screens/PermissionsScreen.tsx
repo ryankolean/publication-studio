@@ -19,6 +19,22 @@ const CONSENT = [
   { value: "declined", label: "No" },
 ];
 
+type Channel = "own_blog" | "own_social" | "couple_social" | "vendor_social" | "publication";
+
+interface Exposure {
+  channel: Channel;
+  detail: string | null;
+}
+
+/** Where a wedding can already have been shared; "who" asks which vendor or outlet. */
+const SHARED: Array<{ channel: Channel; label: string; who?: string }> = [
+  { channel: "own_blog", label: "On my blog" },
+  { channel: "own_social", label: "On my Instagram or other social media" },
+  { channel: "couple_social", label: "By the couple on social media" },
+  { channel: "vendor_social", label: "By a vendor on social media", who: "Which vendor" },
+  { channel: "publication", label: "In another publication", who: "Which publication" },
+];
+
 function Choice({
   name,
   legend,
@@ -63,15 +79,26 @@ export function PermissionsScreen({ ctx }: { ctx: StepContext }) {
   const [consent, setConsent] = useState("");
   const [nameDisplay, setNameDisplay] = useState("");
   const [limits, setLimits] = useState("");
+  const [shared, setShared] = useState<Partial<Record<Channel, string>>>({});
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    api
-      .get<StoredEvent>(`/events/${ctx.eventId}`)
-      .then((event) => {
+    Promise.all([
+      api.get<StoredEvent>(`/events/${ctx.eventId}`),
+      api.get<{ exposures: Exposure[] }>(`/events/${ctx.eventId}/exposures`),
+    ])
+      .then(([event, { exposures }]) => {
         if (cancelled) return;
+        // One line per place on screen; several of one kind read as one list.
+        const byChannel: Partial<Record<Channel, string>> = {};
+        for (const exposure of exposures) {
+          const before = byChannel[exposure.channel];
+          const detail = exposure.detail ?? "";
+          byChannel[exposure.channel] = before === undefined || before === "" ? detail : detail === "" ? before : `${before}, ${detail}`;
+        }
+        setShared(byChannel);
         setStored(event);
         setRights(event.rightsStatus);
         setConsent(event.consentStatus);
@@ -116,6 +143,11 @@ export function PermissionsScreen({ ctx }: { ctx: StepContext }) {
           consentNotes: plainYes ? null : textOrNull(limits),
         }),
       );
+      const exposures = (Object.entries(shared) as Array<[Channel, string]>).map(([channel, detail]) => ({
+        channel,
+        detail: textOrNull(detail),
+      }));
+      await api.put(`/events/${ctx.eventId}/exposures`, { exposures });
       ctx.go("story");
     } catch (caught) {
       setSaveError(errorText(caught, "Could not save the permissions."));
@@ -216,6 +248,51 @@ export function PermissionsScreen({ ctx }: { ctx: StepContext }) {
               </div>
             </div>
           )}
+
+          <fieldset>
+            <legend className={LABEL}>Has any of it been shared yet?</legend>
+            <p className="mt-1 text-xs text-slate-600">
+              Some outlets take only weddings nobody has shared. Asking the couple and vendors to hold off beyond a few
+              sneak peeks keeps those outlets open.
+            </p>
+            <div className="mt-2 space-y-2">
+              {SHARED.map((place) => {
+                const ticked = shared[place.channel] !== undefined;
+                return (
+                  <div key={place.channel}>
+                    <label className="flex items-center gap-2 text-sm text-slate-800">
+                      <input
+                        type="checkbox"
+                        checked={ticked}
+                        onChange={(e) =>
+                          setShared((current) => {
+                            const next = { ...current };
+                            if (e.target.checked) next[place.channel] = "";
+                            else delete next[place.channel];
+                            return next;
+                          })
+                        }
+                      />
+                      {place.label}
+                    </label>
+                    {ticked && place.who !== undefined && (
+                      <div className="mt-1 ml-6">
+                        <label htmlFor={`shared-${place.channel}`} className="block text-xs text-slate-600">
+                          {place.who}
+                        </label>
+                        <input
+                          id={`shared-${place.channel}`}
+                          className={INPUT}
+                          value={shared[place.channel] ?? ""}
+                          onChange={(e) => setShared((current) => ({ ...current, [place.channel]: e.target.value }))}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </fieldset>
         </div>
       )}
     </Frame>

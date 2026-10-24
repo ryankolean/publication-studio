@@ -26,9 +26,9 @@ beforeEach(async () => {
   db.exec(`INSERT INTO users (id, email, name, role, pw_hash) VALUES
     ('user-admin', 'admin@example.com', 'Admin', 'admin', 'x'),
     ('user-1', 'partner@example.com', 'Partner', 'photographer', 'x');
-    INSERT INTO events (id, slug, couple_names, event_date, state, country, rights_status)
-      VALUES ('e1', 'e1', 'Ada and Bo', '2026-01-31', 'MI', 'USA', 'own_contract'),
-             ('e2', 'e2', 'Cy and Di', '2025-07-04', 'TX', NULL, 'second_shooter');`);
+    INSERT INTO events (id, slug, couple_names, event_date, location_code, rights_status)
+      VALUES ('e1', 'e1', 'Ada and Bo', '2026-01-31', 'US-MI', 'own_contract'),
+             ('e2', 'e2', 'Cy and Di', '2025-07-04', 'US-TX', 'second_shooter');`);
   admin = { authorization: `Bearer ${await signAccessToken(JWT_SECRET, { userId: "user-admin", role: "admin" })}` };
   partner = { authorization: `Bearer ${await signAccessToken(JWT_SECRET, { userId: "user-1", role: "photographer" })}` };
 });

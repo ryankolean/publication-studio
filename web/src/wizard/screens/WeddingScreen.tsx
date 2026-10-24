@@ -16,6 +16,8 @@ interface Fields {
   state: string;
   country: string;
   isDestination: boolean;
+  locationCode: string;
+  contentType: StoredEvent["contentType"];
 }
 
 const EMPTY: Fields = {
@@ -26,7 +28,21 @@ const EMPTY: Fields = {
   state: "",
   country: "",
   isDestination: false,
+  locationCode: "",
+  contentType: "real_wedding",
 };
+
+interface Place {
+  code: string;
+  label: string;
+  group: "us" | "intl";
+}
+
+const KINDS: Array<{ value: StoredEvent["contentType"]; label: string }> = [
+  { value: "real_wedding", label: "Real wedding" },
+  { value: "elopement", label: "Elopement" },
+  { value: "styled_shoot", label: "Styled shoot" },
+];
 
 /** A new wedding has no record yet, so nothing on the rail is done. */
 const NEW_RAIL: RailProps = {
@@ -54,10 +70,24 @@ export function WeddingScreen({ ctx }: { ctx: StepContext | null }) {
   const eventId = ctx?.eventId ?? null;
 
   const [stored, setStored] = useState<StoredEvent | null>(null);
+  const [places, setPlaces] = useState<Place[]>([]);
   const [fields, setFields] = useState<Fields>(EMPTY);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    // The list of places comes from the outlet research; without it the dropdown stays empty.
+    Promise.resolve(api.get<{ locations: Place[] } | undefined>("/locations"))
+      .then((body) => {
+        if (!cancelled) setPlaces(body?.locations ?? []);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [api]);
 
   useEffect(() => {
     if (eventId === null) return;
@@ -75,6 +105,8 @@ export function WeddingScreen({ ctx }: { ctx: StepContext | null }) {
           state: event.state ?? "",
           country: event.country ?? "",
           isDestination: event.isDestination,
+          locationCode: event.locationCode ?? "",
+          contentType: event.contentType,
         });
       })
       .catch((caught: unknown) => {
@@ -98,6 +130,8 @@ export function WeddingScreen({ ctx }: { ctx: StepContext | null }) {
       state: textOrNull(fields.state),
       country: textOrNull(fields.country),
       isDestination: fields.isDestination,
+      locationCode: fields.locationCode === "" ? null : fields.locationCode,
+      contentType: fields.contentType,
     };
     try {
       if (ctx === null) {
@@ -171,6 +205,50 @@ export function WeddingScreen({ ctx }: { ctx: StepContext | null }) {
               <input id="country" className={INPUT} value={fields.country} onChange={(e) => set("country")(e.target.value)} />
             </div>
           </div>
+          <div>
+            <label htmlFor="location" className={LABEL}>
+              Where it was, for matching outlets
+            </label>
+            <select id="location" className={INPUT} value={fields.locationCode} onChange={(e) => set("locationCode")(e.target.value)}>
+              <option value="">Choose a state, area or country</option>
+              <optgroup label="United States">
+                {places
+                  .filter((place) => place.group === "us")
+                  .map((place) => (
+                    <option key={place.code} value={place.code}>
+                      {place.code.includes(":") ? `\u00a0\u00a0${place.label}` : place.label}
+                    </option>
+                  ))}
+              </optgroup>
+              <optgroup label="Outside the United States">
+                {places
+                  .filter((place) => place.group === "intl")
+                  .map((place) => (
+                    <option key={place.code} value={place.code}>
+                      {place.label}
+                    </option>
+                  ))}
+              </optgroup>
+            </select>
+            <p className="mt-1 text-xs text-slate-500">Pick the area if it is listed; some outlets cover only one.</p>
+          </div>
+          <fieldset>
+            <legend className={LABEL}>What kind of wedding</legend>
+            <div className="mt-1 flex flex-wrap gap-4">
+              {KINDS.map((kind) => (
+                <label key={kind.value} className="flex items-center gap-2 text-sm text-slate-800">
+                  <input
+                    type="radio"
+                    name="content-type"
+                    value={kind.value}
+                    checked={fields.contentType === kind.value}
+                    onChange={() => setFields((current) => ({ ...current, contentType: kind.value }))}
+                  />
+                  {kind.label}
+                </label>
+              ))}
+            </div>
+          </fieldset>
           <label className="flex items-center gap-2 text-sm text-slate-800">
             <input
               type="checkbox"

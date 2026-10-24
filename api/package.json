@@ -14,7 +14,8 @@
     "test-account": "node scripts/ensure-test-account.mjs",
     "research:check": "vite-node scripts/check-research.ts --",
     "research:import": "vite-node scripts/import-research.ts --",
-    "style:suggest": "vite-node scripts/suggest-tags.ts --"
+    "style:suggest": "vite-node scripts/suggest-tags.ts --",
+    "match:report": "vite-node scripts/match-report.ts --"
   },
   "devDependencies": {
     "@types/node": "^22.20.1",

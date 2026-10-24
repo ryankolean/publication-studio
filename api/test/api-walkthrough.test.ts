@@ -156,7 +156,7 @@ describe("GET /events/:id/walkthrough", () => {
     await addPoolImages(id, 3);
     const body = await walk(id);
 
-    expect(body["event"]).toEqual({ id, coupleNames: "Sarah and James" });
+    expect(body["event"]).toEqual({ id, coupleNames: "Sarah and James", locationCode: null });
     expect(body["packages"]).toEqual([]);
     expect(body["package"]).toBeNull();
     expect(statuses(body)).toEqual({
@@ -203,7 +203,8 @@ describe("GET /events/:id/walkthrough", () => {
   });
 
   it("flags the prior-exposure conflict for an outlet that counts the blog", async () => {
-    const id = await createEvent({ ...COMPLETE, priorExposure: { ownBlog: true } });
+    const id = await createEvent(COMPLETE);
+    expect((await send("PUT", `/events/${id}/exposures`, { exposures: [{ channel: "own_blog" }] })).status).toBe(200);
     const body = await walk(id);
     const brides = (body["outlets"] as Array<Record<string, any>>).find((o) => o["id"] === "pub-brides");
     expect(brides?.["warnings"].map((w: any) => w.code)).toContain("prior_exposure_conflict");

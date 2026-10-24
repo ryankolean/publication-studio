@@ -72,6 +72,17 @@ export interface WizardState {
   } | null;
 }
 
+/** The matcher's verdict on one outlet for this wedding (SUMMIT-336). */
+export interface OutletMatch {
+  group: "fits" | "check" | "excluded";
+  score: number;
+  label: string;
+  reasons: string[];
+  checks: string[];
+  excluded: string[];
+  deadline: string | null;
+}
+
 export interface OutletOption {
   id: string;
   name: string;
@@ -82,6 +93,7 @@ export interface OutletOption {
   typicalResponseDays: number | null;
   tasteNotes: string | null;
   warnings: Warning[];
+  match: OutletMatch;
 }
 
 export interface EventPackage {
@@ -94,7 +106,7 @@ export interface EventPackage {
 }
 
 export interface Walkthrough {
-  event: { id: string; coupleNames: string };
+  event: { id: string; coupleNames: string; locationCode: string | null };
   packages: EventPackage[];
   outlets: OutletOption[];
   wizard: WizardState;
@@ -119,7 +131,8 @@ export interface StoredEvent {
   heroPicks: string | null;
   videoUrl: string | null;
   targetOutletNotes: string | null;
-  priorExposure: { ownBlog: boolean; igPosted: boolean; priorPubs: string[] };
+  locationCode: string | null;
+  contentType: "real_wedding" | "elopement" | "styled_shoot";
   hasGalleryUrl: boolean;
   vendorCredits: Array<{ role: string; businessName: string; website: string | null; instagram: string | null }>;
 }
@@ -152,7 +165,8 @@ export function eventPayload(stored: StoredEvent, changes: EventChanges): Record
     heroPicks: merged.heroPicks,
     videoUrl: merged.videoUrl,
     targetOutletNotes: merged.targetOutletNotes,
-    priorExposure: merged.priorExposure,
+    locationCode: merged.locationCode,
+    contentType: merged.contentType,
     vendorCredits: merged.vendorCredits,
   };
 }

@@ -55,10 +55,11 @@ describe("migrations", () => {
     // vocabulary that events and outlets are matched on, and the research
     // store from migration 0008: research_revisions, research_vocab and
     // publication_edits, and the style profile from migration 0009:
-    // event_tags and past_features.
+    // event_tags and past_features, and event_exposures from migration 0010.
     expect(tableNames(db)).toEqual([
       "audit_log",
       "credit_requests",
+      "event_exposures",
       "event_images",
       "event_tags",
       "events",
@@ -418,11 +419,12 @@ describe("intake coverage", () => {
       "state",
       "country",
       "is_destination",
-      "prior_exposure",
       "unique_angle",
       "hero_picks",
       "video_url",
       "target_outlet_notes",
+      "location_code",
+      "content_type",
     ]) {
       expect(columns, `events is missing ${column}`).toContain(column);
     }

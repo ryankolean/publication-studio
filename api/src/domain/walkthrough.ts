@@ -94,6 +94,22 @@ export function evaluateIntake(
   ];
 }
 
+/**
+ * The wedding's exposures (SUMMIT-336) in the shape the outlet warnings read:
+ * her own blog, her own social media, and earlier outlets by name.
+ */
+export function exposureSummary(
+  exposures: ReadonlyArray<{ channel: string; detail: string | null }>,
+): WalkthroughEvent["priorExposure"] {
+  return {
+    ownBlog: exposures.some((exposure) => exposure.channel === "own_blog"),
+    igPosted: exposures.some((exposure) => exposure.channel === "own_social"),
+    priorPubs: exposures
+      .filter((exposure) => exposure.channel === "publication" && exposure.detail !== null)
+      .map((exposure) => exposure.detail as string),
+  };
+}
+
 /** "posted on your blog and to Instagram", or null when nothing was posted. */
 function postedWhere(exposure: WalkthroughEvent["priorExposure"]): string | null {
   if (exposure.ownBlog && exposure.igPosted) return "posted on your blog and to Instagram";
