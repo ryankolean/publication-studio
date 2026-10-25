@@ -6,9 +6,12 @@ import { fail } from "../errors.js";
 import { evaluateRightsGate } from "../domain/rights-gate.js";
 import type { ConsentStatus, RightsGateResult, RightsStatus } from "../domain/rights-gate.js";
 import { validateEventIntake } from "../domain/event-intake.js";
-import type { PriorExposure, VendorCreditInput, EventIntake } from "../domain/event-intake.js";
+import type { VendorCreditInput, EventIntake } from "../domain/event-intake.js";
+import { isLocationCode } from "../domain/geo.js";
+import type { Geo } from "../domain/geo.js";
+import { rankOutlets, validateExposures } from "../domain/match.js";
 import { eventSlug } from "../domain/slug.js";
-import { buildWalkthrough, outletFit } from "../domain/walkthrough.js";
+import { buildWalkthrough, exposureSummary, outletFit } from "../domain/walkthrough.js";
 import type { WalkthroughPackage } from "../domain/walkthrough.js";
 import { buildWizard, followedPackageId, weddingChip } from "../domain/wizard.js";
 import type { WizardPackage } from "../domain/wizard.js";
@@ -17,6 +20,7 @@ import type { D1Database } from "../env.js";
 import { listEventPackages, loadPackageView } from "./packages.js";
 import { listPublications, loadPublication } from "./publications.js";
 import { loadView as loadSubmissionView } from "./submissions.js";
+import { loadExposures, loadGeo, loadMatchInputs } from "./match-context.js";
 
 interface EventRow {
   id: string;
@@ -38,7 +42,8 @@ interface EventRow {
   hero_picks: string | null;
   video_url: string | null;
   target_outlet_notes: string | null;
-  prior_exposure: string;
+  location_code: string | null;
+  content_type: EventIntake["contentType"];
   created_at: string;
   updated_at: string;
 }
@@ -62,7 +67,8 @@ interface EventView {
   heroPicks: string | null;
   videoUrl: string | null;
   targetOutletNotes: string | null;
-  priorExposure: PriorExposure;
+  locationCode: string | null;
+  contentType: EventIntake["contentType"];
   /**
    * The gallery URL itself is never serialised. It carries a Pic-Time invite
    * token, which the design doc treats as a credential: server-side only,
@@ -73,17 +79,6 @@ interface EventView {
   gate: RightsGateResult;
   createdAt: string;
   updatedAt: string;
-}
-
-const EMPTY_EXPOSURE: PriorExposure = { ownBlog: false, igPosted: false, priorPubs: [] };
-
-function readJson<T>(raw: string, fallback: T): T {
-  try {
-    const parsed: unknown = JSON.parse(raw);
-    return parsed === null ? fallback : (parsed as T);
-  } catch {
-    return fallback;
-  }
 }
 
 function toView(row: EventRow): EventView {
@@ -106,7 +101,8 @@ function toView(row: EventRow): EventView {
     heroPicks: row.hero_picks,
     videoUrl: row.video_url,
     targetOutletNotes: row.target_outlet_notes,
-    priorExposure: readJson<PriorExposure>(row.prior_exposure, EMPTY_EXPOSURE),
+    locationCode: row.location_code,
+    contentType: row.content_type,
     hasGalleryUrl: row.gallery_url !== null && row.gallery_url.length > 0,
     gate: evaluateRightsGate({
       rightsStatus: row.rights_status,
@@ -159,8 +155,8 @@ function eventStatement(db: D1Database, id: string, slug: string, intake: EventI
          id, slug, couple_names, event_date, venue_name, city, state, country,
          gallery_url, unique_angle, rights_status, consent_status,
          consent_notes, name_display, couple_story, is_destination, hero_picks,
-         video_url, target_outlet_notes, prior_exposure
-       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         video_url, target_outlet_notes, location_code, content_type
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .bind(
       id,
@@ -182,9 +178,19 @@ function eventStatement(db: D1Database, id: string, slug: string, intake: EventI
       intake.heroPicks,
       intake.videoUrl,
       intake.targetOutletNotes,
-      JSON.stringify(intake.priorExposure),
+      intake.locationCode,
+      intake.contentType,
     );
 }
+
+/** Why a wedding's place code cannot be stored, or null when it can. */
+function locationProblem(code: string | null, geo: Geo | null): string | null {
+  if (code === null) return null;
+  if (geo === null) return "The list of places is not loaded yet.";
+  return isLocationCode(code, geo) ? null : "Choose a place from the list.";
+}
+
+const today = () => new Date().toISOString().slice(0, 10);
 
 export const eventRoutes = new Hono<AppContext>();
 
@@ -204,6 +210,10 @@ eventRoutes.post("/", async (c) => {
   }
 
   const intake = parsed.value;
+  const placeProblem = locationProblem(intake.locationCode, await loadGeo(c.env.DB));
+  if (placeProblem !== null) {
+    return fail(c, 400, "VALIDATION", "Some fields need attention.", [{ field: "locationCode", message: placeProblem }]);
+  }
   const id = crypto.randomUUID();
   const slug = await uniqueSlug(c.env.DB, eventSlug(intake.coupleNames, intake.eventDate));
 
@@ -349,7 +359,7 @@ function updateStatement(db: D1Database, id: string, intake: EventIntake, now: s
          gallery_url = COALESCE(?, gallery_url), unique_angle = ?,
          rights_status = ?, consent_status = ?, consent_notes = ?, name_display = ?,
          couple_story = ?, is_destination = ?, hero_picks = ?, video_url = ?,
-         target_outlet_notes = ?, prior_exposure = ?, updated_at = ?
+         target_outlet_notes = ?, location_code = ?, content_type = ?, updated_at = ?
        WHERE id = ?`,
     )
     .bind(
@@ -370,7 +380,8 @@ function updateStatement(db: D1Database, id: string, intake: EventIntake, now: s
       intake.heroPicks,
       intake.videoUrl,
       intake.targetOutletNotes,
-      JSON.stringify(intake.priorExposure),
+      intake.locationCode,
+      intake.contentType,
       now,
       id,
     );
@@ -396,6 +407,10 @@ eventRoutes.patch("/:id", async (c) => {
 
   const intake = parsed.value;
   const db = c.env.DB;
+  const placeProblem = locationProblem(intake.locationCode, await loadGeo(db));
+  if (placeProblem !== null) {
+    return fail(c, 400, "VALIDATION", "Some fields need attention.", [{ field: "locationCode", message: placeProblem }]);
+  }
 
   // One transaction, as on create: the vendor list is replaced whole, and an
   // event left with half its old credits is a partial write.
@@ -432,21 +447,22 @@ eventRoutes.get("/:id/walkthrough", async (c) => {
     .bind(c.req.param("id"))
     .first<EventRow>();
   if (row === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
-  const event = toView(row);
 
-  const [credits, pool, outlets, packages, tags] = await Promise.all([
+  const [credits, pool, outlets, packages, tags, match] = await Promise.all([
     db.prepare("SELECT COUNT(*) AS n FROM vendor_credits WHERE event_id = ?")
-      .bind(event.id)
+      .bind(row.id)
       .first<{ n: number }>(),
     db.prepare("SELECT COUNT(*) AS n FROM event_images WHERE event_id = ?")
-      .bind(event.id)
+      .bind(row.id)
       .first<{ n: number }>(),
     listPublications(db, false),
-    listEventPackages(db, event.id),
+    listEventPackages(db, row.id),
     db.prepare("SELECT COUNT(*) AS n FROM event_tags WHERE event_id = ? AND state = 'confirmed'")
-      .bind(event.id)
+      .bind(row.id)
       .first<{ n: number }>(),
+    loadMatchInputs(db, row, today()),
   ]);
+  const event = { ...toView(row), priorExposure: exposureSummary(match.exposures) };
 
   const eventPackages = packages ?? [];
 
@@ -487,23 +503,35 @@ eventRoutes.get("/:id/walkthrough", async (c) => {
     liveElsewhere: liveAt(loaded?.wizard.id ?? null),
   });
 
+  const byId = new Map(outlets.map((outlet) => [outlet.id, outlet]));
+  const ranked = rankOutlets(
+    match.wedding,
+    outlets.map((outlet) => ({ id: outlet.id, name: outlet.name, tier: outlet.tier, tags: outlet.tags, profile: outlet.matchProfile })),
+    match.context,
+  );
+
   return c.json({
-    event: { id: event.id, coupleNames: event.coupleNames },
+    event: { id: event.id, coupleNames: event.coupleNames, locationCode: event.locationCode },
     packages: eventPackages,
     package: named === undefined ? null : (loaded?.body ?? null),
     // DECISION: the outlet chooser needs each outlet's warnings as data, not
     // only as the outlet step's prose, so they travel alongside the steps.
-    outlets: outlets.map((outlet) => ({
-      id: outlet.id,
-      name: outlet.name,
-      tier: outlet.tier,
-      method: outlet.method,
-      imgMin: outlet.spec.imgMin,
-      imgMax: outlet.spec.imgMax,
-      typicalResponseDays: outlet.typicalResponseDays,
-      tasteNotes: outlet.tasteNotes,
-      warnings: outletFit(outlet, event).warnings,
-    })),
+    // The matcher's order replaces the tier order (SUMMIT-336).
+    outlets: ranked.map((result) => {
+      const outlet = byId.get(result.outletId) as (typeof outlets)[number];
+      return {
+        id: outlet.id,
+        name: outlet.name,
+        tier: outlet.tier,
+        method: outlet.method,
+        imgMin: outlet.spec.imgMin,
+        imgMax: outlet.spec.imgMax,
+        typicalResponseDays: outlet.typicalResponseDays,
+        tasteNotes: outlet.tasteNotes,
+        warnings: outletFit(outlet, event).warnings,
+        match: result,
+      };
+    }),
     steps,
     wizard,
   });
@@ -590,4 +618,55 @@ eventRoutes.get("/:id/packages", async (c) => {
   const packages = await listEventPackages(c.env.DB, c.req.param("id"));
   if (packages === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
   return c.json({ packages });
+});
+
+const exposureView = (row: { id: string; channel: string; detail: string | null; publication_id: string | null }) => ({
+  id: row.id,
+  channel: row.channel,
+  detail: row.detail,
+  publicationId: row.publication_id,
+});
+
+/** Where the wedding has already been shared (SUMMIT-336). */
+eventRoutes.get("/:id/exposures", async (c) => {
+  const event = await c.env.DB.prepare("SELECT id FROM events WHERE id = ?").bind(c.req.param("id")).first<{ id: string }>();
+  if (event === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
+  return c.json({ exposures: (await loadExposures(c.env.DB, event.id)).map(exposureView) });
+});
+
+/**
+ * Replaces the whole list: the form sends every place she ticked. A named
+ * earlier outlet must be one of the researched publications; anything else
+ * goes in as text.
+ */
+eventRoutes.put("/:id/exposures", async (c) => {
+  const db = c.env.DB;
+  const event = await db.prepare("SELECT id FROM events WHERE id = ?").bind(c.req.param("id")).first<{ id: string }>();
+  if (event === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
+  const parsed = validateExposures(await c.req.json().catch(() => null));
+  if (!parsed.ok) return fail(c, 400, "VALIDATION", "Some fields need attention.", parsed.errors);
+
+  for (const [index, exposure] of parsed.value.entries()) {
+    if (exposure.publicationId === null) continue;
+    const outlet = await db.prepare("SELECT id FROM publications WHERE id = ?").bind(exposure.publicationId).first();
+    if (outlet === null) {
+      return fail(c, 400, "VALIDATION", "Some fields need attention.", [
+        { field: `exposures.${index}.publicationId`, message: "That outlet could not be found." },
+      ]);
+    }
+  }
+
+  const user = c.get("user").id;
+  await db.batch([
+    db.prepare("DELETE FROM event_exposures WHERE event_id = ?").bind(event.id),
+    ...parsed.value.map((exposure) =>
+      db
+        .prepare("INSERT INTO event_exposures (id, event_id, channel, detail, publication_id, created_by) VALUES (?, ?, ?, ?, ?, ?)")
+        .bind(crypto.randomUUID(), event.id, exposure.channel, exposure.detail, exposure.publicationId, user),
+    ),
+    db
+      .prepare("INSERT INTO audit_log (id, user_id, entity, entity_id, action, detail_json) VALUES (?, ?, 'event', ?, 'exposures_updated', ?)")
+      .bind(crypto.randomUUID(), user, event.id, JSON.stringify({ count: parsed.value.length })),
+  ]);
+  return c.json({ exposures: (await loadExposures(db, event.id)).map(exposureView) });
 });

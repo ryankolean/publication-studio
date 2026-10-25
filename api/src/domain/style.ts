@@ -2,7 +2,7 @@
  * The photographer's style profile (SUMMIT-337).
  *
  * Each wedding carries tags from the shared vocabulary. A tag arrives as a
- * suggestion (loaded by the operator, or from the wedding's date and state)
+ * suggestion (loaded by the operator, or from the wedding's date and place)
  * and counts only once she confirms it. Her profile is the confirmed tags
  * across her own weddings, plus where she has been published.
  *
@@ -50,54 +50,8 @@ export function seasonTags(eventDate: string): string[] {
   return SEASON_BY_MONTH[Number(eventDate.slice(5, 7))] ?? [];
 }
 
-/** The region tag for each US region in research/vocab/geo.yaml. */
-const REGION_TAG: Record<string, string> = {
-  "US:northeast": "northeast_us",
-  "US:mid-atlantic": "mid_atlantic_us",
-  "US:southeast": "southeast_us",
-  "US:south-central": "south_central_us",
-  "US:midwest": "midwest_us",
-  "US:southwest": "southwest_us",
-  "US:mountain-west": "mountain_west_us",
-  "US:pacific-northwest": "pacific_northwest_us",
-};
-
-/** States the vocabulary names on their own, ahead of their region. */
-const STATE_TAG: Record<string, string> = { "US-MI": "michigan", "US-FL": "florida", "US-CA": "california" };
-
-const UNITED_STATES = /^(us|usa|u\.s\.(a\.)?|united states( of america)?)$/i;
-
 const asRecord = (value: unknown): Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
-
-/**
- * The region a US wedding's state suggests, read against the geo vocabulary
- * the research import stored. The state is free text on the wedding, so a
- * two-letter code or the full name both count. Weddings outside the US get
- * nothing here; she adds their region herself.
- */
-export function regionTags(state: string | null, country: string | null, geo: unknown): string[] {
-  const place = (country ?? "").trim();
-  if (place !== "" && !UNITED_STATES.test(place)) return [];
-  const text = (state ?? "").trim();
-  if (text === "") return [];
-
-  const states = asRecord(asRecord(geo)["states"]);
-  const code = /^[a-z]{2}$/i.test(text)
-    ? `US-${text.toUpperCase()}`
-    : Object.keys(states).find((key) => String(states[key]).toLowerCase() === text.toLowerCase());
-  if (code === undefined || !(code in states)) return [];
-
-  const tags: string[] = [];
-  const own = STATE_TAG[code];
-  if (own !== undefined) tags.push(own);
-  for (const [region, entry] of Object.entries(asRecord(asRecord(geo)["us_regions"]))) {
-    const members = asRecord(entry)["states"];
-    const tag = REGION_TAG[region];
-    if (tag !== undefined && Array.isArray(members) && members.includes(code)) tags.push(tag);
-  }
-  return tags;
-}
 
 /** One suggested tag, already checked against the vocabulary. */
 export interface Suggestion {

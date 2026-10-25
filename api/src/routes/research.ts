@@ -27,7 +27,7 @@ import type { PublicationFile } from "../domain/research/schema.js";
 import { VOCAB_KINDS } from "../domain/research/store.js";
 import type { RevisionStatus } from "../domain/research/store.js";
 import { loadPublication } from "./publications.js";
-import { loadCorrections } from "./research-projection.js";
+import { loadCorrections, updateColumns } from "./research-projection.js";
 import { loadVocab, nowIso, today } from "./research-vocab.js";
 
 export interface ResearchPayload {
@@ -42,6 +42,30 @@ const isObject = (value: unknown): value is Record<string, unknown> =>
 export const researchRoutes = new Hono<AppContext>();
 
 researchRoutes.use("*", requireAuth);
+
+/**
+ * Fills in the projected columns for outlets approved before a column existed
+ * (match_json, SUMMIT-336), a few per call so each stays inside the Worker's
+ * CPU budget. The research import calls it until nothing remains.
+ */
+researchRoutes.post("/reproject", requireRole("admin"), async (c) => {
+  const db = c.env.DB;
+  const { results } = await db
+    .prepare("SELECT id, research_json FROM publications WHERE research_json IS NOT NULL AND match_json IS NULL LIMIT 4")
+    .all<{ id: string; research_json: string }>();
+  const at = nowIso();
+  const statements = [];
+  for (const row of results) {
+    const payload = JSON.parse(row.research_json) as ResearchPayload;
+    const { columns } = projectPublication(applyEdits(payload.file, await loadCorrections(db, row.id)), payload.contacts);
+    statements.push(updateColumns(db, columns, at));
+  }
+  if (statements.length > 0) await db.batch(statements);
+  const remaining = await db
+    .prepare("SELECT COUNT(*) AS n FROM publications WHERE research_json IS NOT NULL AND match_json IS NULL")
+    .first<{ n: number }>();
+  return c.json({ reprojected: results.length, remaining: remaining?.n ?? 0 });
+});
 
 researchRoutes.put("/vocab", requireRole("admin"), async (c) => {
   const body: unknown = await c.req.json().catch(() => null);
@@ -239,8 +263,8 @@ researchRoutes.post("/revisions/:id/approve", async (c) => {
       .prepare(
         `INSERT INTO publications (id, name, tier, kind, method, submission_url, contact_email, spec_json,
            exclusivity_policy, counts_own_blog_as_published, typical_response_days, response_window_note,
-           earned_or_paid, taste_notes, last_verified, active, research_json, research_revision_id, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)
+           earned_or_paid, taste_notes, last_verified, match_json, active, research_json, research_revision_id, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)
          ON CONFLICT (id) DO UPDATE SET
            name = excluded.name, tier = excluded.tier, kind = excluded.kind, method = excluded.method,
            submission_url = excluded.submission_url, contact_email = excluded.contact_email,
@@ -248,7 +272,8 @@ researchRoutes.post("/revisions/:id/approve", async (c) => {
            counts_own_blog_as_published = excluded.counts_own_blog_as_published,
            typical_response_days = excluded.typical_response_days,
            response_window_note = excluded.response_window_note, earned_or_paid = excluded.earned_or_paid,
-           taste_notes = excluded.taste_notes, last_verified = excluded.last_verified, active = 1,
+           taste_notes = excluded.taste_notes, last_verified = excluded.last_verified,
+           match_json = excluded.match_json, active = 1,
            research_json = excluded.research_json, research_revision_id = excluded.research_revision_id,
            updated_at = excluded.updated_at`,
       )
@@ -268,6 +293,7 @@ researchRoutes.post("/revisions/:id/approve", async (c) => {
         columns.earned_or_paid,
         columns.taste_notes,
         columns.last_verified,
+        columns.match_json,
         row.payload_json,
         row.id,
         at,

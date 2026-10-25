@@ -42,6 +42,9 @@ export const fakeApi = (): FakeApi => ({
  */
 export function serve(api: FakeApi, answers: Record<string, unknown>) {
   api.get.mockImplementation(async (path: string) => {
+    // Reads every wedding screen makes in passing: nothing shared yet, and a short list of places.
+    if (!(path in answers) && /^\/events\/[^/]+\/exposures$/.test(path)) return { exposures: [] };
+    if (!(path in answers) && path === "/locations") return { locations: PLACES };
     if (!(path in answers)) throw new ApiError(404, "NOT_FOUND", `unexpected ${path}`);
     const answer = answers[path];
     const value = typeof answer === "function" ? (answer as () => unknown)() : answer;
@@ -49,6 +52,14 @@ export function serve(api: FakeApi, answers: Record<string, unknown>) {
     return value;
   });
 }
+
+export const PLACES = [
+  { code: "US-FL", label: "Florida", group: "us" },
+  { code: "US-FL:florida-keys", label: "Florida Keys, Florida", group: "us" },
+  { code: "US-MI", label: "Michigan", group: "us" },
+  { code: "US-MI:detroit", label: "Metro Detroit, Michigan", group: "us" },
+  { code: "MX", label: "Mexico", group: "intl" },
+];
 
 function LocationProbe() {
   const location = useLocation();
@@ -108,6 +119,15 @@ export const OUTLET_A = {
   typicalResponseDays: 28,
   tasteNotes: "Loves winter light and real moments. Avoids anything staged.",
   warnings: [] as Array<{ code: string; text: string }>,
+  match: {
+    group: "fits" as const,
+    score: 68,
+    label: "Good match",
+    reasons: ["Shares Romantic.", "Free to submit and publish."],
+    checks: [] as string[],
+    excluded: [] as string[],
+    deadline: null as string | null,
+  },
 };
 
 export const OUTLET_B = {
@@ -122,11 +142,20 @@ export const OUTLET_B = {
   warnings: [
     { code: "no_public_route", text: "No public submission route: reaching this outlet is a pitch to an editor, not a form." },
   ],
+  match: {
+    group: "check" as const,
+    score: 50,
+    label: "Worth a look",
+    reasons: [] as string[],
+    checks: ["Does not say which places it covers."],
+    excluded: [] as string[],
+    deadline: null as string | null,
+  },
 };
 
 export function walkthrough(wizard: WizardState, overrides: Partial<Walkthrough> = {}): Walkthrough {
   return {
-    event: { id: "w1", coupleNames: "Sarah and James" },
+    event: { id: "w1", coupleNames: "Sarah and James", locationCode: "US-MI:detroit" },
     packages: [],
     outlets: [OUTLET_A, OUTLET_B],
     wizard,
@@ -153,7 +182,8 @@ export const storedEvent = (overrides: Record<string, unknown> = {}) => ({
   heroPicks: "The veil shot",
   videoUrl: null,
   targetOutletNotes: null,
-  priorExposure: { ownBlog: true, igPosted: false, priorPubs: [] },
+  locationCode: "US-MI:detroit",
+  contentType: "real_wedding",
   hasGalleryUrl: true,
   vendorCredits: [{ role: "Florist", businessName: "Stems", website: null, instagram: "stems" }],
   ...overrides,

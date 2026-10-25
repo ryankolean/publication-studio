@@ -155,6 +155,19 @@ for (const outlet of selected) {
   console.log(`${outlet.file.id}: ${status}`);
 }
 
+// Outlets approved before a projected column existed get it filled in, a few per call.
+for (;;) {
+  const res = await fetch(`${args.api}/research/reproject`, { method: "POST", headers, body: "{}" });
+  if (res.status !== 200) {
+    failed = true;
+    console.error(`Refreshing approved outlets failed (${res.status}).`);
+    break;
+  }
+  const { reprojected, remaining } = (await res.json()) as { reprojected: number; remaining: number };
+  if (reprojected > 0) console.log(`Refreshed ${reprojected} approved outlet(s); ${remaining} to go.`);
+  if (remaining === 0 || reprojected === 0) break;
+}
+
 console.log(
   `${selected.length} outlet(s): ${Object.entries(counts)
     .map(([status, n]) => `${n} ${status}`)

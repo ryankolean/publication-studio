@@ -1,4 +1,8 @@
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { parse } from "yaml";
 
 import { createApp } from "../src/app.js";
 import type { Env } from "../src/env.js";
@@ -50,6 +54,15 @@ const post = (body: unknown, headers: Record<string, string> = auth) =>
 
 const get = (path: string, headers: Record<string, string> = auth) =>
   app.request(path, { headers }, env);
+
+const GEO = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../../research/vocab/geo.yaml"), "utf8");
+const loadGeoVocab = () =>
+  db.prepare("INSERT INTO research_vocab (kind, json, content_hash) VALUES ('geo', ?, 'test')").bind(JSON.stringify(parse(GEO))).run();
+const errorDetails = async (body: unknown) => {
+  const res = await post(body);
+  expect(res.status).toBe(400);
+  return ((await res.json()) as { details: unknown }).details;
+};
 
 const create = async (body: unknown = minimal) => {
   const res = await post(body);
@@ -212,17 +225,17 @@ describe("POST /events", () => {
     });
   });
 
-  it("round-trips prior exposure", async () => {
-    const body = await create({
-      ...minimal,
-      priorExposure: { ownBlog: true, igPosted: false, priorPubs: ["Somewhere"] },
-    });
-    expect(body).not.toHaveProperty("styleTags");
-    expect(body["priorExposure"]).toEqual({
-      ownBlog: true,
-      igPosted: false,
-      priorPubs: ["Somewhere"],
-    });
+  it("stores the place and kind of wedding, checking the place against the geo vocabulary", async () => {
+    expect(await errorDetails({ ...minimal, locationCode: "US-FL:florida-keys" })).toEqual([
+      { field: "locationCode", message: "The list of places is not loaded yet." },
+    ]);
+    loadGeoVocab();
+    const body = await create({ ...minimal, locationCode: "US-FL:florida-keys", contentType: "elopement" });
+    expect(body).toMatchObject({ locationCode: "US-FL:florida-keys", contentType: "elopement" });
+    expect(body).not.toHaveProperty("priorExposure");
+    expect(await errorDetails({ ...minimal, locationCode: "US:southeast" })).toEqual([
+      { field: "locationCode", message: "Choose a place from the list." },
+    ]);
   });
 });
 
@@ -459,7 +472,7 @@ describe("PATCH /events/:id", () => {
     heroPicks: "12, 40, 88",
     videoUrl: "https://video.example.com/v/1",
     targetOutletNotes: "Dream outlet first.",
-    priorExposure: { ownBlog: true, igPosted: true, priorPubs: ["Somewhere"] },
+    contentType: "styled_shoot",
     vendorCredits: [
       { role: "Florist", businessName: "Stems", website: "https://stems.example.com", instagram: "@stems" },
       { role: "Venue", businessName: "The Mill", website: null, instagram: null },

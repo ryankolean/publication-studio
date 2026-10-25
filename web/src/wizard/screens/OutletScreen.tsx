@@ -28,6 +28,18 @@ function facts(outlet: OutletOption): string {
   ].join(" - ");
 }
 
+/** The groups she chooses from, in the matcher's order; ruled-out outlets sit apart. */
+const GROUPS: Array<{ group: "fits" | "check"; title: string }> = [
+  { group: "fits", title: "Best fits" },
+  { group: "check", title: "Check first" },
+];
+
+const LABEL_TONE: Record<string, string> = {
+  "Strong match": "border-emerald-300 bg-emerald-50 text-emerald-900",
+  "Good match": "border-sky-300 bg-sky-50 text-sky-900",
+  "Worth a look": "border-slate-300 text-slate-700",
+};
+
 const cardClass = (selected: boolean) =>
   `flex cursor-pointer items-start gap-3 rounded-lg border p-4 ${
     selected ? "border-slate-900 ring-1 ring-slate-900" : "border-slate-200 hover:border-slate-400"
@@ -50,6 +62,7 @@ export function OutletScreen({ ctx }: { ctx: StepContext }) {
 
   const started = new Set(walkthrough.packages.map((pkg) => pkg.publicationId));
   const fresh = walkthrough.outlets.filter((outlet) => !started.has(outlet.id));
+  const ruledOut = fresh.filter((outlet) => outlet.match.group === "excluded");
 
   async function next() {
     if (choice === null) return;
@@ -143,50 +156,104 @@ export function OutletScreen({ ctx }: { ctx: StepContext }) {
             </div>
           )}
 
-          <div>
-            {walkthrough.packages.length > 0 && (
-              <h3 className="text-sm font-semibold text-slate-900">Another outlet</h3>
-            )}
-            <ul className="mt-2 space-y-3">
-              {fresh.map((outlet) => {
-                const value = `outlet:${outlet.id}`;
-                const taste = firstSentence(outlet.tasteNotes);
-                return (
-                  <li key={outlet.id}>
-                    <label className={cardClass(choice === value)}>
-                      <input
-                        type="radio"
-                        name="outlet"
-                        value={value}
-                        checked={choice === value}
-                        onChange={() => setChoice(value)}
-                        className="mt-1"
-                      />
-                      <div className="min-w-0 grow space-y-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-medium break-words text-slate-900">{outlet.name}</span>
-                          <span className="rounded-full border border-slate-300 px-2 py-0.5 text-xs text-slate-700">
-                            {TIER_LABEL[outlet.tier] ?? outlet.tier}
-                          </span>
-                        </div>
-                        {taste !== null && <p className="text-sm break-words text-slate-700">{taste}</p>}
-                        <p className="text-sm break-words text-slate-500">{facts(outlet)}</p>
-                        {outlet.warnings.length > 0 && (
-                          <ul className="list-disc space-y-1 pl-5 text-xs break-words text-amber-900">
-                            {outlet.warnings.map((warning) => (
-                              <li key={warning.code}>{warning.text}</li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    </label>
+          {walkthrough.event.locationCode === null && (
+            <p className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+              Outlets that cover only one place cannot be checked until you say where the wedding was.{" "}
+              <Link to={wizardPath(ctx.eventId, "wedding", ctx.packageId)} className="font-medium underline">
+                Add where it was
+              </Link>
+            </p>
+          )}
+
+          {GROUPS.map(({ group, title }) => {
+            const outlets = fresh.filter((outlet) => outlet.match.group === group);
+            if (outlets.length === 0) return null;
+            return (
+              <div key={group}>
+                <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
+                <ul className="mt-2 space-y-3">
+                  {outlets.map((outlet) => (
+                    <OutletCard
+                      key={outlet.id}
+                      outlet={outlet}
+                      selected={choice === `outlet:${outlet.id}`}
+                      onSelect={() => setChoice(`outlet:${outlet.id}`)}
+                    />
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+
+          {ruledOut.length > 0 && (
+            <details className="rounded-lg border border-slate-200 p-4">
+              <summary className="cursor-pointer text-sm font-semibold text-slate-900">
+                {`Not for this wedding (${ruledOut.length})`}
+              </summary>
+              <ul className="mt-3 space-y-3">
+                {ruledOut.map((outlet) => (
+                  <li key={outlet.id} className="text-sm">
+                    <span className="font-medium break-words text-slate-900">{outlet.name}</span>
+                    <ul className="mt-1 list-disc space-y-1 pl-5 text-xs break-words text-slate-600">
+                      {outlet.match.excluded.map((line) => (
+                        <li key={line}>{line}</li>
+                      ))}
+                    </ul>
                   </li>
-                );
-              })}
-            </ul>
-          </div>
+                ))}
+              </ul>
+            </details>
+          )}
         </fieldset>
       )}
     </Frame>
+  );
+}
+
+/** One outlet she can choose: how well it fits and why, what to check, and what choosing it commits to. */
+function OutletCard({ outlet, selected, onSelect }: { outlet: OutletOption; selected: boolean; onSelect: () => void }) {
+  const taste = firstSentence(outlet.tasteNotes);
+  const { match } = outlet;
+  return (
+    <li>
+      <label className={cardClass(selected)}>
+        <input type="radio" name="outlet" value={`outlet:${outlet.id}`} checked={selected} onChange={onSelect} className="mt-1" />
+        <div className="min-w-0 grow space-y-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-medium break-words text-slate-900">{outlet.name}</span>
+            <span className={`rounded-full border px-2 py-0.5 text-xs ${LABEL_TONE[match.label] ?? LABEL_TONE["Worth a look"]}`}>
+              {match.label}
+            </span>
+            <span className="rounded-full border border-slate-300 px-2 py-0.5 text-xs text-slate-700">
+              {TIER_LABEL[outlet.tier] ?? outlet.tier}
+            </span>
+          </div>
+          {match.reasons.length > 0 && (
+            <ul aria-label={`Why ${outlet.name}`} className="space-y-0.5 text-sm break-words text-slate-700">
+              {match.reasons.map((reason) => (
+                <li key={reason}>{reason}</li>
+              ))}
+            </ul>
+          )}
+          {match.checks.length > 0 && (
+            <ul aria-label={`To check for ${outlet.name}`} className="list-disc space-y-1 pl-5 text-xs break-words text-sky-900">
+              {match.checks.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          )}
+          {match.deadline !== null && <p className="text-xs font-medium break-words text-amber-900">{match.deadline}</p>}
+          {taste !== null && <p className="text-sm break-words text-slate-600">{taste}</p>}
+          <p className="text-sm break-words text-slate-500">{`${facts(outlet)} - match score ${match.score} of 100`}</p>
+          {outlet.warnings.length > 0 && (
+            <ul className="list-disc space-y-1 pl-5 text-xs break-words text-amber-900">
+              {outlet.warnings.map((warning) => (
+                <li key={warning.code}>{warning.text}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </label>
+    </li>
   );
 }

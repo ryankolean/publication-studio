@@ -11,6 +11,7 @@
  * free feature nobody confirmed.
  */
 
+import type { MatchProfile } from "../match.js";
 import type { EarnedOrPaid, ExclusivityPolicy, PublicationTier, SubmissionMethod } from "../publication.js";
 import type { Contacts } from "./contacts.js";
 import type { Fact, PublicationFile } from "./schema.js";
@@ -31,6 +32,8 @@ export interface PublicationColumns {
   earned_or_paid: EarnedOrPaid;
   taste_notes: string | null;
   last_verified: string;
+  /** The matcher's facts (SUMMIT-336), as JSON. */
+  match_json: string;
 }
 
 export interface Projection {
@@ -98,6 +101,46 @@ function earnedOrPaid(file: PublicationFile): EarnedOrPaid {
   return fee === "none" ? "earned" : "paid";
 }
 
+/** The facts the matcher reads, unknown as null. Tags are not here: the matcher reads the outlet's tags as shown. */
+export function matchProfile(file: PublicationFile): MatchProfile {
+  const exclusivity = known(file.rules.exclusivity);
+  const seasonality = known(file.content.seasonality);
+  const frequency = known(file.rules.photographer_frequency);
+  const fee = (fact: Fact<unknown>) => {
+    const value = known(fact);
+    return value === undefined ? null : value === "none" ? "none" : "some";
+  };
+  const reach = (known(file.economics.reach) ?? []).reduce<MatchProfile["reach"]>(
+    (best, entry) => (best === null || entry.value > best.value ? { metric: entry.metric, value: entry.value } : best),
+    null,
+  );
+  return {
+    coverage: {
+      regions: known(file.coverage.regions) ?? null,
+      basis: known(file.coverage.basis) ?? null,
+      destinationAccepted: known(file.coverage.destination_accepted) ?? null,
+    },
+    content: {
+      real_wedding: known(file.content.real_wedding) ?? null,
+      elopement: known(file.content.elopement) ?? null,
+      styled_shoot: known(file.content.styled_shoot) ?? null,
+    },
+    seasons:
+      seasonality === undefined ? null : seasonality === "none" ? "none" : [...new Set(seasonality.flatMap((entry) => entry.wants))],
+    exclusivity:
+      exclusivity === undefined ? null : { policy: exclusivity.policy, afterPublicationDays: exclusivity.after_publication_days ?? null },
+    exposure: {
+      publications: known(file.rules.prior_exposure.publications) ?? null,
+      blogs: known(file.rules.prior_exposure.blogs) ?? null,
+      social: known(file.rules.prior_exposure.social) ?? null,
+    },
+    freshnessMonths: known(file.rules.freshness_window_months) ?? null,
+    frequency: frequency === undefined ? null : frequency === "none" ? "none" : { max: frequency.max, perMonths: frequency.per_months },
+    fees: { submission: fee(file.economics.submission_fee), publication: fee(file.economics.publication_fee) },
+    reach,
+  };
+}
+
 export function projectPublication(file: PublicationFile, contacts: Contacts | null): Projection {
   const route = preferredRoute(file);
   const blogs = known(file.rules.prior_exposure.blogs);
@@ -124,6 +167,7 @@ export function projectPublication(file: PublicationFile, contacts: Contacts | n
         .map((source) => source.read)
         .sort()
         .at(-1) as string,
+      match_json: JSON.stringify(matchProfile(file)),
     },
     tags: known(file.content.style_tags) ?? [],
   };

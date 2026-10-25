@@ -5,6 +5,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError } from "../../api/client.js";
 import { GUIDE } from "../guide.js";
 import {
+  OUTLET_A,
+  OUTLET_B,
   fakeApi,
   location,
   packageView,
@@ -50,7 +52,35 @@ describe("[outlet]", () => {
     const b = screen.getByRole("radio", { name: /Outlet B/ }).closest("label") as HTMLElement;
     expect(b).toHaveTextContent("Dream");
     expect(b).toHaveTextContent("no stated count - no stated reply time - pitch to an editor");
-    expect(within(b).getByRole("listitem")).toHaveTextContent("pitch to an editor, not a form");
+    expect(within(b).getByText(/pitch to an editor, not a form/)).toBeInTheDocument();
+  });
+
+  it("groups the outlets by the matcher: best fits with reasons, then check first with the question", async () => {
+    await openWith();
+    const fits = screen.getByRole("heading", { name: "Best fits" });
+    const check = screen.getByRole("heading", { name: "Check first" });
+    expect(fits.compareDocumentPosition(check) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.getByRole("list", { name: "Why Outlet A" })).toHaveTextContent("Shares Romantic.");
+    expect(screen.getByRole("radio", { name: /Outlet A/ }).closest("label")).toHaveTextContent("Good match");
+    expect(screen.getByRole("list", { name: "To check for Outlet B" })).toHaveTextContent("Does not say which places it covers.");
+  });
+
+  it("lists ruled-out outlets apart, with the reason, and never offers them", async () => {
+    const body = walkthrough(wizardAt("outlet"), {
+      outlets: [
+        OUTLET_A,
+        { ...OUTLET_B, match: { ...OUTLET_B.match, group: "excluded", checks: [], excluded: ["Covers only France; this wedding was in Florida Keys, Florida."] } },
+      ],
+    });
+    await openWith(body);
+    expect(screen.getByText("Not for this wedding (1)")).toBeInTheDocument();
+    expect(screen.getByText("Covers only France; this wedding was in Florida Keys, Florida.")).toBeInTheDocument();
+    expect(screen.queryByRole("radio", { name: /Outlet B/ })).toBeNull();
+  });
+
+  it("asks for the place when the wedding has none", async () => {
+    await openWith(walkthrough(wizardAt("outlet"), { event: { id: "w1", coupleNames: "Sarah and James", locationCode: null } }));
+    expect(screen.getByRole("link", { name: "Add where it was" })).toHaveAttribute("href", "/wizard/w1/wedding");
   });
 
   it("keeps Continue off until an outlet is picked", async () => {
@@ -84,7 +114,7 @@ describe("[outlet]", () => {
     await openWith(body, "/wizard/w1/outlet?package=pk1");
 
     const started = screen.getByRole("heading", { name: "Already started" });
-    const another = screen.getByRole("heading", { name: "Another outlet" });
+    const another = screen.getByRole("heading", { name: "Check first" });
     expect(started.compareDocumentPosition(another) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     // The started outlet is not offered twice.
     expect(screen.getAllByRole("radio", { name: /Outlet A/ })).toHaveLength(1);
