@@ -26,11 +26,16 @@ the tool. That needs the photographer's first event and gallery.
 Next: Phase 2, exclusivity ledger, response tracking, withdrawal workflow,
 credit recovery.
 
+Claude connector, step 1 of 4 (SUMMIT-343): sign-in, the MCP endpoint, the
+audit log and three read tools, built and tested on workerd; not deployed
+yet. See "Claude connector" below.
+
 ## Documents
 
 - `docs/publication-studio-design.md` — full product design v1.0: architecture, data model, state machines, workflows, risks, roadmap. Read this first.
 - `docs/phase-0-prompt.md` — the executable Phase 0 implementation brief for Claude Code.
 - `research/README.md`: the publication research files, one per outlet, and the rules every fact follows.
+- `docs/specs/claude-native.md`: the Claude connector spec, copied from Jira SUMMIT-342 (the source of truth).
 - `CLAUDE.md` — conventions and directional guidance for Claude Code sessions in this repo.
 
 ## Structure
@@ -75,6 +80,45 @@ scored out of 100 on style, her history with the outlet, reach, fees, local
 focus and season. `npm run match:report --workspace @publication-studio/api --
 --date YYYY-MM-DD --location <geo code>` ranks the research files for a
 wedding without the app.
+
+## Claude connector
+
+The photographer can run the studio from her own Claude account, on the free
+plan, with no API key anywhere (`docs/specs/claude-native.md`). The Worker is
+an OAuth 2.1 server and a remote MCP server at `<api origin>/mcp`: she adds
+that URL in Claude as a custom connector, signs in with her studio email and
+password, and allows. Only Claude can register or be approved; anything else
+is refused.
+
+So far (SUMMIT-343) there are three read tools: `studio_overview`,
+`list_weddings` and `get_wedding`. Every call is written to `audit_log`
+(entity `mcp_tool`) before anything is returned.
+
+Before the first deploy that includes it, create the OAuth store and put its
+id in `api/wrangler.jsonc` in place of `set-at-first-deploy`:
+
+```
+cd api && npx wrangler kv namespace create OAUTH_KV
+```
+
+`PUBLIC_ORIGIN` in `api/wrangler.jsonc` must be the origin Claude connects
+to. Every token is bound to it, so moving to a custom domain means
+reconnecting.
+
+To connect, in Claude on the web or the desktop app: Customize, Connectors,
+Add custom connector, paste
+`https://publication-studio-api.ryan-kolean.workers.dev/mcp`, Connect, sign
+in, Allow. Ten failed sign-ins within 15 minutes pause connecting for 15
+minutes; the web app's own sign-in is unaffected.
+
+To disconnect: `GET /connections` lists her Claude connections and
+`DELETE /connections/:id` ends one at once, with a web app sign-in token.
+The settings screen for these comes in a later step.
+
+Locally, `npm run dev:api` serves the connector too, with
+`PUBLIC_ORIGIN=http://localhost:8787` in `api/.dev.vars`. Claude cannot reach
+localhost, so `npm run test:runtime --workspace @publication-studio/api`
+drives the whole connect flow on workerd instead.
 
 ## Users
 
