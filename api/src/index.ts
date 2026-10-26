@@ -1,3 +1,3 @@
-import { createApp } from "./app.js";
+import { connectorWorker } from "./connector.js";
 
-export default createApp();
+export default connectorWorker;
