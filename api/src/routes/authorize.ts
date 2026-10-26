@@ -1,6 +1,15 @@
 import { AuthorizationError } from "@cloudflare/workers-oauth-provider";
 
-import { claudeHost, isClaudeCallback, isClaudeHost, signinLocked, signinWindowStart } from "../domain/connector.js";
+import { countConnector, logConnector } from "../connector-log.js";
+import {
+  capWindowStart,
+  claudeHost,
+  isClaudeCallback,
+  isClaudeHost,
+  signinLocked,
+  signinPageLocked,
+  signinWindowStart,
+} from "../domain/connector.js";
 import { verifyPassword } from "../domain/password.js";
 import type { OAuthEnv } from "../env.js";
 import { DUMMY_HASH } from "./auth.js";
@@ -28,6 +37,7 @@ const USED = [
 const NOT_CLAUDE = "Only Claude can connect to your studio.";
 const WRONG = "That email or password did not match. Try again.";
 const LOCKED = "Too many tries. Wait 15 minutes, then start again from Claude.";
+const BUSY = "Too many sign-in pages have been opened in the last hour. Wait an hour, then start again from Claude.";
 
 const STYLE = `body{font:16px/1.5 system-ui,sans-serif;max-width:26rem;margin:3rem auto;padding:0 1rem;color:#222}
 label{display:block;margin:.75rem 0}input{display:block;width:100%;padding:.5rem;font:inherit;box-sizing:border-box}
@@ -74,23 +84,6 @@ function notice(status: 400 | 429, message: string | readonly string[]): Respons
   return new Response(html("Connect Claude", paragraphs.join("\n")), { status, headers: guarded() });
 }
 
-async function audit(env: OAuthEnv, userId: string | null, entityId: string, action: string): Promise<void> {
-  await env.DB.prepare(
-    "INSERT INTO audit_log (id, user_id, entity, entity_id, action) VALUES (?, ?, 'connector', ?, ?)",
-  )
-    .bind(crypto.randomUUID(), userId, entityId, action)
-    .run();
-}
-
-async function recentFailures(env: OAuthEnv): Promise<number> {
-  const row = await env.DB.prepare(
-    "SELECT COUNT(*) AS n FROM audit_log WHERE entity = 'connector' AND entity_id = 'signin' AND action = 'signin_failed' AND at >= ?",
-  )
-    .bind(signinWindowStart(Date.now()))
-    .first<{ n: number }>();
-  return row?.n ?? 0;
-}
-
 async function openPage(request: Request, env: OAuthEnv): Promise<Response> {
   const oauth = env.OAUTH_PROVIDER;
   let authRequest;
@@ -107,6 +100,12 @@ async function openPage(request: Request, env: OAuthEnv): Promise<Response> {
 
   const host = claudeHost(authRequest.redirectUri);
   if (host === null) return notice(400, NOT_CLAUDE);
+
+  // beginConsent writes the pending request to KV, so the cap comes first.
+  if (signinPageLocked(await countConnector(env.DB, "signin", "page_opened", capWindowStart(Date.now())))) {
+    return notice(429, BUSY);
+  }
+  await logConnector(env.DB, "signin", "page_opened");
 
   const consent = await oauth.beginConsent(authRequest);
   return new Response(signInPage(host, consent.handle, null), { headers: guarded(consent.headers) });
@@ -126,7 +125,7 @@ async function submit(request: Request, env: OAuthEnv): Promise<Response> {
   if (field(form, "decision") !== "approve") {
     try {
       const denied = await oauth.denyConsent(request, handle);
-      await audit(env, null, "signin", "declined");
+      await logConnector(env.DB, "signin", "declined");
       return new Response(null, { status: 302, headers: denied.headers });
     } catch (error) {
       if (error instanceof AuthorizationError) return notice(400, USED);
@@ -134,7 +133,9 @@ async function submit(request: Request, env: OAuthEnv): Promise<Response> {
     }
   }
 
-  if (signinLocked(await recentFailures(env))) return notice(429, LOCKED);
+  if (signinLocked(await countConnector(env.DB, "signin", "signin_failed", signinWindowStart(Date.now())))) {
+    return notice(429, LOCKED);
+  }
 
   const email = field(form, "email").trim().toLowerCase();
   const user = await env.DB.prepare("SELECT id, pw_hash FROM users WHERE email = ? COLLATE NOCASE")
@@ -144,7 +145,7 @@ async function submit(request: Request, env: OAuthEnv): Promise<Response> {
   const matches = await verifyPassword(field(form, "password"), user?.pw_hash ?? DUMMY_HASH);
 
   if (user === null || !matches) {
-    await audit(env, null, "signin", "signin_failed");
+    await logConnector(env.DB, "signin", "signin_failed");
     // The handle is unspent, so the same form can be shown again. The host
     // comes back from the form, so only a Claude host is ever echoed.
     const host = field(form, "host");
@@ -168,7 +169,7 @@ async function submit(request: Request, env: OAuthEnv): Promise<Response> {
     scope: approved.request.scope,
     props: { userId: user.id },
   });
-  await audit(env, user.id, approved.request.clientId, "connected");
+  await logConnector(env.DB, approved.request.clientId, "connected", { userId: user.id });
 
   approved.headers.set("Location", redirectTo);
   return new Response(null, { status: 302, headers: approved.headers });

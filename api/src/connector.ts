@@ -2,7 +2,8 @@ import { OAuthProvider } from "@cloudflare/workers-oauth-provider";
 import type { OAuthProviderOptions } from "@cloudflare/workers-oauth-provider";
 
 import { createApp } from "./app.js";
-import { registrationRefusal } from "./domain/connector.js";
+import { countConnector, logConnector } from "./connector-log.js";
+import { capWindowStart, registrationLocked, registrationRefusal } from "./domain/connector.js";
 import type { OAuthEnv, WorkerEnv } from "./env.js";
 import { mcpHandler } from "./mcp/handler.js";
 import { authorize } from "./routes/authorize.js";
@@ -69,7 +70,39 @@ export const connectorWorker = {
       provider = new OAuthProvider(connectorOptions(env.PUBLIC_ORIGIN));
       providers.set(env.PUBLIC_ORIGIN, provider);
     }
+    if (request.method === "POST" && new URL(request.url).pathname === "/oauth/register") {
+      return register(provider, request, env, ctx);
+    }
     // The provider adds OAUTH_PROVIDER before any handler sees env.
     return provider.fetch(request, env as OAuthEnv, ctx as never);
   },
 };
+
+/**
+ * Dynamic registration, capped per hour (domain/connector.ts). The provider
+ * owns the endpoint, so the cap is checked in front of it, and only a
+ * registration it accepted, which stored a client in KV, counts.
+ */
+async function register(
+  provider: OAuthProvider<OAuthEnv>,
+  request: Request,
+  env: WorkerEnv,
+  ctx: unknown,
+): Promise<Response> {
+  if (registrationLocked(await countConnector(env.DB, "register", "registered", capWindowStart(Date.now())))) {
+    return Response.json(
+      {
+        error: "temporarily_unavailable",
+        error_description: "Too many new connections in the last hour. Try again in an hour.",
+      },
+      { status: 429, headers: { "Retry-After": "3600", "Cache-Control": "no-store" } },
+    );
+  }
+
+  const response = await provider.fetch(request, env as OAuthEnv, ctx as never);
+  if (response.status === 201) {
+    const { client_id: client } = (await response.clone().json()) as { client_id?: string };
+    await logConnector(env.DB, "register", "registered", { detail: { client: client ?? null } });
+  }
+  return response;
+}
