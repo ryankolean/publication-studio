@@ -10,6 +10,12 @@ import {
   registrationRefusal,
   signinLocked,
   signinWindowStart,
+  CAP_WINDOW_MS,
+  REGISTRATION_LIMIT,
+  SIGNIN_PAGE_LIMIT,
+  capWindowStart,
+  registrationLocked,
+  signinPageLocked,
 } from "../src/domain/connector.js";
 
 describe("isClaudeCallback", () => {
@@ -82,5 +88,24 @@ describe("sign-in throttle", () => {
   it("starts the window fifteen minutes back, in the audit log's timestamp format", () => {
     expect(SIGNIN_WINDOW_MS).toBe(15 * 60 * 1000);
     expect(signinWindowStart(Date.parse("2026-10-26T12:30:00.500Z"))).toBe("2026-10-26T12:15:00Z");
+  });
+});
+
+describe("KV write caps", () => {
+  it("caps new registrations and sign-in pages each hour", () => {
+    expect(registrationLocked(REGISTRATION_LIMIT - 1)).toBe(false);
+    expect(registrationLocked(REGISTRATION_LIMIT)).toBe(true);
+    expect(signinPageLocked(SIGNIN_PAGE_LIMIT - 1)).toBe(false);
+    expect(signinPageLocked(SIGNIN_PAGE_LIMIT)).toBe(true);
+  });
+
+  it("keeps a full day at both caps well inside KV's 1,000 free writes", () => {
+    const hoursPerDay = 24 * 60 * 60 * 1000 / CAP_WINDOW_MS;
+    expect((REGISTRATION_LIMIT + SIGNIN_PAGE_LIMIT) * hoursPerDay).toBeLessThanOrEqual(600);
+  });
+
+  it("starts the cap window an hour back", () => {
+    expect(CAP_WINDOW_MS).toBe(60 * 60 * 1000);
+    expect(capWindowStart(Date.parse("2026-10-26T12:30:00.500Z"))).toBe("2026-10-26T11:30:00Z");
   });
 });

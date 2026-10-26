@@ -174,6 +174,16 @@ describe("the audit log", () => {
     expect((await auditRows())[0]?.detail["args"]).toEqual({ wedding: "[text]" });
   });
 
+  it("logs a tool that fails as an internal error and returns no data", async () => {
+    await createWedding({ coupleNames: "Blake and Anne", eventDate: "2026-01-31" });
+    await db.prepare("ALTER TABLE events RENAME TO events_away").run();
+    const reply = await callTool("studio_overview");
+    expect(reply.isError).toBe(true);
+    expect(reply.data["message"]).toBe("Something went wrong in the studio. Try again.");
+    expect(reply.raw).not.toContain("Blake and Anne");
+    expect((await auditRows()).at(-1)?.detail).toMatchObject({ result: "internal" });
+  });
+
   it("returns nothing if the call cannot be logged", async () => {
     await createWedding({ coupleNames: "Blake and Anne", eventDate: "2026-01-31" });
     await db.prepare("DROP TABLE audit_log").run();

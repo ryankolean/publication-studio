@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { getOAuthApi } from "@cloudflare/workers-oauth-provider";
 
+import { createApp } from "../src/app.js";
 import { connectorOptions } from "../src/connector.js";
-import { SIGNIN_FAILURE_LIMIT } from "../src/domain/connector.js";
+import { REGISTRATION_LIMIT, SIGNIN_FAILURE_LIMIT, SIGNIN_PAGE_LIMIT } from "../src/domain/connector.js";
 import { signAccessToken } from "../src/domain/tokens.js";
 import { createTestD1 } from "./helpers/d1.js";
 import type { TestD1 } from "./helpers/d1.js";
@@ -42,7 +43,7 @@ afterEach(() => {
 
 async function auditActions(): Promise<string[]> {
   const { results } = await db
-    .prepare("SELECT action FROM audit_log WHERE entity = 'connector' ORDER BY rowid")
+    .prepare("SELECT action FROM audit_log WHERE entity = 'connector' AND action NOT IN ('registered', 'page_opened') ORDER BY rowid")
     .all<{ action: string }>();
   return results.map((row) => row.action);
 }
@@ -261,6 +262,83 @@ describe("signing in", () => {
   });
 });
 
+describe("KV write caps", () => {
+  async function seedLog(entityId: string, action: string, count: number, at?: string) {
+    for (let i = 0; i < count; i++) {
+      await db
+        .prepare(`INSERT INTO audit_log (id, entity, entity_id, action${at ? ", at" : ""}) VALUES (?, 'connector', ?, ?${at ? ", ?" : ""})`)
+        .bind(...[`${entityId}-${action}-${i}`, entityId, action, ...(at ? [at] : [])])
+        .run();
+    }
+  }
+
+  it("records each registration with its client id", async () => {
+    const clientId = await registeredClient(env);
+    const row = await db
+      .prepare("SELECT entity_id, action, detail_json FROM audit_log WHERE entity = 'connector'")
+      .first<{ entity_id: string; action: string; detail_json: string }>();
+    expect(row).toMatchObject({ entity_id: "register", action: "registered" });
+    expect(JSON.parse(row?.detail_json ?? "{}")).toEqual({ client: clientId });
+  });
+
+  it("refuses registrations past the hourly cap, before storing anything", async () => {
+    for (let i = 0; i < REGISTRATION_LIMIT; i++) expect((await register(env)).status).toBe(201);
+    const before = env.OAUTH_KV.size;
+    const refused = await register(env);
+    expect(refused.status).toBe(429);
+    expect(refused.headers.get("retry-after")).toBe("3600");
+    expect(((await refused.json()) as { error: string }).error).toBe("temporarily_unavailable");
+    expect(env.OAUTH_KV.size).toBe(before);
+  });
+
+  it("counts only registrations that went through", async () => {
+    for (let i = 0; i < REGISTRATION_LIMIT; i++) expect((await register(env, ["https://evil.example/cb"])).status).toBe(400);
+    expect((await register(env)).status).toBe(201);
+  });
+
+  it("forgets registrations older than the hour", async () => {
+    await seedLog("register", "registered", REGISTRATION_LIMIT, "2020-01-01T00:00:00Z");
+    expect((await register(env)).status).toBe(201);
+  });
+
+  it("refuses sign-in pages past the hourly cap, before storing anything", async () => {
+    const clientId = await registeredClient(env);
+    await seedLog("signin", "page_opened", SIGNIN_PAGE_LIMIT - 1);
+    expect((await openSignIn(env, clientId)).response.status).toBe(200);
+    const before = env.OAUTH_KV.size;
+    const refused = await openSignIn(env, clientId);
+    expect(refused.response.status).toBe(429);
+    expect(refused.html).toContain("Too many sign-in pages");
+    expect(refused.cookie).toBe("");
+    expect(env.OAUTH_KV.size).toBe(before);
+  });
+
+  it("does not count a page that was refused for not being Claude", async () => {
+    const helpers = getOAuthApi(connectorOptions(ORIGIN), env as never);
+    const rogue = await helpers.createClient({ redirectUris: ["https://evil.example/cb"], tokenEndpointAuthMethod: "none" });
+    await openSignIn(env, rogue.clientId, { redirectUri: "https://evil.example/cb" });
+    const opened = await db
+      .prepare("SELECT COUNT(*) AS n FROM audit_log WHERE entity_id = 'signin' AND action = 'page_opened'")
+      .first<{ n: number }>();
+    expect(opened?.n).toBe(0);
+  });
+});
+
+describe("storage failures", () => {
+  it.each(["approve", "deny"])("surface as an error on %s, never as a used page or a code", async (decision) => {
+    const page = await openSignIn(env, await registeredClient(env));
+    env.OAUTH_KV.get = async () => {
+      throw new Error("storage down");
+    };
+    const outcome = await submitSignIn(env, page, { email: EMAIL, password: PASSWORD, decision }).then(
+      (response) => response.status,
+      (error: Error) => error.message,
+    );
+    expect([500, "storage down"]).toContain(outcome);
+    expect(await auditActions()).not.toContain("connected");
+  });
+});
+
 describe("tokens", () => {
   it("refuses a code exchanged with the wrong PKCE verifier", async () => {
     const clientId = await registeredClient(env);
@@ -338,6 +416,29 @@ describe("/connections", () => {
     expect(response.status).toBe(204);
     expect((await initialize(env, accessToken)).status).toBe(401);
     expect((await auditActions()).at(-1)).toBe("disconnected");
+  });
+
+  it("names a connection Claude when its grant carries no name", async () => {
+    const helpers = getOAuthApi(connectorOptions(ORIGIN), env as never);
+    const clientId = await registeredClient(env);
+    const query = new URLSearchParams({
+      response_type: "code",
+      client_id: clientId,
+      redirect_uri: CALLBACK,
+      code_challenge: "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM",
+      code_challenge_method: "S256",
+      scope: "studio",
+    });
+    const authRequest = await helpers.parseAuthRequest(new Request(`${ORIGIN}/authorize?${query}`));
+    await helpers.completeAuthorization({ request: authRequest, userId: "user-1", metadata: {}, scope: ["studio"], props: { userId: "user-1" } });
+    const body = (await (await send(env, "/connections", { headers: await webAuth() })).json()) as { connections: Array<{ name: string }> };
+    expect(body.connections.map((connection) => connection.name)).toEqual(["Claude"]);
+  });
+
+  it("fails loudly if the OAuth provider is not in front of the app", async () => {
+    const appOnly = { DB: env.DB, IMAGES: env.IMAGES, JWT_SECRET, ALLOWED_ORIGIN: env.ALLOWED_ORIGIN };
+    const response = await createApp().request("/connections", { headers: await webAuth() }, appOnly);
+    expect(response.status).toBe(500);
   });
 
   it("cannot disconnect someone else's connection", async () => {

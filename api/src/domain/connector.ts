@@ -53,7 +53,35 @@ export function signinLocked(recentFailures: number): boolean {
   return recentFailures >= SIGNIN_FAILURE_LIMIT;
 }
 
-/** The window's start as audit_log writes `at`: ISO-8601 UTC to the second. */
+/** A window's start as audit_log writes `at`: ISO-8601 UTC to the second. */
+function windowStart(nowMs: number, windowMs: number): string {
+  return new Date(nowMs - windowMs).toISOString().replace(/\.\d{3}Z$/, "Z");
+}
+
 export function signinWindowStart(nowMs: number): string {
-  return new Date(nowMs - SIGNIN_WINDOW_MS).toISOString().replace(/\.\d{3}Z$/, "Z");
+  return windowStart(nowMs, SIGNIN_WINDOW_MS);
+}
+
+/**
+ * Registering a client and opening the sign-in page each write to the OAuth
+ * KV namespace, whose free tier allows 1,000 writes a day; past that, sign-in
+ * stops until midnight UTC. Both are open to anyone, so each is capped per
+ * hour, studio-wide, low enough that a day at both caps leaves room for real
+ * use (spec section 9, registration abuse). A real connect registers once and
+ * opens one or two pages.
+ */
+export const CAP_WINDOW_MS = 60 * 60 * 1000;
+export const REGISTRATION_LIMIT = 10;
+export const SIGNIN_PAGE_LIMIT = 15;
+
+export function registrationLocked(recentRegistrations: number): boolean {
+  return recentRegistrations >= REGISTRATION_LIMIT;
+}
+
+export function signinPageLocked(recentPages: number): boolean {
+  return recentPages >= SIGNIN_PAGE_LIMIT;
+}
+
+export function capWindowStart(nowMs: number): string {
+  return windowStart(nowMs, CAP_WINDOW_MS);
 }

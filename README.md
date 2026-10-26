@@ -103,7 +103,9 @@ To connect, in Claude on the web or the desktop app: Customize, Connectors,
 Add custom connector, paste
 `https://publication-studio-api.ryan-kolean.workers.dev/mcp`, Connect, sign
 in, Allow. Ten failed sign-ins within 15 minutes pause connecting for 15
-minutes; the web app's own sign-in is unaffected.
+minutes; the web app's own sign-in is unaffected. New client registrations
+(10 an hour) and sign-in pages (15 an hour) are capped studio-wide, so nobody
+can use up the OAuth store's 1,000 free KV writes a day.
 
 To disconnect: `GET /connections` lists her Claude connections and
 `DELETE /connections/:id` ends one at once, with a web app sign-in token.
