@@ -94,15 +94,9 @@ So far (SUMMIT-343) there are three read tools: `studio_overview`,
 `list_weddings` and `get_wedding`. Every call is written to `audit_log`
 (entity `mcp_tool`) before anything is returned.
 
-Before the first deploy that includes it, create the OAuth store and put its
-id in `api/wrangler.jsonc` in place of `set-at-first-deploy`:
-
-```
-cd api && npx wrangler kv namespace create OAUTH_KV
-```
-
-`PUBLIC_ORIGIN` in `api/wrangler.jsonc` must be the origin Claude connects
-to. Every token is bound to it, so moving to a custom domain means
+The OAuth store is the KV namespace `OAUTH_KV`, already created and bound in
+`api/wrangler.jsonc`. `PUBLIC_ORIGIN` there must be the origin Claude
+connects to. Every token is bound to it, so moving to a custom domain means
 reconnecting.
 
 To connect, in Claude on the web or the desktop app: Customize, Connectors,

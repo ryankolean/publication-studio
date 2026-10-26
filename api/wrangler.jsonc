@@ -13,12 +13,11 @@
     }
   ],
   // The Claude connector's OAuth store: clients, grants and token hashes.
-  // Placeholder until `wrangler kv namespace create OAUTH_KV` is run for
-  // production; `wrangler dev` accepts any id, a deploy does not.
+  // Created with `wrangler kv namespace create OAUTH_KV`.
   "kv_namespaces": [
     {
       "binding": "OAUTH_KV",
-      "id": "set-at-first-deploy"
+      "id": "c8fb2e13478244fc9db9a3bc95cc848b"
     }
   ],
   "r2_buckets": [
