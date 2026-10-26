@@ -90,9 +90,14 @@ that URL in Claude as a custom connector, signs in with her studio email and
 password, and allows. Only Claude can register or be approved; anything else
 is refused.
 
-So far (SUMMIT-343) there are three read tools: `studio_overview`,
-`list_weddings` and `get_wedding`. Every call is written to `audit_log`
-(entity `mcp_tool`) before anything is returned.
+There are three read tools (SUMMIT-343), `studio_overview`, `list_weddings`
+and `get_wedding`, and two that write (SUMMIT-344): `save_wedding` creates or
+changes a wedding through the web app's own routes, and
+`confirm_permissions` records her two permission answers in two steps. The
+first call shows exactly what will be recorded and returns a code; only a
+second call with that code, from her, within 15 minutes, records it, once.
+Every call is written to `audit_log` (entity `mcp_tool`) before anything is
+returned.
 
 The OAuth store is the KV namespace `OAUTH_KV`, already created and bound in
 `api/wrangler.jsonc`. `PUBLIC_ORIGIN` there must be the origin Claude
@@ -115,6 +120,14 @@ Locally, `npm run dev:api` serves the connector too, with
 `PUBLIC_ORIGIN=http://localhost:8787` in `api/.dev.vars`. Claude cannot reach
 localhost, so `npm run test:runtime --workspace @publication-studio/api`
 drives the whole connect flow on workerd instead.
+
+Staging is a second Worker with its own database, OAuth store and bucket
+(`env.staging` in `api/wrangler.jsonc`), for trying the connector in Claude
+without touching the real studio. Its connector URL is
+`https://publication-studio-api-staging.ryan-kolean.workers.dev/mcp`. From
+`api/`: `npx wrangler d1 migrations apply publication-studio-db-staging --remote
+--env staging`, then `npx wrangler deploy --env staging`. Its users and data
+are test-only.
 
 ## Users
 
