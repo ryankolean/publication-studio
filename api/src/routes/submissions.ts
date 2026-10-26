@@ -231,17 +231,20 @@ submissionRoutes.post("/", async (c) => {
   return c.json(view, 201);
 });
 
-submissionRoutes.get("/", async (c) => {
-  const eventId = c.req.query("eventId");
+/** The queue in its display order, for one event or all of them. */
+export async function listSubmissions(db: D1Database, nowMs: number, eventId?: string) {
   const statement =
     eventId === undefined
-      ? c.env.DB.prepare(`${SELECT_VIEW} ${QUEUE_ORDER}`)
-      : c.env.DB.prepare(`${SELECT_VIEW} WHERE submissions.event_id = ? ${QUEUE_ORDER}`).bind(eventId);
+      ? db.prepare(`${SELECT_VIEW} ${QUEUE_ORDER}`)
+      : db.prepare(`${SELECT_VIEW} WHERE submissions.event_id = ? ${QUEUE_ORDER}`).bind(eventId);
 
   const { results } = await statement.all<ViewRow>();
-  const nowMs = Date.now();
-  return c.json({ submissions: results.map((row) => toView(row, nowMs)) });
-});
+  return results.map((row) => toView(row, nowMs));
+}
+
+submissionRoutes.get("/", async (c) =>
+  c.json({ submissions: await listSubmissions(c.env.DB, Date.now(), c.req.query("eventId")) }),
+);
 
 submissionRoutes.get("/:id", async (c) => {
   const view = await loadView(c.env.DB, c.req.param("id"), Date.now());

@@ -28,7 +28,7 @@ interface UserRow extends AuthenticatedUser {
  * unknown email costs roughly the same work as a wrong password. The value is
  * irrelevant; only the time it takes matters.
  */
-const DUMMY_HASH = `pbkdf2-sha256$${DEFAULT_PBKDF2_ITERATIONS}$AAAAAAAAAAAAAAAAAAAAAA==$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=`;
+export const DUMMY_HASH = `pbkdf2-sha256$${DEFAULT_PBKDF2_ITERATIONS}$AAAAAAAAAAAAAAAAAAAAAA==$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=`;
 
 function readString(body: unknown, field: string): string | null {
   if (typeof body !== "object" || body === null) return null;

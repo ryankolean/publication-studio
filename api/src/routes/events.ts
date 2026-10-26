@@ -250,8 +250,11 @@ eventRoutes.post("/", async (c) => {
  * the dashboard both already read this list, and the client must not derive
  * either verdict itself.
  */
-eventRoutes.get("/", async (c) => {
-  const db = c.env.DB;
+/**
+ * Every event as the home screen shows it, newest first, each with its chip.
+ * Shared with the Claude connector, so both read the studio the same way.
+ */
+export async function listEvents(db: D1Database) {
   const [events, credits, packages] = await Promise.all([
     db.prepare("SELECT * FROM events ORDER BY event_date DESC, created_at DESC").all<EventRow>(),
     db.prepare("SELECT event_id, COUNT(*) AS n FROM vendor_credits GROUP BY event_id").all<{
@@ -286,18 +289,18 @@ eventRoutes.get("/", async (c) => {
     packagesOf.set(row.event_id, list);
   }
 
-  return c.json({
-    events: events.results.map((row) => {
-      const view = toView(row);
-      return {
-        ...view,
-        chip: weddingChip(view, creditCount.get(row.id) ?? 0, packagesOf.get(row.id) ?? []),
-        inProgress: followedPackageId(packagesOf.get(row.id) ?? []) !== null,
-        hasPackage: (packagesOf.get(row.id) ?? []).length > 0,
-      };
-    }),
+  return events.results.map((row) => {
+    const view = toView(row);
+    return {
+      ...view,
+      chip: weddingChip(view, creditCount.get(row.id) ?? 0, packagesOf.get(row.id) ?? []),
+      inProgress: followedPackageId(packagesOf.get(row.id) ?? []) !== null,
+      hasPackage: (packagesOf.get(row.id) ?? []).length > 0,
+    };
   });
-});
+}
+
+eventRoutes.get("/", async (c) => c.json({ events: await listEvents(c.env.DB) }));
 
 /** The single-event view: the event plus its vendor credits, in their order. */
 async function detailView(db: D1Database, row: EventRow) {
@@ -324,14 +327,16 @@ async function detailView(db: D1Database, row: EventRow) {
   };
 }
 
+/** One event with its vendor credits; null when there is no such id. */
+export async function loadEvent(db: D1Database, id: string) {
+  const row = await db.prepare("SELECT * FROM events WHERE id = ?").bind(id).first<EventRow>();
+  return row === null ? null : detailView(db, row);
+}
+
 eventRoutes.get("/:id", async (c) => {
-  const row = await c.env.DB.prepare("SELECT * FROM events WHERE id = ?")
-    .bind(c.req.param("id"))
-    .first<EventRow>();
-
-  if (row === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
-
-  return c.json(await detailView(c.env.DB, row));
+  const event = await loadEvent(c.env.DB, c.req.param("id"));
+  if (event === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
+  return c.json(event);
 });
 
 /** ISO-8601 UTC to the second: the same shape the schema's defaults write. */

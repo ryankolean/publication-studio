@@ -12,6 +12,14 @@
       "migrations_dir": "migrations"
     }
   ],
+  // The Claude connector's OAuth store: clients, grants and token hashes.
+  // Created with `wrangler kv namespace create OAUTH_KV`.
+  "kv_namespaces": [
+    {
+      "binding": "OAUTH_KV",
+      "id": "c8fb2e13478244fc9db9a3bc95cc848b"
+    }
+  ],
   "r2_buckets": [
     {
       "binding": "IMAGES",
@@ -21,7 +29,10 @@
   "vars": {
     // The deployed SPA origin. CORS is pinned to exactly this; local
     // development overrides it in .dev.vars, which is gitignored.
-    "ALLOWED_ORIGIN": "https://ryankolean.github.io"
+    "ALLOWED_ORIGIN": "https://ryankolean.github.io",
+    // This Worker's own origin. The Claude connector URL is this plus /mcp,
+    // and every token is bound to it, so changing it means reconnecting.
+    "PUBLIC_ORIGIN": "https://publication-studio-api.ryan-kolean.workers.dev"
   },
   "observability": {
     "enabled": true

@@ -8,6 +8,8 @@
  * implement it exactly.
  */
 
+import type { OAuthHelpers } from "@cloudflare/workers-oauth-provider";
+
 export interface D1Result<T = Record<string, unknown>> {
   results: T[];
   success: boolean;
@@ -54,4 +56,25 @@ export interface Env {
 
   /** Exact origin the SPA is served from; CORS is pinned to it. */
   ALLOWED_ORIGIN: string;
+
+  /**
+   * The OAuth provider's helpers. The provider in front of the app injects
+   * them on every request (src/connector.ts); the app-only test harness has
+   * none, which is why this is optional here and required in OAuthEnv.
+   */
+  OAUTH_PROVIDER?: OAuthHelpers;
+}
+
+/** What Cloudflare binds to the Worker: the app's bindings plus the Claude connector's. */
+export interface WorkerEnv extends Env {
+  /** KV namespace the OAuth provider keeps clients, grants and token hashes in. */
+  OAUTH_KV: unknown;
+
+  /** This Worker's public origin; the MCP resource is `${PUBLIC_ORIGIN}/mcp`. */
+  PUBLIC_ORIGIN: string;
+}
+
+/** The same, once the OAuth provider has injected its helpers. */
+export interface OAuthEnv extends WorkerEnv {
+  OAUTH_PROVIDER: OAuthHelpers;
 }
