@@ -36,5 +36,40 @@
   },
   "observability": {
     "enabled": true
+  },
+  // Staging: its own Worker, database, OAuth store and bucket, so the Claude
+  // connector can be tried live without touching the real studio. Bindings
+  // are not inherited, so each is listed again. Deploy with --env staging.
+  "env": {
+    "staging": {
+      "name": "publication-studio-api-staging",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "publication-studio-db-staging",
+          "database_id": "67e0c27d-b8fb-4efb-a8b9-77804a2df850",
+          "migrations_dir": "migrations"
+        }
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "OAUTH_KV",
+          "id": "2c318c9acc8849728f758f59064715bc"
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "IMAGES",
+          "bucket_name": "publication-studio-images-staging"
+        }
+      ],
+      "vars": {
+        "ALLOWED_ORIGIN": "https://ryankolean.github.io",
+        "PUBLIC_ORIGIN": "https://publication-studio-api-staging.ryan-kolean.workers.dev"
+      },
+      "observability": {
+        "enabled": true
+      }
+    }
   }
 }
