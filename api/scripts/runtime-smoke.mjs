@@ -12,6 +12,7 @@
  * here against `wrangler dev`.
  */
 import { execFileSync, spawn } from "node:child_process";
+import { createHash, pbkdf2Sync, randomBytes } from "node:crypto";
 
 const PORT = 8799;
 const BASE = `http://127.0.0.1:${PORT}`;
@@ -55,6 +56,30 @@ try {
   process.exit(1);
 }
 
+// A user to connect Claude as. The hash is built here in the format
+// domain/password.ts writes, at a low work factor, since this script is plain JS.
+const SMOKE_EMAIL = "smoke@example.com";
+const SMOKE_PASSWORD = "runtime-smoke-password";
+{
+  const salt = randomBytes(16);
+  const digest = pbkdf2Sync(SMOKE_PASSWORD, salt, 1000, 32, "sha256");
+  const hash = `pbkdf2-sha256$1000$${salt.toString("base64")}$${digest.toString("base64")}`;
+  try {
+    execFileSync(
+      "npx",
+      [
+        "wrangler", "d1", "execute", DB_NAME, "--local", "--persist-to", STATE_DIR, "--command",
+        `INSERT OR REPLACE INTO users (id, email, name, role, pw_hash) VALUES ('smoke-user', '${SMOKE_EMAIL}', 'Smoke', 'photographer', '${hash}')`,
+      ],
+      { stdio: ["ignore", "ignore", "pipe"] },
+    );
+  } catch (error) {
+    console.error("Could not seed the smoke user.");
+    console.error(String(error.stderr ?? error).slice(-1500));
+    process.exit(1);
+  }
+}
+
 /**
  * detached, so the whole process group can be signalled. Killing the npx
  * wrapper alone leaves workerd running with its pipes open, which kept this
@@ -71,6 +96,9 @@ const wrangler = spawn(
     `ALLOWED_ORIGIN:${ORIGIN}`,
     "--var",
     "JWT_SECRET:runtime-smoke-secret",
+    // Tokens are bound to this origin, so it has to be the one requests use.
+    "--var",
+    `PUBLIC_ORIGIN:${BASE}`,
     "--persist-to",
     STATE_DIR,
   ],
@@ -265,6 +293,110 @@ for (const method of ["PUT", "DELETE"]) {
     body: JSON.stringify({ token: "definitely-not-real", password: "correct horse battery" }),
   });
   check("an unusable invite is rejected", response.status === 400, `got ${response.status}`);
+}
+
+// The Claude connector end to end, as Claude drives it. Node tests cover the
+// cases; this proves the OAuth provider and the MCP SDK run on workerd: no
+// runtime code generation, Web Crypto, cookies and redirects as the runtime
+// does them.
+{
+  const CALLBACK = "https://claude.ai/api/mcp/auth_callback";
+  const form = (fields) => ({
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams(fields).toString(),
+  });
+
+  const challenge = await fetch(`${BASE}/mcp`, { method: "POST", body: "{}" });
+  check("mcp rejects a request without a token", challenge.status === 401, `got ${challenge.status}`);
+  check(
+    "mcp points at its resource metadata",
+    (challenge.headers.get("www-authenticate") ?? "").includes(
+      `resource_metadata="${BASE}/.well-known/oauth-protected-resource/mcp"`,
+    ),
+    challenge.headers.get("www-authenticate") ?? "no challenge",
+  );
+
+  const resource = await fetch(`${BASE}/.well-known/oauth-protected-resource/mcp`);
+  check("resource metadata names /mcp", (await resource.json()).resource === `${BASE}/mcp`);
+
+  const server = await (await fetch(`${BASE}/.well-known/oauth-authorization-server`)).json();
+  check("authorization server metadata offers registration", server.registration_endpoint === `${BASE}/oauth/register`);
+
+  const register = (redirectUris) =>
+    fetch(`${BASE}/oauth/register`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ client_name: "Claude", redirect_uris: redirectUris, token_endpoint_auth_method: "none" }),
+    });
+
+  const rogue = await register(["https://evil.example/cb"]);
+  check("registration refuses a redirect that is not Claude's", rogue.status === 400, `got ${rogue.status}`);
+
+  const registered = await register([CALLBACK]);
+  check("registration accepts Claude", registered.status === 201, `got ${registered.status}`);
+  const clientId = (await registered.json()).client_id;
+
+  const verifier = randomBytes(32).toString("base64url");
+  const query = new URLSearchParams({
+    response_type: "code",
+    client_id: clientId,
+    redirect_uri: CALLBACK,
+    code_challenge: createHash("sha256").update(verifier).digest("base64url"),
+    code_challenge_method: "S256",
+    state: "smoke",
+    scope: "studio",
+  });
+  const page = await fetch(`${BASE}/authorize?${query}`, { redirect: "manual" });
+  const html = await page.text();
+  check("sign-in page renders", page.status === 200, `got ${page.status}`);
+  check("sign-in page cannot be framed", page.headers.get("x-frame-options") === "DENY");
+  const cookie = page.headers.getSetCookie().map((value) => value.split(";")[0]).join("; ");
+  const handle = /name="handle" value="([^"]*)"/.exec(html)?.[1] ?? "";
+
+  const approved = await fetch(`${BASE}/authorize`, {
+    ...form({ handle, host: "claude.ai", email: SMOKE_EMAIL, password: SMOKE_PASSWORD, decision: "approve" }),
+    headers: { "content-type": "application/x-www-form-urlencoded", cookie },
+    redirect: "manual",
+  });
+  const location = new URL(approved.headers.get("location") ?? "about:blank");
+  check("signing in sends a code to Claude", approved.status === 302 && location.searchParams.has("code"), `got ${approved.status}`);
+
+  const tokens = await (
+    await fetch(
+      `${BASE}/oauth/token`,
+      form({
+        grant_type: "authorization_code",
+        client_id: clientId,
+        code: location.searchParams.get("code") ?? "",
+        redirect_uri: CALLBACK,
+        code_verifier: verifier,
+      }),
+    )
+  ).json();
+  check("the code exchanges for an access token", typeof tokens.access_token === "string");
+
+  const rpc = (method, params) =>
+    fetch(`${BASE}/mcp`, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${tokens.access_token}`,
+        "content-type": "application/json",
+        accept: "application/json, text/event-stream",
+      },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, ...(params === undefined ? {} : { params }) }),
+    });
+
+  const listed = await rpc("tools/list");
+  const tools = listed.status === 200 ? (await listed.json()).result.tools.map((tool) => tool.name) : [];
+  check("mcp lists the three read tools", tools.length === 3, `got ${listed.status} ${tools.join(",")}`);
+
+  const called = await rpc("tools/call", { name: "studio_overview", arguments: {} });
+  const result = called.status === 200 ? (await called.json()).result : null;
+  check("studio_overview answers on workerd", result !== null && result.isError !== true, `got ${called.status}`);
+
+  const connections = await fetch(`${BASE}/connections`);
+  check("connections reject anonymous", connections.status === 401, `got ${connections.status}`);
 }
 
 if (failures.length > 0) {
