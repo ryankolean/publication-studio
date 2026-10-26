@@ -19,6 +19,12 @@ import { DUMMY_HASH } from "./auth.js";
 const escape = (value: string) => value.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 
 const EXPIRED = "This link has expired. Start again from Claude.";
+// A form works once, so a second Allow after a successful one lands here too:
+// it must not read as a failure when Claude is in fact connected.
+const USED = [
+  "This page has already been used, or it has expired.",
+  "If Claude now shows Publication Studio as connected, you are all set and can close this tab. If not, go back to Claude and connect again.",
+];
 const NOT_CLAUDE = "Only Claude can connect to your studio.";
 const WRONG = "That email or password did not match. Try again.";
 const LOCKED = "Too many tries. Wait 15 minutes, then start again from Claude.";
@@ -63,8 +69,9 @@ ${error === null ? "" : `<p class="error" role="alert">${escape(error)}</p>`}
   );
 }
 
-function notice(status: 400 | 429, message: string): Response {
-  return new Response(html("Connect Claude", `<p>${escape(message)}</p>`), { status, headers: guarded() });
+function notice(status: 400 | 429, message: string | readonly string[]): Response {
+  const paragraphs = (typeof message === "string" ? [message] : message).map((line) => `<p>${escape(line)}</p>`);
+  return new Response(html("Connect Claude", paragraphs.join("\n")), { status, headers: guarded() });
 }
 
 async function audit(env: OAuthEnv, userId: string | null, entityId: string, action: string): Promise<void> {
@@ -122,7 +129,7 @@ async function submit(request: Request, env: OAuthEnv): Promise<Response> {
       await audit(env, null, "signin", "declined");
       return new Response(null, { status: 302, headers: denied.headers });
     } catch (error) {
-      if (error instanceof AuthorizationError) return notice(400, EXPIRED);
+      if (error instanceof AuthorizationError) return notice(400, USED);
       throw error;
     }
   }
@@ -149,7 +156,7 @@ async function submit(request: Request, env: OAuthEnv): Promise<Response> {
   try {
     approved = await oauth.approveConsent(request, handle, { scope: ["studio"] });
   } catch (error) {
-    if (error instanceof AuthorizationError) return notice(400, EXPIRED);
+    if (error instanceof AuthorizationError) return notice(400, USED);
     throw error;
   }
   if (!isClaudeCallback(approved.request.redirectUri)) return notice(400, NOT_CLAUDE);

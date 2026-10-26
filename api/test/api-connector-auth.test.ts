@@ -213,6 +213,23 @@ describe("signing in", () => {
     const response = await submitSignIn(env, { html: page.html, cookie: "" }, { email: EMAIL, password: PASSWORD, decision: "approve" });
     expect(response.status).toBe(400);
     expect(response.headers.get("location")).toBeNull();
+    expect(await response.text()).toContain("go back to Claude and connect again");
+  });
+
+  it("tells a second submit after connecting that she may already be done", async () => {
+    const page = await openSignIn(env, await registeredClient(env));
+    expect((await submitSignIn(env, page, { email: EMAIL, password: PASSWORD, decision: "approve" })).status).toBe(302);
+
+    for (const decision of ["approve", "deny"]) {
+      const again = await submitSignIn(env, page, { email: EMAIL, password: PASSWORD, decision });
+      expect(again.status).toBe(400);
+      expect(again.headers.get("location")).toBeNull();
+      const html = await again.text();
+      expect(html).toContain("This page has already been used, or it has expired.");
+      expect(html).toContain("If Claude now shows Publication Studio as connected, you are all set");
+      expect(html).not.toContain("—");
+    }
+    expect(await auditActions()).toEqual(["connected"]);
   });
 
   it("pauses sign-in after too many failures, without checking the password", async () => {
