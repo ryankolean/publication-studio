@@ -57,7 +57,8 @@ describe("migrations", () => {
     // publication_edits, and the style profile from migration 0009:
     // event_tags and past_features, and event_exposures from migration 0010,
     // and confirmations from migration 0011 for the Claude connector's
-    // two-step actions.
+    // two-step actions, and upload_links from migration 0012 for photo
+    // intake by link.
     expect(tableNames(db)).toEqual([
       "audit_log",
       "confirmations",
@@ -76,6 +77,7 @@ describe("migrations", () => {
       "research_vocab",
       "submissions",
       "tags",
+      "upload_links",
       "users",
       "vendor_credits",
     ]);
@@ -129,6 +131,7 @@ describe("migrations", () => {
       "bytes",
       "created_at",
       "original_name",
+      "preview_key",
     ]);
     const columns = db
       .prepare("SELECT name FROM pragma_index_info('idx_event_images_event')")
@@ -148,6 +151,29 @@ describe("migrations", () => {
       "INSERT INTO event_images (key, event_id, content_type, bytes) VALUES ('events/w1/a.jpg', 'w1', 'image/jpeg', 10)",
     );
     expect(db.prepare("SELECT original_name FROM event_images").get()).toEqual({ original_name: null });
+  });
+
+  it("adds upload links and an optional preview key in migration 0012", () => {
+    expect(columnNames(db, "upload_links")).toEqual(["id", "user_id", "event_id", "photos", "created_at", "expires_at", "closed_at"]);
+    const preview = db
+      .prepare("SELECT type, \"notnull\" AS required, dflt_value AS fallback FROM pragma_table_info('event_images') WHERE name = 'preview_key'")
+      .get();
+    expect(preview).toEqual({ type: "TEXT", required: 0, fallback: null });
+
+    const foreignKeys = db
+      .prepare("SELECT \"from\", \"table\", on_delete AS onDelete FROM pragma_foreign_key_list('upload_links') ORDER BY \"from\"")
+      .all();
+    expect(foreignKeys).toEqual([
+      { from: "event_id", table: "events", onDelete: "CASCADE" },
+      { from: "user_id", table: "users", onDelete: "CASCADE" },
+    ]);
+
+    db.exec("INSERT INTO users (id, email, name, role, pw_hash) VALUES ('u1', 'u@example.com', 'U', 'photographer', 'x')");
+    db.exec("INSERT INTO events (id, slug, couple_names, event_date) VALUES ('w1', 'w1', 'A and B', '2026-06-01')");
+    db.exec("INSERT INTO upload_links (id, user_id, event_id, expires_at) VALUES ('h1', 'u1', 'w1', '2026-06-02T00:00:00Z')");
+    expect(db.prepare("SELECT photos, closed_at FROM upload_links").get()).toEqual({ photos: 0, closed_at: null });
+    db.exec("DELETE FROM events WHERE id = 'w1'");
+    expect(db.prepare("SELECT COUNT(*) AS n FROM upload_links").get()).toEqual({ n: 0 });
   });
 });
 

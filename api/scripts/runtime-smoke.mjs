@@ -13,6 +13,7 @@
  */
 import { execFileSync, spawn } from "node:child_process";
 import { createHash, pbkdf2Sync, randomBytes } from "node:crypto";
+import { rmSync } from "node:fs";
 
 const PORT = 8799;
 const BASE = `http://127.0.0.1:${PORT}`;
@@ -20,10 +21,12 @@ const ORIGIN = "https://ryankolean.github.io";
 
 /**
  * A state directory of its own, so this never reads or writes the local
- * database a developer is using, and so CI starts from nothing every run.
+ * database a developer is using. It is emptied first, so a second run on the
+ * same machine starts from nothing, as CI does.
  */
 const STATE_DIR = ".wrangler/smoke-state";
 const DB_NAME = "publication-studio-db";
+rmSync(STATE_DIR, { recursive: true, force: true });
 
 const failures = [];
 let checks = 0;
@@ -389,7 +392,7 @@ for (const method of ["PUT", "DELETE"]) {
 
   const listed = await rpc("tools/list");
   const tools = listed.status === 200 ? (await listed.json()).result.tools.map((tool) => tool.name) : [];
-  check("mcp lists its five tools", tools.length === 5, `got ${listed.status} ${tools.join(",")}`);
+  check("mcp lists its seven tools", tools.length === 7, `got ${listed.status} ${tools.join(",")}`);
 
   const called = await rpc("tools/call", { name: "studio_overview", arguments: {} });
   const result = called.status === 200 ? (await called.json()).result : null;
@@ -411,6 +414,46 @@ for (const method of ["PUT", "DELETE"]) {
   check("the code records the answers on workerd", confirmed.ok && confirmed.data.onHold === undefined, JSON.stringify(confirmed.data));
   const reused = await tool("confirm_permissions", { ...answers, confirmation: preview.data.confirm });
   check("the code works once on workerd", !reused.ok);
+
+  // Photo intake by link: the page, an upload and its preview through the
+  // link's own token, and the preview back as an MCP image on workerd.
+  const linked = await tool("get_upload_link", { wedding: "smoke-and-test-2026" });
+  const linkToken = String(linked.data.link ?? "").split("#")[1] ?? "";
+  check("get_upload_link links to this Worker's page", linked.ok && String(linked.data.link).startsWith(`${BASE}/upload#`), JSON.stringify(linked.data));
+  const uploadPage = await fetch(`${BASE}/upload`);
+  const policy = uploadPage.headers.get("content-security-policy") ?? "";
+  const nonce = /script-src 'nonce-([^']+)'/.exec(policy)?.[1];
+  check("the upload page renders", uploadPage.status === 200, `got ${uploadPage.status}`);
+  check("the upload page runs only its own script", nonce !== undefined && (await uploadPage.text()).includes(`<script nonce="${nonce}">`), policy);
+  const linkAuth = { authorization: `Bearer ${linkToken}` };
+  const opened = await fetch(`${BASE}/upload/link`, { headers: linkAuth });
+  check("the link opens for its wedding", opened.status === 200 && (await opened.json()).couple === "Smoke and Test", `got ${opened.status}`);
+  const added = await fetch(`${BASE}/upload/photos`, {
+    method: "POST",
+    headers: { ...linkAuth, "content-type": "image/jpeg", "x-file-name": "smoke.jpg" },
+    body: new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 1, 2, 3]),
+  });
+  const addedBody = added.status === 201 ? await added.json() : {};
+  check("the link takes a photo on workerd", added.status === 201, `got ${added.status}`);
+  const previewBytes = new Uint8Array([0xff, 0xd8, 0xff, 0xdb, 7, 7]);
+  const previewed = await fetch(`${BASE}/upload/photos/${addedBody.photo}/preview`, {
+    method: "PUT",
+    headers: { ...linkAuth, "content-type": "image/jpeg" },
+    body: previewBytes,
+  });
+  check("the link takes its preview on workerd", previewed.status === 201, `got ${previewed.status}`);
+  const reviewed = await rpc("tools/call", { name: "review_photos", arguments: { wedding: "smoke-and-test-2026" } });
+  const reviewBody = reviewed.status === 200 ? (await reviewed.json()).result : null;
+  const shown = reviewBody?.content?.find((block) => block.type === "image");
+  check(
+    "review_photos returns the preview as an image on workerd",
+    shown?.data === Buffer.from(previewBytes).toString("base64") && shown?.mimeType === "image/jpeg",
+    JSON.stringify(reviewBody?.content?.map((block) => block.type)),
+  );
+  const finished = await fetch(`${BASE}/upload/done`, { method: "POST", headers: linkAuth });
+  check("she can close the link", finished.status === 200, `got ${finished.status}`);
+  const afterDone = await fetch(`${BASE}/upload/link`, { headers: linkAuth });
+  check("a closed link opens nothing", afterDone.status === 401, `got ${afterDone.status}`);
 
   const connections = await fetch(`${BASE}/connections`);
   check("connections reject anonymous", connections.status === 401, `got ${connections.status}`);

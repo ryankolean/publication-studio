@@ -7,8 +7,21 @@ export interface McpContext {
   auth: { clientId?: string };
 }
 
-/** A tool's answer; `result` names it in the audit row, "ok" unless a successful call says otherwise. */
-export type Outcome = { ok: true; data: unknown; result?: string } | { ok: false; result: string; message: string };
+/** A picture a tool shows Claude, after its caption line. */
+export interface ToolImage {
+  caption: string;
+  data: string;
+  mimeType: string;
+}
+
+/**
+ * A tool's answer; `result` names it in the audit row, "ok" unless a
+ * successful call says otherwise. `images` follow the data, each after its
+ * caption, so Claude can tell which picture is which.
+ */
+export type Outcome =
+  | { ok: true; data: unknown; result?: string; images?: ToolImage[] }
+  | { ok: false; result: string; message: string };
 
 export const READ_ONLY = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false } as const;
 
@@ -52,9 +65,16 @@ export function audited<Args>(env: OAuthEnv, ctx: McpContext, tool: string, run:
       return { content: [{ type: "text" as const, text: "The studio could not record this request, so it returned nothing. Try again." }], isError: true };
     }
 
-    return outcome.ok
-      ? { content: [{ type: "text" as const, text: JSON.stringify(outcome.data) }] }
-      : { content: [{ type: "text" as const, text: outcome.message }], isError: true };
+    if (!outcome.ok) return { content: [{ type: "text" as const, text: outcome.message }], isError: true };
+    return {
+      content: [
+        { type: "text" as const, text: JSON.stringify(outcome.data) },
+        ...(outcome.images ?? []).flatMap((image) => [
+          { type: "text" as const, text: image.caption },
+          { type: "image" as const, data: image.data, mimeType: image.mimeType },
+        ]),
+      ],
+    };
   };
 }
 

@@ -9,6 +9,7 @@ import { listEvents, loadEvent } from "../routes/events.js";
 import { listSubmissions } from "../routes/submissions.js";
 import { READ_ONLY, audited } from "./audit.js";
 import type { McpContext } from "./audit.js";
+import { registerPhotoTools } from "./photo-tools.js";
 import { registerWeddingTools } from "./wedding-tools.js";
 
 /**
@@ -94,6 +95,7 @@ export function buildServer(env: OAuthEnv, ctx: McpContext): McpServer {
   );
 
   registerWeddingTools(server, env, ctx);
+  registerPhotoTools(server, env, ctx);
 
   return server;
 }

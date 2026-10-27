@@ -99,6 +99,18 @@ second call with that code, from her, within 15 minutes, records it, once.
 Every call is written to `audit_log` (entity `mcp_tool`) before anything is
 returned.
 
+Photos never go through the chat. `get_upload_link` gives her a link to a page
+on the Worker (`/upload`) for one wedding, once her permission answers say
+yes. She drags in her web-size exports there, and her browser makes a 256
+pixel JPEG preview of each one. The link lasts 24 hours, takes up to 200
+photos, ends when she presses "I'm finished", and a new link for the same
+wedding replaces it. Its token is in the URL fragment and only its hash is
+stored. `review_photos` shows Claude those previews twelve at a time.
+Photos stored without a preview (before migration 0012, or added in the web
+app) get one from `node api/scripts/backfill-previews.mjs --remote --item
+<1password id>`, which uses the local ImageMagick and skips photos that already
+have one.
+
 The OAuth store is the KV namespace `OAUTH_KV`, already created and bound in
 `api/wrangler.jsonc`. `PUBLIC_ORIGIN` there must be the origin Claude
 connects to. Every token is bound to it, so moving to a custom domain means
