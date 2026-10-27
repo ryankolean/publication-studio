@@ -76,9 +76,10 @@ describe("tools/list", () => {
     const { result } = (await response.json()) as {
       result: { tools: Array<{ name: string; description: string; annotations: Record<string, unknown> }> };
     };
-    expect(result.tools.map((tool) => tool.name).sort()).toEqual(["get_wedding", "list_weddings", "studio_overview"]);
-    for (const tool of result.tools) {
-      expect(tool.description.length).toBeGreaterThan(40);
+    const reads = result.tools.filter((tool) => ["get_wedding", "list_weddings", "studio_overview"].includes(tool.name));
+    expect(reads).toHaveLength(3);
+    for (const tool of result.tools) expect(tool.description.length).toBeGreaterThan(40);
+    for (const tool of reads) {
       expect(tool.annotations).toMatchObject({ readOnlyHint: true, destructiveHint: false, openWorldHint: false });
     }
   });

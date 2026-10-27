@@ -389,11 +389,28 @@ for (const method of ["PUT", "DELETE"]) {
 
   const listed = await rpc("tools/list");
   const tools = listed.status === 200 ? (await listed.json()).result.tools.map((tool) => tool.name) : [];
-  check("mcp lists the three read tools", tools.length === 3, `got ${listed.status} ${tools.join(",")}`);
+  check("mcp lists its five tools", tools.length === 5, `got ${listed.status} ${tools.join(",")}`);
 
   const called = await rpc("tools/call", { name: "studio_overview", arguments: {} });
   const result = called.status === 200 ? (await called.json()).result : null;
   check("studio_overview answers on workerd", result !== null && result.isError !== true, `got ${called.status}`);
+
+  // A write through the web app's own routes, and the two-step confirmation,
+  // whose single-use redemption is an UPDATE ... RETURNING on real D1.
+  const tool = async (name, args) => {
+    const response = await rpc("tools/call", { name, arguments: args });
+    const body = response.status === 200 ? (await response.json()).result : null;
+    return { ok: body !== null && body.isError !== true, data: body?.isError ? {} : JSON.parse(body?.content?.[0]?.text ?? "{}") };
+  };
+  const saved = await tool("save_wedding", { couple_names: "Smoke and Test", date: "2026-06-14", venue: "Smoke Hall" });
+  check("save_wedding creates a wedding on workerd", saved.ok && saved.data.wedding === "smoke-and-test-2026", JSON.stringify(saved.data));
+  const answers = { wedding: "smoke-and-test-2026", lead_photographer: true, couple_agreed: "yes" };
+  const preview = await tool("confirm_permissions", answers);
+  check("confirm_permissions previews with a code", preview.ok && typeof preview.data.confirm === "string");
+  const confirmed = await tool("confirm_permissions", { ...answers, confirmation: preview.data.confirm });
+  check("the code records the answers on workerd", confirmed.ok && confirmed.data.onHold === undefined, JSON.stringify(confirmed.data));
+  const reused = await tool("confirm_permissions", { ...answers, confirmation: preview.data.confirm });
+  check("the code works once on workerd", !reused.ok);
 
   const connections = await fetch(`${BASE}/connections`);
   check("connections reject anonymous", connections.status === 401, `got ${connections.status}`);

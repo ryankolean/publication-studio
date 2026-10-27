@@ -55,9 +55,12 @@ describe("migrations", () => {
     // vocabulary that events and outlets are matched on, and the research
     // store from migration 0008: research_revisions, research_vocab and
     // publication_edits, and the style profile from migration 0009:
-    // event_tags and past_features, and event_exposures from migration 0010.
+    // event_tags and past_features, and event_exposures from migration 0010,
+    // and confirmations from migration 0011 for the Claude connector's
+    // two-step actions.
     expect(tableNames(db)).toEqual([
       "audit_log",
+      "confirmations",
       "credit_requests",
       "event_exposures",
       "event_images",
