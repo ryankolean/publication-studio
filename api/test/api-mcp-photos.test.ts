@@ -80,6 +80,7 @@ describe("tools/list", () => {
       "list_weddings",
       "review_photos",
       "save_wedding",
+      "set_tags",
       "studio_overview",
     ]);
     expect(byName.get("get_upload_link")).toMatchObject({ readOnlyHint: false, destructiveHint: false });

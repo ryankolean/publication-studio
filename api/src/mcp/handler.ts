@@ -4,12 +4,15 @@ import { CfWorkerJsonSchemaValidator } from "@modelcontextprotocol/sdk/validatio
 import { z } from "zod";
 
 import { studioOverview, weddingCard, weddingPage } from "../domain/mcp-views.js";
+import { tagChoices, tagStanding } from "../domain/tag-tools.js";
 import type { OAuthEnv } from "../env.js";
 import { listEvents, loadEvent } from "../routes/events.js";
+import { weddingTags } from "../routes/style.js";
 import { listSubmissions } from "../routes/submissions.js";
 import { READ_ONLY, audited } from "./audit.js";
 import type { McpContext } from "./audit.js";
 import { registerPhotoTools } from "./photo-tools.js";
+import { registerTagTools } from "./tag-tools.js";
 import { registerWeddingTools } from "./wedding-tools.js";
 
 /**
@@ -72,14 +75,15 @@ export function buildServer(env: OAuthEnv, ctx: McpContext): McpServer {
     {
       title: "Get a wedding",
       description:
-        "One wedding by its short id (from list_weddings or studio_overview): date, venue, place, its next step, anything holding it back, and the outlets it has gone to. Set detail to true to add the couple's story, the angle and the vendor credits.",
+        "One wedding by its short id (from list_weddings or studio_overview): date, venue, place, its next step, anything holding it back, the outlets it has gone to, and its tags (kept, not kept, and waiting for her answer). Set detail to true to add the couple's story, the angle and the vendor credits. Set tag_choices to true to add the tags open to her, by group, before suggesting tags for set_tags.",
       inputSchema: {
         wedding: z.string().min(1).max(100).describe("The wedding's short id, such as blake-and-anne-2026."),
         detail: z.boolean().optional().describe("Also return the story, angle and vendor credits."),
+        tag_choices: z.boolean().optional().describe("Also return the tags she can choose from."),
       },
       annotations: READ_ONLY,
     },
-    audited(env, ctx, "get_wedding", async (args: { wedding: string; detail?: boolean | undefined }) => {
+    audited(env, ctx, "get_wedding", async (args: { wedding: string; detail?: boolean | undefined; tag_choices?: boolean | undefined }) => {
       const wedding = (await listEvents(env.DB)).find((entry) => entry.slug === args.wedding);
       if (wedding === undefined) {
         return {
@@ -88,14 +92,23 @@ export function buildServer(env: OAuthEnv, ctx: McpContext): McpServer {
           message: "There is no wedding with that id. Use list_weddings to find the right one.",
         };
       }
-      const outlets = await listSubmissions(env.DB, Date.now(), wedding.id);
+      const [outlets, look] = await Promise.all([listSubmissions(env.DB, Date.now(), wedding.id), weddingTags(env.DB, wedding.id)]);
+      if (look === null) throw new Error("a listed wedding has no tags view");
       const credits = args.detail === true ? ((await loadEvent(env.DB, wedding.id))?.vendorCredits ?? []) : null;
-      return { ok: true, data: weddingCard(wedding, outlets, credits) };
+      return {
+        ok: true,
+        data: {
+          ...weddingCard(wedding, outlets, credits),
+          tags: tagStanding(look.tags),
+          ...(args.tag_choices === true ? { tagChoices: tagChoices(look.vocabulary, look.tags) } : {}),
+        },
+      };
     }),
   );
 
   registerWeddingTools(server, env, ctx);
   registerPhotoTools(server, env, ctx);
+  registerTagTools(server, env, ctx);
 
   return server;
 }
