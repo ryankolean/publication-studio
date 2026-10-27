@@ -30,7 +30,7 @@ import { issueConfirmation, redeemConfirmation } from "./confirmations.js";
  * the location check and the audit rows are the web app's.
  */
 
-const NOT_FOUND: Outcome = {
+export const NOT_FOUND: Outcome = {
   ok: false,
   result: "not_found",
   message: "There is no wedding with that id. Use list_weddings to find the right one.",

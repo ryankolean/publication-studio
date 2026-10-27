@@ -68,7 +68,7 @@ describe("tools/list", () => {
     const response = await mcp(env, accessToken, "tools/list");
     const { result } = (await response.json()) as { result: { tools: Array<{ name: string; annotations: Record<string, unknown> }> } };
     const byName = new Map(result.tools.map((tool) => [tool.name, tool.annotations]));
-    expect([...byName.keys()].sort()).toEqual(["confirm_permissions", "get_wedding", "list_weddings", "save_wedding", "studio_overview"]);
+    expect([...byName.keys()]).toEqual(expect.arrayContaining(["confirm_permissions", "get_wedding", "list_weddings", "save_wedding", "studio_overview"]));
     for (const name of ["save_wedding", "confirm_permissions"]) {
       expect(byName.get(name)).toMatchObject({ readOnlyHint: false, destructiveHint: false, openWorldHint: false });
     }

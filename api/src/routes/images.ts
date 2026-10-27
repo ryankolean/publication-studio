@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import type { Context } from "hono";
 
 import type { AppContext } from "../middleware/auth.js";
 import { requireAuth } from "../middleware/auth.js";
@@ -12,18 +13,19 @@ import {
   verifyImageToken,
 } from "../domain/image-token.js";
 import { fileNameFromHeader, sanitizeFileName } from "../domain/file-name.js";
+import { MAX_PREVIEW_BYTES, PHOTO_FILE, PREVIEW_TYPE, previewKeyFor } from "../domain/upload-link.js";
 
 /**
  * Only curated, web-size derivatives live in R2 (design doc section 4). These
  * are the formats publications accept, and the cap is generous for one.
  */
-const ALLOWED_CONTENT_TYPES: Record<string, string> = {
+export const ALLOWED_CONTENT_TYPES: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/png": "png",
   "image/webp": "webp",
 };
 
-const MAX_IMAGE_BYTES = 12 * 1024 * 1024;
+export const MAX_IMAGE_BYTES = 12 * 1024 * 1024;
 
 /** "events/<id>/<file>" -> "<id>"; null for any key this server did not mint. */
 function eventIdOf(key: string): string | null {
@@ -49,7 +51,7 @@ imageRoutes.get("/events/:id/images", requireAuth, async (c) => {
   // rowid breaks ties inside one second, so two uploads in a row still list
   // in the order they landed.
   const { results } = await c.env.DB.prepare(
-    `SELECT key, content_type, bytes, created_at, original_name FROM event_images
+    `SELECT key, content_type, bytes, created_at, original_name, preview_key FROM event_images
      WHERE event_id = ? ORDER BY created_at DESC, rowid DESC`,
   )
     .bind(event.id)
@@ -59,6 +61,7 @@ imageRoutes.get("/events/:id/images", requireAuth, async (c) => {
       bytes: number;
       created_at: string;
       original_name: string | null;
+      preview_key: string | null;
     }>();
 
   const images = await Promise.all(
@@ -68,6 +71,7 @@ imageRoutes.get("/events/:id/images", requireAuth, async (c) => {
       contentType: row.content_type,
       bytes: row.bytes,
       createdAt: row.created_at,
+      hasPreview: row.preview_key !== null,
       readUrl: await readUrlFor(c.env.JWT_SECRET, row.key),
       expiresIn: READ_TOKEN_TTL_SECONDS,
     })),
@@ -86,10 +90,10 @@ imageRoutes.delete("/events/:id/images/:key{.+}", requireAuth, async (c) => {
   // Scoped to the event in the path: a key from another event is a 404 here,
   // not a delete, whatever the caller knows about it.
   const image = await c.env.DB.prepare(
-    "SELECT key FROM event_images WHERE key = ? AND event_id = ?",
+    "SELECT key, preview_key FROM event_images WHERE key = ? AND event_id = ?",
   )
     .bind(key, eventId)
-    .first<{ key: string }>();
+    .first<{ key: string; preview_key: string | null }>();
   if (image === null) return fail(c, 404, "NOT_FOUND", "That photo could not be found.");
 
   // Exact element match across every package, not a substring of the JSON.
@@ -118,9 +122,45 @@ imageRoutes.delete("/events/:id/images/:key{.+}", requireAuth, async (c) => {
   // After the row: a failed object delete leaves an unlisted orphan, which is
   // harmless, rather than a listed image whose bytes are gone.
   await c.env.IMAGES.delete(image.key);
+  if (image.preview_key !== null) await c.env.IMAGES.delete(image.preview_key);
 
   return c.json({ key: image.key, deleted: true });
 });
+
+/**
+ * Store the small preview of a pooled photo (migration 0012). The upload page
+ * sends one after each photo; the backfill script sends them for photos that
+ * have none. The key is derived from the photo's own, never taken from the
+ * caller, and the photo must be in this wedding's pool.
+ */
+export async function storePreview(c: Context<AppContext>, eventId: string, file: string) {
+  const key = `events/${eventId}/${file}`;
+  const image = PHOTO_FILE.test(file)
+    ? await c.env.DB.prepare("SELECT key FROM event_images WHERE key = ? AND event_id = ?")
+        .bind(key, eventId)
+        .first<{ key: string }>()
+    : null;
+  if (image === null) return fail(c, 404, "NOT_FOUND", "That photo could not be found.");
+
+  if (c.req.header("content-type") !== PREVIEW_TYPE) {
+    return fail(c, 400, "VALIDATION", "A preview must be a JPEG.");
+  }
+  const bytes = await c.req.arrayBuffer();
+  if (bytes.byteLength === 0) return fail(c, 400, "VALIDATION", "The preview was empty.");
+  if (bytes.byteLength > MAX_PREVIEW_BYTES) {
+    return fail(c, 400, "VALIDATION", "That preview is too large. Make it 256 pixels on its long edge.");
+  }
+
+  const previewKey = previewKeyFor(image.key);
+  await c.env.IMAGES.put(previewKey, bytes, { httpMetadata: { contentType: PREVIEW_TYPE } });
+  await c.env.DB.prepare("UPDATE event_images SET preview_key = ? WHERE key = ?").bind(previewKey, image.key).run();
+
+  return c.json({ photo: file, preview: true }, 201);
+}
+
+imageRoutes.put("/events/:id/images/:file/preview", requireAuth, (c) =>
+  storePreview(c, c.req.param("id") ?? "", c.req.param("file") ?? ""),
+);
 
 /**
  * Mint an upload capability. The key is generated here and never taken from

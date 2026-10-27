@@ -21,6 +21,7 @@ export type ErrorCode =
   | "FORBIDDEN"
   | "RESEARCH_VOCAB_MISSING"
   | "TAG_EXISTS"
+  | "UPLOAD_LINK_FULL"
   | "INTERNAL";
 
 export interface ErrorBody {

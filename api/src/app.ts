@@ -13,6 +13,7 @@ import { submissionRoutes } from "./routes/submissions.js";
 import { styleRoutes } from "./routes/style.js";
 import { locationRoutes } from "./routes/locations.js";
 import { connectionRoutes } from "./routes/connections.js";
+import { uploadRoutes } from "./routes/upload.js";
 import { fail } from "./errors.js";
 
 /**
@@ -51,6 +52,7 @@ export function createApp() {
   app.route("/style", styleRoutes);
   app.route("/locations", locationRoutes);
   app.route("/connections", connectionRoutes);
+  app.route("/upload", uploadRoutes);
   // Mounted at the root: image routes own both /events/:id/images and /images/*.
   app.route("/", imageRoutes);
 
