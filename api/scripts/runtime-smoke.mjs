@@ -392,7 +392,7 @@ for (const method of ["PUT", "DELETE"]) {
 
   const listed = await rpc("tools/list");
   const tools = listed.status === 200 ? (await listed.json()).result.tools.map((tool) => tool.name) : [];
-  check("mcp lists its twelve tools", tools.length === 12, `got ${listed.status} ${tools.join(",")}`);
+  check("mcp lists its fourteen tools", tools.length === 14, `got ${listed.status} ${tools.join(",")}`);
 
   const called = await rpc("tools/call", { name: "studio_overview", arguments: {} });
   const result = called.status === 200 ? (await called.json()).result : null;
@@ -502,6 +502,16 @@ for (const method of ["PUT", "DELETE"]) {
     ordered.ok && ordered.data.order?.[0]?.outlet === firstOutlet && ordered.data.upNext === listedOutlets.data.outlets?.[0]?.name,
     JSON.stringify(ordered.data).slice(0, 200),
   );
+
+  // A guided plan kept for the wedding, read from its data on real D1.
+  const planned = await tool("plan", { template: "build_package", wedding: "smoke-and-test-2026" });
+  check(
+    "plan keeps a guided plan on workerd",
+    planned.ok && planned.data.plan === "smoke-and-test-2026/build_package" && planned.data.steps?.[0]?.status === "done",
+    JSON.stringify(planned.data).slice(0, 200),
+  );
+  const stepped = await tool("run_plan_step", { plan: "smoke-and-test-2026/build_package" });
+  check("run_plan_step gives the next step on workerd", stepped.ok && typeof stepped.data.progress === "string", JSON.stringify(stepped.data).slice(0, 200));
 
   const connections = await fetch(`${BASE}/connections`);
   check("connections reject anonymous", connections.status === 401, `got ${connections.status}`);

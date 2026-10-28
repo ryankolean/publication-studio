@@ -72,7 +72,7 @@ describe("tools/list", () => {
       result: { tools: Array<{ name: string; annotations: Record<string, unknown> }> };
     };
     const byName = new Map(result.tools.map((tool) => [tool.name, tool.annotations]));
-    expect(result.tools).toHaveLength(12);
+    expect(result.tools).toHaveLength(14);
     expect(byName.get("build_package_draft")).toMatchObject({ readOnlyHint: false, destructiveHint: false });
     expect(byName.get("set_queue")).toMatchObject({ readOnlyHint: false, destructiveHint: false });
   });

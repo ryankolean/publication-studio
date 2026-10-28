@@ -58,7 +58,8 @@ describe("migrations", () => {
     // event_tags and past_features, and event_exposures from migration 0010,
     // and confirmations from migration 0011 for the Claude connector's
     // two-step actions, upload_links from migration 0012 for photo intake by
-    // link, and event_queue from migration 0013 for her order of outlets.
+    // link, event_queue from migration 0013 for her order of outlets, and
+    // plans from migration 0014 for guided plans.
     expect(tableNames(db)).toEqual([
       "audit_log",
       "confirmations",
@@ -71,6 +72,7 @@ describe("migrations", () => {
       "packages",
       "password_invites",
       "past_features",
+      "plans",
       "publication_edits",
       "publication_tags",
       "publications",
@@ -152,6 +154,27 @@ describe("migrations", () => {
       "INSERT INTO event_images (key, event_id, content_type, bytes) VALUES ('events/w1/a.jpg', 'w1', 'image/jpeg', 10)",
     );
     expect(db.prepare("SELECT original_name FROM event_images").get()).toEqual({ original_name: null });
+  });
+
+  it("adds guided plans in migration 0014, one per wedding and template", () => {
+    expect(columnNames(db, "plans")).toEqual([
+      "id",
+      "event_id",
+      "template",
+      "publication_id",
+      "goal",
+      "skipped_json",
+      "created_by",
+      "created_at",
+      "updated_at",
+    ]);
+    db.exec("INSERT INTO events (id, slug, couple_names, event_date) VALUES ('w1', 'w1', 'A and B', '2026-06-01')");
+    db.exec("INSERT INTO plans (id, event_id, template) VALUES ('w1/new_wedding', 'w1', 'new_wedding')");
+    expect(db.prepare("SELECT skipped_json FROM plans").get()).toEqual({ skipped_json: "[]" });
+    expect(() => db.exec("INSERT INTO plans (id, event_id, template) VALUES ('w1/other', 'w1', 'new_wedding')")).toThrow();
+    expect(() => db.exec("INSERT INTO plans (id, event_id, template) VALUES ('w1/x', 'w1', 'made_up')")).toThrow();
+    db.exec("DELETE FROM events WHERE id = 'w1'");
+    expect(db.prepare("SELECT COUNT(*) AS n FROM plans").get()).toEqual({ n: 0 });
   });
 
   it("adds her order of outlets per wedding in migration 0013", () => {
