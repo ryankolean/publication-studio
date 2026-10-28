@@ -20,7 +20,7 @@ import type { D1Database, D1PreparedStatement } from "../env.js";
 import { listEventPackages, loadPackageView } from "./packages.js";
 import { listPublications, loadPublication } from "./publications.js";
 import { loadView as loadSubmissionView } from "./submissions.js";
-import { geoFrom, geoStatement, loadExposures, loadGeo, loadMatchInputs } from "./match-context.js";
+import { geoFrom, geoStatement, loadExposures, loadGeo, loadMatchInputs, matchOutlets } from "./match-context.js";
 
 interface EventRow {
   id: string;
@@ -542,11 +542,7 @@ eventRoutes.get("/:id/walkthrough", async (c) => {
   });
 
   const byId = new Map(outlets.map((outlet) => [outlet.id, outlet]));
-  const ranked = rankOutlets(
-    match.wedding,
-    outlets.map((outlet) => ({ id: outlet.id, name: outlet.name, tier: outlet.tier, tags: outlet.tags, profile: outlet.matchProfile })),
-    match.context,
-  );
+  const ranked = rankOutlets(match.wedding, matchOutlets(outlets), match.context);
 
   return c.json({
     event: { id: event.id, coupleNames: event.coupleNames, locationCode: event.locationCode },

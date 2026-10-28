@@ -85,6 +85,10 @@ describe("get_wedding tags", () => {
     });
     expect(reply.data).not.toHaveProperty("tagChoices");
     expect(await tagRows()).toEqual([]);
+    // Placed only by the location list, the wedding still has a place.
+    expect(reply.data["place"]).toBe("Michigan");
+    const listed = await callTool("list_weddings");
+    expect((listed.data["weddings"] as Array<{ place: string | null }>)[0]?.place).toBe("Michigan");
   });
 
   it("adds the tags open to her, by group, on request, leaving out the ones she answered", async () => {

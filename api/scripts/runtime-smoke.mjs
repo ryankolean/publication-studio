@@ -392,7 +392,7 @@ for (const method of ["PUT", "DELETE"]) {
 
   const listed = await rpc("tools/list");
   const tools = listed.status === 200 ? (await listed.json()).result.tools.map((tool) => tool.name) : [];
-  check("mcp lists its eight tools", tools.length === 8, `got ${listed.status} ${tools.join(",")}`);
+  check("mcp lists its ten tools", tools.length === 10, `got ${listed.status} ${tools.join(",")}`);
 
   const called = await rpc("tools/call", { name: "studio_overview", arguments: {} });
   const result = called.status === 200 ? (await called.json()).result : null;
@@ -428,6 +428,23 @@ for (const method of ["PUT", "DELETE"]) {
     "get_wedding offers the tags still open to her",
     choices.ok && choices.data.tags?.kept?.[0] === "romantic" && /bohemian/.test(choices.data.tagChoices?.aesthetic ?? "") && !/romantic/.test(choices.data.tagChoices?.aesthetic ?? ""),
     JSON.stringify(choices.data.tags),
+  );
+
+  // The outlet cards and the ranking, through the batched publication and
+  // matcher loaders on real D1.
+  const listedOutlets = await tool("publications", {});
+  check(
+    "publications lists the outlets on workerd",
+    listedOutlets.ok && listedOutlets.data.total > 0 && typeof listedOutlets.data.outlets?.[0]?.id === "string",
+    JSON.stringify(listedOutlets.data).slice(0, 200),
+  );
+  const card = await tool("publications", { publication: listedOutlets.data.outlets?.[0]?.id ?? "" });
+  check("publications gives a fact card on workerd", card.ok && card.data.id === listedOutlets.data.outlets?.[0]?.id && typeof card.data.checked === "string");
+  const ranked = await tool("rank_publications_for_wedding", { wedding: "smoke-and-test-2026" });
+  check(
+    "rank_publications_for_wedding ranks every outlet on workerd",
+    ranked.ok && (ranked.data.counts?.fits ?? 0) + (ranked.data.counts?.check ?? 0) + (ranked.data.counts?.excluded ?? 0) === listedOutlets.data.total,
+    JSON.stringify(ranked.data).slice(0, 200),
   );
 
   // Photo intake by link: the page, an upload and its preview through the

@@ -7,11 +7,13 @@ import { studioOverview, weddingCard, weddingPage } from "../domain/mcp-views.js
 import { tagChoices, tagStanding } from "../domain/tag-tools.js";
 import type { OAuthEnv } from "../env.js";
 import { listEvents, loadEvent } from "../routes/events.js";
+import { geoFrom, geoStatement } from "../routes/match-context.js";
 import { weddingTags } from "../routes/style.js";
 import { listSubmissions } from "../routes/submissions.js";
 import { READ_ONLY, audited } from "./audit.js";
 import type { McpContext } from "./audit.js";
 import { registerPhotoTools } from "./photo-tools.js";
+import { registerPublicationTools } from "./publication-tools.js";
 import { registerTagTools } from "./tag-tools.js";
 import { registerWeddingTools } from "./wedding-tools.js";
 
@@ -72,10 +74,15 @@ export function buildServer(env: OAuthEnv, ctx: McpContext): McpServer {
       annotations: READ_ONLY,
     },
     audited(env, ctx, "list_weddings", async (args: { limit?: number | undefined; cursor?: string | undefined }) => {
-      const page = weddingPage(await listEvents(env.DB), {
-        ...(args.limit === undefined ? {} : { limit: args.limit }),
-        ...(args.cursor === undefined ? {} : { cursor: args.cursor }),
-      });
+      const [weddings, geoRows] = await Promise.all([listEvents(env.DB), geoStatement(env.DB).all()]);
+      const page = weddingPage(
+        weddings,
+        {
+          ...(args.limit === undefined ? {} : { limit: args.limit }),
+          ...(args.cursor === undefined ? {} : { cursor: args.cursor }),
+        },
+        geoFrom(geoRows.results),
+      );
       return "error" in page ? { ok: false, result: "invalid_cursor", message: page.error } : { ok: true, data: page };
     }),
   );
@@ -98,13 +105,17 @@ export function buildServer(env: OAuthEnv, ctx: McpContext): McpServer {
           message: "There is no wedding with that id. Use list_weddings to find the right one.",
         };
       }
-      const [outlets, look] = await Promise.all([listSubmissions(env.DB, Date.now(), wedding.id), weddingTags(env.DB, wedding.id)]);
+      const [outlets, look, geoRows] = await Promise.all([
+        listSubmissions(env.DB, Date.now(), wedding.id),
+        weddingTags(env.DB, wedding.id),
+        geoStatement(env.DB).all(),
+      ]);
       if (look === null) throw new Error("a listed wedding has no tags view");
       const credits = args.detail === true ? ((await loadEvent(env.DB, wedding.id))?.vendorCredits ?? []) : null;
       return {
         ok: true,
         data: {
-          ...weddingCard(wedding, outlets, credits),
+          ...weddingCard(wedding, outlets, credits, geoFrom(geoRows.results)),
           tags: tagStanding(look.tags),
           ...(args.tag_choices === true ? { tagChoices: tagChoices(look.vocabulary, look.tags) } : {}),
         },
@@ -115,6 +126,7 @@ export function buildServer(env: OAuthEnv, ctx: McpContext): McpServer {
   registerWeddingTools(server, env, ctx);
   registerPhotoTools(server, env, ctx);
   registerTagTools(server, env, ctx);
+  registerPublicationTools(server, env, ctx);
 
   return server;
 }

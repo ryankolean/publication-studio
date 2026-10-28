@@ -78,6 +78,8 @@ describe("tools/list", () => {
       "get_upload_link",
       "get_wedding",
       "list_weddings",
+      "publications",
+      "rank_publications_for_wedding",
       "review_photos",
       "save_wedding",
       "set_tags",

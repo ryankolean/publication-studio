@@ -69,21 +69,27 @@ export interface TestD1 extends D1Database {
 
 export function createTestD1(): TestD1 {
   const db = migratedDb();
+  // D1 runs each batch on its own; here they share one connection, so a batch
+  // waits for the one before it rather than opening a transaction inside it.
+  let queue: Promise<unknown> = Promise.resolve();
+  async function runBatch<T>(statements: D1PreparedStatement[]): Promise<D1Result<T>[]> {
+    db.exec("BEGIN");
+    try {
+      const results: D1Result<T>[] = [];
+      for (const statement of statements) results.push(await statement.all<T>());
+      db.exec("COMMIT");
+      return results;
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+  }
   return {
     prepare: (query: string) => new ShimStatement(db, query),
-    async batch<T = Record<string, unknown>>(
-      statements: D1PreparedStatement[],
-    ): Promise<D1Result<T>[]> {
-      db.exec("BEGIN");
-      try {
-        const results: D1Result<T>[] = [];
-        for (const statement of statements) results.push(await statement.all<T>());
-        db.exec("COMMIT");
-        return results;
-      } catch (error) {
-        db.exec("ROLLBACK");
-        throw error;
-      }
+    batch<T = Record<string, unknown>>(statements: D1PreparedStatement[]): Promise<D1Result<T>[]> {
+      const run = queue.then(() => runBatch<T>(statements));
+      queue = run.catch(() => undefined);
+      return run;
     },
     exec: (sql: string) => db.exec(sql),
     close: () => db.close(),
