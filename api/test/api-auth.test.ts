@@ -4,6 +4,7 @@ import { createApp } from "../src/app.js";
 import type { Env } from "../src/env.js";
 import { hashPassword, parsePasswordHash } from "../src/domain/password.js";
 import { signAccessToken, signRefreshToken } from "../src/domain/tokens.js";
+import { IN_PROCESS_USER } from "../src/middleware/auth.js";
 import { createTestD1, type TestD1 } from "./helpers/d1.js";
 import { createTestR2 } from "./helpers/r2.js";
 
@@ -205,6 +206,17 @@ describe("auth middleware", () => {
     const token = await signAccessToken(JWT_SECRET, { userId: "ghost", role: "admin" });
     const res = await get("/auth/me", { authorization: `Bearer ${token}` });
     expect(res.status).toBe(401);
+  });
+
+  it("takes an in-process user only from its symbol, never from a request or a named variable", async () => {
+    const user = { id: "user-1", email: "partner@example.com", name: "Partner", role: "admin" };
+    const named = { ...env, IN_PROCESS_USER: user, "in-process user": user } as unknown as Env;
+    expect((await app.request("/auth/me", {}, named)).status).toBe(401);
+    expect((await get("/auth/me", { "in-process-user": JSON.stringify(user), "x-in-process-user": "user-1" })).status).toBe(401);
+
+    const res = await app.request("/auth/me", {}, { ...env, [IN_PROCESS_USER]: user });
+    expect(res.status).toBe(200);
+    await expect(res.json()).resolves.toEqual(user);
   });
 
   it("accepts a valid access token and returns the caller", async () => {

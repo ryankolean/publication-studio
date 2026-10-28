@@ -31,6 +31,17 @@ function toBase64(bytes: Uint8Array): string {
   return btoa(binary);
 }
 
+// Built once per isolate, not per request: zod schemas are costly to build,
+// and every /mcp request builds its own server (handler.ts).
+const GET_UPLOAD_LINK_ARGS = z.object({
+  wedding: z.string().min(1).max(100).describe("The wedding's short id."),
+});
+
+const REVIEW_PHOTOS_ARGS = z.object({
+  wedding: z.string().min(1).max(100).describe("The wedding's short id."),
+  page: z.number().int().min(1).max(100).optional().describe("Which twelve, counting from 1. Default 1."),
+});
+
 export function registerPhotoTools(server: McpServer, env: OAuthEnv, ctx: McpContext): void {
   const userId = ctx.props.userId;
 
@@ -40,9 +51,7 @@ export function registerPhotoTools(server: McpServer, env: OAuthEnv, ctx: McpCon
       title: "Get an upload link",
       description:
         "A link to a page where she adds a wedding's photos: she drags in her web-size exports (JPEG, PNG or WebP, up to 12 MB each), and her browser makes a small preview of each for review_photos. Give her the link exactly as it is. It works for 24 hours or until she presses I'm finished, takes up to 200 photos, and replaces any earlier link for that wedding. Her permission answers must say yes first (confirm_permissions).",
-      inputSchema: {
-        wedding: z.string().min(1).max(100).describe("The wedding's short id."),
-      },
+      inputSchema: GET_UPLOAD_LINK_ARGS,
       annotations: WRITES,
     },
     audited(env, ctx, "get_upload_link", async (args: { wedding: string }) => {
@@ -95,10 +104,7 @@ export function registerPhotoTools(server: McpServer, env: OAuthEnv, ctx: McpCon
       title: "Review photos",
       description:
         "Look through a wedding's photos as small previews, twelve at a time, in the order they were added. Each picture follows a caption with its number, file name and short ref; use those when you talk with her about the photos. Pass page for the next twelve. Photos without a preview are listed under withoutPreview.",
-      inputSchema: {
-        wedding: z.string().min(1).max(100).describe("The wedding's short id."),
-        page: z.number().int().min(1).max(100).optional().describe("Which twelve, counting from 1. Default 1."),
-      },
+      inputSchema: REVIEW_PHOTOS_ARGS,
       annotations: READ_ONLY,
     },
     audited(env, ctx, "review_photos", async (args: { wedding: string; page?: number | undefined }) => {

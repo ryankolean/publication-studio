@@ -1,13 +1,30 @@
-import type { D1Database } from "../env.js";
+import type { D1Database, D1PreparedStatement } from "../env.js";
 import { readGeo } from "../domain/geo.js";
 import type { Geo } from "../domain/geo.js";
 import type { ContentType, ExposureChannel, HistoryEntry, MatchContext, MatchWedding } from "../domain/match.js";
 import type { TagCategory } from "../domain/tags.js";
 
+/** The read behind loadGeo, for a caller that batches it with its own. */
+export function geoStatement(db: D1Database): D1PreparedStatement {
+  return db.prepare("SELECT json FROM research_vocab WHERE kind = 'geo'");
+}
+
+// The parsed list, kept while the stored JSON is unchanged: parsing it again
+// on every request costs Worker CPU (SUMMIT-344). Geo is read-only, so one
+// copy can be shared.
+let parsedGeo: { json: string; geo: Geo } | null = null;
+
+/** The geo vocabulary from geoStatement's rows, or null when there is none. */
+export function geoFrom(rows: readonly unknown[]): Geo | null {
+  const row = rows[0] as { json: string } | undefined;
+  if (row === undefined) return null;
+  if (parsedGeo?.json !== row.json) parsedGeo = { json: row.json, geo: readGeo(JSON.parse(row.json)) };
+  return parsedGeo.geo;
+}
+
 /** The stored geo vocabulary, or null before the research import has loaded it. */
 export async function loadGeo(db: D1Database): Promise<Geo | null> {
-  const row = await db.prepare("SELECT json FROM research_vocab WHERE kind = 'geo'").first<{ json: string }>();
-  return row === null ? null : readGeo(JSON.parse(row.json));
+  return geoFrom((await geoStatement(db).all()).results);
 }
 
 export interface ExposureRow {

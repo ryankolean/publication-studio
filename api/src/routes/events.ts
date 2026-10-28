@@ -16,11 +16,11 @@ import type { WalkthroughPackage } from "../domain/walkthrough.js";
 import { buildWizard, followedPackageId, weddingChip } from "../domain/wizard.js";
 import type { WizardPackage } from "../domain/wizard.js";
 import type { SubmissionStatus } from "../domain/submission-status.js";
-import type { D1Database } from "../env.js";
+import type { D1Database, D1PreparedStatement } from "../env.js";
 import { listEventPackages, loadPackageView } from "./packages.js";
 import { listPublications, loadPublication } from "./publications.js";
 import { loadView as loadSubmissionView } from "./submissions.js";
-import { loadExposures, loadGeo, loadMatchInputs } from "./match-context.js";
+import { geoFrom, geoStatement, loadExposures, loadGeo, loadMatchInputs } from "./match-context.js";
 
 interface EventRow {
   id: string;
@@ -250,36 +250,40 @@ eventRoutes.post("/", async (c) => {
  * the dashboard both already read this list, and the client must not derive
  * either verdict itself.
  */
-/**
- * Every event as the home screen shows it, newest first, each with its chip.
- * Shared with the Claude connector, so both read the studio the same way.
- */
-export async function listEvents(db: D1Database) {
-  const [events, credits, packages] = await Promise.all([
-    db.prepare("SELECT * FROM events ORDER BY event_date DESC, created_at DESC").all<EventRow>(),
-    db.prepare("SELECT event_id, COUNT(*) AS n FROM vendor_credits GROUP BY event_id").all<{
-      event_id: string;
-      n: number;
-    }>(),
-    db
-      .prepare(
-        `SELECT packages.id AS id, packages.event_id AS event_id, submissions.status AS status,
-                publications.name AS publication_name
-         FROM packages
-         LEFT JOIN submissions ON submissions.event_id = packages.event_id
-           AND submissions.publication_id = packages.publication_id
-         LEFT JOIN publications ON publications.id = packages.publication_id
-         ORDER BY packages.created_at DESC, packages.rowid DESC`,
-      )
-      .all<{ id: string; event_id: string; status: SubmissionStatus | null; publication_name: string | null }>(),
-  ]);
+/** The reads behind listEvents, for a caller that batches them with its own. */
+export function listEventsStatements(db: D1Database): D1PreparedStatement[] {
+  return [
+    db.prepare("SELECT * FROM events ORDER BY event_date DESC, created_at DESC"),
+    db.prepare("SELECT event_id, COUNT(*) AS n FROM vendor_credits GROUP BY event_id"),
+    db.prepare(
+      `SELECT packages.id AS id, packages.event_id AS event_id, submissions.status AS status,
+              publications.name AS publication_name
+       FROM packages
+       LEFT JOIN submissions ON submissions.event_id = packages.event_id
+         AND submissions.publication_id = packages.publication_id
+       LEFT JOIN publications ON publications.id = packages.publication_id
+       ORDER BY packages.created_at DESC, packages.rowid DESC`,
+    ),
+  ];
+}
 
-  const creditCount = new Map(credits.results.map((row) => [row.event_id, row.n]));
+/** listEvents' view from the results of listEventsStatements, in their order. */
+export function listEventsFrom(results: ReadonlyArray<{ results: unknown[] }>) {
+  const events = (results[0]?.results ?? []) as EventRow[];
+  const credits = (results[1]?.results ?? []) as Array<{ event_id: string; n: number }>;
+  const packages = (results[2]?.results ?? []) as Array<{
+    id: string;
+    event_id: string;
+    status: SubmissionStatus | null;
+    publication_name: string | null;
+  }>;
+
+  const creditCount = new Map(credits.map((row) => [row.event_id, row.n]));
   const packagesOf = new Map<
     string,
     Array<{ id: string; publicationName: string | null; submission: { status: SubmissionStatus } | null }>
   >();
-  for (const row of packages.results) {
+  for (const row of packages) {
     const list = packagesOf.get(row.event_id) ?? [];
     list.push({
       id: row.id,
@@ -289,7 +293,7 @@ export async function listEvents(db: D1Database) {
     packagesOf.set(row.event_id, list);
   }
 
-  return events.results.map((row) => {
+  return events.map((row) => {
     const view = toView(row);
     return {
       ...view,
@@ -300,25 +304,53 @@ export async function listEvents(db: D1Database) {
   });
 }
 
+/**
+ * Every event as the home screen shows it, newest first, each with its chip.
+ * Shared with the Claude connector, so both read the studio the same way.
+ *
+ * DECISION: reads that do not depend on each other go to D1 in one batch. On
+ * Workers every D1 call costs about half a millisecond of CPU of its own, and
+ * the free plan allows 10 ms a request (SUMMIT-344).
+ */
+export async function listEvents(db: D1Database) {
+  return listEventsFrom(await db.batch(listEventsStatements(db)));
+}
+
 eventRoutes.get("/", async (c) => c.json({ events: await listEvents(c.env.DB) }));
 
-/** The single-event view: the event plus its vendor credits, in their order. */
-async function detailView(db: D1Database, row: EventRow) {
-  const { results } = await db
-    .prepare(
-      "SELECT role, business_name, website, instagram FROM vendor_credits WHERE event_id = ? ORDER BY sort_order",
-    )
-    .bind(row.id)
-    .all<{
-      role: string;
-      business_name: string;
-      website: string | null;
-      instagram: string | null;
-    }>();
+interface CreditRow {
+  role: string;
+  business_name: string;
+  website: string | null;
+  instagram: string | null;
+}
 
+/** The reads behind loadEvent: the event, then its vendor credits in their order, by id or by slug. */
+export function eventStatements(db: D1Database, key: string, by: "id" | "slug" = "id"): D1PreparedStatement[] {
+  return by === "id"
+    ? [
+        db.prepare("SELECT * FROM events WHERE id = ?").bind(key),
+        db.prepare("SELECT role, business_name, website, instagram FROM vendor_credits WHERE event_id = ? ORDER BY sort_order").bind(key),
+      ]
+    : [
+        db.prepare("SELECT * FROM events WHERE slug = ?").bind(key),
+        db
+          .prepare(
+            `SELECT role, business_name, website, instagram FROM vendor_credits
+             WHERE event_id = (SELECT id FROM events WHERE slug = ?) ORDER BY sort_order`,
+          )
+          .bind(key),
+      ];
+}
+
+/** The single-event view from eventStatements' results; null when there is no such event. */
+export function eventFrom(results: ReadonlyArray<{ results: unknown[] }>) {
+  const row = results[0]?.results[0] as EventRow | undefined;
+  if (row === undefined) return null;
+  const credits = (results[1]?.results ?? []) as CreditRow[];
   return {
     ...toView(row),
-    vendorCredits: results.map((credit) => ({
+    vendorCredits: credits.map((credit) => ({
       role: credit.role,
       businessName: credit.business_name,
       website: credit.website,
@@ -329,8 +361,7 @@ async function detailView(db: D1Database, row: EventRow) {
 
 /** One event with its vendor credits; null when there is no such id. */
 export async function loadEvent(db: D1Database, id: string) {
-  const row = await db.prepare("SELECT * FROM events WHERE id = ?").bind(id).first<EventRow>();
-  return row === null ? null : detailView(db, row);
+  return eventFrom(await db.batch(eventStatements(db, id)));
 }
 
 eventRoutes.get("/:id", async (c) => {
@@ -400,10 +431,13 @@ eventRoutes.patch("/:id", async (c) => {
     return fail(c, 400, "VALIDATION", "Expected a JSON body.");
   }
 
-  const existing = await c.env.DB.prepare("SELECT id FROM events WHERE id = ?")
-    .bind(c.req.param("id"))
-    .first<{ id: string }>();
-  if (existing === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
+  const db = c.env.DB;
+  const [found, geoRows] = await db.batch([
+    db.prepare("SELECT id FROM events WHERE id = ?").bind(c.req.param("id")),
+    geoStatement(db),
+  ]);
+  const existing = found?.results[0] as { id: string } | undefined;
+  if (existing === undefined) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
 
   const parsed = validateEventIntake(payload);
   if (!parsed.ok) {
@@ -411,15 +445,15 @@ eventRoutes.patch("/:id", async (c) => {
   }
 
   const intake = parsed.value;
-  const db = c.env.DB;
-  const placeProblem = locationProblem(intake.locationCode, await loadGeo(db));
+  const placeProblem = locationProblem(intake.locationCode, geoFrom(geoRows?.results ?? []));
   if (placeProblem !== null) {
     return fail(c, 400, "VALIDATION", "Some fields need attention.", [{ field: "locationCode", message: placeProblem }]);
   }
 
   // One transaction, as on create: the vendor list is replaced whole, and an
-  // event left with half its old credits is a partial write.
-  await db.batch([
+  // event left with half its old credits is a partial write. The saved event
+  // is read back in the same batch, after the writes.
+  const written = await db.batch([
     updateStatement(db, existing.id, intake, isoSeconds(Date.now())),
     db.prepare("DELETE FROM vendor_credits WHERE event_id = ?").bind(existing.id),
     ...vendorStatements(db, existing.id, intake.vendorCredits),
@@ -428,14 +462,13 @@ eventRoutes.patch("/:id", async (c) => {
         "INSERT INTO audit_log (id, user_id, entity, entity_id, action) VALUES (?, ?, 'event', ?, 'update')",
       )
       .bind(crypto.randomUUID(), c.get("user").id, existing.id),
+    ...eventStatements(db, existing.id),
   ]);
 
-  const row = await db.prepare("SELECT * FROM events WHERE id = ?")
-    .bind(existing.id)
-    .first<EventRow>();
-  if (row === null) return fail(c, 500, "INTERNAL", "That was saved, but it could not be loaded again. Refresh the page.");
+  const saved = eventFrom(written.slice(-2));
+  if (saved === null) return fail(c, 500, "INTERNAL", "That was saved, but it could not be loaded again. Refresh the page.");
 
-  return c.json(await detailView(db, row));
+  return c.json(saved);
 });
 
 /**

@@ -28,6 +28,19 @@ import { registerWeddingTools } from "./wedding-tools.js";
  * shapes the result in domain/mcp-views.ts.
  */
 
+// Built once per isolate, not per request: zod schemas are costly to build,
+// and every /mcp request builds its own server (buildServer below).
+const LIST_WEDDINGS_ARGS = z.object({
+  limit: z.number().int().min(1).max(25).optional().describe("How many to return, 1 to 25. Default 10."),
+  cursor: z.string().max(12).optional().describe("The `next` value from the previous page."),
+});
+
+const GET_WEDDING_ARGS = z.object({
+  wedding: z.string().min(1).max(100).describe("The wedding's short id, such as blake-and-anne-2026."),
+  detail: z.boolean().optional().describe("Also return the story, angle and vendor credits."),
+  tag_choices: z.boolean().optional().describe("Also return the tags she can choose from."),
+});
+
 export function buildServer(env: OAuthEnv, ctx: McpContext): McpServer {
   // The default validator compiles schemas at runtime, which Workers forbid.
   const server = new McpServer(
@@ -55,10 +68,7 @@ export function buildServer(env: OAuthEnv, ctx: McpContext): McpServer {
       title: "List weddings",
       description:
         "List the weddings, newest first: each one's short id, couple, date, place and next step. Pass the id to get_wedding. Ten at a time; pass the returned `next` as `cursor` for more.",
-      inputSchema: {
-        limit: z.number().int().min(1).max(25).optional().describe("How many to return, 1 to 25. Default 10."),
-        cursor: z.string().max(12).optional().describe("The `next` value from the previous page."),
-      },
+      inputSchema: LIST_WEDDINGS_ARGS,
       annotations: READ_ONLY,
     },
     audited(env, ctx, "list_weddings", async (args: { limit?: number | undefined; cursor?: string | undefined }) => {
@@ -76,11 +86,7 @@ export function buildServer(env: OAuthEnv, ctx: McpContext): McpServer {
       title: "Get a wedding",
       description:
         "One wedding by its short id (from list_weddings or studio_overview): date, venue, place, its next step, anything holding it back, the outlets it has gone to, and its tags (kept, not kept, and waiting for her answer). Set detail to true to add the couple's story, the angle and the vendor credits. Set tag_choices to true to add the tags open to her, by group, before suggesting tags for set_tags.",
-      inputSchema: {
-        wedding: z.string().min(1).max(100).describe("The wedding's short id, such as blake-and-anne-2026."),
-        detail: z.boolean().optional().describe("Also return the story, angle and vendor credits."),
-        tag_choices: z.boolean().optional().describe("Also return the tags she can choose from."),
-      },
+      inputSchema: GET_WEDDING_ARGS,
       annotations: READ_ONLY,
     },
     audited(env, ctx, "get_wedding", async (args: { wedding: string; detail?: boolean | undefined; tag_choices?: boolean | undefined }) => {

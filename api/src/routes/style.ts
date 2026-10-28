@@ -4,8 +4,9 @@ import type { Context } from "hono";
 import type { AppContext } from "../middleware/auth.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { fail } from "../errors.js";
-import type { D1Database } from "../env.js";
+import type { D1Database, D1PreparedStatement } from "../env.js";
 import { regionTagsForLocation } from "../domain/geo.js";
+import type { Geo } from "../domain/geo.js";
 import {
   lookTags,
   planSuggestions,
@@ -17,7 +18,7 @@ import {
 import type { EventTagRow, EventTagSource, PastFeatureInput } from "../domain/style.js";
 import { TAG_CATEGORY_ORDER } from "../domain/tags.js";
 import type { TagCategory } from "../domain/tags.js";
-import { loadGeo } from "./match-context.js";
+import { geoFrom, geoStatement, loadGeo } from "./match-context.js";
 
 interface EventRow {
   id: string;
@@ -27,16 +28,18 @@ interface EventRow {
 
 const nowIso = () => new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
 
+/** The vocabulary, in display order: the read behind loadVocabulary, for batching. */
+export function vocabularyStatement(db: D1Database): D1PreparedStatement {
+  return db.prepare(`SELECT id, category FROM tags ORDER BY ${TAG_CATEGORY_ORDER}, tags.sort_order, tags.id`);
+}
+
 export async function loadVocabulary(db: D1Database): Promise<Array<{ id: string; category: TagCategory }>> {
-  const { results } = await db
-    .prepare(`SELECT id, category FROM tags ORDER BY ${TAG_CATEGORY_ORDER}, tags.sort_order, tags.id`)
-    .all<{ id: string; category: TagCategory }>();
+  const { results } = await vocabularyStatement(db).all<{ id: string; category: TagCategory }>();
   return results;
 }
 
 /** What the wedding's date and place suggest, each with the line the screen shows. */
-async function derivedFor(db: D1Database, event: EventRow): Promise<Array<{ tag: string; reason: string }>> {
-  const geo = await loadGeo(db);
+function derivedFrom(event: EventRow, geo: Geo | null): Array<{ tag: string; reason: string }> {
   return [
     ...seasonTags(event.event_date).map((tag) => ({ tag, reason: "From the wedding date." })),
     ...(geo === null ? [] : regionTagsForLocation(event.location_code, geo)).map((tag) => ({
@@ -46,28 +49,52 @@ async function derivedFor(db: D1Database, event: EventRow): Promise<Array<{ tag:
   ];
 }
 
+async function derivedFor(db: D1Database, event: EventRow): Promise<Array<{ tag: string; reason: string }>> {
+  return derivedFrom(event, await loadGeo(db));
+}
+
+function tagRowsStatement(db: D1Database, eventId: string): D1PreparedStatement {
+  return db.prepare("SELECT tag_id, state, source, confidence, reason FROM event_tags WHERE event_id = ?").bind(eventId);
+}
+
 async function tagRows(db: D1Database, eventId: string): Promise<EventTagRow[]> {
-  const { results } = await db
-    .prepare("SELECT tag_id, state, source, confidence, reason FROM event_tags WHERE event_id = ?")
-    .bind(eventId)
-    .all<EventTagRow>();
+  const { results } = await tagRowsStatement(db, eventId).all<EventTagRow>();
   return results;
 }
 
-/** Everything the Look screen shows for one wedding. */
+function eventStatement(db: D1Database, id: string): D1PreparedStatement {
+  return db.prepare("SELECT id, event_date, location_code FROM events WHERE id = ?").bind(id);
+}
+
+/** The Look screen's view from the rows of the batches below. */
+function lookOf(rows: readonly unknown[], derived: ReadonlyArray<{ tag: string; reason: string }>, vocabularyRows: readonly unknown[]) {
+  const vocabulary = vocabularyRows as Array<{ id: string; category: TagCategory }>;
+  return { tags: lookTags(rows as EventTagRow[], derived, vocabulary), vocabulary };
+}
+
+/**
+ * Everything the Look screen shows for one wedding, read in one batch: on
+ * Workers every D1 call costs CPU of its own (SUMMIT-344).
+ */
 async function lookView(db: D1Database, event: EventRow) {
-  const [rows, derived, vocabulary] = await Promise.all([tagRows(db, event.id), derivedFor(db, event), loadVocabulary(db)]);
-  return { tags: lookTags(rows, derived, vocabulary), vocabulary };
+  const [rows, geo, vocabulary] = await db.batch([tagRowsStatement(db, event.id), geoStatement(db), vocabularyStatement(db)]);
+  return lookOf(rows?.results ?? [], derivedFrom(event, geoFrom(geo?.results ?? [])), vocabulary?.results ?? []);
 }
 
 async function loadEvent(db: D1Database, id: string): Promise<EventRow | null> {
-  return db.prepare("SELECT id, event_date, location_code FROM events WHERE id = ?").bind(id).first<EventRow>();
+  return eventStatement(db, id).first<EventRow>();
 }
 
 /** The Look screen's view of one wedding, for the Claude connector; null when there is no such wedding. */
 export async function weddingTags(db: D1Database, eventId: string) {
-  const event = await loadEvent(db, eventId);
-  return event === null ? null : lookView(db, event);
+  const [event, rows, geo, vocabulary] = await db.batch([
+    eventStatement(db, eventId),
+    tagRowsStatement(db, eventId),
+    geoStatement(db),
+    vocabularyStatement(db),
+  ]);
+  const row = event?.results[0] as EventRow | undefined;
+  return row === undefined ? null : lookOf(rows?.results ?? [], derivedFrom(row, geoFrom(geo?.results ?? [])), vocabulary?.results ?? []);
 }
 
 /**
@@ -249,18 +276,24 @@ styleRoutes.put("/events/:id/tags/:tag", async (c) => {
  */
 styleRoutes.put("/events/:id/tags", async (c) => {
   const db = c.env.DB;
-  const event = await loadEvent(db, c.req.param("id"));
-  if (event === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
-  const vocabulary = await loadVocabulary(db);
+  const [found, geoRows, vocabularyRows] = await db.batch([
+    eventStatement(db, c.req.param("id")),
+    geoStatement(db),
+    vocabularyStatement(db),
+  ]);
+  const event = found?.results[0] as EventRow | undefined;
+  if (event === undefined) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
+  const vocabulary = (vocabularyRows?.results ?? []) as Array<{ id: string; category: TagCategory }>;
   const parsed = validateTagAnswers(await readBody(c), new Set(vocabulary.map((tag) => tag.id)));
   if (!parsed.ok) return fail(c, 400, "VALIDATION", "Some fields need attention.", parsed.errors);
 
-  const derived = await derivedFor(db, event);
+  const derived = derivedFrom(event, geoFrom(geoRows?.results ?? []));
   const reasons = new Map(derived.map((entry) => [entry.tag, entry.reason]));
   const { confirmed, rejected } = parsed.value;
   const user = c.get("user").id;
   const at = nowIso();
-  await db.batch([
+  // Her tags are read back in the same batch, after the writes.
+  const written = await db.batch([
     ...confirmed.map((tag) => answerStatement(db, event.id, tag, "confirmed", reasons.get(tag), user, at)),
     ...rejected.map((tag) => answerStatement(db, event.id, tag, "rejected", reasons.get(tag), user, at)),
     db
@@ -268,8 +301,9 @@ styleRoutes.put("/events/:id/tags", async (c) => {
         "INSERT INTO audit_log (id, user_id, entity, entity_id, action, detail_json) VALUES (?, ?, 'event', ?, 'tags_answered', ?)",
       )
       .bind(crypto.randomUUID(), user, event.id, JSON.stringify({ confirmed: confirmed.length, rejected: rejected.length })),
+    tagRowsStatement(db, event.id),
   ]);
-  return c.json({ tags: lookTags(await tagRows(db, event.id), derived, vocabulary), vocabulary });
+  return c.json(lookOf(written.at(-1)?.results ?? [], derived, vocabulary));
 });
 
 styleRoutes.get("/profile", async (c) => {
