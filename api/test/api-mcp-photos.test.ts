@@ -74,6 +74,7 @@ describe("tools/list", () => {
     const { result } = (await response.json()) as { result: { tools: Array<{ name: string; annotations: Record<string, unknown> }> } };
     const byName = new Map(result.tools.map((tool) => [tool.name, tool.annotations]));
     expect([...byName.keys()].sort()).toEqual([
+      "build_package_draft",
       "confirm_permissions",
       "get_upload_link",
       "get_wedding",
@@ -82,6 +83,7 @@ describe("tools/list", () => {
       "rank_publications_for_wedding",
       "review_photos",
       "save_wedding",
+      "set_queue",
       "set_tags",
       "studio_overview",
     ]);
