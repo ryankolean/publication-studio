@@ -162,6 +162,17 @@ export function requirementLabel(requirement: string): string {
 const isAttested = (pkg: PackageInput, id: string): boolean =>
   pkg.attestations[id] === true;
 
+/**
+ * Requirements that say the same as an item the spec's own fields make, keyed
+ * to that item. Research projects a watermark ban as both, so without this the
+ * checklist asked her to confirm it twice. A tick stored on the requirement's
+ * line before they were merged still counts.
+ */
+const SAME_AS_SPEC_ITEM: Record<string, string> = {
+  no_watermarks: "no_watermarks",
+  web_size_images_only: "web_size",
+};
+
 function imageCountItem(spec: PublicationSpec, count: number): ChecklistItem | null {
   const { imgMin, imgMax } = spec;
   if (imgMin === null && imgMax === null) return null;
@@ -211,7 +222,7 @@ export function buildChecklist(
       id: "no_watermarks",
       kind: "attested",
       label: "Confirm no image carries a watermark",
-      satisfied: isAttested(pkg, "no_watermarks"),
+      satisfied: isAttested(pkg, "no_watermarks") || isAttested(pkg, "req:no_watermarks"),
     });
   }
 
@@ -220,7 +231,7 @@ export function buildChecklist(
       id: "web_size",
       kind: "attested",
       label: "Confirm every image is a web-size derivative",
-      satisfied: isAttested(pkg, "web_size"),
+      satisfied: isAttested(pkg, "web_size") || isAttested(pkg, "req:web_size_images_only"),
     });
   }
 
@@ -243,7 +254,7 @@ export function buildChecklist(
 
   for (const requirement of spec.requirements) {
     const id = `req:${requirement}`;
-    if (seen.has(id)) continue;
+    if (seen.has(id) || seen.has(SAME_AS_SPEC_ITEM[requirement] ?? "")) continue;
     seen.add(id);
 
     const derived = DERIVED_REQUIREMENTS[requirement];
