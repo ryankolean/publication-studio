@@ -1,4 +1,10 @@
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
+import { parse } from "yaml";
+
+import { readGeo } from "../src/domain/geo.js";
 
 import {
   STAGE_WORDS,
@@ -49,6 +55,15 @@ describe("placeOf", () => {
   it("falls back to the country without a state, and to null with nothing", () => {
     expect(placeOf({ ...wedding(1), state: null, city: "Paris", country: "FR" })).toBe("Paris, FR");
     expect(placeOf({ ...wedding(1), city: null, state: null, country: null })).toBeNull();
+  });
+
+  it("is the place from the location list when the wedding has one, the place the matcher uses", () => {
+    const geo = readGeo(parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../../research/vocab/geo.yaml"), "utf8")));
+    const keys = { ...wedding(1), city: null, state: null, country: null, locationCode: "US-FL:florida-keys" };
+    expect(placeOf(keys, geo)).toBe("Florida Keys, Florida");
+    expect(placeOf(keys)).toBeNull();
+    expect(placeOf({ ...keys, locationCode: null }, geo)).toBeNull();
+    expect(weddingLine({ ...keys }, geo).place).toBe("Florida Keys, Florida");
   });
 });
 

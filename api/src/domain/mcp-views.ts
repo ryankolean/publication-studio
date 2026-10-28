@@ -12,6 +12,8 @@ import type { ConsentStatus, RightsStatus } from "./rights-gate.js";
 import type { SubmissionStatus } from "./submission-status.js";
 import { gateWords } from "./wizard.js";
 import type { ChipKind } from "./wizard.js";
+import { locationLabel } from "./geo.js";
+import type { Geo } from "./geo.js";
 
 export interface WeddingRecord {
   id: string;
@@ -22,6 +24,8 @@ export interface WeddingRecord {
   city: string | null;
   state: string | null;
   country: string | null;
+  /** The place the matcher uses, from the location list; absent on older records. */
+  locationCode?: string | null;
   chip: { kind: ChipKind; label: string };
 }
 
@@ -80,17 +84,24 @@ const WAITING_TO_SEND: ReadonlySet<SubmissionStatus> = new Set(["ready", "queued
 const WITH_OUTLETS: ReadonlySet<SubmissionStatus> = new Set(["sent", "expired", "withdraw_pending"]);
 const AWAITING_REPLY: ReadonlySet<SubmissionStatus> = new Set(["sent", "expired"]);
 
-export function placeOf(wedding: Pick<WeddingRecord, "city" | "state" | "country">): string | null {
+/**
+ * Where the wedding was: the place from the location list when it has one,
+ * the same place save_wedding and the matcher use, else the typed city and
+ * state. Without the first, a wedding placed only by the list read as having
+ * no place at all.
+ */
+export function placeOf(wedding: Pick<WeddingRecord, "city" | "state" | "country" | "locationCode">, geo: Geo | null = null): string | null {
+  if (wedding.locationCode != null && geo !== null) return locationLabel(wedding.locationCode, geo);
   const parts = [wedding.city, wedding.state ?? wedding.country].filter((part): part is string => part !== null);
   return parts.length === 0 ? null : parts.join(", ");
 }
 
-export function weddingLine(wedding: WeddingRecord) {
+export function weddingLine(wedding: WeddingRecord, geo: Geo | null = null) {
   return {
     wedding: wedding.slug,
     couple: wedding.coupleNames,
     date: wedding.eventDate,
-    place: placeOf(wedding),
+    place: placeOf(wedding, geo),
     step: wedding.chip.label,
   };
 }
@@ -140,14 +151,14 @@ export function studioOverview(weddings: readonly WeddingRecord[], queue: readon
 }
 
 /** One page of weddings. The cursor is the offset of the next page, as a string. */
-export function weddingPage(weddings: readonly WeddingRecord[], options: { limit?: number; cursor?: string }) {
+export function weddingPage(weddings: readonly WeddingRecord[], options: { limit?: number; cursor?: string }, geo: Geo | null = null) {
   const start = options.cursor === undefined ? 0 : /^\d+$/.test(options.cursor) ? Number(options.cursor) : -1;
   if (start < 0 || start > weddings.length) return { error: "That cursor is not valid. Ask again without one." };
 
   const limit = Math.min(PAGE_MAX, Math.max(1, Math.floor(options.limit ?? PAGE_DEFAULT)));
   const end = start + limit;
   return {
-    weddings: weddings.slice(start, end).map(weddingLine),
+    weddings: weddings.slice(start, end).map((wedding) => weddingLine(wedding, geo)),
     total: weddings.length,
     ...(end < weddings.length ? { next: String(end) } : {}),
   };
@@ -161,6 +172,7 @@ export function weddingCard(
   wedding: CardWedding,
   outlets: readonly QueueRecord[],
   credits: ReadonlyArray<{ role: string; businessName: string }> | null,
+  geo: Geo | null = null,
 ) {
   const holds = gateWords(wedding);
   const summary = {
@@ -168,7 +180,7 @@ export function weddingCard(
     couple: wedding.coupleNames,
     date: wedding.eventDate,
     venue: wedding.venueName,
-    place: placeOf(wedding),
+    place: placeOf(wedding, geo),
     step: wedding.chip.label,
     ...(holds.length > 0 ? { onHold: holds } : {}),
     gallery: wedding.hasGalleryUrl,
