@@ -392,7 +392,7 @@ for (const method of ["PUT", "DELETE"]) {
 
   const listed = await rpc("tools/list");
   const tools = listed.status === 200 ? (await listed.json()).result.tools.map((tool) => tool.name) : [];
-  check("mcp lists its ten tools", tools.length === 10, `got ${listed.status} ${tools.join(",")}`);
+  check("mcp lists its twelve tools", tools.length === 12, `got ${listed.status} ${tools.join(",")}`);
 
   const called = await rpc("tools/call", { name: "studio_overview", arguments: {} });
   const result = called.status === 200 ? (await called.json()).result : null;
@@ -486,6 +486,22 @@ for (const method of ["PUT", "DELETE"]) {
   check("she can close the link", finished.status === 200, `got ${finished.status}`);
   const afterDone = await fetch(`${BASE}/upload/link`, { headers: linkAuth });
   check("a closed link opens nothing", afterDone.status === 401, `got ${afterDone.status}`);
+
+  // A package draft and her order through the package, queue and submission
+  // routes on real D1. The smoke wedding has one photo with a preview.
+  const firstOutlet = listedOutlets.data.outlets?.[0]?.id ?? "";
+  const drafted = await tool("build_package_draft", { wedding: "smoke-and-test-2026", publication: firstOutlet, photos: ["1"] });
+  check(
+    "build_package_draft makes a package on workerd",
+    drafted.ok && drafted.data.photos?.chosen === 1 && Array.isArray(drafted.data.toDo),
+    JSON.stringify(drafted.data).slice(0, 200),
+  );
+  const ordered = await tool("set_queue", { wedding: "smoke-and-test-2026", outlets: [firstOutlet] });
+  check(
+    "set_queue stores her order on workerd",
+    ordered.ok && ordered.data.order?.[0]?.outlet === firstOutlet && ordered.data.upNext === listedOutlets.data.outlets?.[0]?.name,
+    JSON.stringify(ordered.data).slice(0, 200),
+  );
 
   const connections = await fetch(`${BASE}/connections`);
   check("connections reject anonymous", connections.status === 401, `got ${connections.status}`);

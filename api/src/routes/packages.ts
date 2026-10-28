@@ -10,7 +10,7 @@ import { evaluatePackage } from "../domain/package-checklist.js";
 import type { PackageInput } from "../domain/package-checklist.js";
 import { buildCreditsBlock, buildDescriptionDraft } from "../domain/package-draft.js";
 import type { CreditRow } from "../domain/package-draft.js";
-import type { D1Database } from "../env.js";
+import type { D1Database, D1PreparedStatement } from "../env.js";
 import type { SubmissionStatus } from "../domain/submission-status.js";
 import { READ_TOKEN_TTL_SECONDS } from "../domain/image-token.js";
 import { readUrlFor } from "./images.js";
@@ -134,34 +134,33 @@ function submissionOf(row: SubmissionColumns): PackageSubmission | null {
   };
 }
 
-/** Every package for an event, newest first; null when the event does not exist. */
-export async function listEventPackages(
-  db: D1Database,
-  eventId: string,
-): Promise<PackageSummary[] | null> {
-  const event = await db
-    .prepare("SELECT name_display, consent_notes FROM events WHERE id = ?")
-    .bind(eventId)
-    .first<Pick<EventRow, "name_display" | "consent_notes">>();
-  if (event === null) return null;
+/** The reads behind listEventPackages, for a caller that batches them with its own. */
+export function eventPackagesStatements(db: D1Database, eventId: string): D1PreparedStatement[] {
+  return [
+    db.prepare("SELECT name_display, consent_notes FROM events WHERE id = ?").bind(eventId),
+    db
+      .prepare(
+        `SELECT packages.*, publications.name AS publication_name, publications.spec_json AS spec_json,
+           ${SUBMISSION_COLUMNS}
+         FROM packages
+         LEFT JOIN publications ON publications.id = packages.publication_id
+         LEFT JOIN submissions ON submissions.event_id = packages.event_id
+           AND submissions.publication_id = packages.publication_id
+         WHERE packages.event_id = ?
+         ORDER BY packages.created_at DESC, packages.rowid DESC`,
+      )
+      .bind(eventId),
+  ];
+}
 
-  const { results } = await db
-    .prepare(
-      `SELECT packages.*, publications.name AS publication_name, publications.spec_json AS spec_json,
-         ${SUBMISSION_COLUMNS}
-       FROM packages
-       LEFT JOIN publications ON publications.id = packages.publication_id
-       LEFT JOIN submissions ON submissions.event_id = packages.event_id
-         AND submissions.publication_id = packages.publication_id
-       WHERE packages.event_id = ?
-       ORDER BY packages.created_at DESC, packages.rowid DESC`,
-    )
-    .bind(eventId)
-    .all<
-      PackageRow & SubmissionColumns & { publication_name: string | null; spec_json: string | null }
-    >();
-
-  return results.map((row) => {
+/** listEventPackages' summaries from eventPackagesStatements' results; null when the event does not exist. */
+export function eventPackagesFrom(results: ReadonlyArray<{ results: unknown[] }>): PackageSummary[] | null {
+  const event = results[0]?.results[0] as Pick<EventRow, "name_display" | "consent_notes"> | undefined;
+  if (event === undefined) return null;
+  const rows = (results[1]?.results ?? []) as Array<
+    PackageRow & SubmissionColumns & { publication_name: string | null; spec_json: string | null }
+  >;
+  return rows.map((row) => {
     const { input, evaluation } = evaluationFor(row, event, row.spec_json ?? "{}");
     return {
       id: row.id,
@@ -177,31 +176,34 @@ export async function listEventPackages(
   });
 }
 
+/** Every package for an event, newest first; null when the event does not exist. One D1 batch. */
+export async function listEventPackages(db: D1Database, eventId: string): Promise<PackageSummary[] | null> {
+  return eventPackagesFrom(await db.batch(eventPackagesStatements(db, eventId)));
+}
+
 async function viewFor(
   c: { env: AppContext["Bindings"] },
   pkg: PackageRow,
   event: EventRow,
 ) {
-  const publication = await c.env.DB.prepare(
-    "SELECT id, name, tier, method, submission_url, spec_json FROM publications WHERE id = ?",
-  )
-    .bind(pkg.publication_id)
-    .first<{
-      id: string;
-      name: string;
-      tier: string;
-      method: string | null;
-      submission_url: string | null;
-      spec_json: string;
-    }>();
+  // One batch: on Workers every D1 call costs CPU of its own (SUMMIT-344).
+  const [publicationRows, submissionRows] = await c.env.DB.batch([
+    c.env.DB.prepare("SELECT id, name, tier, method, submission_url, spec_json FROM publications WHERE id = ?").bind(pkg.publication_id),
+    c.env.DB
+      .prepare(`SELECT ${SUBMISSION_COLUMNS} FROM submissions WHERE event_id = ? AND publication_id = ?`)
+      .bind(pkg.event_id, pkg.publication_id),
+  ]);
+  const publication = (publicationRows?.results[0] ?? null) as {
+    id: string;
+    name: string;
+    tier: string;
+    method: string | null;
+    submission_url: string | null;
+    spec_json: string;
+  } | null;
+  const submission = (submissionRows?.results[0] ?? null) as SubmissionColumns | null;
 
   const { spec, input, evaluation } = evaluationFor(pkg, event, publication?.spec_json ?? "{}");
-
-  const submission = await c.env.DB.prepare(
-    `SELECT ${SUBMISSION_COLUMNS} FROM submissions WHERE event_id = ? AND publication_id = ?`,
-  )
-    .bind(pkg.event_id, pkg.publication_id)
-    .first<SubmissionColumns>();
 
   return {
     id: pkg.id,
@@ -259,16 +261,15 @@ packageRoutes.post("/", async (c) => {
     return fail(c, 400, "VALIDATION", "Both eventId and publicationId are required.");
   }
 
-  const event = await c.env.DB.prepare(`SELECT ${EVENT_COLUMNS} FROM events WHERE id = ?`)
-    .bind(eventId)
-    .first<EventRow>();
+  const [eventRows, publicationRows, existingRows] = await c.env.DB.batch([
+    c.env.DB.prepare(`SELECT ${EVENT_COLUMNS} FROM events WHERE id = ?`).bind(eventId),
+    c.env.DB.prepare("SELECT id, active FROM publications WHERE id = ?").bind(publicationId),
+    c.env.DB.prepare("SELECT * FROM packages WHERE event_id = ? AND publication_id = ? ORDER BY version DESC").bind(eventId, publicationId),
+  ]);
+  const event = (eventRows?.results[0] ?? null) as EventRow | null;
   if (event === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
 
-  const publication = await c.env.DB.prepare(
-    "SELECT id, active FROM publications WHERE id = ?",
-  )
-    .bind(publicationId)
-    .first<{ id: string; active: number }>();
+  const publication = (publicationRows?.results[0] ?? null) as { id: string; active: number } | null;
   if (publication === null) return fail(c, 404, "NOT_FOUND", "No such publication.");
   if (publication.active !== 1) {
     return fail(c, 400, "VALIDATION", "That publication is no longer active.");
@@ -286,11 +287,7 @@ packageRoutes.post("/", async (c) => {
   // exists rather than creating a second, because two packages for the same
   // pairing is a bug the UI would have to resolve, and the version column is
   // there for deliberate regeneration once Phase 1 has a reason to bump it.
-  const existing = await c.env.DB.prepare(
-    "SELECT * FROM packages WHERE event_id = ? AND publication_id = ? ORDER BY version DESC",
-  )
-    .bind(eventId, publicationId)
-    .first<PackageRow>();
+  const existing = (existingRows?.results[0] ?? null) as PackageRow | null;
 
   if (existing !== null) return c.json(await viewFor(c, existing, event), 200);
 
@@ -309,7 +306,7 @@ packageRoutes.post("/", async (c) => {
 
   const id = crypto.randomUUID();
 
-  await c.env.DB.batch([
+  const written = await c.env.DB.batch([
     c.env.DB
       .prepare(
         `INSERT INTO packages (id, event_id, publication_id, image_keys, description_md, credits_block_md, checklist_json, version)
@@ -336,11 +333,11 @@ packageRoutes.post("/", async (c) => {
         "INSERT INTO audit_log (id, user_id, entity, entity_id, action) VALUES (?, ?, 'package', ?, 'create')",
       )
       .bind(crypto.randomUUID(), c.get("user").id, id),
+    // Read back in the same batch, after the writes.
+    c.env.DB.prepare("SELECT * FROM packages WHERE id = ?").bind(id),
   ]);
 
-  const created = await c.env.DB.prepare("SELECT * FROM packages WHERE id = ?")
-    .bind(id)
-    .first<PackageRow>();
+  const created = (written.at(-1)?.results[0] ?? null) as PackageRow | null;
   if (created === null) return fail(c, 500, "INTERNAL", "That was saved, but it could not be loaded again. Refresh the page.");
 
   return c.json(await viewFor(c, created, event), 201);
@@ -350,15 +347,13 @@ async function loadPair(
   c: { env: AppContext["Bindings"] },
   packageId: string,
 ): Promise<{ pkg: PackageRow; event: EventRow } | null> {
-  const pkg = await c.env.DB.prepare("SELECT * FROM packages WHERE id = ?")
-    .bind(packageId)
-    .first<PackageRow>();
-  if (pkg === null) return null;
-
-  const event = await c.env.DB.prepare(`SELECT ${EVENT_COLUMNS} FROM events WHERE id = ?`)
-    .bind(pkg.event_id)
-    .first<EventRow>();
-  if (event === null) return null;
+  const [packageRows, eventRows] = await c.env.DB.batch([
+    c.env.DB.prepare("SELECT * FROM packages WHERE id = ?").bind(packageId),
+    c.env.DB.prepare(`SELECT ${EVENT_COLUMNS} FROM events WHERE id = (SELECT event_id FROM packages WHERE id = ?)`).bind(packageId),
+  ]);
+  const pkg = (packageRows?.results[0] ?? null) as PackageRow | null;
+  const event = (eventRows?.results[0] ?? null) as EventRow | null;
+  if (pkg === null || event === null) return null;
 
   return { pkg, event };
 }
@@ -539,7 +534,7 @@ packageRoutes.patch("/:id", async (c) => {
     return fail(c, 400, "VALIDATION", "Some fields need attention.", errors);
   }
 
-  await c.env.DB.batch([
+  const written = await c.env.DB.batch([
     c.env.DB
       .prepare(
         "UPDATE packages SET image_keys = ?, description_md = ?, credits_block_md = ?, checklist_json = ? WHERE id = ?",
@@ -556,11 +551,11 @@ packageRoutes.patch("/:id", async (c) => {
         "INSERT INTO audit_log (id, user_id, entity, entity_id, action) VALUES (?, ?, 'package', ?, 'update')",
       )
       .bind(crypto.randomUUID(), c.get("user").id, found.pkg.id),
+    // Read back in the same batch, after the writes.
+    c.env.DB.prepare("SELECT * FROM packages WHERE id = ?").bind(found.pkg.id),
   ]);
 
-  const updated = await c.env.DB.prepare("SELECT * FROM packages WHERE id = ?")
-    .bind(found.pkg.id)
-    .first<PackageRow>();
+  const updated = (written.at(-1)?.results[0] ?? null) as PackageRow | null;
   if (updated === null) return fail(c, 500, "INTERNAL", "That was saved, but it could not be loaded again. Refresh the page.");
 
   return c.json(await viewFor(c, updated, found.event));

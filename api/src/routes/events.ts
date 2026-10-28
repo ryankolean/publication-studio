@@ -16,8 +16,9 @@ import type { WalkthroughPackage } from "../domain/walkthrough.js";
 import { buildWizard, followedPackageId, weddingChip } from "../domain/wizard.js";
 import type { WizardPackage } from "../domain/wizard.js";
 import type { SubmissionStatus } from "../domain/submission-status.js";
+import { queueNext, queueView, validateQueue } from "../domain/queue.js";
 import type { D1Database, D1PreparedStatement } from "../env.js";
-import { listEventPackages, loadPackageView } from "./packages.js";
+import { eventPackagesFrom, eventPackagesStatements, listEventPackages, loadPackageView } from "./packages.js";
 import { listPublications, loadPublication } from "./publications.js";
 import { loadView as loadSubmissionView } from "./submissions.js";
 import { geoFrom, geoStatement, loadExposures, loadGeo, loadMatchInputs, matchOutlets } from "./match-context.js";
@@ -703,4 +704,88 @@ eventRoutes.put("/:id/exposures", async (c) => {
       .bind(crypto.randomUUID(), user, event.id, JSON.stringify({ count: parsed.value.length })),
   ]);
   return c.json({ exposures: (await loadExposures(db, event.id)).map(exposureView) });
+});
+
+/**
+ * Her running order of outlets for this wedding, each with where it stands
+ * (SUMMIT-344 slice 5). Null when there is no such wedding.
+ */
+export async function loadQueue(db: D1Database, eventId: string) {
+  // One batch: on Workers every D1 call costs CPU of its own.
+  const [order, ...packageResults] = await db.batch([
+    db
+      .prepare(
+        `SELECT event_queue.publication_id, publications.name FROM event_queue
+         JOIN publications ON publications.id = event_queue.publication_id
+         WHERE event_queue.event_id = ? ORDER BY event_queue.position`,
+      )
+      .bind(eventId),
+    ...eventPackagesStatements(db, eventId),
+  ]);
+  const packages = eventPackagesFrom(packageResults);
+  if (packages === null) return null;
+  const view = queueView(
+    ((order?.results ?? []) as Array<{ publication_id: string; name: string }>).map((row) => ({ publicationId: row.publication_id, name: row.name })),
+    packages.map((pkg) => ({ id: pkg.id, publicationId: pkg.publicationId, complete: pkg.complete, submission: pkg.submission })),
+  );
+  return { ...view, next: queueNext(view) };
+}
+
+eventRoutes.get("/:id/queue", async (c) => {
+  const queue = await loadQueue(c.env.DB, c.req.param("id"));
+  if (queue === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
+  return c.json(queue);
+});
+
+/**
+ * Replaces her order of outlets for this wedding. Like a package, it is
+ * refused while the wedding's permissions hold it back.
+ */
+eventRoutes.put("/:id/queue", async (c) => {
+  const db = c.env.DB;
+  let body: unknown;
+  try {
+    body = await c.req.json();
+  } catch {
+    body = undefined;
+  }
+  const parsed = validateQueue(body);
+  const ids = parsed.ok ? parsed.value : [];
+
+  // The wedding and the outlets in one batch; the checks still go in the
+  // order a missing wedding, a bad body, the gate, then the outlets.
+  const [eventRows, outletRows] = await db.batch([
+    db.prepare("SELECT id, rights_status, consent_status FROM events WHERE id = ?").bind(c.req.param("id")),
+    ids.length === 0
+      ? db.prepare("SELECT id, active FROM publications WHERE 0")
+      : db.prepare(`SELECT id, active FROM publications WHERE id IN (${ids.map(() => "?").join(", ")})`).bind(...ids),
+  ]);
+  const event = (eventRows?.results[0] ?? null) as { id: string; rights_status: RightsStatus; consent_status: ConsentStatus } | null;
+  if (event === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
+  if (!parsed.ok) return fail(c, 400, "VALIDATION", "Some fields need attention.", parsed.errors);
+
+  const gate = evaluateRightsGate({ rightsStatus: event.rights_status, consentStatus: event.consent_status });
+  if (!gate.allowed) return fail(c, 403, "RIGHTS_BLOCKED", "This wedding cannot go to an outlet yet.", gate.reasons);
+
+  const known = new Map(((outletRows?.results ?? []) as Array<{ id: string; active: number }>).map((row) => [row.id, row.active === 1]));
+  const errors = ids.flatMap((id, index) =>
+    known.get(id) === undefined
+      ? [{ field: `publicationIds.${index}`, message: `No such outlet: ${id}.` }]
+      : known.get(id) === false
+        ? [{ field: `publicationIds.${index}`, message: `No longer active: ${id}.` }]
+        : [],
+  );
+  if (errors.length > 0) return fail(c, 400, "VALIDATION", "Some fields need attention.", errors);
+
+  const user = c.get("user").id;
+  await db.batch([
+    db.prepare("DELETE FROM event_queue WHERE event_id = ?").bind(event.id),
+    ...ids.map((id, index) =>
+      db.prepare("INSERT INTO event_queue (event_id, publication_id, position, set_by) VALUES (?, ?, ?, ?)").bind(event.id, id, index + 1, user),
+    ),
+    db
+      .prepare("INSERT INTO audit_log (id, user_id, entity, entity_id, action, detail_json) VALUES (?, ?, 'event', ?, 'queue_set', ?)")
+      .bind(crypto.randomUUID(), user, event.id, JSON.stringify({ publicationIds: ids })),
+  ]);
+  return c.json(await loadQueue(db, event.id));
 });

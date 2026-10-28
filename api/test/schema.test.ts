@@ -57,14 +57,15 @@ describe("migrations", () => {
     // publication_edits, and the style profile from migration 0009:
     // event_tags and past_features, and event_exposures from migration 0010,
     // and confirmations from migration 0011 for the Claude connector's
-    // two-step actions, and upload_links from migration 0012 for photo
-    // intake by link.
+    // two-step actions, upload_links from migration 0012 for photo intake by
+    // link, and event_queue from migration 0013 for her order of outlets.
     expect(tableNames(db)).toEqual([
       "audit_log",
       "confirmations",
       "credit_requests",
       "event_exposures",
       "event_images",
+      "event_queue",
       "event_tags",
       "events",
       "packages",
@@ -151,6 +152,18 @@ describe("migrations", () => {
       "INSERT INTO event_images (key, event_id, content_type, bytes) VALUES ('events/w1/a.jpg', 'w1', 'image/jpeg', 10)",
     );
     expect(db.prepare("SELECT original_name FROM event_images").get()).toEqual({ original_name: null });
+  });
+
+  it("adds her order of outlets per wedding in migration 0013", () => {
+    expect(columnNames(db, "event_queue")).toEqual(["event_id", "publication_id", "position", "set_by", "set_at"]);
+    db.exec("INSERT INTO events (id, slug, couple_names, event_date) VALUES ('w1', 'w1', 'A and B', '2026-06-01')");
+    db.exec(`INSERT INTO publications (id, name, tier, exclusivity_policy, earned_or_paid, last_verified)
+      VALUES ('p1', 'P1', 'primary', 'unknown', 'mixed', '2026-10-27'), ('p2', 'P2', 'primary', 'unknown', 'mixed', '2026-10-27')`);
+    db.exec("INSERT INTO event_queue (event_id, publication_id, position) VALUES ('w1', 'p1', 1)");
+    expect(() => db.exec("INSERT INTO event_queue (event_id, publication_id, position) VALUES ('w1', 'p2', 1)")).toThrow();
+    expect(() => db.exec("INSERT INTO event_queue (event_id, publication_id, position) VALUES ('w1', 'p2', 0)")).toThrow();
+    db.exec("DELETE FROM events WHERE id = 'w1'");
+    expect(db.prepare("SELECT COUNT(*) AS n FROM event_queue").get()).toEqual({ n: 0 });
   });
 
   it("adds upload links and an optional preview key in migration 0012", () => {

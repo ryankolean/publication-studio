@@ -126,6 +126,14 @@ research on each call; the full research never goes to Claude.
 `rank_publications_for_wedding` is the web app's own matcher for one wedding,
 eight outlets at a time, with the reasons, the checks and the ruled-out ones.
 
+`build_package_draft` makes or updates one wedding's package for one outlet
+through the package routes: photos by the numbers or refs `review_photos`
+shows, the write-up, the credits, and the checklist items she confirms
+herself; it says what is done and what is left. `set_queue` stores her order of
+outlets for the wedding (migration 0013, `PUT /events/:id/queue`) and readies
+the outlet up next once its package is complete. Nothing is ever sent from the
+studio: she sends it herself and marks it sent.
+
 The OAuth store is the KV namespace `OAUTH_KV`, already created and bound in
 `api/wrangler.jsonc`. `PUBLIC_ORIGIN` there must be the origin Claude
 connects to. Every token is bound to it, so moving to a custom domain means
