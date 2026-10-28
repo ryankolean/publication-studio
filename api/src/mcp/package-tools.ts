@@ -1,7 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
-import { confirmItems, packageReport, pickPhotos } from "../domain/package-tools.js";
+import { confirmItems, confirmPreview, packageReport, pickPhotos, withTicks } from "../domain/package-tools.js";
 import type { PackageViewLike } from "../domain/package-tools.js";
 import type { QueueEntry } from "../domain/queue.js";
 import type { ErrorBody } from "../errors.js";
@@ -9,6 +9,7 @@ import type { OAuthEnv } from "../env.js";
 import { callApp } from "./app-call.js";
 import { WRITES, audited } from "./audit.js";
 import type { McpContext, Outcome } from "./audit.js";
+import { issueConfirmation, redeemConfirmation } from "./confirmations.js";
 import { NOT_FOUND } from "./wedding-tools.js";
 
 /**
@@ -30,7 +31,12 @@ const PACKAGE_ARGS = z.object({
     .describe("The photos to send, in order, by the numbers or refs review_photos shows. Replaces the selection."),
   write_up: z.string().max(20000).optional().describe("The write-up for this outlet, drafted with her. Replaces the current one."),
   credits: z.string().max(5000).optional().describe("The vendor credits block, if she wants it worded differently from the one built from her vendors."),
-  confirm: z.array(z.string().max(100)).max(40).optional().describe("Checklist items she has confirmed herself, by id from toDo. Only what she said yes to."),
+  confirm: z
+    .array(z.string().max(300))
+    .max(40)
+    .optional()
+    .describe("Checklist items marked sheConfirms that she is ready to confirm, by id or wording from toDo. Returns the lines to show her and a code; nothing is recorded yet."),
+  confirmation: z.string().max(20).optional().describe("The code from the call with confirm. Only after she has said yes to those lines."),
   show_text: z.boolean().optional().describe("Also return the write-up and credits in full."),
 });
 
@@ -51,8 +57,11 @@ function refusal(error: ErrorBody): Outcome {
 }
 
 async function findWedding(env: OAuthEnv, slug: string) {
-  return env.DB.prepare("SELECT id FROM events WHERE slug = ?").bind(slug).first<{ id: string }>();
+  return env.DB.prepare("SELECT id, couple_names FROM events WHERE slug = ?").bind(slug).first<{ id: string; couple_names: string }>();
 }
+
+/** The two-step confirmation's action name for her checklist items (mcp/confirmations.ts). */
+const CONFIRM_ITEMS = "confirm_package_items";
 
 function queueLines(entries: readonly QueueEntry[]) {
   return entries.map((entry) => ({ position: entry.position, outlet: entry.publicationId, name: entry.name, state: entry.words }));
@@ -66,11 +75,14 @@ export function registerPackageTools(server: McpServer, env: OAuthEnv, ctx: McpC
     {
       title: "Build a package draft",
       description:
-        "Build or update the package for one wedding and one outlet: the photos to send, the write-up and the vendor credits, checked against that outlet's requirements. The first call creates it, with a write-up started from the couple's story and credits from her vendor list. Then pass photos (numbers or refs from review_photos), write_up (drafted with her, within the couple's limits), credits, and confirm for checklist items she has said yes to herself; never confirm on her behalf. Returns what is done and what is left (toDo); items marked sheConfirms need her yes. Nothing is sent anywhere. When complete is true, add the outlet to her order with set_queue.",
+        "Build or update the package for one wedding and one outlet: the photos to send, the write-up and the vendor credits, checked against that outlet's requirements. The first call creates it, with a write-up started from the couple's story and credits from her vendor list. Then pass photos (numbers or refs from review_photos), write_up (drafted with her, within the couple's limits) and credits. Items marked sheConfirms take two steps, like confirm_permissions: call with confirm to get the exact lines and a code, show her the lines, and only after she says yes call again with confirmation set to the code. Never confirm on her behalf. Returns what is done and what is left (toDo). Nothing is sent anywhere. When complete is true, add the outlet to her order with set_queue.",
       inputSchema: PACKAGE_ARGS,
       annotations: WRITES,
     },
     audited(env, ctx, "build_package_draft", async (args: PackageArgs): Promise<Outcome> => {
+      if (args.confirm !== undefined && args.confirm.length > 0 && args.confirmation !== undefined) {
+        return { ok: false, result: "confirm_and_code", message: "Pass confirm to get the lines and a code, or confirmation with the code after her yes, not both. Nothing was changed." };
+      }
       const wedding = await findWedding(env, args.wedding);
       if (wedding === null) return NOT_FOUND;
 
@@ -93,19 +105,36 @@ export function registerPackageTools(server: McpServer, env: OAuthEnv, ctx: McpC
         }
         patch["imageKeys"] = picked.keys;
       }
+      let pending: ReturnType<typeof confirmPreview> | null = null;
+      let pendingIds: string[] = [];
       if (args.confirm !== undefined && args.confirm.length > 0) {
-        const confirmed = confirmItems(view.checklist, args.confirm);
-        if (!confirmed.ok) {
+        const named = confirmItems(view.checklist, args.confirm);
+        if (!named.ok) {
           return {
             ok: false,
             result: "unknown_item",
-            message: `Not something she confirms on this outlet's checklist: ${confirmed.unknown.join(", ")}. Use the ids under toDo marked sheConfirms. Nothing in the package was changed.`,
+            message: `Not something she confirms on this outlet's checklist: ${named.unknown.join(", ")}. Use the ids or wording under toDo marked sheConfirms. Nothing in the package was changed.`,
           };
         }
-        patch["attestations"] = confirmed.attestations;
+        pending = confirmPreview(wedding.couple_names, view.publication?.name ?? args.publication, named.items);
+        pendingIds = named.items.map((item) => item.id);
       }
       if (args.write_up !== undefined) patch["descriptionMd"] = args.write_up;
       if (args.credits !== undefined) patch["creditsBlockMd"] = args.credits;
+
+      let recorded: string[] | null = null;
+      if (args.confirmation !== undefined) {
+        const redeemed = await redeemConfirmation(env.DB, args.confirmation, { userId, action: CONFIRM_ITEMS, targetId: view.id });
+        if (redeemed === null) {
+          return {
+            ok: false,
+            result: "invalid_code",
+            message: "That code is not valid: it was used already, it expired, or it was for another package. Call again with confirm to get a fresh one, and show her the lines again.",
+          };
+        }
+        patch["attestations"] = withTicks(view.checklist, (redeemed.payload as { ids: string[] }).ids);
+        recorded = redeemed.preview.slice(1);
+      }
 
       if (Object.keys(patch).length > 0) {
         const saved = await callApp(env, userId, "PATCH", `/packages/${view.id}`, patch);
@@ -114,12 +143,28 @@ export function registerPackageTools(server: McpServer, env: OAuthEnv, ctx: McpC
       }
 
       const report = packageReport(view, args.show_text === true);
+      if (pending !== null) {
+        const code = await issueConfirmation(env.DB, { userId, action: CONFIRM_ITEMS, targetId: view.id, payload: { ids: pendingIds }, preview: pending });
+        return {
+          ok: true,
+          result: "awaiting_yes",
+          data: {
+            wedding: args.wedding,
+            ...report,
+            willRecord: pending,
+            confirm: code,
+            expiresInMinutes: 15,
+            next: "Show her these lines word for word and ask if they are right. Only after she says yes, call build_package_draft again with the same wedding and publication and confirmation set to the code. Never confirm on her behalf.",
+          },
+        };
+      }
       return {
         ok: true,
         data: {
           wedding: args.wedding,
           ...(opened.status === 201 ? { created: true } : {}),
           ...report,
+          ...(recorded === null ? {} : { recorded }),
           next: report.complete
             ? "The package is complete. Add the outlet to her order with set_queue to ready it."
             : "Work through toDo with her. Ask before confirming anything marked sheConfirms.",

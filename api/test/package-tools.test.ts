@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { ChecklistItem } from "../src/domain/package-checklist.js";
-import { confirmItems, packageReport, pickPhotos } from "../src/domain/package-tools.js";
+import { confirmItems, confirmPreview, packageReport, pickPhotos, withTicks } from "../src/domain/package-tools.js";
 import type { PackageViewLike } from "../src/domain/package-tools.js";
 
 const pool = [
@@ -33,14 +33,23 @@ const item = (id: string, kind: ChecklistItem["kind"], satisfied: boolean, detai
 });
 
 describe("confirmItems", () => {
-  const checklist = [item("image_count", "derived", false), item("no_watermarks", "attested", true), item("consent_names", "attested", false)];
+  const checklist = [item("image_count", "derived", false), item("no_watermarks", "attested", true), item("consent_names", "attested", false, "First names only")];
 
-  it("keeps what is ticked and adds what she confirmed", () => {
-    expect(confirmItems(checklist, ["consent_names"])).toEqual({ ok: true, attestations: { no_watermarks: true, consent_names: true } });
+  it("finds her items by id or by their own words, ignoring case and spaces, each once", () => {
+    expect(confirmItems(checklist, ["consent_names", " label CONSENT_NAMES "])).toEqual({ ok: true, items: [checklist[2]] });
   });
 
   it("refuses anything that is not hers to confirm", () => {
     expect(confirmItems(checklist, ["image_count", "made_up", "consent_names"])).toEqual({ ok: false, unknown: ["image_count", "made_up"] });
+  });
+
+  it("words the lines she says yes to, and keeps what is already ticked", () => {
+    expect(confirmPreview("Casey & Jordan", "The Knot", [checklist[2] as ChecklistItem, checklist[1] as ChecklistItem])).toEqual([
+      "For Casey & Jordan's package for The Knot, she confirms:",
+      "- Label consent_names (First names only)",
+      "- Label no_watermarks",
+    ]);
+    expect(withTicks(checklist, ["consent_names"])).toEqual({ no_watermarks: true, consent_names: true });
   });
 });
 
@@ -76,12 +85,12 @@ describe("packageReport", () => {
 
   it("returns the text on request, and words what is missing or open-ended", () => {
     const report = packageReport(
-      view({ descriptionMd: null, creditsBlockMd: null, consent: { nameDisplay: " ", consentNotes: "No faces of guests" }, publication: null }),
+      view({ descriptionMd: null, creditsBlockMd: "  ", consent: { nameDisplay: " ", consentNotes: "No faces of guests" }, publication: null }),
       true,
     );
     expect(report).toMatchObject({ outlet: null, photos: { chosen: 2 }, writeUp: "none yet", credits: "none yet", coupleLimits: ["No faces of guests"] });
     expect(report).toHaveProperty("writeUpText", null);
-    expect(report).toHaveProperty("creditsText", null);
+    expect(report).toHaveProperty("creditsText", "  ");
     expect(packageReport(view({ consent: { nameDisplay: null, consentNotes: null } }), false)).not.toHaveProperty("coupleLimits");
 
     const range = (imgMin: number | null, imgMax: number | null) =>

@@ -38,20 +38,40 @@ export function pickPhotos(
   return unknown.length > 0 ? { ok: false, unknown } : { ok: true, keys };
 }
 
+const same = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();
+
 /**
- * The checklist ticks to store: the ones already ticked plus the ones she
- * just confirmed. Only items she has to confirm can be confirmed; anything
- * else refuses the set.
+ * The items she is confirming, named by id or by the item's own words (an
+ * outlet's free-text requirement has its whole sentence as its id). Only
+ * items she has to confirm can be named; anything else refuses the set.
  */
 export function confirmItems(
   checklist: readonly ChecklistItem[],
   confirm: readonly string[],
-): { ok: true; attestations: Record<string, true> } | { ok: false; unknown: string[] } {
-  const attested = new Set(checklist.filter((item) => item.kind === "attested").map((item) => item.id));
-  const unknown = confirm.filter((id) => !attested.has(id));
-  if (unknown.length > 0) return { ok: false, unknown };
+): { ok: true; items: ChecklistItem[] } | { ok: false; unknown: string[] } {
+  const attested = checklist.filter((item) => item.kind === "attested");
+  const items: ChecklistItem[] = [];
+  const unknown: string[] = [];
+  for (const named of confirm) {
+    const item = attested.find((entry) => same(entry.id, named) || same(entry.label, named));
+    if (item === undefined) unknown.push(named);
+    else if (!items.includes(item)) items.push(item);
+  }
+  return unknown.length > 0 ? { ok: false, unknown } : { ok: true, items };
+}
+
+/** The lines she says yes to, word for word, before her confirmations are recorded. */
+export function confirmPreview(couple: string, outlet: string, items: readonly ChecklistItem[]): string[] {
+  return [
+    `For ${couple}'s package for ${outlet}, she confirms:`,
+    ...items.map((item) => `- ${item.label}${item.detail === undefined ? "" : ` (${item.detail})`}`),
+  ];
+}
+
+/** The checklist ticks to store: the ones already ticked plus the ones she confirmed. */
+export function withTicks(checklist: readonly ChecklistItem[], ids: readonly string[]): Record<string, true> {
   const ticked = checklist.filter((item) => item.kind === "attested" && item.satisfied).map((item) => item.id);
-  return { ok: true, attestations: Object.fromEntries([...ticked, ...confirm].map((id) => [id, true as const])) };
+  return Object.fromEntries([...ticked, ...ids].map((id) => [id, true as const]));
 }
 
 export interface PackageViewLike {
@@ -64,6 +84,8 @@ export interface PackageViewLike {
   checklist: ChecklistItem[];
   complete: boolean;
 }
+
+const blank = (text: string | null) => text === null || text.trim() === "";
 
 function wanted(spec: { imgMin: number | null; imgMax: number | null }): string | null {
   if (spec.imgMin !== null && spec.imgMax !== null) return `${spec.imgMin} to ${spec.imgMax}`;
@@ -85,8 +107,8 @@ export function packageReport(view: PackageViewLike, text: boolean) {
     package: view.id,
     outlet: view.publication?.name ?? null,
     photos: { chosen: view.imageKeys.length, ...(range === null ? {} : { wanted: range }) },
-    writeUp: view.descriptionMd === null ? "none yet" : `${view.descriptionMd.length} characters`,
-    credits: view.creditsBlockMd === null ? "none yet" : "set",
+    writeUp: blank(view.descriptionMd) ? "none yet" : `${(view.descriptionMd as string).trim().length} characters`,
+    credits: blank(view.creditsBlockMd) ? "none yet" : "set",
     ...(limits.length > 0 ? { coupleLimits: limits } : {}),
     done: view.checklist.filter((item) => item.satisfied).map((item) => item.label),
     toDo: view.checklist

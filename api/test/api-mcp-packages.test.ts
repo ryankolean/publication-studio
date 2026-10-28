@@ -100,20 +100,31 @@ describe("build_package_draft", () => {
     expect((await db.prepare("SELECT COUNT(*) AS n FROM packages").first<{ n: number }>())?.n).toBe(1);
   });
 
-  it("takes photos by number or ref in her order, and her confirmations, until the package is complete", async () => {
-    const reply = await callTool("build_package_draft", {
+  it("takes photos by number or ref in her order, and records her confirmations only with the code from her yes", async () => {
+    const asked = await callTool("build_package_draft", {
       wedding: "w1-2026",
       publication: "pub-simple",
       photos: ["3", "11111111"],
-      confirm: ["web_size"],
+      confirm: ["confirm every image is a web-size derivative"],
       write_up: "A sunny June day on the water.",
     });
-    expect(reply.data).toMatchObject({ photos: { chosen: 2 }, writeUp: "30 characters", complete: true, toDo: [] });
-    expect(reply.data["next"]).toContain("set_queue");
+    expect(asked.data).toMatchObject({ photos: { chosen: 2 }, writeUp: "30 characters", complete: false, expiresInMinutes: 15 });
+    expect(asked.data["willRecord"]).toEqual(["For Casey & Jordan's package for Simple Weddings, she confirms:", "- Confirm every image is a web-size derivative"]);
+    expect(asked.data["toDo"]).toEqual([expect.objectContaining({ id: "web_size", sheConfirms: true })]);
     const row = await packageRow();
     expect(JSON.parse(row?.image_keys ?? "[]")).toEqual([KEYS[2], KEYS[0]]);
     expect(row?.description_md).toBe("A sunny June day on the water.");
-    expect(JSON.parse(row?.checklist_json ?? "{}")).toEqual({ web_size: true });
+    expect(JSON.parse(row?.checklist_json ?? "{}")).toEqual({});
+
+    const yes = await callTool("build_package_draft", { wedding: "w1-2026", publication: "pub-simple", confirmation: asked.data["confirm"] });
+    expect(yes.data).toMatchObject({ complete: true, toDo: [], recorded: ["- Confirm every image is a web-size derivative"] });
+    expect(yes.data["next"]).toContain("set_queue");
+    expect(JSON.parse((await packageRow())?.checklist_json ?? "{}")).toEqual({ web_size: true });
+
+    const reused = await callTool("build_package_draft", { wedding: "w1-2026", publication: "pub-simple", confirmation: asked.data["confirm"] });
+    expect(reused.text).toMatch(/^That code is not valid/);
+    const both = await callTool("build_package_draft", { wedding: "w1-2026", publication: "pub-simple", confirm: ["web_size"], confirmation: "ABCD-EFGH" });
+    expect(both.text).toBe("Pass confirm to get the lines and a code, or confirmation with the code after her yes, not both. Nothing was changed.");
 
     const text = await callTool("build_package_draft", { wedding: "w1-2026", publication: "pub-simple", show_text: true });
     expect(text.data["writeUpText"]).toBe("A sunny June day on the water.");
@@ -139,7 +150,8 @@ describe("build_package_draft", () => {
 
 describe("set_queue", () => {
   it("sets her order and readies the outlet up next once its package is complete", async () => {
-    await callTool("build_package_draft", { wedding: "w1-2026", publication: "pub-simple", photos: ["1"], confirm: ["web_size"] });
+    const asked = await callTool("build_package_draft", { wedding: "w1-2026", publication: "pub-simple", photos: ["1"], confirm: ["web_size"] });
+    await callTool("build_package_draft", { wedding: "w1-2026", publication: "pub-simple", confirmation: asked.data["confirm"] });
     const reply = await callTool("set_queue", { wedding: "w1-2026", outlets: ["pub-simple", "pub-second"] });
     expect(reply.data).toEqual({
       wedding: "w1-2026",
