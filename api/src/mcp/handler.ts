@@ -14,6 +14,7 @@ import { READ_ONLY, audited } from "./audit.js";
 import type { McpContext } from "./audit.js";
 import { registerPackageTools } from "./package-tools.js";
 import { registerPhotoTools } from "./photo-tools.js";
+import { registerPlanTools } from "./plan-tools.js";
 import { registerPublicationTools } from "./publication-tools.js";
 import { registerTagTools } from "./tag-tools.js";
 import { registerWeddingTools } from "./wedding-tools.js";
@@ -129,6 +130,7 @@ export function buildServer(env: OAuthEnv, ctx: McpContext): McpServer {
   registerTagTools(server, env, ctx);
   registerPublicationTools(server, env, ctx);
   registerPackageTools(server, env, ctx);
+  registerPlanTools(server, env, ctx);
 
   return server;
 }

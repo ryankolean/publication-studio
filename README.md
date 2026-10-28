@@ -134,6 +134,14 @@ outlets for the wedding (migration 0013, `PUT /events/:id/queue`) and readies
 the outlet up next once its package is complete. Nothing is ever sent from the
 studio: she sends it herself and marks it sent.
 
+Guided plans (spec section 6a): `plan` picks one of five server-side templates
+(new wedding, pick outlets, build package, send and follow up, after
+acceptance) and keeps it per wedding as `<wedding id>/<template>` (migration
+0014), so a new chat can pick it up. `run_plan_step` returns the next step,
+whether it is for Claude or for her, and the tool that does it. Every step is
+marked done from the wedding's own data, never stored. The ready-to-paste
+instructions for her Claude are in `docs/claude-project-instructions.md`.
+
 The OAuth store is the KV namespace `OAUTH_KV`, already created and bound in
 `api/wrangler.jsonc`. `PUBLIC_ORIGIN` there must be the origin Claude
 connects to. Every token is bound to it, so moving to a custom domain means

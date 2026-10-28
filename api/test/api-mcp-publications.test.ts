@@ -93,7 +93,7 @@ describe("tools/list", () => {
     const response = await mcp(env, accessToken, "tools/list");
     const { result } = (await response.json()) as { result: { tools: Array<{ name: string; annotations: Record<string, unknown> }> } };
     const byName = new Map(result.tools.map((tool) => [tool.name, tool.annotations]));
-    expect(result.tools).toHaveLength(12);
+    expect(result.tools).toHaveLength(14);
     expect(byName.get("publications")).toMatchObject({ readOnlyHint: true, destructiveHint: false });
     expect(byName.get("rank_publications_for_wedding")).toMatchObject({ readOnlyHint: true, destructiveHint: false });
   });
