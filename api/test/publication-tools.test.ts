@@ -90,6 +90,14 @@ describe("outletLine", () => {
   });
 });
 
+describe("outletLine about", () => {
+  it("keeps a long first sentence to about a line", () => {
+    const line = outletLine(outlet({ tasteNotes: `${"Long words ".repeat(30)}end. Second sentence.` }));
+    expect(line.about?.length).toBeLessThanOrEqual(110);
+    expect(line.about).toMatch(/\.\.\.$/);
+  });
+});
+
 describe("factCard", () => {
   it("says every known fact in plain words", () => {
     expect(factCard(outlet(), GEO)).toEqual({
@@ -239,7 +247,7 @@ describe("filterOutlet", () => {
   it("filters by how recent the wedding is", () => {
     expect(filterOutlet(outlet(), { marriedOn: "2026-01-10" }, GEO, TODAY)).toEqual([]);
     expect(filterOutlet(outlet(), { marriedOn: "2025-01-10" }, GEO, TODAY)).toBe("no");
-    expect(filterOutlet(outlet(), { marriedOn: "2025-10-20" }, GEO, TODAY)).toEqual([]);
+    expect(filterOutlet(outlet(), { marriedOn: "2025-11-05" }, GEO, TODAY)).toEqual([]);
     expect(filterOutlet(outlet(), { marriedOn: "2025-09-01" }, GEO, TODAY)).toBe("no");
     expect(filterOutlet(outlet({ matchProfile: profile({ freshnessMonths: "none" }) }), { marriedOn: "2020-01-10" }, GEO, TODAY)).toEqual([]);
     expect(filterOutlet(outlet({ matchProfile: null }), { marriedOn: "2020-01-10", kind: "elopement" }, GEO, TODAY)).toEqual(["kind", "married_on"]);

@@ -40,6 +40,8 @@ export interface CardOutlet {
 
 const PAGE = 10;
 const MAX_ABOUT = 300;
+/** A list line's description: about 30 tokens, so a page of ten stays near the 500-token budget. */
+const MAX_LINE = 110;
 const MAX_STYLES = 8;
 
 /** The first sentence of a description, for a list line. */
@@ -88,7 +90,7 @@ export function outletLine(outlet: CardOutlet, unsure: readonly string[] = []): 
     id: outlet.id,
     name: outlet.name,
     tier: outlet.tier,
-    about: firstSentence(outlet.tasteNotes),
+    about: clip(firstSentence(outlet.tasteNotes), MAX_LINE),
     ...(outlet.matchProfile === null ? { unresearched: true as const } : {}),
     ...(unsure.length > 0 ? { unsure: [...unsure] } : {}),
   };

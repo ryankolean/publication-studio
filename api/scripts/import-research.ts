@@ -4,6 +4,7 @@
  *   npm run research:import --workspace @publication-studio/api -- --local
  *   npm run research:import --workspace @publication-studio/api -- --remote
  *   ... -- --local --only pub-brides,pub-the-knot
+ *   STUDIO_EMAIL=... STUDIO_PASSWORD=... npm run research:import ... -- --staging
  *
  * Sends research/vocab first, then every file in research/publications with
  * its private contacts from ../publication-studio-private/research/contacts
@@ -30,6 +31,7 @@ const REPO = fileURLToPath(new URL("../../", import.meta.url));
 const RESEARCH = join(REPO, "research");
 const CONTACTS = join(REPO, "../publication-studio-private/research/contacts");
 const DEPLOYED_API = "https://publication-studio-api.ryan-kolean.workers.dev";
+const STAGING_API = "https://publication-studio-api-staging.ryan-kolean.workers.dev";
 const VAULT = "Dev Secrets";
 const ITEM = "Publication Studio (dev)";
 
@@ -40,6 +42,7 @@ function parseArgs(argv: string[]) {
     if (arg === "--") continue;
     else if (arg === "--remote") args.api = DEPLOYED_API;
     else if (arg === "--local") args.api = "http://127.0.0.1:8787";
+    else if (arg === "--staging") args.api = STAGING_API;
     else if (arg === "--api") args.api = argv[++i] ?? null;
     else if (arg === "--only") args.only = (argv[++i] ?? "").split(",").filter(Boolean);
     else if (arg === "--item") args.item = argv[++i] ?? ITEM;
@@ -49,7 +52,7 @@ function parseArgs(argv: string[]) {
     }
   }
   if (args.api === null) {
-    console.error("Pass --local, --remote or --api <url>.");
+    console.error("Pass --local, --remote, --staging or --api <url>.");
     process.exit(1);
   }
   return args as { api: string; only: string[] | null; item: string };
@@ -107,10 +110,15 @@ if (args.only !== null && selected.length !== args.only.length) {
 }
 
 // 2. Sign in as the operator; the credentials never leave 1Password and this process.
+// STUDIO_EMAIL and STUDIO_PASSWORD, when both are set, stand in for 1Password,
+// for staging's test accounts (backfill-previews.mjs reads them the same way).
 const op = (opArgs: string[]) => execFileSync("op", opArgs, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
+const fromEnv = process.env["STUDIO_EMAIL"] !== undefined && process.env["STUDIO_PASSWORD"] !== undefined;
 // Two reads: a generated password may contain a comma, which a combined CSV read would split.
-const email = op(["item", "get", args.item, "--vault", VAULT, "--fields", "username"]);
-const password = op(["item", "get", args.item, "--vault", VAULT, "--fields", "password", "--reveal"]);
+const email = fromEnv ? (process.env["STUDIO_EMAIL"] as string) : op(["item", "get", args.item, "--vault", VAULT, "--fields", "username"]);
+const password = fromEnv
+  ? (process.env["STUDIO_PASSWORD"] as string)
+  : op(["item", "get", args.item, "--vault", VAULT, "--fields", "password", "--reveal"]);
 const login = await fetch(`${args.api}/auth/login`, {
   method: "POST",
   headers: { "content-type": "application/json" },
