@@ -111,6 +111,13 @@ app) get one from `node api/scripts/backfill-previews.mjs --remote --item
 <1password id>`, which uses the local ImageMagick and skips photos that already
 have one.
 
+Tags are suggested in the chat, not by the studio. `get_wedding` shows where a
+wedding's tags stand (kept, not kept, and the ones its date, place or the
+operator suggest), and with `tag_choices` the vocabulary still open to her.
+Claude suggests from that list after looking at the photos, and `set_tags`
+records only what she keeps or drops, in one batch through
+`PUT /style/events/:id/tags`, the same rows the Look screen writes.
+
 The OAuth store is the KV namespace `OAUTH_KV`, already created and bound in
 `api/wrangler.jsonc`. `PUBLIC_ORIGIN` there must be the origin Claude
 connects to. Every token is bound to it, so moving to a custom domain means

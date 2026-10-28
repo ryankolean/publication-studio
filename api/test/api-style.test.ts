@@ -136,6 +136,62 @@ describe("GET /style/events/:id and answering tags", () => {
     expect((await answerTag("romantic", "confirmed", "nope")).status).toBe(404);
     expect((await answerTag("romantic", "suggested")).status).toBe(400);
   });
+
+  describe("PUT /style/events/:id/tags", () => {
+    const answerTags = (body: unknown, eventId = "e1", headers = partner) => send("PUT", `/style/events/${eventId}/tags`, headers, body);
+
+    it("stores several answers at once, with the same sources as one at a time, and one audit row", async () => {
+      await suggest([{ tag: "lakefront", confidence: "high", reason: "Photo 1: a dock." }]);
+      const res = await answerTags({ confirmed: ["lakefront", "michigan", "romantic"], rejected: ["winter"] });
+      expect(res.status).toBe(200);
+      expect(await tagRows()).toEqual([
+        { tag_id: "lakefront", state: "confirmed", source: "operator", confidence: "high", reason: "Photo 1: a dock." },
+        { tag_id: "michigan", state: "confirmed", source: "derived", confidence: null, reason: "From where the wedding was." },
+        { tag_id: "romantic", state: "confirmed", source: "photographer", confidence: null, reason: null },
+        { tag_id: "winter", state: "rejected", source: "derived", confidence: null, reason: "From the wedding date." },
+      ]);
+      expect(await rows("SELECT user_id, action, detail_json FROM audit_log WHERE entity = 'event' AND action = 'tags_answered'")).toEqual([
+        { user_id: "user-1", action: "tags_answered", detail_json: JSON.stringify({ confirmed: 3, rejected: 1 }) },
+      ]);
+
+      const body = await json(res);
+      expect(body["tags"]).toEqual([
+        { id: "michigan", category: "region", state: "confirmed", source: "derived", confidence: null, reason: "From where the wedding was." },
+        { id: "midwest_us", category: "region", state: "suggested", source: "derived", confidence: null, reason: "From where the wedding was." },
+        { id: "lakefront", category: "landscape_venue", state: "confirmed", source: "operator", confidence: "high", reason: "Photo 1: a dock." },
+        { id: "romantic", category: "aesthetic", state: "confirmed", source: "photographer", confidence: null, reason: null },
+        { id: "winter", category: "season", state: "rejected", source: "derived", confidence: null, reason: "From the wedding date." },
+      ]);
+      expect(body["vocabulary"]).toContainEqual({ id: "romantic", category: "aesthetic" });
+    });
+
+    it("changes an earlier answer, and leaves tags it does not name alone", async () => {
+      await answerTags({ confirmed: ["romantic", "lakefront"] });
+      await answerTags({ rejected: ["romantic"] });
+      expect((await tagRows()).map((row) => [row["tag_id"], row["state"]])).toEqual([
+        ["lakefront", "confirmed"],
+        ["romantic", "rejected"],
+      ]);
+    });
+
+    it("refuses the whole set when any tag is wrong, and writes nothing", async () => {
+      const res = await answerTags({ confirmed: ["romantic", "made_up"], rejected: ["romantic"] });
+      expect(res.status).toBe(400);
+      expect((await json(res))["details"]).toEqual([
+        { field: "confirmed.1", message: "Not a vocabulary tag: made_up." },
+        { field: "rejected.0", message: "Listed twice: romantic." },
+      ]);
+      expect((await answerTags({})).status).toBe(400);
+      expect(await tagRows()).toEqual([]);
+      expect(await rows("SELECT action FROM audit_log WHERE action = 'tags_answered'")).toEqual([]);
+    });
+
+    it("is a 404 for a wedding that does not exist, and needs a signed-in user", async () => {
+      expect((await answerTags({ confirmed: ["romantic"] }, "nope")).status).toBe(404);
+      expect((await answerTags({ confirmed: ["romantic"] }, "e1", {})).status).toBe(401);
+      expect(await tagRows()).toEqual([]);
+    });
+  });
 });
 
 describe("GET /style/profile", () => {

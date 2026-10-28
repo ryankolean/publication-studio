@@ -10,6 +10,7 @@ import {
   seasonTags,
   validatePastFeature,
   validateSuggestions,
+  validateTagAnswers,
 } from "../src/domain/style.js";
 import type { EventTagRow } from "../src/domain/style.js";
 import type { TagCategory } from "../src/domain/tags.js";
@@ -168,5 +169,40 @@ describe("validateSuggestions", () => {
   it("needs a list", () => {
     expect(validateSuggestions({}, vocabulary)).toMatchObject({ ok: false, errors: [{ field: "tags" }] });
     expect(validateSuggestions(null, vocabulary)).toMatchObject({ ok: false });
+  });
+});
+
+describe("validateTagAnswers", () => {
+  const vocabulary = new Set(VOCABULARY.map((tag) => tag.id));
+
+  it("accepts tags she keeps and tags she says no to, either list alone", () => {
+    expect(validateTagAnswers({ confirmed: ["romantic", "lakefront"], rejected: ["winter"] }, vocabulary)).toEqual({
+      ok: true,
+      value: { confirmed: ["romantic", "lakefront"], rejected: ["winter"] },
+    });
+    expect(validateTagAnswers({ rejected: ["winter"] }, vocabulary)).toEqual({ ok: true, value: { confirmed: [], rejected: ["winter"] } });
+    expect(validateTagAnswers({ confirmed: ["romantic"] }, vocabulary)).toEqual({ ok: true, value: { confirmed: ["romantic"], rejected: [] } });
+  });
+
+  it("refuses the set over any unknown tag, or one listed twice in either list, naming each", () => {
+    const result = validateTagAnswers(
+      { confirmed: ["romantic", "made_up", "romantic", 7], rejected: ["lakefront", "romantic"] },
+      vocabulary,
+    );
+    expect(result.ok ? [] : result.errors.map((error) => `${error.field} ${error.message}`)).toEqual([
+      "confirmed.1 Not a vocabulary tag: made_up.",
+      "confirmed.2 Listed twice: romantic.",
+      "confirmed.3 Not a vocabulary tag: 7.",
+      "rejected.1 Listed twice: romantic.",
+    ]);
+  });
+
+  it("needs lists, and at least one tag in them", () => {
+    expect(validateTagAnswers({ confirmed: "romantic" }, vocabulary)).toMatchObject({ ok: false, errors: [{ field: "confirmed" }] });
+    expect(validateTagAnswers({ confirmed: [], rejected: [] }, vocabulary)).toEqual({
+      ok: false,
+      errors: [{ field: "confirmed", message: "Answer at least one tag." }],
+    });
+    expect(validateTagAnswers(null, vocabulary)).toMatchObject({ ok: false });
   });
 });

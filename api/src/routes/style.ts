@@ -6,7 +6,14 @@ import { requireAuth, requireRole } from "../middleware/auth.js";
 import { fail } from "../errors.js";
 import type { D1Database } from "../env.js";
 import { regionTagsForLocation } from "../domain/geo.js";
-import { lookTags, planSuggestions, seasonTags, validatePastFeature, validateSuggestions } from "../domain/style.js";
+import {
+  lookTags,
+  planSuggestions,
+  seasonTags,
+  validatePastFeature,
+  validateSuggestions,
+  validateTagAnswers,
+} from "../domain/style.js";
 import type { EventTagRow, EventTagSource, PastFeatureInput } from "../domain/style.js";
 import { TAG_CATEGORY_ORDER } from "../domain/tags.js";
 import type { TagCategory } from "../domain/tags.js";
@@ -20,7 +27,7 @@ interface EventRow {
 
 const nowIso = () => new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
 
-async function loadVocabulary(db: D1Database): Promise<Array<{ id: string; category: TagCategory }>> {
+export async function loadVocabulary(db: D1Database): Promise<Array<{ id: string; category: TagCategory }>> {
   const { results } = await db
     .prepare(`SELECT id, category FROM tags ORDER BY ${TAG_CATEGORY_ORDER}, tags.sort_order, tags.id`)
     .all<{ id: string; category: TagCategory }>();
@@ -55,6 +62,37 @@ async function lookView(db: D1Database, event: EventRow) {
 
 async function loadEvent(db: D1Database, id: string): Promise<EventRow | null> {
   return db.prepare("SELECT id, event_date, location_code FROM events WHERE id = ?").bind(id).first<EventRow>();
+}
+
+/** The Look screen's view of one wedding, for the Claude connector; null when there is no such wedding. */
+export async function weddingTags(db: D1Database, eventId: string) {
+  const event = await loadEvent(db, eventId);
+  return event === null ? null : lookView(db, event);
+}
+
+/**
+ * Her answer to one tag. A tag with no row yet is stored as derived when the
+ * date or place points to it, and as hers otherwise; an existing row keeps
+ * its source and reason.
+ */
+function answerStatement(
+  db: D1Database,
+  eventId: string,
+  tagId: string,
+  state: "confirmed" | "rejected",
+  derivedReason: string | undefined,
+  userId: string,
+  at: string,
+) {
+  const source: EventTagSource = derivedReason === undefined ? "photographer" : "derived";
+  return db
+    .prepare(
+      `INSERT INTO event_tags (event_id, tag_id, state, source, reason, updated_by, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT (event_id, tag_id) DO UPDATE SET
+         state = excluded.state, updated_by = excluded.updated_by, updated_at = excluded.updated_at`,
+    )
+    .bind(eventId, tagId, state, source, derivedReason ?? null, userId, at);
 }
 
 interface FeatureRow {
@@ -201,17 +239,37 @@ styleRoutes.put("/events/:id/tags/:tag", async (c) => {
   }
 
   const derived = (await derivedFor(db, event)).find((entry) => entry.tag === tagId);
-  const source: EventTagSource = derived === undefined ? "photographer" : "derived";
-  await db
-    .prepare(
-      `INSERT INTO event_tags (event_id, tag_id, state, source, reason, updated_by, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?)
-       ON CONFLICT (event_id, tag_id) DO UPDATE SET
-         state = excluded.state, updated_by = excluded.updated_by, updated_at = excluded.updated_at`,
-    )
-    .bind(event.id, tagId, state, source, derived?.reason ?? null, c.get("user").id, nowIso())
-    .run();
+  await answerStatement(db, event.id, tagId, state, derived?.reason, c.get("user").id, nowIso()).run();
   return c.json(await lookView(db, event));
+});
+
+/**
+ * Her answers to several tags at once, as the Claude connector records them
+ * (SUMMIT-344): all of them or, if any tag is wrong, none.
+ */
+styleRoutes.put("/events/:id/tags", async (c) => {
+  const db = c.env.DB;
+  const event = await loadEvent(db, c.req.param("id"));
+  if (event === null) return fail(c, 404, "NOT_FOUND", "That wedding could not be found.");
+  const vocabulary = await loadVocabulary(db);
+  const parsed = validateTagAnswers(await readBody(c), new Set(vocabulary.map((tag) => tag.id)));
+  if (!parsed.ok) return fail(c, 400, "VALIDATION", "Some fields need attention.", parsed.errors);
+
+  const derived = await derivedFor(db, event);
+  const reasons = new Map(derived.map((entry) => [entry.tag, entry.reason]));
+  const { confirmed, rejected } = parsed.value;
+  const user = c.get("user").id;
+  const at = nowIso();
+  await db.batch([
+    ...confirmed.map((tag) => answerStatement(db, event.id, tag, "confirmed", reasons.get(tag), user, at)),
+    ...rejected.map((tag) => answerStatement(db, event.id, tag, "rejected", reasons.get(tag), user, at)),
+    db
+      .prepare(
+        "INSERT INTO audit_log (id, user_id, entity, entity_id, action, detail_json) VALUES (?, ?, 'event', ?, 'tags_answered', ?)",
+      )
+      .bind(crypto.randomUUID(), user, event.id, JSON.stringify({ confirmed: confirmed.length, rejected: rejected.length })),
+  ]);
+  return c.json({ tags: lookTags(await tagRows(db, event.id), derived, vocabulary), vocabulary });
 });
 
 styleRoutes.get("/profile", async (c) => {

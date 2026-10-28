@@ -96,6 +96,46 @@ export function validateSuggestions(
   return errors.length > 0 ? { ok: false, errors } : { ok: true, value };
 }
 
+/** Her answers to several tags at once: the ones she keeps and the ones she says no to. */
+export interface TagAnswers {
+  confirmed: string[];
+  rejected: string[];
+}
+
+/**
+ * A set of answers as the Claude connector sends them (SUMMIT-344): each a
+ * vocabulary tag, listed once, and at least one in all. Anything else is
+ * refused outright, like the operator's suggestions.
+ */
+export function validateTagAnswers(
+  raw: unknown,
+  vocabulary: ReadonlySet<string>,
+): { ok: true; value: TagAnswers } | { ok: false; errors: FieldError[] } {
+  const source = asRecord(raw);
+  const errors: FieldError[] = [];
+  const seen = new Set<string>();
+  const value: TagAnswers = { confirmed: [], rejected: [] };
+  for (const field of ["confirmed", "rejected"] as const) {
+    const list = source[field] ?? [];
+    if (!Array.isArray(list)) {
+      errors.push({ field, message: "Expected a list of tags." });
+      continue;
+    }
+    list.forEach((tag: unknown, index) => {
+      if (typeof tag !== "string" || !vocabulary.has(tag)) {
+        errors.push({ field: `${field}.${index}`, message: `Not a vocabulary tag: ${String(tag)}.` });
+      } else if (seen.has(tag)) {
+        errors.push({ field: `${field}.${index}`, message: `Listed twice: ${tag}.` });
+      } else {
+        seen.add(tag);
+        value[field].push(tag);
+      }
+    });
+  }
+  if (errors.length === 0 && seen.size === 0) errors.push({ field: "confirmed", message: "Answer at least one tag." });
+  return errors.length > 0 ? { ok: false, errors } : { ok: true, value };
+}
+
 export interface EventTagRow {
   tag_id: string;
   state: EventTagState;

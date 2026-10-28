@@ -392,7 +392,7 @@ for (const method of ["PUT", "DELETE"]) {
 
   const listed = await rpc("tools/list");
   const tools = listed.status === 200 ? (await listed.json()).result.tools.map((tool) => tool.name) : [];
-  check("mcp lists its seven tools", tools.length === 7, `got ${listed.status} ${tools.join(",")}`);
+  check("mcp lists its eight tools", tools.length === 8, `got ${listed.status} ${tools.join(",")}`);
 
   const called = await rpc("tools/call", { name: "studio_overview", arguments: {} });
   const result = called.status === 200 ? (await called.json()).result : null;
@@ -414,6 +414,21 @@ for (const method of ["PUT", "DELETE"]) {
   check("the code records the answers on workerd", confirmed.ok && confirmed.data.onHold === undefined, JSON.stringify(confirmed.data));
   const reused = await tool("confirm_permissions", { ...answers, confirmation: preview.data.confirm });
   check("the code works once on workerd", !reused.ok);
+
+  // Her tag answers in one batch through the web app's style route, and the
+  // list get_wedding offers Claude to suggest from.
+  const tagged = await tool("set_tags", { wedding: "smoke-and-test-2026", keep: ["Romantic"], drop: ["early_summer"] });
+  check(
+    "set_tags records her answers on workerd",
+    tagged.ok && tagged.data.tags?.kept?.[0] === "romantic" && tagged.data.tags?.notKept?.[0] === "early_summer",
+    JSON.stringify(tagged.data),
+  );
+  const choices = await tool("get_wedding", { wedding: "smoke-and-test-2026", tag_choices: true });
+  check(
+    "get_wedding offers the tags still open to her",
+    choices.ok && choices.data.tags?.kept?.[0] === "romantic" && /bohemian/.test(choices.data.tagChoices?.aesthetic ?? "") && !/romantic/.test(choices.data.tagChoices?.aesthetic ?? ""),
+    JSON.stringify(choices.data.tags),
+  );
 
   // Photo intake by link: the page, an upload and its preview through the
   // link's own token, and the preview back as an MCP image on workerd.
