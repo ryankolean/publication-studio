@@ -166,7 +166,7 @@ const TIER_ORDER: Record<PublicationTier, number> = { primary: 0, secondary: 1, 
 const GROUP_ORDER: Record<MatchGroup, number> = { fits: 0, check: 1, excluded: 2 };
 const DAY_MS = 86_400_000;
 
-const CONTENT_WORDS: Record<ContentType, string> = {
+export const CONTENT_WORDS: Record<ContentType, string> = {
   real_wedding: "real weddings",
   elopement: "elopements",
   styled_shoot: "styled shoots",
@@ -213,7 +213,7 @@ const friendly = (date: string): string =>
   new Date(`${date}T00:00:00Z`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
 
 /** "about 1.2 million Instagram followers" */
-function reachWords(reach: { metric: string; value: number }): string {
+export function reachWords(reach: { metric: string; value: number }): string {
   const value =
     reach.value >= 1_000_000
       ? `${(reach.value / 1_000_000).toFixed(1).replace(/\.0$/, "")} million`

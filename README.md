@@ -118,6 +118,14 @@ Claude suggests from that list after looking at the photos, and `set_tags`
 records only what she keeps or drops, in one batch through
 `PUT /style/events/:id/tags`, the same rows the Look screen writes.
 
+`publications` lists the outlets ten at a time, filtered by place, styles,
+kind and wedding date, and gives one outlet's fact card (what it takes, where,
+how to send, fees, exclusivity, freshness, reply time, reach), with its
+package requirements on request. Cards are worked out from the projected
+research on each call; the full research never goes to Claude.
+`rank_publications_for_wedding` is the web app's own matcher for one wedding,
+eight outlets at a time, with the reasons, the checks and the ruled-out ones.
+
 The OAuth store is the KV namespace `OAUTH_KV`, already created and bound in
 `api/wrangler.jsonc`. `PUBLIC_ORIGIN` there must be the origin Claude
 connects to. Every token is bound to it, so moving to a custom domain means

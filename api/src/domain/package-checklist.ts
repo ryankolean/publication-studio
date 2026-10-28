@@ -154,6 +154,11 @@ function humanise(requirement: string): string {
   return words.charAt(0).toUpperCase() + words.slice(1);
 }
 
+/** How the checklist words one of an outlet's requirements. */
+export function requirementLabel(requirement: string): string {
+  return DERIVED_REQUIREMENTS[requirement]?.label ?? ATTESTED_REQUIREMENT_LABELS[requirement] ?? humanise(requirement);
+}
+
 const isAttested = (pkg: PackageInput, id: string): boolean =>
   pkg.attestations[id] === true;
 

@@ -109,40 +109,43 @@ function toView(row: PublicationRow, tags: string[], corrections: CorrectionView
 // primary outlet (design doc section 7.3), so primary sorts first.
 const TIER_ORDER = `CASE tier WHEN 'primary' THEN 0 WHEN 'secondary' THEN 1 ELSE 2 END`;
 
-/** Every publication in priority order, active ones only unless asked. */
+// The columns a view reads. Never SELECT *: research_json holds each outlet's
+// whole research file, and reading it out of D1 on every list costs Worker CPU
+// for nothing the view shows (SUMMIT-344).
+const VIEW_COLUMNS = `id, name, tier, method, submission_url, contact_email, spec_json, exclusivity_policy,
+  counts_own_blog_as_published, typical_response_days, response_window_note, earned_or_paid, taste_notes,
+  last_verified, active, match_json`;
+
+/** Every publication in priority order, active ones only unless asked. One D1 batch. */
 export async function listPublications(
   db: D1Database,
   includeInactive: boolean,
 ): Promise<PublicationView[]> {
   const where = includeInactive ? "" : "WHERE active = 1";
 
-  const { results } = await db
-    .prepare(`SELECT * FROM publications ${where} ORDER BY ${TIER_ORDER}, name`)
-    .all<PublicationRow>();
-
-  const tagRows = await db
-    .prepare(
+  const [rows, tagRows, edits] = await db.batch([
+    db.prepare(`SELECT ${VIEW_COLUMNS} FROM publications ${where} ORDER BY ${TIER_ORDER}, name`),
+    db.prepare(
       `SELECT publication_id, tag_id FROM publication_tags
        JOIN tags ON tags.id = publication_tags.tag_id
        WHERE publication_tags.origin != 'removed'
        ORDER BY ${TAG_CATEGORY_ORDER}, tags.sort_order`,
-    )
-    .all<{ publication_id: string; tag_id: string }>();
+    ),
+    db.prepare("SELECT publication_id, field, value_json, note FROM publication_edits ORDER BY field"),
+  ]);
   const tagsByPublication = new Map<string, string[]>();
-  for (const row of tagRows.results) {
+  for (const row of (tagRows?.results ?? []) as Array<{ publication_id: string; tag_id: string }>) {
     const list = tagsByPublication.get(row.publication_id) ?? [];
     list.push(row.tag_id);
     tagsByPublication.set(row.publication_id, list);
   }
 
-  const edits = await db
-    .prepare("SELECT publication_id, field, value_json, note FROM publication_edits ORDER BY field")
-    .all<EditRow>();
-  return results.map((row) =>
+  const editRows = (edits?.results ?? []) as unknown as EditRow[];
+  return ((rows?.results ?? []) as unknown as PublicationRow[]).map((row) =>
     toView(
       row,
       tagsByPublication.get(row.id) ?? [],
-      edits.results.filter((edit) => edit.publication_id === row.id).map(toCorrection),
+      editRows.filter((edit) => edit.publication_id === row.id).map(toCorrection),
     ),
   );
 }
@@ -150,19 +153,28 @@ export async function listPublications(
 /**
  * One publication, active or not: addressed directly, a deactivated outlet is
  * still readable; deactivation removes it from the list, it does not delete
- * the record.
+ * the record. One D1 batch.
  */
 export async function loadPublication(db: D1Database, id: string): Promise<PublicationView | null> {
-  const row = await db
-    .prepare("SELECT * FROM publications WHERE id = ?")
-    .bind(id)
-    .first<PublicationRow>();
-  if (row === null) return null;
-  const edits = await db
-    .prepare("SELECT publication_id, field, value_json, note FROM publication_edits WHERE publication_id = ? ORDER BY field")
-    .bind(row.id)
-    .all<EditRow>();
-  return toView(row, await effectiveTags(db, row.id), edits.results.map(toCorrection));
+  const [found, tags, edits] = await db.batch([
+    db.prepare(`SELECT ${VIEW_COLUMNS} FROM publications WHERE id = ?`).bind(id),
+    db
+      .prepare(
+        `SELECT tag_id FROM publication_tags
+         JOIN tags ON tags.id = publication_tags.tag_id
+         WHERE publication_id = ? AND publication_tags.origin != 'removed'
+         ORDER BY ${TAG_CATEGORY_ORDER}, tags.sort_order`,
+      )
+      .bind(id),
+    db.prepare("SELECT publication_id, field, value_json, note FROM publication_edits WHERE publication_id = ? ORDER BY field").bind(id),
+  ]);
+  const row = found?.results[0] as unknown as PublicationRow | undefined;
+  if (row === undefined) return null;
+  return toView(
+    row,
+    ((tags?.results ?? []) as Array<{ tag_id: string }>).map((tag) => tag.tag_id),
+    ((edits?.results ?? []) as unknown as EditRow[]).map(toCorrection),
+  );
 }
 
 /** An outlet's tags as the photographer sees them: research and her own, less what she removed. */
