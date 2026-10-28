@@ -25,10 +25,24 @@ function bearerToken(header: string | undefined): string | null {
 }
 
 /**
+ * The user a Claude connector tool runs a route as (mcp/app-call.ts), already
+ * loaded from the database there. A symbol, so only code inside this Worker
+ * can set it: no header, cookie or configured variable can.
+ */
+export const IN_PROCESS_USER = Symbol("in-process user");
+
+/**
  * Every failure returns the same opaque 401. The caller learns that it is not
  * authenticated, not which of expiry, forgery, or a deleted user caused it.
  */
 export async function requireAuth(c: Context<AppContext>, next: Next) {
+  const inProcess = (c.env as unknown as Record<symbol, AuthenticatedUser | undefined>)[IN_PROCESS_USER];
+  if (inProcess !== undefined) {
+    c.set("user", inProcess);
+    await next();
+    return;
+  }
+
   const token = bearerToken(c.req.header("authorization"));
   if (token === null) return fail(c, 401, "UNAUTHORIZED", "Authentication required.");
 

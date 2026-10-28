@@ -601,13 +601,13 @@ describe("PATCH /events/:id", () => {
   it("issues the event, credit and audit writes as one batch", async () => {
     const created = await create();
     const executedDirectly: string[] = [];
-    let batches = 0;
-    let batched = 0;
+    const batches: string[][] = [];
 
     const spied: Env["DB"] = {
       prepare: (query: string) => {
         const statement = db.prepare(query);
         const wrap = (bound: ReturnType<typeof statement.bind>) => ({
+          query,
           first: bound.first.bind(bound),
           all: bound.all.bind(bound),
           bind: (...values: unknown[]) => wrap(bound.bind(...values)),
@@ -619,11 +619,11 @@ describe("PATCH /events/:id", () => {
         return wrap(statement);
       },
       batch: async (statements) => {
-        batches++;
-        batched += statements.length;
+        batches.push(statements.map((statement) => (statement as unknown as { query: string }).query));
         return db.batch(statements);
       },
     };
+    const isWrite = (query: string) => /INSERT|UPDATE|DELETE/i.test(query);
 
     const res = await app.request(
       `/events/${created["id"]}`,
@@ -636,10 +636,30 @@ describe("PATCH /events/:id", () => {
     );
 
     expect(res.status).toBe(200);
-    expect(batches).toBe(1);
-    // update + delete credits + two credits + audit entry
-    expect(batched).toBe(5);
-    expect(executedDirectly.filter((q) => /INSERT|UPDATE|DELETE/i.test(q))).toEqual([]);
+    const writing = batches.filter((queries) => queries.some(isWrite));
+    expect(writing).toHaveLength(1);
+    // update + delete credits + two credits + audit entry, then the event and
+    // its credits read back after them
+    expect(writing[0]?.map((query) => (isWrite(query) ? "write" : "read"))).toEqual(["write", "write", "write", "write", "write", "read", "read"]);
+    expect(executedDirectly.filter(isWrite)).toEqual([]);
+  });
+
+  it("checks a changed place against the geo vocabulary, as on create", async () => {
+    const created = await create();
+    const placeOf = async (body: unknown) => {
+      const res = await patch(String(created["id"]), { ...minimal, ...(body as object) });
+      return { status: res.status, body: (await res.json()) as Record<string, unknown> };
+    };
+    expect(await placeOf({ locationCode: "US-FL:florida-keys" })).toMatchObject({
+      status: 400,
+      body: { details: [{ field: "locationCode", message: "The list of places is not loaded yet." }] },
+    });
+    loadGeoVocab();
+    expect(await placeOf({ locationCode: "US-FL:florida-keys" })).toMatchObject({ status: 200, body: { locationCode: "US-FL:florida-keys" } });
+    expect(await placeOf({ locationCode: "US:southeast" })).toMatchObject({
+      status: 400,
+      body: { details: [{ field: "locationCode", message: "Choose a place from the list." }] },
+    });
   });
 
   it("returns a typed 404 for an unknown id", async () => {

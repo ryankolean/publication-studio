@@ -17,8 +17,8 @@ import {
 import type { CurrentWedding, PermissionsRecord, SaveWeddingArgs } from "../domain/wedding-tools.js";
 import type { ErrorBody } from "../errors.js";
 import type { OAuthEnv } from "../env.js";
-import { listEvents, loadEvent } from "../routes/events.js";
-import { loadGeo } from "../routes/match-context.js";
+import { eventFrom, eventStatements, listEventsFrom, listEventsStatements, loadEvent } from "../routes/events.js";
+import { geoFrom, geoStatement, loadGeo } from "../routes/match-context.js";
 import { callApp } from "./app-call.js";
 import { WRITES, audited } from "./audit.js";
 import type { McpContext, Outcome } from "./audit.js";
@@ -62,8 +62,9 @@ function asCurrent(detail: Detail): CurrentWedding {
   };
 }
 
+/** A wedding with its vendor credits, by its short id, in one D1 call. */
 async function findWedding(env: OAuthEnv, slug: string) {
-  return env.DB.prepare("SELECT id, couple_names FROM events WHERE slug = ?").bind(slug).first<{ id: string; couple_names: string }>();
+  return eventFrom(await env.DB.batch(eventStatements(env.DB, slug, "slug")));
 }
 
 /** A refusal from the event routes, in the tool's own argument names. */
@@ -75,11 +76,12 @@ function refusal(error: ErrorBody): Outcome {
 
 /** The wedding as it stands after a write, in the few words the chat needs. */
 async function standing(env: OAuthEnv, id: string) {
-  const [detail, summary, geo] = await Promise.all([
-    loadEvent(env.DB, id),
-    listEvents(env.DB).then((events) => events.find((event) => event.id === id)),
-    loadGeo(env.DB),
-  ]);
+  // One batch, not three loaders: on Workers each D1 call costs CPU of its own.
+  const lists = listEventsStatements(env.DB);
+  const results = await env.DB.batch([...lists, geoStatement(env.DB), ...eventStatements(env.DB, id)]);
+  const summary = listEventsFrom(results.slice(0, lists.length)).find((event) => event.id === id);
+  const geo = geoFrom(results[lists.length]?.results ?? []);
+  const detail = eventFrom(results.slice(lists.length + 1));
   if (detail === null || summary === undefined) throw new Error("a wedding just saved could not be read back");
   return {
     wedding: detail.slug,
@@ -92,6 +94,47 @@ async function standing(env: OAuthEnv, id: string) {
   };
 }
 
+// Built once per isolate, not per request: zod schemas are costly to build,
+// and every /mcp request builds its own server (handler.ts).
+const SAVE_WEDDING_ARGS = z.object({
+  wedding: z.string().max(100).optional().describe("Short id of the wedding to change. Leave out to create one."),
+  couple_names: z.string().max(200).optional().describe("As they should appear, for example 'Blake & Anne'."),
+  date: z.string().max(10).optional().describe("Wedding date, YYYY-MM-DD."),
+  venue: z.string().max(200).optional(),
+  city: z.string().max(100).optional(),
+  state: z.string().max(100).optional(),
+  country: z.string().max(100).optional(),
+  place: z.string().max(100).optional().describe("Where it was, as a name or a code from the location list."),
+  story: z.string().max(5000).optional().describe("The couple's story, in her words or drafted with her."),
+  angle: z.string().max(1000).optional().describe("What makes this wedding its own."),
+  names_in_print: z.string().max(200).optional().describe("How names may appear in print, if the couple set limits."),
+  destination: z.boolean().optional(),
+  kind: z.enum(CONTENT_TYPES).optional().describe("real_wedding, elopement or styled_shoot."),
+  hero_picks: z.string().max(1000).optional(),
+  video_link: z.string().max(500).optional(),
+  outlet_notes: z.string().max(1000).optional(),
+  vendors: z
+    .array(
+      z.object({
+        role: z.string().max(100),
+        business: z.string().max(200),
+        website: z.string().max(300).optional(),
+        instagram: z.string().max(100).optional(),
+      }),
+    )
+    .max(40)
+    .optional()
+    .describe("Every vendor credit; replaces the list."),
+});
+
+const CONFIRM_PERMISSIONS_ARGS = z.object({
+  wedding: z.string().min(1).max(100).describe("The wedding's short id."),
+  lead_photographer: z.boolean().optional().describe("Was she the lead photographer, under her own contract? Needed for the first call."),
+  couple_agreed: z.enum(["yes", "yes_with_limits", "not_yet", "no"]).optional().describe("Has the couple agreed to a submission? Needed for the first call."),
+  limits: z.string().max(500).optional().describe("The couple's limits, such as first names only. Needed for yes_with_limits."),
+  confirmation: z.string().max(20).optional().describe("The code from the first call. Only once she has said yes."),
+});
+
 export function registerWeddingTools(server: McpServer, env: OAuthEnv, ctx: McpContext): void {
   const userId = ctx.props.userId;
 
@@ -101,46 +144,16 @@ export function registerWeddingTools(server: McpServer, env: OAuthEnv, ctx: McpC
       title: "Save a wedding",
       description:
         "Create a wedding, or change one. To create, give couple_names and date (YYYY-MM-DD). To change one, give its short id as wedding and only the fields to change; everything else stays as it is, and vendors replaces the whole vendor list. place takes a place name or code, such as 'Florida Keys' or 'US-FL:florida-keys'; if it is unclear, you get the closest places to choose from and nothing is saved. This never changes her permission answers (use confirm_permissions) or a gallery link. Returns where the wedding stands and what it still needs.",
-      inputSchema: {
-        wedding: z.string().max(100).optional().describe("Short id of the wedding to change. Leave out to create one."),
-        couple_names: z.string().max(200).optional().describe("As they should appear, for example 'Blake & Anne'."),
-        date: z.string().max(10).optional().describe("Wedding date, YYYY-MM-DD."),
-        venue: z.string().max(200).optional(),
-        city: z.string().max(100).optional(),
-        state: z.string().max(100).optional(),
-        country: z.string().max(100).optional(),
-        place: z.string().max(100).optional().describe("Where it was, as a name or a code from the location list."),
-        story: z.string().max(5000).optional().describe("The couple's story, in her words or drafted with her."),
-        angle: z.string().max(1000).optional().describe("What makes this wedding its own."),
-        names_in_print: z.string().max(200).optional().describe("How names may appear in print, if the couple set limits."),
-        destination: z.boolean().optional(),
-        kind: z.enum(CONTENT_TYPES).optional().describe("real_wedding, elopement or styled_shoot."),
-        hero_picks: z.string().max(1000).optional(),
-        video_link: z.string().max(500).optional(),
-        outlet_notes: z.string().max(1000).optional(),
-        vendors: z
-          .array(
-            z.object({
-              role: z.string().max(100),
-              business: z.string().max(200),
-              website: z.string().max(300).optional(),
-              instagram: z.string().max(100).optional(),
-            }),
-          )
-          .max(40)
-          .optional()
-          .describe("Every vendor credit; replaces the list."),
-      },
+      inputSchema: SAVE_WEDDING_ARGS,
       annotations: WRITES,
     },
     audited(env, ctx, "save_wedding", async (args: SaveWeddingArgs & { wedding?: string | undefined; place?: string | undefined }) => {
       let existing: { id: string } | null = null;
       let current: CurrentWedding | null = null;
       if (args.wedding !== undefined) {
-        existing = await findWedding(env, args.wedding);
-        if (existing === null) return NOT_FOUND;
-        const detail = await loadEvent(env.DB, existing.id);
+        const detail = await findWedding(env, args.wedding);
         if (detail === null) return NOT_FOUND;
+        existing = { id: detail.id };
         current = asCurrent(detail);
       }
 
@@ -182,13 +195,7 @@ export function registerWeddingTools(server: McpServer, env: OAuthEnv, ctx: McpC
       title: "Confirm permissions",
       description:
         "Record her two permission answers for a wedding: was she the lead photographer under her own contract, and has the couple agreed to a submission (yes, yes_with_limits, not_yet or no). Nothing can be submitted until these say yes. Two steps. First call without confirmation: you get the exact lines that would be recorded and a code. Show her those lines word for word and ask. Only after she clearly says yes, call again with the same wedding and confirmation set to the code; what gets recorded is what she was shown. Never confirm on her behalf. A code works once and expires in 15 minutes.",
-      inputSchema: {
-        wedding: z.string().min(1).max(100).describe("The wedding's short id."),
-        lead_photographer: z.boolean().optional().describe("Was she the lead photographer, under her own contract? Needed for the first call."),
-        couple_agreed: z.enum(["yes", "yes_with_limits", "not_yet", "no"]).optional().describe("Has the couple agreed to a submission? Needed for the first call."),
-        limits: z.string().max(500).optional().describe("The couple's limits, such as first names only. Needed for yes_with_limits."),
-        confirmation: z.string().max(20).optional().describe("The code from the first call. Only once she has said yes."),
-      },
+      inputSchema: CONFIRM_PERMISSIONS_ARGS,
       annotations: WRITES,
     },
     audited(
@@ -211,7 +218,7 @@ export function registerWeddingTools(server: McpServer, env: OAuthEnv, ctx: McpC
           }
           const answer = permissionsRecord({ leadPhotographer: args.lead_photographer, coupleAgreed: args.couple_agreed, limits: args.limits });
           if (!answer.ok) return { ok: false, result: "needs_limits", message: answer.message };
-          const preview = permissionsPreview(wedding.couple_names, answer.record);
+          const preview = permissionsPreview(wedding.coupleNames, answer.record);
           const code = await issueConfirmation(env.DB, {
             userId,
             action: "confirm_permissions",
@@ -241,10 +248,8 @@ export function registerWeddingTools(server: McpServer, env: OAuthEnv, ctx: McpC
           };
         }
 
-        const detail = await loadEvent(env.DB, wedding.id);
-        if (detail === null) return NOT_FOUND;
         const record = redeemed.payload as PermissionsRecord;
-        const saved = await callApp(env, userId, "PATCH", `/events/${wedding.id}`, { ...mergeWedding(asCurrent(detail), {}), ...record });
+        const saved = await callApp(env, userId, "PATCH", `/events/${wedding.id}`, { ...mergeWedding(asCurrent(wedding), {}), ...record });
         if (!saved.ok) return refusal(saved.error);
 
         const now = await standing(env, wedding.id);
