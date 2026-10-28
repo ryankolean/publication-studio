@@ -4,6 +4,8 @@ import { z } from "zod";
 import { confirmItems, confirmPreview, packageReport, pickPhotos, withTicks } from "../domain/package-tools.js";
 import type { PackageViewLike } from "../domain/package-tools.js";
 import type { QueueEntry } from "../domain/queue.js";
+import { evaluateRightsGate } from "../domain/rights-gate.js";
+import type { ConsentStatus, RightsStatus } from "../domain/rights-gate.js";
 import type { ErrorBody } from "../errors.js";
 import type { OAuthEnv } from "../env.js";
 import { callApp } from "./app-call.js";
@@ -83,19 +85,56 @@ export function registerPackageTools(server: McpServer, env: OAuthEnv, ctx: McpC
       if (args.confirm !== undefined && args.confirm.length > 0 && args.confirmation !== undefined) {
         return { ok: false, result: "confirm_and_code", message: "Pass confirm to get the lines and a code, or confirmation with the code after her yes, not both. Nothing was changed." };
       }
-      const wedding = await findWedding(env, args.wedding);
-      if (wedding === null) return NOT_FOUND;
+      // What the call needs first, in one batch: on Workers every D1 call
+      // costs CPU of its own (SUMMIT-344).
+      const [weddingRows, packageRows, poolRows] = await env.DB.batch([
+        env.DB.prepare("SELECT id, couple_names, rights_status, consent_status FROM events WHERE slug = ?").bind(args.wedding),
+        env.DB
+          .prepare(
+            `SELECT packages.id FROM packages JOIN events ON events.id = packages.event_id
+             WHERE events.slug = ? AND packages.publication_id = ? ORDER BY packages.version DESC`,
+          )
+          .bind(args.wedding, args.publication),
+        env.DB
+          .prepare(
+            `SELECT event_images.key FROM event_images JOIN events ON events.id = event_images.event_id
+             WHERE events.slug = ? ORDER BY event_images.created_at ASC, event_images.rowid ASC`,
+          )
+          .bind(args.wedding),
+      ]);
+      const wedding = weddingRows?.results[0] as
+        | { id: string; couple_names: string; rights_status: RightsStatus; consent_status: ConsentStatus }
+        | undefined;
+      if (wedding === undefined) return NOT_FOUND;
+      const existingId = (packageRows?.results[0] as { id: string } | undefined)?.id;
 
-      const opened = await callApp(env, userId, "POST", "/packages", { eventId: wedding.id, publicationId: args.publication });
-      if (!opened.ok) return refusal(opened.error);
-      let view = opened.body as PackageViewLike;
+      // The create route checks the rights gate; an existing package is
+      // edited through a route that does not, so the gate is checked here for
+      // every call, with the create route's words (CLAUDE.md constraint 3).
+      const gate = evaluateRightsGate({ rightsStatus: wedding.rights_status, consentStatus: wedding.consent_status });
+      if (existingId !== undefined && !gate.allowed) {
+        return { ok: false, result: "rights_blocked", message: ["This wedding cannot go to an outlet yet.", ...gate.reasons].join(" ") };
+      }
+
+      let created = false;
+      let view: PackageViewLike | null = null;
+      if (existingId === undefined) {
+        const opened = await callApp(env, userId, "POST", "/packages", { eventId: wedding.id, publicationId: args.publication });
+        if (!opened.ok) return refusal(opened.error);
+        view = opened.body as PackageViewLike;
+        created = opened.status === 201;
+      }
+      const packageId = view?.id ?? (existingId as string);
+      // The checklist is read before an edit only to name her confirmations or keep the ones already ticked.
+      if (view === null && ((args.confirm?.length ?? 0) > 0 || args.confirmation !== undefined)) {
+        const read = await callApp(env, userId, "GET", `/packages/${packageId}`);
+        if (!read.ok) return refusal(read.error);
+        view = read.body as PackageViewLike;
+      }
 
       const patch: Record<string, unknown> = {};
       if (args.photos !== undefined) {
-        const { results: pool } = await env.DB.prepare("SELECT key FROM event_images WHERE event_id = ? ORDER BY created_at ASC, rowid ASC")
-          .bind(wedding.id)
-          .all<{ key: string }>();
-        const picked = pickPhotos(pool, args.photos);
+        const picked = pickPhotos((poolRows?.results ?? []) as Array<{ key: string }>, args.photos);
         if (!picked.ok) {
           return {
             ok: false,
@@ -108,7 +147,7 @@ export function registerPackageTools(server: McpServer, env: OAuthEnv, ctx: McpC
       let pending: ReturnType<typeof confirmPreview> | null = null;
       let pendingIds: string[] = [];
       if (args.confirm !== undefined && args.confirm.length > 0) {
-        const named = confirmItems(view.checklist, args.confirm);
+        const named = confirmItems((view as PackageViewLike).checklist, args.confirm);
         if (!named.ok) {
           return {
             ok: false,
@@ -116,7 +155,7 @@ export function registerPackageTools(server: McpServer, env: OAuthEnv, ctx: McpC
             message: `Not something she confirms on this outlet's checklist: ${named.unknown.join(", ")}. Use the ids or wording under toDo marked sheConfirms. Nothing in the package was changed.`,
           };
         }
-        pending = confirmPreview(wedding.couple_names, view.publication?.name ?? args.publication, named.items);
+        pending = confirmPreview(wedding.couple_names, view?.publication?.name ?? args.publication, named.items);
         pendingIds = named.items.map((item) => item.id);
       }
       if (args.write_up !== undefined) patch["descriptionMd"] = args.write_up;
@@ -124,7 +163,7 @@ export function registerPackageTools(server: McpServer, env: OAuthEnv, ctx: McpC
 
       let recorded: string[] | null = null;
       if (args.confirmation !== undefined) {
-        const redeemed = await redeemConfirmation(env.DB, args.confirmation, { userId, action: CONFIRM_ITEMS, targetId: view.id });
+        const redeemed = await redeemConfirmation(env.DB, args.confirmation, { userId, action: CONFIRM_ITEMS, targetId: packageId });
         if (redeemed === null) {
           return {
             ok: false,
@@ -132,19 +171,23 @@ export function registerPackageTools(server: McpServer, env: OAuthEnv, ctx: McpC
             message: "That code is not valid: it was used already, it expired, or it was for another package. Call again with confirm to get a fresh one, and show her the lines again.",
           };
         }
-        patch["attestations"] = withTicks(view.checklist, (redeemed.payload as { ids: string[] }).ids);
+        patch["attestations"] = withTicks((view as PackageViewLike).checklist, (redeemed.payload as { ids: string[] }).ids);
         recorded = redeemed.preview.slice(1);
       }
 
       if (Object.keys(patch).length > 0) {
-        const saved = await callApp(env, userId, "PATCH", `/packages/${view.id}`, patch);
+        const saved = await callApp(env, userId, "PATCH", `/packages/${packageId}`, patch);
         if (!saved.ok) return refusal(saved.error);
         view = saved.body as PackageViewLike;
+      } else if (view === null) {
+        const read = await callApp(env, userId, "GET", `/packages/${packageId}`);
+        if (!read.ok) return refusal(read.error);
+        view = read.body as PackageViewLike;
       }
 
       const report = packageReport(view, args.show_text === true);
       if (pending !== null) {
-        const code = await issueConfirmation(env.DB, { userId, action: CONFIRM_ITEMS, targetId: view.id, payload: { ids: pendingIds }, preview: pending });
+        const code = await issueConfirmation(env.DB, { userId, action: CONFIRM_ITEMS, targetId: packageId, payload: { ids: pendingIds }, preview: pending });
         return {
           ok: true,
           result: "awaiting_yes",
@@ -162,7 +205,7 @@ export function registerPackageTools(server: McpServer, env: OAuthEnv, ctx: McpC
         ok: true,
         data: {
           wedding: args.wedding,
-          ...(opened.status === 201 ? { created: true } : {}),
+          ...(created ? { created: true } : {}),
           ...report,
           ...(recorded === null ? {} : { recorded }),
           next: report.complete

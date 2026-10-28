@@ -10,7 +10,7 @@ import { evaluatePackage } from "../domain/package-checklist.js";
 import type { PackageInput } from "../domain/package-checklist.js";
 import { buildCreditsBlock, buildDescriptionDraft } from "../domain/package-draft.js";
 import type { CreditRow } from "../domain/package-draft.js";
-import type { D1Database } from "../env.js";
+import type { D1Database, D1PreparedStatement } from "../env.js";
 import type { SubmissionStatus } from "../domain/submission-status.js";
 import { READ_TOKEN_TTL_SECONDS } from "../domain/image-token.js";
 import { readUrlFor } from "./images.js";
@@ -134,34 +134,33 @@ function submissionOf(row: SubmissionColumns): PackageSubmission | null {
   };
 }
 
-/** Every package for an event, newest first; null when the event does not exist. */
-export async function listEventPackages(
-  db: D1Database,
-  eventId: string,
-): Promise<PackageSummary[] | null> {
-  const event = await db
-    .prepare("SELECT name_display, consent_notes FROM events WHERE id = ?")
-    .bind(eventId)
-    .first<Pick<EventRow, "name_display" | "consent_notes">>();
-  if (event === null) return null;
+/** The reads behind listEventPackages, for a caller that batches them with its own. */
+export function eventPackagesStatements(db: D1Database, eventId: string): D1PreparedStatement[] {
+  return [
+    db.prepare("SELECT name_display, consent_notes FROM events WHERE id = ?").bind(eventId),
+    db
+      .prepare(
+        `SELECT packages.*, publications.name AS publication_name, publications.spec_json AS spec_json,
+           ${SUBMISSION_COLUMNS}
+         FROM packages
+         LEFT JOIN publications ON publications.id = packages.publication_id
+         LEFT JOIN submissions ON submissions.event_id = packages.event_id
+           AND submissions.publication_id = packages.publication_id
+         WHERE packages.event_id = ?
+         ORDER BY packages.created_at DESC, packages.rowid DESC`,
+      )
+      .bind(eventId),
+  ];
+}
 
-  const { results } = await db
-    .prepare(
-      `SELECT packages.*, publications.name AS publication_name, publications.spec_json AS spec_json,
-         ${SUBMISSION_COLUMNS}
-       FROM packages
-       LEFT JOIN publications ON publications.id = packages.publication_id
-       LEFT JOIN submissions ON submissions.event_id = packages.event_id
-         AND submissions.publication_id = packages.publication_id
-       WHERE packages.event_id = ?
-       ORDER BY packages.created_at DESC, packages.rowid DESC`,
-    )
-    .bind(eventId)
-    .all<
-      PackageRow & SubmissionColumns & { publication_name: string | null; spec_json: string | null }
-    >();
-
-  return results.map((row) => {
+/** listEventPackages' summaries from eventPackagesStatements' results; null when the event does not exist. */
+export function eventPackagesFrom(results: ReadonlyArray<{ results: unknown[] }>): PackageSummary[] | null {
+  const event = results[0]?.results[0] as Pick<EventRow, "name_display" | "consent_notes"> | undefined;
+  if (event === undefined) return null;
+  const rows = (results[1]?.results ?? []) as Array<
+    PackageRow & SubmissionColumns & { publication_name: string | null; spec_json: string | null }
+  >;
+  return rows.map((row) => {
     const { input, evaluation } = evaluationFor(row, event, row.spec_json ?? "{}");
     return {
       id: row.id,
@@ -175,6 +174,11 @@ export async function listEventPackages(
       submission: submissionOf(row),
     };
   });
+}
+
+/** Every package for an event, newest first; null when the event does not exist. One D1 batch. */
+export async function listEventPackages(db: D1Database, eventId: string): Promise<PackageSummary[] | null> {
+  return eventPackagesFrom(await db.batch(eventPackagesStatements(db, eventId)));
 }
 
 async function viewFor(

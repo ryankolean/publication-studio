@@ -139,6 +139,15 @@ describe("build_package_draft", () => {
     expect(await packageRow()).toEqual({ image_keys: "[]", description_md: expect.any(String), checklist_json: "{}" });
   });
 
+  it("keeps the rights gate on edits to a package made while the permissions were open", async () => {
+    await callTool("build_package_draft", { wedding: "w1-2026", publication: "pub-simple" });
+    await db.prepare("UPDATE events SET consent_status = 'declined' WHERE id = 'w1'").run();
+    const edit = await callTool("build_package_draft", { wedding: "w1-2026", publication: "pub-simple", photos: ["1"] });
+    expect(edit.isError).toBe(true);
+    expect(edit.text).toMatch(/^This wedding cannot go to an outlet yet\. /);
+    expect((await packageRow())?.image_keys).toBe("[]");
+  });
+
   it("refuses a wedding whose permissions hold it back, an unknown outlet and an unknown wedding", async () => {
     const blocked = await callTool("build_package_draft", { wedding: "w2-2026", publication: "pub-simple" });
     expect(blocked.isError).toBe(true);
