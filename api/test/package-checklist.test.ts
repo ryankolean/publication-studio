@@ -185,6 +185,35 @@ describe("watermark and size rules from the spec", () => {
   });
 });
 
+describe("a rule the spec and its requirement list both carry", () => {
+  const both = spec({ watermarksAllowed: false, size: "web", requirements: ["no_watermarks", "web_size_images_only"] });
+
+  it("is one line, not two", () => {
+    const listed = ids(buildChecklist(both, pkg()));
+    expect(listed.filter((id) => id === "no_watermarks" || id === "req:no_watermarks")).toEqual(["no_watermarks"]);
+    expect(listed.filter((id) => id === "web_size" || id === "req:web_size_images_only")).toEqual(["web_size"]);
+  });
+
+  it("counts a tick already stored on the requirement's own line", () => {
+    const items = buildChecklist(both, pkg({ attestations: { "req:no_watermarks": true, "req:web_size_images_only": true } }));
+    expect(byId(items, "no_watermarks")?.satisfied).toBe(true);
+    expect(byId(items, "web_size")?.satisfied).toBe(true);
+  });
+
+  it("keeps the requirement's line when the spec field does not make the rule", () => {
+    const listed = ids(buildChecklist(spec({ watermarksAllowed: null, size: "print", requirements: ["no_watermarks", "web_size_images_only"] }), pkg()));
+    expect(listed).toContain("req:no_watermarks");
+    expect(listed).toContain("req:web_size_images_only");
+    expect(listed).not.toContain("no_watermarks");
+    expect(listed).not.toContain("web_size");
+  });
+
+  it("does not let a tick on the requirement's line satisfy an unrelated item", () => {
+    const items = buildChecklist(both, pkg({ attestations: { "req:no_watermarks": true } }));
+    expect(byId(items, "web_size")?.satisfied).toBe(false);
+  });
+});
+
 describe("evaluatePackage", () => {
   it("is incomplete while anything is unsatisfied", () => {
     const result = evaluatePackage(spec({ requirements: ["no_watermarks"] }), pkg());

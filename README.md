@@ -26,9 +26,16 @@ the tool. That needs the photographer's first event and gallery.
 Next: Phase 2, exclusivity ledger, response tracking, withdrawal workflow,
 credit recovery.
 
-Claude connector, step 1 of 4 (SUMMIT-343): sign-in, the MCP endpoint, the
-audit log and three read tools, built and tested on workerd; not deployed
-yet. See "Claude connector" below.
+Also live: the outlet research with its approval gate (36 outlets approved),
+the style tags and profile, and the matcher that ranks outlets for each
+wedding (SUMMIT-333 to 337).
+
+Claude connector, steps 1 and 2 of 4 (SUMMIT-343 and 344), in production
+since 2026-10-28: sign-in, the MCP endpoint, the audit log and 14 tools,
+including the guided plans that take a wedding to a ready-to-submit package.
+It never sends anything. Steps 3 (SUMMIT-345, outbound actions with two-step
+confirmation) and 4 (SUMMIT-346, onboarding and polish) are next. See "Claude
+connector" below.
 
 ## Documents
 
@@ -51,7 +58,7 @@ yet. See "Claude connector" below.
 
 ```
 npm install
-npm test          # 479 tests across both workspaces
+npm test          # about 1,700 tests across both workspaces
 npm run typecheck
 npm run build     # includes a check that no secret reached the SPA bundle
 npm run dev:api   # local Worker on :8787, against local D1
